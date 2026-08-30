@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&family=Karla:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Instrument+Serif&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+body{margin:0;background:#e8e5df;font-family:system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#1a1a1a}a:hover{color:#2a78d6}
+.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}
+.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}
+.dv-tname{font:600 13px/1.2 system-ui,sans-serif;color:#1a1a1a}
+.dv-opts{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}
+.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 system-ui,sans-serif;color:rgba(0,0,0,.55)}
+.dv-card{max-width:100%;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+.dv-opt:target .dv-oid{background:#2a78d6;color:#fff}
+.dv-next{margin:22px 0 0;font:12px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.5)}
+.dv-sub{font:500 9.5px ui-monospace,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;color:rgba(0,0,0,.38);margin:0 0 9px}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t2">
+<div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Progress Rail, built out &mdash; the whole page, mobile and laptop</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="2a">
+<div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a>Full page from <a class="dv-oid" href="#1b">1b</a> &middot; expandable stage detail, term ruler, report crosswalk, report rules</div>
+<div class="dv-card" style="width:1220px;background:oklch(0.973 0.005 265);border-color:oklch(0.905 0.008 265)">
+
+<div style="display:flex;gap:26px;padding:26px 28px;align-items:flex-start;flex-wrap:wrap">
+
+<div>
+<p class="dv-sub">Mobile &middot; 390 &middot; full page</p>
+<div style="width:390px;background:oklch(0.973 0.005 265);border:1px solid oklch(0.905 0.008 265);border-radius:14px;overflow:hidden">
+
+<div style="padding:20px;background:#fff;border-bottom:1px solid oklch(0.905 0.008 265)">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+<span style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.525 0.016 262)">BiPi 2026&ndash;27</span>
+<span style="font:700 9px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:oklch(0.215 0.02 262);padding:5px 9px;border-radius:99px">40% of grade</span>
+</div>
+<h1 style="font:700 26px/1.12 'Space Grotesk',sans-serif;color:oklch(0.215 0.02 262);margin:14px 0 0;letter-spacing:-.025em">Biology in Practice Investigation</h1>
+<p style="font:400 13px/1.5 'Public Sans',sans-serif;color:oklch(0.525 0.016 262);margin:8px 0 0">Membranes, Osmosis &amp; Food Preservation. Six stages, seven report sections, one deadline.</p>
+<div style="display:flex;gap:6px;margin-top:16px;flex-wrap:wrap">
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="4">
+<span style="font:600 10.5px/1 'Public Sans',sans-serif;color:oklch(0.34 0.018 262);border:1px solid oklch(0.905 0.008 265);background:oklch(0.973 0.005 265);border-radius:99px;padding:8px 11px">{{ n }}</span>
+</sc-for>
+</div>
+</div>
+
+<div style="padding:18px;background:#fff;border-bottom:1px solid oklch(0.905 0.008 265)">
+<div style="{{ nowCard }}">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+<span style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.52 0.14 268)">&#9679; You are here</span>
+<span style="font:400 9.5px/1 'Space Mono',monospace;color:oklch(0.525 0.016 262)">{{ todayText }}</span>
+</div>
+<div style="font:400 10px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.525 0.016 262);margin-top:14px">{{ cur.label }} / {{ cur.weeks }}</div>
+<div style="font:700 23px/1.15 'Space Grotesk',sans-serif;color:oklch(0.215 0.02 262);margin-top:5px;letter-spacing:-.02em">{{ cur.title }}</div>
+<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+<span style="display:inline-flex;align-items:baseline;gap:5px;background:oklch(0.52 0.14 268);color:#fff;border-radius:8px;padding:7px 11px;font:700 12px/1 'Space Grotesk',sans-serif"><span style="font-size:17px">{{ days }}</span><span style="font:400 9.5px/1 'Space Mono',monospace;letter-spacing:.06em;text-transform:uppercase">{{ daysWord }}</span></span>
+<span style="display:inline-flex;align-items:center;background:oklch(0.52 0.14 268 / .1);color:oklch(0.42 0.13 268);border-radius:8px;padding:7px 11px;font:700 10px/1 'Space Mono',monospace;letter-spacing:.06em;text-transform:uppercase">{{ cur.dueChip }}</span>
+</div>
+<p style="font:400 13px/1.5 'Public Sans',sans-serif;color:oklch(0.34 0.018 262);margin:14px 0 0"><span style="font-weight:700">What&rsquo;s due:</span> {{ cur.due1 }}</p>
+<div style="margin-top:12px;padding-top:12px;border-top:1px solid oklch(0.905 0.008 265);font:400 11.5px/1.45 'Public Sans',sans-serif;color:oklch(0.525 0.016 262)">Report {{ cur.sec }} &mdash; {{ cur.secName }} &mdash; should be written by then.</div>
+</div>
+<div style="margin-top:14px">
+<div style="display:flex;justify-content:space-between;font:700 9px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.525 0.016 262);margin-bottom:7px"><span>{{ weekLine }}</span><span>{{ pctText }}</span></div>
+<div style="height:6px;background:oklch(0.905 0.008 265);border-radius:99px;overflow:hidden"><div style="{{ pctB }}"></div></div>
+</div>
+<div style="margin-top:14px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:12px 13px;background:oklch(0.973 0.005 265);border-radius:10px">
+<div style="min-width:0">
+<div style="font:700 9px/1 'Space Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:oklch(0.525 0.016 262)">Next up</div>
+<div style="font:600 12.5px/1.35 'Public Sans',sans-serif;color:oklch(0.34 0.018 262);margin-top:5px">{{ nextUp.title }}</div>
+</div>
+<div style="font:700 11px/1 'Space Mono',monospace;color:oklch(0.42 0.13 268);flex:none">{{ nextUp.shortDate }}</div>
+</div>
+</div>
+
+<div style="padding:14px 18px;background:oklch(0.53 0.115 158 / .07);border-bottom:1px solid oklch(0.905 0.008 265);display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+<span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:oklch(0.53 0.115 158);color:#fff;font:700 10px/1 'Public Sans',sans-serif">&#10003;</span>
+<span style="font:600 11.5px/1.4 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)">Stages 1&ndash;2 done in 5th Year &mdash; &sect;1 &amp; &sect;2 written</span>
+</div>
+
+<div style="padding:20px 18px 4px">
+<div style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.525 0.016 262)">Timeline</div>
+<h2 style="font:700 19px/1.2 'Space Grotesk',sans-serif;color:oklch(0.215 0.02 262);margin:9px 0 0;letter-spacing:-.02em">What&rsquo;s left this term</h2>
+<p style="font:400 12px/1.5 'Public Sans',sans-serif;color:oklch(0.525 0.016 262);margin:7px 0 0">Tap a stage for what it involves.</p>
+</div>
+
+<div style="padding:16px 18px 18px;display:grid;gap:0">
+<sc-for list="{{ timeline }}" as="s" hint-placeholder-count="5">
+<div style="display:grid;grid-template-columns:26px 1fr;gap:12px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:0">
+<div style="{{ s.b.dot }}"></div>
+<div style="{{ s.b.rail }}"></div>
+</div>
+<div style="padding-bottom:14px">
+<article style="{{ s.b.shell }}">
+<div style="padding:14px 15px 15px">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+<span style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.525 0.016 262);white-space:nowrap">{{ s.label }} / {{ s.weeks }}</span>
+<span style="{{ s.b.chip }}">{{ s.stateWord }}</span>
+</div>
+<h3 style="{{ s.b.title }}">{{ s.title }}</h3>
+<div style="font:700 10.5px/1 'Space Mono',monospace;color:oklch(0.34 0.018 262);margin-top:7px">{{ s.dateText }}</div>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px">
+<span style="{{ s.b.badge }}">{{ s.badgeText }}</span>
+<span style="font:400 11px/1.35 'Public Sans',sans-serif;color:oklch(0.525 0.016 262)">{{ s.secName }}</span>
+</div>
+<div onClick="{{ s.toggle }}" style="margin-top:13px;font:700 10px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.52 0.14 268);cursor:pointer;padding:9px 0 2px;min-height:34px;display:flex;align-items:center">{{ s.toggleWord }}</div>
+<div style="{{ s.detailStyle }}">
+<p style="font:400 12.5px/1.5 'Public Sans',sans-serif;color:oklch(0.34 0.018 262);margin:2px 0 0;text-wrap:pretty">{{ s.desc }}</p>
+<div style="margin-top:13px;display:grid;gap:7px">
+<sc-for list="{{ s.tasks }}" as="t" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:14px 1fr;gap:9px;align-items:start">
+<span style="width:5px;height:5px;border-radius:50%;background:oklch(0.52 0.14 268);margin-top:6px"></span>
+<span style="font:400 12px/1.45 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)">{{ t.t }}</span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:13px;padding:11px 12px;background:oklch(0.973 0.005 265);border-radius:8px;font:400 11.5px/1.45 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)"><span style="font-weight:700">What good looks like &middot;</span> {{ s.goodLooks }}</div>
+<div style="margin-top:9px;padding:11px 12px;background:oklch(0.52 0.14 268 / .07);border-radius:8px;font:400 11.5px/1.45 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)"><span style="font-weight:700">Teacher checkpoint &middot;</span> {{ s.check }}</div>
+</div>
+</div>
+</article>
+</div>
+</div>
+</sc-for>
+</div>
+
+<div style="padding:20px 18px;background:#fff;border-top:1px solid oklch(0.905 0.008 265)">
+<div style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.525 0.016 262)">Report sections</div>
+<h2 style="font:700 19px/1.2 'Space Grotesk',sans-serif;color:oklch(0.215 0.02 262);margin:9px 0 14px;letter-spacing:-.02em">All seven, and when each is written</h2>
+<sc-for list="{{ crossB }}" as="r" hint-placeholder-count="7">
+<div style="display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:baseline;padding:10px 0;border-top:1px solid oklch(0.905 0.008 265)">
+<div style="{{ r.cellSec }}">{{ r.sec }}</div>
+<div style="min-width:0">
+<div style="font:600 12.5px/1.35 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)">{{ r.name }}</div>
+<div style="font:400 11px/1.35 'Public Sans',sans-serif;color:oklch(0.525 0.016 262);margin-top:3px">{{ r.stage }} &middot; {{ r.due }}</div>
+</div>
+<div style="{{ r.cellEnd }}">{{ r.status }}</div>
+</sc-for>
+</div>
+
+<div style="padding:20px 18px;border-top:1px solid oklch(0.905 0.008 265)">
+<div style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.525 0.016 262)">Report rules</div>
+<h2 style="font:700 19px/1.2 'Space Grotesk',sans-serif;color:oklch(0.215 0.02 262);margin:9px 0 0;letter-spacing:-.02em">The bits people lose marks on</h2>
+<div style="margin-top:14px;background:#fff;border:1px solid oklch(0.905 0.008 265);border-radius:12px;padding:4px 15px 14px">
+<sc-for list="{{ rules }}" as="r" hint-placeholder-count="8">
+<div style="padding:11px 0;border-bottom:1px solid oklch(0.905 0.008 265)">
+<div style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:oklch(0.42 0.13 268)">{{ r.k }}</div>
+<div style="font:400 12px/1.5 'Public Sans',sans-serif;color:oklch(0.34 0.018 262);margin-top:6px">{{ r.v }}</div>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:14px;background:#fff;border:1px solid oklch(0.905 0.008 265);border-radius:12px;padding:15px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+<span style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:oklch(0.525 0.016 262)">Marks</span>
+<span style="font:700 11px/1 'Space Mono',monospace;color:oklch(0.215 0.02 262)">200 total</span>
+</div>
+<div style="margin-top:10px;display:grid;gap:0">
+<sc-for list="{{ marks }}" as="m" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:20px 1fr 34px;gap:10px;align-items:baseline;padding:9px 0;border-top:1px solid oklch(0.905 0.008 265)">
+<span style="font:700 12px/1.3 'Space Mono',monospace;color:oklch(0.42 0.13 268)">{{ m.band }}</span>
+<span style="font:400 12px/1.4 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)">{{ m.what }}</span>
+<span style="font:700 12px/1.3 'Space Mono',monospace;color:oklch(0.215 0.02 262);text-align:right">{{ m.pts }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="padding:18px;background:oklch(0.215 0.02 262);display:grid;gap:8px">
+<div style="font:700 12.5px/1.35 'Space Grotesk',sans-serif;color:#fff">SEC deadline &mdash; 26 February 2027</div>
+<div style="font:400 11.5px/1.55 'Public Sans',sans-serif;color:oklch(0.78 0.02 262)">Submitted to your class teacher by then. Finishing 11&ndash;12 December leaves about ten weeks of buffer.</div>
+<div style="font:400 9.5px/1.5 'Space Mono',monospace;color:oklch(0.65 0.02 262);margin-top:3px">Class schedule &mdash; not an official SEC date.</div>
+</div>
+
+</div>
+</div>
+
+<div>
+<p class="dv-sub">Notes</p>
+<div style="width:340px;padding:18px;background:#fff;border:1px solid oklch(0.905 0.008 265);border-radius:12px;font:400 12px/1.6 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)">
+<p style="margin:0 0 12px"><strong style="color:oklch(0.215 0.02 262)">What&rsquo;s new since <a href="#1b">1b</a>:</strong> each stage now opens to a task checklist and a &ldquo;what good looks like&rdquo; line &mdash; the phone stays short, the detail is one tap away. The current stage is open by default.</p>
+<p style="margin:0 0 12px"><strong style="color:oklch(0.215 0.02 262)">Added:</strong> a term ruler on laptop with real date spacing, the seven-section crosswalk with a live <em>Due now</em> flag, an aside with what&rsquo;s coming and the term at a glance, and a report-rules block (word and image limits, formatting, the 200-mark split).</p>
+<p style="margin:0 0 12px"><strong style="color:oklch(0.215 0.02 262)">Removed:</strong> the students / parents / teachers strip.</p>
+<p style="margin:0"><strong style="color:oklch(0.215 0.02 262)">Try it:</strong> tap the stage headers, and change <em>previewDate</em> in Tweaks to watch the whole page re-state itself.</p>
+</div>
+</div>
+
+</div>
+</div>
+
+<sc-if value="{{ showDesktop }}" hint-placeholder-val="{{ true }}">
+<div style="padding:6px 28px 28px">
+<p class="dv-sub">Laptop &middot; 1140 &middot; full page</p>
+<div style="width:1160px;background:oklch(0.973 0.005 265);border:1px solid oklch(0.905 0.008 265);border-radius:14px;overflow:hidden">
+
+<div style="padding:26px 40px;background:#fff;border-bottom:1px solid oklch(0.905 0.008 265)">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px">
+<div>
+<div style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.525 0.016 262)">BiPi 2026&ndash;27 &middot; class schedule</div>
+<h1 style="font:700 38px/1.08 'Space Grotesk',sans-serif;color:oklch(0.215 0.02 262);margin:12px 0 0;letter-spacing:-.03em">Biology in Practice Investigation</h1>
+<p style="font:400 14px/1.5 'Public Sans',sans-serif;color:oklch(0.525 0.016 262);margin:9px 0 0">Membranes, Osmosis &amp; Food Preservation. Six stages, seven report sections, one deadline.</p>
+</div>
+<div style="flex:none;text-align:right">
+<span style="display:inline-block;font:700 10px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:oklch(0.215 0.02 262);padding:9px 14px;border-radius:99px">40% of the Biology grade</span>
+<div style="display:flex;gap:6px;margin-top:14px;justify-content:flex-end">
+<sc-for list="{{ nav }}" as="n" hint-placeholder-count="4">
+<span style="font:600 11px/1 'Public Sans',sans-serif;color:oklch(0.34 0.018 262);border:1px solid oklch(0.905 0.008 265);background:oklch(0.973 0.005 265);border-radius:99px;padding:8px 12px">{{ n }}</span>
+</sc-for>
+</div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:0;margin-top:26px">
+<sc-for list="{{ steps }}" as="s" hint-placeholder-count="7">
+<div style="display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;align-items:center;gap:0"><div style="{{ s.b.dot }}"></div><div style="{{ s.b.stepline }}"></div></div>
+<div style="padding-right:14px">
+<div style="{{ s.b.stepLabel }}">{{ s.label }}</div>
+<div style="{{ s.b.stepDate }}">{{ s.shortDate }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="padding:24px 40px 0">
+<div style="{{ nowWide }}">
+<div style="display:grid;grid-template-columns:1fr 250px;gap:34px;align-items:center">
+<div>
+<div style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.52 0.14 268)">&#9679; You are here &middot; {{ todayText }}</div>
+<div style="font:400 10.5px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.525 0.016 262);margin-top:16px">{{ cur.label }} / {{ cur.weeks }}</div>
+<h2 style="font:700 30px/1.12 'Space Grotesk',sans-serif;color:oklch(0.215 0.02 262);margin:6px 0 0;letter-spacing:-.025em">{{ cur.title }}</h2>
+<p style="font:400 14px/1.55 'Public Sans',sans-serif;color:oklch(0.34 0.018 262);margin:12px 0 0;max-width:620px"><span style="font-weight:700">{{ cur.dueChip }}:</span> {{ cur.due1 }} Report section {{ cur.sec }} &mdash; {{ cur.secName }} &mdash; should be written by then.</p>
+</div>
+<div style="text-align:center;background:oklch(0.52 0.14 268);border-radius:14px;padding:22px 14px;color:#fff">
+<div style="font:700 54px/0.9 'Space Grotesk',sans-serif;letter-spacing:-.03em">{{ days }}</div>
+<div style="font:700 9.5px/1.4 'Space Mono',monospace;letter-spacing:.12em;text-transform:uppercase;margin-top:9px;opacity:.85">{{ daysWord }} to<br>{{ cur.dateText }}</div>
+</div>
+</div>
+<div style="margin-top:22px;padding-top:18px;border-top:1px solid oklch(0.905 0.008 265)">
+<div style="display:flex;justify-content:space-between;font:700 9px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.525 0.016 262);margin-bottom:12px"><span>{{ weekLine }}</span><span>Sept &rarr; 12 Dec &middot; {{ pctText }} elapsed</span></div>
+<div style="position:relative;height:46px">
+<div style="position:absolute;left:0;right:0;top:0;height:2px;background:oklch(0.905 0.008 265);border-radius:99px;overflow:hidden"><div style="{{ pctB }}"></div></div>
+<div style="{{ nowMark }}"></div>
+<sc-for list="{{ ruler }}" as="r" hint-placeholder-count="5">
+<div style="{{ r.wrap }}">
+<div style="{{ r.tick }}"></div>
+<div style="{{ r.dateStyle }}">{{ r.shortDate }}</div>
+<div style="{{ r.labelStyle }}">{{ r.label }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+
+<div style="padding:22px 40px 0;display:flex;align-items:center;gap:12px">
+<span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:oklch(0.53 0.115 158);color:#fff;font:700 11px/1 'Public Sans',sans-serif">&#10003;</span>
+<span style="font:600 12.5px/1.4 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)">Stages 1&ndash;2 completed in 5th Year &mdash; report sections &sect;1 Title and Introduction and &sect;2 Background Research already written.</span>
+</div>
+
+<div style="padding:24px 40px 30px;display:grid;grid-template-columns:1fr 300px;gap:26px;align-items:start">
+
+<div>
+<div style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.525 0.016 262)">Timeline</div>
+<h2 style="font:700 24px/1.18 'Space Grotesk',sans-serif;color:oklch(0.215 0.02 262);margin:9px 0 18px;letter-spacing:-.025em">What&rsquo;s left this term</h2>
+<div style="display:grid;gap:0">
+<sc-for list="{{ timeline }}" as="s" hint-placeholder-count="5">
+<div style="display:grid;grid-template-columns:26px 1fr;gap:14px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:0">
+<div style="{{ s.b.dot }}"></div>
+<div style="{{ s.b.rail }}"></div>
+</div>
+<div style="padding-bottom:16px">
+<article style="{{ s.b.shell }}">
+<div style="padding:20px 22px 21px">
+<div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start">
+<div>
+<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+<span style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.525 0.016 262);white-space:nowrap">{{ s.label }} / {{ s.weeks }}</span>
+<span style="{{ s.b.chip }}">{{ s.stateWord }}</span>
+</div>
+<h3 style="{{ s.b.titleLg }}">{{ s.title }}</h3>
+</div>
+<div style="text-align:right;flex:none">
+<div style="font:700 11px/1.3 'Space Mono',monospace;color:oklch(0.34 0.018 262)">{{ s.dateText }}</div>
+<div style="margin-top:9px"><span style="{{ s.b.badge }}">{{ s.badgeText }}</span></div>
+</div>
+</div>
+<p style="{{ s.b.body }}">{{ s.desc }}</p>
+<div onClick="{{ s.toggle }}" style="margin-top:14px;font:700 10px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.52 0.14 268);cursor:pointer;padding:8px 0 2px;min-height:30px;display:flex;align-items:center">{{ s.toggleWord }}</div>
+<div style="{{ s.detailStyle }}">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 22px;margin-top:4px">
+<sc-for list="{{ s.tasks }}" as="t" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:14px 1fr;gap:9px;align-items:start">
+<span style="width:5px;height:5px;border-radius:50%;background:oklch(0.52 0.14 268);margin-top:6px"></span>
+<span style="font:400 12px/1.45 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)">{{ t.t }}</span>
+</div>
+</sc-for>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px">
+<div style="padding:11px 13px;background:oklch(0.973 0.005 265);border-radius:8px;font:400 11.5px/1.45 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)"><span style="font-weight:700">What good looks like &middot;</span> {{ s.goodLooks }}</div>
+<div style="padding:11px 13px;background:oklch(0.52 0.14 268 / .07);border-radius:8px;font:400 11.5px/1.45 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)"><span style="font-weight:700">Teacher checkpoint &middot;</span> {{ s.check }}</div>
+</div>
+</div>
+</div>
+</article>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<aside style="display:grid;gap:16px;position:sticky;top:16px">
+<div style="background:#fff;border:1px solid oklch(0.905 0.008 265);border-radius:12px;padding:18px 20px">
+<div style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.525 0.016 262)">Coming up</div>
+<div style="display:grid;gap:0;margin-top:12px">
+<sc-for list="{{ upNext }}" as="s" hint-placeholder-count="3">
+<div style="display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid oklch(0.905 0.008 265)">
+<div style="min-width:0">
+<div style="font:600 12.5px/1.3 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)">{{ s.title }}</div>
+<div style="font:400 10.5px/1.3 'Public Sans',sans-serif;color:oklch(0.525 0.016 262);margin-top:4px">{{ s.badgeText }}</div>
+</div>
+<div style="font:700 11px/1.3 'Space Mono',monospace;color:oklch(0.42 0.13 268);flex:none">{{ s.shortDate }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="background:#fff;border:1px solid oklch(0.905 0.008 265);border-radius:12px;padding:18px 20px">
+<div style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.525 0.016 262)">Term at a glance</div>
+<div style="display:grid;gap:14px;margin-top:14px">
+<sc-for list="{{ months }}" as="m" hint-placeholder-count="4">
+<div>
+<div style="font:700 11px/1 'Space Grotesk',sans-serif;color:oklch(0.215 0.02 262);letter-spacing:-.01em">{{ m.name }}</div>
+<div style="display:grid;gap:6px;margin-top:8px">
+<sc-for list="{{ m.items }}" as="i" hint-placeholder-count="2">
+<div style="display:grid;grid-template-columns:34px 1fr;gap:8px;align-items:baseline">
+<span style="font:700 10.5px/1.3 'Space Mono',monospace;color:oklch(0.42 0.13 268)">{{ i.d }}</span>
+<span style="font:400 11.5px/1.4 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)">{{ i.t }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</aside>
+
+</div>
+
+<sc-if value="{{ showCrosswalk }}" hint-placeholder-val="{{ true }}">
+<div style="padding:28px 40px 30px;background:#fff;border-top:1px solid oklch(0.905 0.008 265)">
+<div style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.525 0.016 262)">Report sections</div>
+<h2 style="font:700 24px/1.18 'Space Grotesk',sans-serif;color:oklch(0.215 0.02 262);margin:9px 0 18px;letter-spacing:-.025em">All seven sections, and when each one should be written</h2>
+<div style="display:grid;grid-template-columns:56px 1.5fr 1fr 1fr 100px;gap:0">
+<div style="font:700 9px/1 'Space Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:oklch(0.525 0.016 262);padding:0 0 10px">&sect;</div>
+<div style="font:700 9px/1 'Space Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:oklch(0.525 0.016 262);padding:0 0 10px">Report section</div>
+<div style="font:700 9px/1 'Space Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:oklch(0.525 0.016 262);padding:0 0 10px">Written during</div>
+<div style="font:700 9px/1 'Space Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:oklch(0.525 0.016 262);padding:0 0 10px">Due by</div>
+<div style="font:700 9px/1 'Space Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:oklch(0.525 0.016 262);padding:0 0 10px;text-align:right">Status</div>
+<sc-for list="{{ crossB }}" as="r" hint-placeholder-count="7">
+<div style="{{ r.cellSec }}">{{ r.sec }}</div>
+<div style="{{ r.cellStrong }}">{{ r.name }}</div>
+<div style="{{ r.cell }}">{{ r.stage }}</div>
+<div style="{{ r.cell }}">{{ r.due }}</div>
+<div style="{{ r.cellEnd }}">{{ r.status }}</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<div style="padding:28px 40px 30px;border-top:1px solid oklch(0.905 0.008 265);display:grid;grid-template-columns:1fr 380px;gap:34px;align-items:start">
+<div>
+<div style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.525 0.016 262)">Report rules</div>
+<h2 style="font:700 24px/1.18 'Space Grotesk',sans-serif;color:oklch(0.215 0.02 262);margin:9px 0 16px;letter-spacing:-.025em">The bits people lose marks on</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 26px">
+<sc-for list="{{ rules }}" as="r" hint-placeholder-count="8">
+<div style="padding:12px 0;border-top:1px solid oklch(0.905 0.008 265)">
+<div style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:oklch(0.42 0.13 268)">{{ r.k }}</div>
+<div style="font:400 12.5px/1.5 'Public Sans',sans-serif;color:oklch(0.34 0.018 262);margin-top:6px">{{ r.v }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="background:#fff;border:1px solid oklch(0.905 0.008 265);border-radius:12px;padding:20px 22px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+<span style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.525 0.016 262)">How it&rsquo;s marked</span>
+<span style="font:700 12px/1 'Space Mono',monospace;color:oklch(0.215 0.02 262)">200 marks</span>
+</div>
+<div style="margin-top:12px;display:grid;gap:0">
+<sc-for list="{{ marks }}" as="m" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:22px 1fr 34px;gap:10px;align-items:baseline;padding:11px 0;border-top:1px solid oklch(0.905 0.008 265)">
+<span style="font:700 13px/1.3 'Space Mono',monospace;color:oklch(0.42 0.13 268)">{{ m.band }}</span>
+<span style="font:400 12.5px/1.45 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)">{{ m.what }}</span>
+<span style="font:700 12.5px/1.3 'Space Mono',monospace;color:oklch(0.215 0.02 262);text-align:right">{{ m.pts }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="padding:24px 40px;background:oklch(0.215 0.02 262);display:flex;justify-content:space-between;gap:30px;align-items:flex-end;flex-wrap:wrap">
+<div style="max-width:640px">
+<div style="font:700 14px/1.35 'Space Grotesk',sans-serif;color:#fff">SEC deadline &mdash; 26 February 2027</div>
+<div style="font:400 12.5px/1.55 'Public Sans',sans-serif;color:oklch(0.78 0.02 262);margin-top:6px">Coursework must be completed and submitted to your class teacher by this date. Finishing on 11&ndash;12 December leaves roughly ten weeks of buffer.</div>
+</div>
+<div style="font:400 10px/1.5 'Space Mono',monospace;color:oklch(0.65 0.02 262);text-align:right">Class schedule &mdash; not an official SEC date.<br>Dates set by your teacher for moderation.</div>
+</div>
+
+</div>
+</div>
+</sc-if>
+
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: &ldquo;make the stage detail open by default on laptop&rdquo; &middot; &ldquo;add a QR block for the noticeboard&rdquo; &middot; &ldquo;tighten the report-rules copy&rdquo;</p>
+</section>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Three directions — BiPi Schedule Hub</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1a">
+<div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Ruled Paper — editorial, hairline rules, serif display, terracotta marker</div>
+<div class="dv-card" style="width:1220px;background:oklch(0.968 0.012 84);border-color:oklch(0.885 0.012 84)">
+
+<div style="display:flex;gap:40px;padding:24px 28px;border-bottom:1px solid oklch(0.885 0.012 84);flex-wrap:wrap">
+<div style="width:300px">
+<div style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.15em;text-transform:uppercase;color:oklch(0.525 0.012 60);margin-bottom:12px">Type</div>
+<div style="font:400 34px/1 Newsreader,Georgia,serif;color:oklch(0.245 0.014 60)">Conducting the Experiment</div>
+<div style="font:400 9.5px/1 'IBM Plex Mono',monospace;color:oklch(0.525 0.012 60);margin-top:7px">Newsreader 300/400 &middot; display</div>
+<div style="font:400 13.5px/1.5 Karla,sans-serif;color:oklch(0.345 0.014 60);margin-top:16px">Run the experiment in the lab and gather your primary data. All practical work is supervised.</div>
+<div style="font:400 9.5px/1 'IBM Plex Mono',monospace;color:oklch(0.525 0.012 60);margin-top:7px">Karla 400/600 &middot; body</div>
+<div style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.58 0.125 42);margin-top:16px">Weeks 5&ndash;7 &middot; Report &sect;4 due</div>
+<div style="font:400 9.5px/1 'IBM Plex Mono',monospace;color:oklch(0.525 0.012 60);margin-top:7px">IBM Plex Mono 500 &middot; labels</div>
+</div>
+<div style="flex:1;min-width:300px">
+<div style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.15em;text-transform:uppercase;color:oklch(0.525 0.012 60);margin-bottom:12px">Tokens</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px">
+<sc-for list="{{ tokensA }}" as="t" hint-placeholder-count="7">
+<div style="width:96px">
+<div style="{{ t.chip }}"></div>
+<div style="font:500 9.5px/1.3 'IBM Plex Mono',monospace;color:oklch(0.245 0.014 60);margin-top:6px">{{ t.n }}</div>
+<div style="font:400 8px/1.35 'IBM Plex Mono',monospace;color:oklch(0.525 0.012 60);margin-top:2px;word-break:break-word">{{ t.v }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="display:flex;gap:26px;padding:26px 28px;align-items:flex-start;flex-wrap:wrap">
+
+<div>
+<p class="dv-sub">Mobile &middot; 390</p>
+<div style="width:390px;background:oklch(0.968 0.012 84);border:1px solid oklch(0.885 0.012 84);border-radius:10px;overflow:hidden">
+
+<div style="padding:22px 20px 16px;border-bottom:1px solid oklch(0.885 0.012 84)">
+<div style="display:flex;align-items:center;gap:8px;font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.525 0.012 60)">
+<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:oklch(0.58 0.125 42)"></span>
+<span>Leaving Cert Biology 2027</span>
+</div>
+<h1 style="font:300 32px/1.08 Newsreader,Georgia,serif;color:oklch(0.245 0.014 60);margin:12px 0 0;letter-spacing:-.01em">Biology in Practice Investigation</h1>
+<p style="font:400 13px/1.5 Karla,sans-serif;color:oklch(0.525 0.012 60);margin:10px 0 0">Membranes, Osmosis &amp; Food Preservation &mdash; worth <span style="color:oklch(0.245 0.014 60);font-weight:600">40% of your Biology grade</span>.</p>
+</div>
+
+<div style="padding:20px;background:oklch(0.995 0.004 84);border-bottom:1px solid oklch(0.885 0.012 84)">
+<div style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.58 0.125 42)">You are here &middot; {{ todayText }}</div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-top:14px">
+<div style="flex:1">
+<div style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:oklch(0.525 0.012 60)">{{ cur.label }} &middot; {{ cur.weeks }}</div>
+<div style="font:400 25px/1.12 Newsreader,Georgia,serif;color:oklch(0.245 0.014 60);margin-top:6px">{{ cur.title }}</div>
+</div>
+<div style="text-align:right;flex:none">
+<div style="font:300 46px/0.86 Newsreader,Georgia,serif;color:oklch(0.58 0.125 42)">{{ days }}</div>
+<div style="font:500 9px/1.2 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:oklch(0.525 0.012 60);margin-top:5px">{{ daysWord }}</div>
+</div>
+</div>
+<div style="margin-top:14px;padding-top:13px;border-top:1px solid oklch(0.885 0.012 84);display:grid;gap:7px">
+<div style="font:400 13px/1.45 Karla,sans-serif;color:oklch(0.345 0.014 60)"><span style="font-weight:700;color:oklch(0.245 0.014 60)">Due {{ cur.dateText }}:</span> {{ cur.due1 }}</div>
+<div style="font:400 12.5px/1.45 Karla,sans-serif;color:oklch(0.525 0.012 60)">Report section {{ cur.sec }} &mdash; {{ cur.secName }} &mdash; should be written by then.</div>
+</div>
+<div style="margin-top:15px">
+<div style="display:flex;justify-content:space-between;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.11em;text-transform:uppercase;color:oklch(0.525 0.012 60);margin-bottom:6px"><span>{{ weekLine }}</span><span>Final 11&ndash;12 Dec</span></div>
+<div style="height:3px;background:oklch(0.885 0.012 84);border-radius:99px;overflow:hidden"><div style="{{ pctA }}"></div></div>
+</div>
+</div>
+
+<div style="padding:16px 20px;border-bottom:1px solid oklch(0.885 0.012 84);display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+<span style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.525 0.012 60)">Already done</span>
+<sc-for list="{{ donePair }}" as="s" hint-placeholder-count="2">
+<span style="display:inline-flex;align-items:center;gap:6px;font:600 11.5px/1 Karla,sans-serif;color:oklch(0.52 0.095 152)"><span style="font-size:12px">&#10003;</span>{{ s.label }} &middot; {{ s.sec }}</span>
+</sc-for>
+</div>
+
+<div style="padding:18px 20px 4px;display:grid;gap:12px">
+<sc-for list="{{ timeline }}" as="s" hint-placeholder-count="5">
+<article style="{{ s.a.shell }}">
+<div style="padding:14px 15px 15px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+<span style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:oklch(0.525 0.012 60)">{{ s.label }} &middot; {{ s.weeks }}</span>
+<span style="{{ s.a.chip }}">{{ s.stateWord }}</span>
+</div>
+<h3 style="{{ s.a.title }}">{{ s.title }}</h3>
+<div style="font:500 10.5px/1 'IBM Plex Mono',monospace;color:oklch(0.525 0.012 60);margin-top:6px">{{ s.dateText }}</div>
+<p style="{{ s.a.body }}">{{ s.desc }}</p>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px">
+<span style="{{ s.a.badge }}">{{ s.badgeText }}</span>
+<span style="font:400 11px/1.35 Karla,sans-serif;color:oklch(0.525 0.012 60)">{{ s.secName }}</span>
+</div>
+<div style="margin-top:11px;padding-top:10px;border-top:1px dashed oklch(0.885 0.012 84);font:400 11.5px/1.45 Karla,sans-serif;color:oklch(0.525 0.012 60)"><span style="font-weight:700;color:oklch(0.345 0.014 60)">Checkpoint &mdash;</span> {{ s.check }}</div>
+</div>
+</article>
+</sc-for>
+</div>
+
+
+<div style="padding:18px 20px 22px;background:oklch(0.995 0.004 84);border-top:1px solid oklch(0.885 0.012 84);display:grid;gap:7px">
+<div style="font:600 12px/1.4 Karla,sans-serif;color:oklch(0.245 0.014 60)">SEC deadline &mdash; 26 February 2027</div>
+<div style="font:400 11.5px/1.5 Karla,sans-serif;color:oklch(0.525 0.012 60)">Coursework must be submitted to your class teacher by then. Finishing on 11&ndash;12 December leaves roughly ten weeks of buffer.</div>
+<div style="font:400 10.5px/1.45 'IBM Plex Mono',monospace;color:oklch(0.525 0.012 60);margin-top:3px">Class schedule only &mdash; not an official SEC date.</div>
+</div>
+
+</div>
+</div>
+
+<div>
+<p class="dv-sub">Card &middot; three states</p>
+<div style="width:372px;display:grid;gap:12px;padding:16px;background:oklch(0.955 0.012 84);border:1px solid oklch(0.885 0.012 84);border-radius:10px">
+<sc-for list="{{ trio }}" as="s" hint-placeholder-count="3">
+<article style="{{ s.a.shell }}">
+<div style="padding:14px 15px 15px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+<span style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:oklch(0.525 0.012 60)">{{ s.label }} &middot; {{ s.weeks }}</span>
+<span style="{{ s.a.chip }}">{{ s.stateWord }}</span>
+</div>
+<h3 style="{{ s.a.title }}">{{ s.title }}</h3>
+<div style="font:500 10.5px/1 'IBM Plex Mono',monospace;color:oklch(0.525 0.012 60);margin-top:6px">{{ s.dateText }}</div>
+<p style="{{ s.a.body }}">{{ s.desc }}</p>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px">
+<span style="{{ s.a.badge }}">{{ s.badgeText }}</span>
+<span style="font:400 11px/1.35 Karla,sans-serif;color:oklch(0.525 0.012 60)">{{ s.secName }}</span>
+</div>
+<div style="margin-top:11px;padding-top:10px;border-top:1px dashed oklch(0.885 0.012 84);font:400 11.5px/1.45 Karla,sans-serif;color:oklch(0.525 0.012 60)"><span style="font-weight:700;color:oklch(0.345 0.014 60)">Checkpoint &mdash;</span> {{ s.check }}</div>
+</div>
+</article>
+</sc-for>
+</div>
+</div>
+
+<div>
+<p class="dv-sub">Notes</p>
+<div style="width:340px;padding:18px;background:oklch(0.995 0.004 84);border:1px solid oklch(0.885 0.012 84);border-radius:10px;font:400 12px/1.6 Karla,sans-serif;color:oklch(0.345 0.014 60)">
+<p style="margin:0 0 12px"><strong style="color:oklch(0.245 0.014 60)">Idea:</strong> the page reads like a printed course handout &mdash; hairline rules, generous measure, one warm accent used only for &ldquo;now&rdquo;. Nothing boxed unless it&rsquo;s the current stage.</p>
+<p style="margin:0 0 12px"><strong style="color:oklch(0.245 0.014 60)">You-are-here:</strong> a filled panel directly under the masthead, with the countdown set as a large serif numeral rather than a coloured pill.</p>
+<p style="margin:0"><strong style="color:oklch(0.245 0.014 60)">Trade-off:</strong> quietest of the three. Reads beautifully on a laptop; on a phone the current stage relies on fill + rule rather than colour, so it&rsquo;s a softer signal.</p>
+</div>
+</div>
+
+</div>
+
+<sc-if value="{{ showDesktop }}" hint-placeholder-val="{{ true }}">
+<div style="padding:6px 28px 28px">
+<p class="dv-sub">Laptop &middot; 1140</p>
+<div style="width:1160px;background:oklch(0.968 0.012 84);border:1px solid oklch(0.885 0.012 84);border-radius:10px;overflow:hidden">
+
+<div style="padding:30px 40px 22px;border-bottom:1px solid oklch(0.885 0.012 84);display:flex;justify-content:space-between;align-items:flex-end;gap:24px">
+<div>
+<div style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.525 0.012 60)">Leaving Cert Biology 2027 &middot; Class schedule</div>
+<h1 style="font:300 44px/1.05 Newsreader,Georgia,serif;color:oklch(0.245 0.014 60);margin:12px 0 0;letter-spacing:-.015em">Biology in Practice Investigation</h1>
+<p style="font:400 14px/1.5 Karla,sans-serif;color:oklch(0.525 0.012 60);margin:10px 0 0">Membranes, Osmosis &amp; Food Preservation &mdash; six stages, seven report sections, one deadline.</p>
+</div>
+<div style="flex:none;padding:8px 14px;border:1px solid oklch(0.58 0.125 42);border-radius:2px;font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:oklch(0.58 0.125 42)">40% of the grade</div>
+</div>
+
+<div style="display:grid;grid-template-columns:340px 1fr;gap:0">
+<aside style="padding:28px 30px 30px;border-right:1px solid oklch(0.885 0.012 84);background:oklch(0.995 0.004 84)">
+<div style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.58 0.125 42)">You are here &middot; {{ todayText }}</div>
+<div style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:oklch(0.525 0.012 60);margin-top:20px">{{ cur.label }} &middot; {{ cur.weeks }}</div>
+<div style="font:400 30px/1.1 Newsreader,Georgia,serif;color:oklch(0.245 0.014 60);margin-top:8px">{{ cur.title }}</div>
+<div style="display:flex;align-items:baseline;gap:12px;margin-top:22px;padding-top:20px;border-top:1px solid oklch(0.885 0.012 84)">
+<div style="font:300 66px/0.82 Newsreader,Georgia,serif;color:oklch(0.58 0.125 42)">{{ days }}</div>
+<div style="font:500 10px/1.4 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:oklch(0.525 0.012 60)">{{ daysWord }}<br>to {{ cur.dateText }}</div>
+</div>
+<p style="font:400 13.5px/1.55 Karla,sans-serif;color:oklch(0.345 0.014 60);margin:20px 0 0"><span style="font-weight:700;color:oklch(0.245 0.014 60)">What&rsquo;s due:</span> {{ cur.due1 }}</p>
+<p style="font:400 12.5px/1.5 Karla,sans-serif;color:oklch(0.525 0.012 60);margin:9px 0 0">Report section {{ cur.sec }} &mdash; {{ cur.secName }}.</p>
+<div style="margin-top:24px">
+<div style="display:flex;justify-content:space-between;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.11em;text-transform:uppercase;color:oklch(0.525 0.012 60);margin-bottom:7px"><span>{{ weekLine }}</span><span>{{ pctText }}</span></div>
+<div style="height:3px;background:oklch(0.885 0.012 84);border-radius:99px;overflow:hidden"><div style="{{ pctA }}"></div></div>
+</div>
+<div style="margin-top:26px;padding-top:18px;border-top:1px solid oklch(0.885 0.012 84)">
+<div style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.525 0.012 60);margin-bottom:11px">Already done</div>
+<div style="display:grid;gap:7px">
+<sc-for list="{{ donePair }}" as="s" hint-placeholder-count="2">
+<div style="display:flex;align-items:baseline;gap:8px;font:400 12.5px/1.4 Karla,sans-serif;color:oklch(0.525 0.012 60)"><span style="color:oklch(0.52 0.095 152);font-weight:700">&#10003;</span><span><span style="font-weight:600;color:oklch(0.345 0.014 60)">{{ s.label }}</span> {{ s.title }} &middot; {{ s.sec }}</span></div>
+</sc-for>
+</div>
+</div>
+</aside>
+
+<div style="padding:28px 34px 30px;display:grid;gap:14px">
+<sc-for list="{{ timeline }}" as="s" hint-placeholder-count="5">
+<article style="{{ s.a.shell }}">
+<div style="padding:18px 22px 19px;display:grid;grid-template-columns:1fr 210px;gap:26px">
+<div>
+<div style="display:flex;align-items:baseline;gap:12px">
+<span style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:oklch(0.525 0.012 60)">{{ s.label }} &middot; {{ s.weeks }}</span>
+<span style="{{ s.a.chip }}">{{ s.stateWord }}</span>
+</div>
+<h3 style="{{ s.a.titleLg }}">{{ s.title }}</h3>
+<p style="{{ s.a.body }}">{{ s.desc }}</p>
+<div style="margin-top:12px;font:400 12px/1.45 Karla,sans-serif;color:oklch(0.525 0.012 60)"><span style="font-weight:700;color:oklch(0.345 0.014 60)">Checkpoint &mdash;</span> {{ s.check }}</div>
+</div>
+<div style="border-left:1px solid oklch(0.885 0.012 84);padding-left:20px">
+<div style="font:500 10.5px/1.3 'IBM Plex Mono',monospace;color:oklch(0.345 0.014 60)">{{ s.dateText }}</div>
+<div style="margin-top:12px"><span style="{{ s.a.badge }}">{{ s.badgeText }}</span></div>
+<div style="font:400 11.5px/1.4 Karla,sans-serif;color:oklch(0.525 0.012 60);margin-top:8px">{{ s.secName }}</div>
+</div>
+</div>
+</article>
+</sc-for>
+</div>
+</div>
+
+<sc-if value="{{ showCrosswalk }}" hint-placeholder-val="{{ true }}">
+<div style="padding:28px 40px 30px;border-top:1px solid oklch(0.885 0.012 84);background:oklch(0.995 0.004 84)">
+<div style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.525 0.012 60)">Stage &rarr; report crosswalk</div>
+<h2 style="font:400 24px/1.15 Newsreader,Georgia,serif;color:oklch(0.245 0.014 60);margin:10px 0 18px">All seven report sections, and when each one should be written</h2>
+<div style="display:grid;grid-template-columns:56px 1.4fr 1fr 1fr 96px;gap:0;font:400 12.5px/1.4 Karla,sans-serif">
+<div style="font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:oklch(0.525 0.012 60);padding:0 0 9px">&sect;</div>
+<div style="font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:oklch(0.525 0.012 60);padding:0 0 9px">Report section</div>
+<div style="font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:oklch(0.525 0.012 60);padding:0 0 9px">Written during</div>
+<div style="font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:oklch(0.525 0.012 60);padding:0 0 9px">Due by</div>
+<div style="font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:oklch(0.525 0.012 60);padding:0 0 9px;text-align:right">Status</div>
+<sc-for list="{{ crosswalk }}" as="r" hint-placeholder-count="7">
+<div style="{{ r.cell }}"><span style="font:500 12px/1.4 'IBM Plex Mono',monospace">{{ r.sec }}</span></div>
+<div style="{{ r.cellStrong }}">{{ r.name }}</div>
+<div style="{{ r.cell }}">{{ r.stage }}</div>
+<div style="{{ r.cell }}">{{ r.due }}</div>
+<div style="{{ r.cellEnd }}">{{ r.status }}</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+
+<div style="padding:22px 40px 26px;border-top:1px solid oklch(0.885 0.012 84);background:oklch(0.995 0.004 84);display:flex;justify-content:space-between;gap:30px;align-items:flex-end;flex-wrap:wrap">
+<div style="max-width:640px">
+<div style="font:600 13px/1.4 Karla,sans-serif;color:oklch(0.245 0.014 60)">SEC deadline &mdash; 26 February 2027</div>
+<div style="font:400 12px/1.55 Karla,sans-serif;color:oklch(0.525 0.012 60);margin-top:5px">Coursework must be completed and submitted to your class teacher by this date. Finishing on 11&ndash;12 December leaves roughly ten weeks of buffer before it.</div>
+</div>
+<div style="font:400 10px/1.5 'IBM Plex Mono',monospace;color:oklch(0.525 0.012 60);text-align:right">Class schedule only &mdash; not an official SEC date.<br>Dates set by your teacher for moderation.</div>
+</div>
+
+</div>
+</div>
+</sc-if>
+
+</div>
+</div>
+
+<div class="dv-opt" id="1b">
+<div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Progress Rail — grotesk, white cards on cool ground, stepper + rail, indigo &ldquo;now&rdquo;</div>
+<div class="dv-card" style="width:1220px;background:oklch(0.973 0.005 265);border-color:oklch(0.905 0.008 265)">
+
+<div style="display:flex;gap:40px;padding:24px 28px;border-bottom:1px solid oklch(0.905 0.008 265);flex-wrap:wrap">
+<div style="width:300px">
+<div style="font:400 9.5px/1 'Space Mono',monospace;letter-spacing:.15em;text-transform:uppercase;color:oklch(0.525 0.016 262);margin-bottom:12px">Type</div>
+<div style="font:600 32px/1.05 'Space Grotesk',sans-serif;color:oklch(0.215 0.02 262);letter-spacing:-.02em">Conducting the Experiment</div>
+<div style="font:400 9.5px/1 'Space Mono',monospace;color:oklch(0.525 0.016 262);margin-top:7px">Space Grotesk 500/600/700 &middot; display</div>
+<div style="font:400 13.5px/1.55 'Public Sans',sans-serif;color:oklch(0.34 0.018 262);margin-top:16px">Run the experiment in the lab and gather your primary data. All practical work is supervised.</div>
+<div style="font:400 9.5px/1 'Space Mono',monospace;color:oklch(0.525 0.016 262);margin-top:7px">Public Sans 400/600 &middot; body</div>
+<div style="font:700 10px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.52 0.14 268);margin-top:16px">WK 05&ndash;07 / REPORT &sect;4</div>
+<div style="font:400 9.5px/1 'Space Mono',monospace;color:oklch(0.525 0.016 262);margin-top:7px">Space Mono 400/700 &middot; labels</div>
+</div>
+<div style="flex:1;min-width:300px">
+<div style="font:400 9.5px/1 'Space Mono',monospace;letter-spacing:.15em;text-transform:uppercase;color:oklch(0.525 0.016 262);margin-bottom:12px">Tokens</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px">
+<sc-for list="{{ tokensB }}" as="t" hint-placeholder-count="7">
+<div style="width:96px">
+<div style="{{ t.chip }}"></div>
+<div style="font:700 9.5px/1.3 'Space Mono',monospace;color:oklch(0.215 0.02 262);margin-top:6px">{{ t.n }}</div>
+<div style="font:400 8px/1.35 'Space Mono',monospace;color:oklch(0.525 0.016 262);margin-top:2px;word-break:break-word">{{ t.v }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="display:flex;gap:26px;padding:26px 28px;align-items:flex-start;flex-wrap:wrap">
+
+<div>
+<p class="dv-sub">Mobile &middot; 390</p>
+<div style="width:390px;background:oklch(0.973 0.005 265);border:1px solid oklch(0.905 0.008 265);border-radius:14px;overflow:hidden">
+
+<div style="padding:20px;background:#ffffff;border-bottom:1px solid oklch(0.905 0.008 265)">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+<span style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.525 0.016 262)">BiPi 2026&ndash;27</span>
+<span style="font:700 9px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:oklch(0.215 0.02 262);padding:5px 9px;border-radius:99px">40% of grade</span>
+</div>
+<h1 style="font:700 26px/1.12 'Space Grotesk',sans-serif;color:oklch(0.215 0.02 262);margin:14px 0 0;letter-spacing:-.025em">Biology in Practice Investigation</h1>
+<p style="font:400 13px/1.5 'Public Sans',sans-serif;color:oklch(0.525 0.016 262);margin:8px 0 0">Membranes, Osmosis &amp; Food Preservation</p>
+</div>
+
+<div style="padding:18px;background:#ffffff;border-bottom:1px solid oklch(0.905 0.008 265)">
+<div style="{{ nowCard }}">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+<span style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.52 0.14 268)">&#9679; You are here</span>
+<span style="font:400 9.5px/1 'Space Mono',monospace;color:oklch(0.525 0.016 262)">{{ todayText }}</span>
+</div>
+<div style="font:400 10px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.525 0.016 262);margin-top:14px">{{ cur.label }} / {{ cur.weeks }}</div>
+<div style="font:700 23px/1.15 'Space Grotesk',sans-serif;color:oklch(0.215 0.02 262);margin-top:5px;letter-spacing:-.02em">{{ cur.title }}</div>
+<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+<span style="display:inline-flex;align-items:baseline;gap:5px;background:oklch(0.52 0.14 268);color:#fff;border-radius:8px;padding:7px 11px;font:700 12px/1 'Space Grotesk',sans-serif"><span style="font-size:17px">{{ days }}</span><span style="font:400 9.5px/1 'Space Mono',monospace;letter-spacing:.06em;text-transform:uppercase">{{ daysWord }}</span></span>
+<span style="display:inline-flex;align-items:center;background:oklch(0.52 0.14 268 / .1);color:oklch(0.42 0.13 268);border-radius:8px;padding:7px 11px;font:700 10px/1 'Space Mono',monospace;letter-spacing:.06em;text-transform:uppercase">{{ cur.dueChip }}</span>
+</div>
+<p style="font:400 13px/1.5 'Public Sans',sans-serif;color:oklch(0.34 0.018 262);margin:14px 0 0"><span style="font-weight:700">What&rsquo;s due:</span> {{ cur.due1 }}</p>
+<div style="margin-top:12px;padding-top:12px;border-top:1px solid oklch(0.905 0.008 265);display:flex;justify-content:space-between;align-items:center;gap:10px">
+<span style="font:400 11.5px/1.4 'Public Sans',sans-serif;color:oklch(0.525 0.016 262)">Report {{ cur.sec }} &mdash; {{ cur.secName }}</span>
+</div>
+</div>
+<div style="margin-top:14px">
+<div style="display:flex;justify-content:space-between;font:700 9px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.525 0.016 262);margin-bottom:7px"><span>{{ weekLine }}</span><span>{{ pctText }}</span></div>
+<div style="height:6px;background:oklch(0.905 0.008 265);border-radius:99px;overflow:hidden"><div style="{{ pctB }}"></div></div>
+</div>
+</div>
+
+<div style="padding:14px 18px;background:oklch(0.53 0.115 158 / .07);border-bottom:1px solid oklch(0.905 0.008 265);display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+<span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:oklch(0.53 0.115 158);color:#fff;font:700 10px/1 'Public Sans',sans-serif">&#10003;</span>
+<span style="font:600 11.5px/1.4 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)">Stages 1&ndash;2 done in 5th Year &mdash; &sect;1 &amp; &sect;2 written</span>
+</div>
+
+<div style="padding:18px;display:grid;gap:0">
+<sc-for list="{{ timeline }}" as="s" hint-placeholder-count="5">
+<div style="display:grid;grid-template-columns:26px 1fr;gap:12px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:0">
+<div style="{{ s.b.dot }}"></div>
+<div style="{{ s.b.rail }}"></div>
+</div>
+<div style="padding-bottom:14px">
+<article style="{{ s.b.shell }}">
+<div style="padding:14px 15px 15px">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+<span style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.525 0.016 262);white-space:nowrap">{{ s.label }} / {{ s.weeks }}</span>
+<span style="{{ s.b.chip }}">{{ s.stateWord }}</span>
+</div>
+<h3 style="{{ s.b.title }}">{{ s.title }}</h3>
+<div style="font:700 10.5px/1 'Space Mono',monospace;color:oklch(0.34 0.018 262);margin-top:7px">{{ s.dateText }}</div>
+<p style="{{ s.b.body }}">{{ s.desc }}</p>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px">
+<span style="{{ s.b.badge }}">{{ s.badgeText }}</span>
+<span style="font:400 11px/1.35 'Public Sans',sans-serif;color:oklch(0.525 0.016 262)">{{ s.secName }}</span>
+</div>
+<div style="margin-top:12px;padding:10px 11px;background:oklch(0.973 0.005 265);border-radius:8px;font:400 11.5px/1.45 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)"><span style="font-weight:700">Teacher checkpoint &middot;</span> {{ s.check }}</div>
+</div>
+</article>
+</div>
+</div>
+</sc-for>
+</div>
+
+
+<div style="padding:18px;background:oklch(0.215 0.02 262);display:grid;gap:8px">
+<div style="font:700 12.5px/1.35 'Space Grotesk',sans-serif;color:#fff">SEC deadline &mdash; 26 February 2027</div>
+<div style="font:400 11.5px/1.55 'Public Sans',sans-serif;color:oklch(0.78 0.02 262)">Submitted to your class teacher by then. Finishing 11&ndash;12 December leaves about ten weeks of buffer.</div>
+<div style="font:400 9.5px/1.5 'Space Mono',monospace;color:oklch(0.65 0.02 262);margin-top:3px">Class schedule &mdash; not an official SEC date.</div>
+</div>
+
+</div>
+</div>
+
+<div>
+<p class="dv-sub">Card &middot; three states</p>
+<div style="width:372px;display:grid;gap:14px;padding:16px;background:oklch(0.955 0.006 265);border:1px solid oklch(0.905 0.008 265);border-radius:14px">
+<sc-for list="{{ trio }}" as="s" hint-placeholder-count="3">
+<article style="{{ s.b.shell }}">
+<div style="padding:14px 15px 15px">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+<span style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.525 0.016 262);white-space:nowrap">{{ s.label }} / {{ s.weeks }}</span>
+<span style="{{ s.b.chip }}">{{ s.stateWord }}</span>
+</div>
+<h3 style="{{ s.b.title }}">{{ s.title }}</h3>
+<div style="font:700 10.5px/1 'Space Mono',monospace;color:oklch(0.34 0.018 262);margin-top:7px">{{ s.dateText }}</div>
+<p style="{{ s.b.body }}">{{ s.desc }}</p>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px">
+<span style="{{ s.b.badge }}">{{ s.badgeText }}</span>
+<span style="font:400 11px/1.35 'Public Sans',sans-serif;color:oklch(0.525 0.016 262)">{{ s.secName }}</span>
+</div>
+<div style="margin-top:12px;padding:10px 11px;background:oklch(0.973 0.005 265);border-radius:8px;font:400 11.5px/1.45 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)"><span style="font-weight:700">Teacher checkpoint &middot;</span> {{ s.check }}</div>
+</div>
+</article>
+</sc-for>
+</div>
+</div>
+
+<div>
+<p class="dv-sub">Notes</p>
+<div style="width:340px;padding:18px;background:#fff;border:1px solid oklch(0.905 0.008 265);border-radius:12px;font:400 12px/1.6 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)">
+<p style="margin:0 0 12px"><strong style="color:oklch(0.215 0.02 262)">Idea:</strong> the familiar, safest version &mdash; a literal rail with filled / ringed / hollow nodes, so &ldquo;how far through are we&rdquo; is readable in one glance without reading a word.</p>
+<p style="margin:0 0 12px"><strong style="color:oklch(0.215 0.02 262)">You-are-here:</strong> a tinted, ring-bordered card that sits above the rail, with the countdown as a solid chip.</p>
+<p style="margin:0"><strong style="color:oklch(0.215 0.02 262)">Trade-off:</strong> most conventional. Maps 1:1 onto shadcn primitives (Card, Badge, Progress, Collapsible) so it is the fastest to build &mdash; but the least distinctive.</p>
+</div>
+</div>
+
+</div>
+
+<sc-if value="{{ showDesktop }}" hint-placeholder-val="{{ true }}">
+<div style="padding:6px 28px 28px">
+<p class="dv-sub">Laptop &middot; 1140</p>
+<div style="width:1160px;background:oklch(0.973 0.005 265);border:1px solid oklch(0.905 0.008 265);border-radius:14px;overflow:hidden">
+
+<div style="padding:26px 40px;background:#fff;border-bottom:1px solid oklch(0.905 0.008 265)">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px">
+<div>
+<div style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.525 0.016 262)">BiPi 2026&ndash;27 &middot; class schedule</div>
+<h1 style="font:700 38px/1.08 'Space Grotesk',sans-serif;color:oklch(0.215 0.02 262);margin:12px 0 0;letter-spacing:-.03em">Biology in Practice Investigation</h1>
+</div>
+<span style="flex:none;font:700 10px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:oklch(0.215 0.02 262);padding:9px 14px;border-radius:99px">40% of the Biology grade</span>
+</div>
+<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:0;margin-top:26px">
+<sc-for list="{{ steps }}" as="s" hint-placeholder-count="7">
+<div style="display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;align-items:center;gap:0"><div style="{{ s.b.dot }}"></div><div style="{{ s.b.stepline }}"></div></div>
+<div style="padding-right:14px">
+<div style="{{ s.b.stepLabel }}">{{ s.label }}</div>
+<div style="{{ s.b.stepDate }}">{{ s.shortDate }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="padding:24px 40px 0">
+<div style="{{ nowWide }}">
+<div style="display:grid;grid-template-columns:1fr 250px;gap:34px;align-items:center">
+<div>
+<div style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.52 0.14 268)">&#9679; You are here &middot; {{ todayText }}</div>
+<div style="font:400 10.5px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.525 0.016 262);margin-top:16px">{{ cur.label }} / {{ cur.weeks }}</div>
+<h2 style="font:700 30px/1.12 'Space Grotesk',sans-serif;color:oklch(0.215 0.02 262);margin:6px 0 0;letter-spacing:-.025em">{{ cur.title }}</h2>
+<p style="font:400 14px/1.55 'Public Sans',sans-serif;color:oklch(0.34 0.018 262);margin:12px 0 0;max-width:620px"><span style="font-weight:700">Due {{ cur.dateText }}:</span> {{ cur.due1 }} Report section {{ cur.sec }} &mdash; {{ cur.secName }} &mdash; should be written by then.</p>
+</div>
+<div style="text-align:center;background:oklch(0.52 0.14 268);border-radius:14px;padding:22px 14px;color:#fff">
+<div style="font:700 54px/0.9 'Space Grotesk',sans-serif;letter-spacing:-.03em">{{ days }}</div>
+<div style="font:700 9.5px/1.4 'Space Mono',monospace;letter-spacing:.12em;text-transform:uppercase;margin-top:9px;opacity:.85">{{ daysWord }} to<br>{{ cur.dateText }}</div>
+</div>
+</div>
+<div style="margin-top:20px;padding-top:16px;border-top:1px solid oklch(0.905 0.008 265)">
+<div style="display:flex;justify-content:space-between;font:700 9px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.525 0.016 262);margin-bottom:8px"><span>{{ weekLine }}</span><span>{{ pctText }} of the term complete</span></div>
+<div style="height:6px;background:oklch(0.905 0.008 265);border-radius:99px;overflow:hidden"><div style="{{ pctB }}"></div></div>
+</div>
+</div>
+</div>
+
+<div style="padding:22px 40px 0;display:flex;align-items:center;gap:12px">
+<span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:oklch(0.53 0.115 158);color:#fff;font:700 11px/1 'Public Sans',sans-serif">&#10003;</span>
+<span style="font:600 12.5px/1.4 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)">Stages 1&ndash;2 completed in 5th Year &mdash; report sections &sect;1 Title and Introduction and &sect;2 Background Research already written.</span>
+</div>
+
+<div style="padding:22px 40px 28px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
+<sc-for list="{{ timeline }}" as="s" hint-placeholder-count="5">
+<article style="{{ s.b.shell }}">
+<div style="padding:20px 22px 21px">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+<span style="font:700 9.5px/1 'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.525 0.016 262);white-space:nowrap">{{ s.label }} / {{ s.weeks }}</span>
+<span style="{{ s.b.chip }}">{{ s.stateWord }}</span>
+</div>
+<h3 style="{{ s.b.titleLg }}">{{ s.title }}</h3>
+<div style="font:700 11px/1 'Space Mono',monospace;color:oklch(0.34 0.018 262);margin-top:8px">{{ s.dateText }}</div>
+<p style="{{ s.b.body }}">{{ s.desc }}</p>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px">
+<span style="{{ s.b.badge }}">{{ s.badgeText }}</span>
+<span style="font:400 11.5px/1.35 'Public Sans',sans-serif;color:oklch(0.525 0.016 262)">{{ s.secName }}</span>
+</div>
+<div style="margin-top:13px;padding:11px 12px;background:oklch(0.973 0.005 265);border-radius:8px;font:400 12px/1.45 'Public Sans',sans-serif;color:oklch(0.34 0.018 262)"><span style="font-weight:700">Teacher checkpoint &middot;</span> {{ s.check }}</div>
+</div>
+</article>
+</sc-for>
+</div>
+
+
+<div style="padding:24px 40px;background:oklch(0.215 0.02 262);display:flex;justify-content:space-between;gap:30px;align-items:flex-end;flex-wrap:wrap">
+<div style="max-width:640px">
+<div style="font:700 14px/1.35 'Space Grotesk',sans-serif;color:#fff">SEC deadline &mdash; 26 February 2027</div>
+<div style="font:400 12.5px/1.55 'Public Sans',sans-serif;color:oklch(0.78 0.02 262);margin-top:6px">Coursework must be completed and submitted to your class teacher by this date. Finishing on 11&ndash;12 December leaves roughly ten weeks of buffer.</div>
+</div>
+<div style="font:400 10px/1.5 'Space Mono',monospace;color:oklch(0.65 0.02 262);text-align:right">Class schedule &mdash; not an official SEC date.</div>
+</div>
+
+</div>
+</div>
+</sc-if>
+
+</div>
+</div>
+
+<div class="dv-opt" id="1c">
+<div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Status Board — dark band, oversized serif numerals, cream tickets, ochre &ldquo;now&rdquo;</div>
+<div class="dv-card" style="width:1220px;background:oklch(0.962 0.018 92);border-color:oklch(0.875 0.018 92)">
+
+<div style="display:flex;gap:40px;padding:24px 28px;border-bottom:1px solid oklch(0.875 0.018 92);flex-wrap:wrap">
+<div style="width:300px">
+<div style="font:700 9.5px/1 Manrope,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:oklch(0.505 0.02 150);margin-bottom:12px">Type</div>
+<div style="font:400 38px/0.98 'Instrument Serif',Georgia,serif;color:oklch(0.225 0.02 150)">Conducting the Experiment</div>
+<div style="font:500 9.5px/1 Manrope,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.505 0.02 150);margin-top:8px">Instrument Serif &middot; display</div>
+<div style="font:400 13.5px/1.55 Manrope,sans-serif;color:oklch(0.33 0.02 150);margin-top:16px">Run the experiment in the lab and gather your primary data. All practical work is supervised.</div>
+<div style="font:500 9.5px/1 Manrope,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.505 0.02 150);margin-top:8px">Manrope 400/600/800 &middot; body + labels</div>
+<div style="font:800 11px/1 Manrope,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.62 0.13 66);margin-top:16px">Stage 04 &middot; Report &sect;4</div>
+</div>
+<div style="flex:1;min-width:300px">
+<div style="font:700 9.5px/1 Manrope,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:oklch(0.505 0.02 150);margin-bottom:12px">Tokens</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px">
+<sc-for list="{{ tokensC }}" as="t" hint-placeholder-count="7">
+<div style="width:96px">
+<div style="{{ t.chip }}"></div>
+<div style="font:800 9.5px/1.3 Manrope,sans-serif;color:oklch(0.225 0.02 150);margin-top:6px">{{ t.n }}</div>
+<div style="font:400 8px/1.35 Manrope,sans-serif;color:oklch(0.505 0.02 150);margin-top:2px;word-break:break-word">{{ t.v }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="display:flex;gap:26px;padding:26px 28px;align-items:flex-start;flex-wrap:wrap">
+
+<div>
+<p class="dv-sub">Mobile &middot; 390</p>
+<div style="width:390px;background:oklch(0.962 0.018 92);border:1px solid oklch(0.875 0.018 92);border-radius:6px;overflow:hidden">
+
+<div style="padding:22px 20px 24px;background:oklch(0.255 0.028 158)">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+<span style="font:800 9.5px/1 Manrope,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:oklch(0.735 0.145 78)">Biology in Practice</span>
+<span style="font:800 9px/1 Manrope,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.255 0.028 158);background:oklch(0.735 0.145 78);padding:5px 8px;border-radius:2px">40% of grade</span>
+</div>
+<h1 style="font:400 34px/1.02 'Instrument Serif',Georgia,serif;color:oklch(0.962 0.018 92);margin:16px 0 0">Investigation schedule</h1>
+<p style="font:400 12.5px/1.5 Manrope,sans-serif;color:oklch(0.72 0.03 155);margin:9px 0 0">Membranes, Osmosis &amp; Food Preservation &middot; 2026&ndash;27</p>
+
+<div style="margin-top:22px;padding-top:20px;border-top:1px solid oklch(0.36 0.03 158)">
+<div style="font:800 9.5px/1 Manrope,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:oklch(0.735 0.145 78)">You are here &middot; {{ todayText }}</div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-top:14px">
+<div style="font:400 62px/0.9 'Instrument Serif',Georgia,serif;color:oklch(0.735 0.145 78);flex:none;padding-top:4px">{{ cur.num }}</div>
+<div style="flex:1">
+<div style="font:400 22px/1.12 'Instrument Serif',Georgia,serif;color:oklch(0.962 0.018 92)">{{ cur.title }}</div>
+<div style="font:600 10.5px/1 Manrope,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.72 0.03 155);margin-top:8px">{{ cur.weeks }}</div>
+</div>
+</div>
+<div style="display:flex;gap:0;margin-top:18px;border:1px solid oklch(0.36 0.03 158)">
+<div style="flex:1;padding:11px 12px;border-right:1px solid oklch(0.36 0.03 158)">
+<div style="font:600 8.5px/1 Manrope,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.66 0.03 155)">Due</div>
+<div style="font:700 12.5px/1.2 Manrope,sans-serif;color:oklch(0.962 0.018 92);margin-top:6px">{{ cur.dateText }}</div>
+</div>
+<div style="flex:1;padding:11px 12px;border-right:1px solid oklch(0.36 0.03 158)">
+<div style="font:600 8.5px/1 Manrope,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.66 0.03 155)">Left</div>
+<div style="font:700 12.5px/1.2 Manrope,sans-serif;color:oklch(0.735 0.145 78);margin-top:6px">{{ daysOnly }}</div>
+</div>
+<div style="flex:1;padding:11px 12px">
+<div style="font:600 8.5px/1 Manrope,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.66 0.03 155)">Report</div>
+<div style="font:700 12.5px/1.2 Manrope,sans-serif;color:oklch(0.962 0.018 92);margin-top:6px">{{ cur.sec }} due</div>
+</div>
+</div>
+<p style="font:400 12.5px/1.5 Manrope,sans-serif;color:oklch(0.78 0.025 155);margin:14px 0 0">{{ cur.dueLead }}</p>
+</div>
+</div>
+
+<div style="padding:13px 20px;background:oklch(0.60 0.10 158 / .13);border-bottom:1px solid oklch(0.875 0.018 92);font:600 11.5px/1.4 Manrope,sans-serif;color:oklch(0.33 0.02 150)"><span style="color:oklch(0.50 0.10 158);font-weight:800">&#10003; Stages 1&ndash;2 done</span> in 5th Year &mdash; &sect;1 and &sect;2 written</div>
+
+<div style="padding:18px 20px 4px;display:grid;gap:12px">
+<sc-for list="{{ timeline }}" as="s" hint-placeholder-count="5">
+<article style="{{ s.c.shell }}">
+<div style="display:flex;gap:0">
+<div style="{{ s.c.band }}"></div>
+<div style="flex:1;padding:14px 15px 15px;min-width:0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+<span style="font:800 9.5px/1 Manrope,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.505 0.02 150)">{{ s.label }}</span>
+<span style="{{ s.c.chip }}">{{ s.stateWord }}</span>
+</div>
+<div style="display:flex;align-items:baseline;gap:11px;margin-top:6px">
+<span style="{{ s.c.num }}">{{ s.num }}</span>
+<h3 style="{{ s.c.title }}">{{ s.title }}</h3>
+</div>
+<div style="font:700 10.5px/1 Manrope,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:oklch(0.505 0.02 150);margin-top:8px">{{ s.weeks }} &middot; {{ s.dateText }}</div>
+<p style="{{ s.c.body }}">{{ s.desc }}</p>
+<div style="margin-top:12px;padding-top:11px;border-top:1px dashed oklch(0.875 0.018 92);display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+<span style="{{ s.c.badge }}">{{ s.badgeText }}</span>
+<span style="font:400 11px/1.35 Manrope,sans-serif;color:oklch(0.505 0.02 150)">{{ s.secName }}</span>
+</div>
+<div style="margin-top:10px;font:400 11.5px/1.45 Manrope,sans-serif;color:oklch(0.505 0.02 150)"><span style="font-weight:800;color:oklch(0.33 0.02 150)">Checkpoint &middot;</span> {{ s.check }}</div>
+</div>
+</div>
+</article>
+</sc-for>
+</div>
+
+
+<div style="padding:20px;background:oklch(0.255 0.028 158);display:grid;gap:8px">
+<div style="font:400 22px/1.1 'Instrument Serif',Georgia,serif;color:oklch(0.735 0.145 78)">26 February 2027</div>
+<div style="font:400 11.5px/1.55 Manrope,sans-serif;color:oklch(0.78 0.025 155)">The SEC deadline &mdash; coursework submitted to your class teacher by this date. Finishing 11&ndash;12 December leaves about ten weeks of buffer.</div>
+<div style="font:600 9.5px/1.5 Manrope,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.62 0.03 155);margin-top:4px">Class schedule &mdash; not an official SEC date</div>
+</div>
+
+</div>
+</div>
+
+<div>
+<p class="dv-sub">Card &middot; three states</p>
+<div style="width:372px;display:grid;gap:12px;padding:16px;background:oklch(0.945 0.016 92);border:1px solid oklch(0.875 0.018 92);border-radius:6px">
+<sc-for list="{{ trio }}" as="s" hint-placeholder-count="3">
+<article style="{{ s.c.shell }}">
+<div style="display:flex;gap:0">
+<div style="{{ s.c.band }}"></div>
+<div style="flex:1;padding:14px 15px 15px;min-width:0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+<span style="font:800 9.5px/1 Manrope,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.505 0.02 150)">{{ s.label }}</span>
+<span style="{{ s.c.chip }}">{{ s.stateWord }}</span>
+</div>
+<div style="display:flex;align-items:baseline;gap:11px;margin-top:6px">
+<span style="{{ s.c.num }}">{{ s.num }}</span>
+<h3 style="{{ s.c.title }}">{{ s.title }}</h3>
+</div>
+<div style="font:700 10.5px/1 Manrope,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:oklch(0.505 0.02 150);margin-top:8px">{{ s.weeks }} &middot; {{ s.dateText }}</div>
+<p style="{{ s.c.body }}">{{ s.desc }}</p>
+<div style="margin-top:12px;padding-top:11px;border-top:1px dashed oklch(0.875 0.018 92);display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+<span style="{{ s.c.badge }}">{{ s.badgeText }}</span>
+<span style="font:400 11px/1.35 Manrope,sans-serif;color:oklch(0.505 0.02 150)">{{ s.secName }}</span>
+</div>
+<div style="margin-top:10px;font:400 11.5px/1.45 Manrope,sans-serif;color:oklch(0.505 0.02 150)"><span style="font-weight:800;color:oklch(0.33 0.02 150)">Checkpoint &middot;</span> {{ s.check }}</div>
+</div>
+</div>
+</article>
+</sc-for>
+</div>
+</div>
+
+<div>
+<p class="dv-sub">Notes</p>
+<div style="width:340px;padding:18px;background:oklch(0.985 0.008 92);border:1px solid oklch(0.875 0.018 92);border-radius:6px;font:400 12px/1.6 Manrope,sans-serif;color:oklch(0.33 0.02 150)">
+<p style="margin:0 0 12px"><strong style="color:oklch(0.225 0.02 150)">Idea:</strong> a departures board. A dark band owns &ldquo;right now&rdquo; and the rest of the page is a calm cream list of tickets &mdash; state carried by a coloured spine down the left of each card.</p>
+<p style="margin:0 0 12px"><strong style="color:oklch(0.225 0.02 150)">You-are-here:</strong> impossible to miss &mdash; it&rsquo;s a different colour world from everything below it, with due / left / report in a three-cell strip.</p>
+<p style="margin:0"><strong style="color:oklch(0.225 0.02 150)">Trade-off:</strong> the boldest, and the best of the three projected on a classroom screen. Needs care to stay warm rather than corporate &mdash; the cream and the serif are doing that work.</p>
+</div>
+</div>
+
+</div>
+
+<sc-if value="{{ showDesktop }}" hint-placeholder-val="{{ true }}">
+<div style="padding:6px 28px 28px">
+<p class="dv-sub">Laptop &middot; 1140</p>
+<div style="width:1160px;background:oklch(0.962 0.018 92);border:1px solid oklch(0.875 0.018 92);border-radius:6px;overflow:hidden">
+
+<div style="background:oklch(0.255 0.028 158);padding:28px 40px 32px">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:24px">
+<span style="font:800 10px/1 Manrope,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:oklch(0.735 0.145 78)">Biology in Practice Investigation &middot; 2026&ndash;27</span>
+<span style="font:800 9.5px/1 Manrope,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.255 0.028 158);background:oklch(0.735 0.145 78);padding:7px 11px;border-radius:2px">40% of the Biology grade</span>
+</div>
+<div style="display:grid;grid-template-columns:1fr 330px;gap:44px;margin-top:28px;align-items:start">
+<div>
+<div style="font:800 9.5px/1 Manrope,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:oklch(0.72 0.03 155)">You are here &middot; {{ todayText }}</div>
+<div style="display:flex;align-items:flex-start;gap:26px;margin-top:16px">
+<div style="font:400 112px/0.86 'Instrument Serif',Georgia,serif;color:oklch(0.735 0.145 78);flex:none;padding-top:6px">{{ cur.num }}</div>
+<div style="flex:1;padding-top:4px">
+<div style="font:400 40px/1.02 'Instrument Serif',Georgia,serif;color:oklch(0.962 0.018 92)">{{ cur.title }}</div>
+<p style="font:400 14px/1.55 Manrope,sans-serif;color:oklch(0.78 0.025 155);margin:12px 0 0;max-width:520px">{{ cur.dueLead }} Report section {{ cur.sec }} &mdash; {{ cur.secName }} &mdash; should be written by then.</p>
+</div>
+</div>
+<div style="display:flex;gap:0;margin-top:24px;border:1px solid oklch(0.36 0.03 158)">
+<div style="flex:1;padding:14px 18px;border-right:1px solid oklch(0.36 0.03 158)">
+<div style="font:600 9px/1 Manrope,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.66 0.03 155)">Due</div>
+<div style="font:700 15px/1.2 Manrope,sans-serif;color:oklch(0.962 0.018 92);margin-top:7px">{{ cur.dateText }}</div>
+</div>
+<div style="flex:1;padding:14px 18px;border-right:1px solid oklch(0.36 0.03 158)">
+<div style="font:600 9px/1 Manrope,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.66 0.03 155)">Time left</div>
+<div style="font:700 15px/1.2 Manrope,sans-serif;color:oklch(0.735 0.145 78);margin-top:7px">{{ daysOnly }}</div>
+</div>
+<div style="flex:1;padding:14px 18px;border-right:1px solid oklch(0.36 0.03 158)">
+<div style="font:600 9px/1 Manrope,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.66 0.03 155)">Report due</div>
+<div style="font:700 15px/1.2 Manrope,sans-serif;color:oklch(0.962 0.018 92);margin-top:7px">Section {{ cur.sec }}</div>
+</div>
+<div style="flex:1;padding:14px 18px">
+<div style="font:600 9px/1 Manrope,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.66 0.03 155)">Term</div>
+<div style="font:700 15px/1.2 Manrope,sans-serif;color:oklch(0.962 0.018 92);margin-top:7px">{{ weekLine }}</div>
+</div>
+</div>
+</div>
+<div style="border:1px solid oklch(0.36 0.03 158);padding:18px 20px 20px">
+<div style="font:800 9px/1 Manrope,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:oklch(0.66 0.03 155)">Coming up</div>
+<div style="display:grid;gap:0;margin-top:12px">
+<sc-for list="{{ upNext }}" as="s" hint-placeholder-count="3">
+<div style="display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid oklch(0.33 0.03 158)">
+<div style="min-width:0">
+<div style="font:600 12.5px/1.3 Manrope,sans-serif;color:oklch(0.92 0.02 92)">{{ s.title }}</div>
+<div style="font:400 10px/1.3 Manrope,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:oklch(0.66 0.03 155);margin-top:4px">{{ s.badgeText }}</div>
+</div>
+<div style="font:700 11px/1.3 Manrope,sans-serif;color:oklch(0.735 0.145 78);text-align:right;flex:none">{{ s.shortDate }}</div>
+</div>
+</sc-for>
+</div>
+<div style="font:400 11px/1.5 Manrope,sans-serif;color:oklch(0.66 0.03 155);margin-top:14px">Stages 1&ndash;2 completed in 5th Year &mdash; &sect;1 and &sect;2 already written.</div>
+</div>
+</div>
+</div>
+
+<div style="padding:30px 40px 12px">
+<h2 style="font:400 26px/1.1 'Instrument Serif',Georgia,serif;color:oklch(0.225 0.02 150);margin:0">The rest of the term</h2>
+</div>
+
+<div style="padding:14px 40px 30px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+<sc-for list="{{ timeline }}" as="s" hint-placeholder-count="5">
+<article style="{{ s.c.shell }}">
+<div style="display:flex;gap:0;height:100%">
+<div style="{{ s.c.band }}"></div>
+<div style="flex:1;padding:18px 19px 19px;min-width:0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+<span style="font:800 9.5px/1 Manrope,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:oklch(0.505 0.02 150)">{{ s.label }}</span>
+<span style="{{ s.c.chip }}">{{ s.stateWord }}</span>
+</div>
+<div style="display:flex;align-items:baseline;gap:11px;margin-top:8px">
+<span style="{{ s.c.num }}">{{ s.num }}</span>
+<h3 style="{{ s.c.title }}">{{ s.title }}</h3>
+</div>
+<div style="font:700 10.5px/1 Manrope,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:oklch(0.505 0.02 150);margin-top:9px">{{ s.weeks }} &middot; {{ s.dateText }}</div>
+<p style="{{ s.c.body }}">{{ s.desc }}</p>
+<div style="margin-top:13px;padding-top:12px;border-top:1px dashed oklch(0.875 0.018 92);display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+<span style="{{ s.c.badge }}">{{ s.badgeText }}</span>
+<span style="font:400 11px/1.35 Manrope,sans-serif;color:oklch(0.505 0.02 150)">{{ s.secName }}</span>
+</div>
+<div style="margin-top:11px;font:400 11.5px/1.45 Manrope,sans-serif;color:oklch(0.505 0.02 150)"><span style="font-weight:800;color:oklch(0.33 0.02 150)">Checkpoint &middot;</span> {{ s.check }}</div>
+</div>
+</div>
+</article>
+</sc-for>
+</div>
+
+
+<div style="padding:26px 40px;background:oklch(0.255 0.028 158);display:flex;justify-content:space-between;gap:34px;align-items:flex-end;flex-wrap:wrap">
+<div style="max-width:660px">
+<div style="font:400 28px/1.05 'Instrument Serif',Georgia,serif;color:oklch(0.735 0.145 78)">26 February 2027 &mdash; the SEC deadline</div>
+<div style="font:400 12.5px/1.6 Manrope,sans-serif;color:oklch(0.78 0.025 155);margin-top:9px">Coursework must be completed and submitted to your class teacher by this date. Finishing on 11&ndash;12 December leaves roughly ten weeks of buffer before it.</div>
+</div>
+<div style="font:600 9.5px/1.6 Manrope,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.62 0.03 155);text-align:right">Class schedule &mdash; not an<br>official SEC date</div>
+</div>
+
+</div>
+</div>
+</sc-if>
+
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: &ldquo;take <a class="dv-oid" href="#1a">1a</a>&rsquo;s typography with <a class="dv-oid" href="#1c">1c</a>&rsquo;s dark you-are-here band&rdquo; &middot; &ldquo;make <a class="dv-oid" href="#1b">1b</a> warmer&rdquo; &middot; &ldquo;pick <a class="dv-oid" href="#1c">1c</a> and add the report-rules page&rdquo;</p>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;previewDate&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;2026-10-06&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Live logic&quot;},&quot;showDesktop&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Views&quot;},&quot;showCrosswalk&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Views&quot;}}">
+const DAY = 86400000;
+const D = s => new Date(s + 'T00:00:00');
+const TERM_START = D('2026-09-01'), TERM_END = D('2026-12-12');
+
+const A = {paper:'oklch(0.968 0.012 84)',surf:'oklch(0.995 0.004 84)',ink:'oklch(0.245 0.014 60)',ink2:'oklch(0.345 0.014 60)',mut:'oklch(0.525 0.012 60)',rule:'oklch(0.885 0.012 84)',terra:'oklch(0.58 0.125 42)',moss:'oklch(0.52 0.095 152)'};
+const B = {bg:'oklch(0.973 0.005 265)',surf:'#ffffff',ink:'oklch(0.215 0.02 262)',ink2:'oklch(0.34 0.018 262)',mut:'oklch(0.525 0.016 262)',line:'oklch(0.905 0.008 265)',now:'oklch(0.52 0.14 268)',ok:'oklch(0.53 0.115 158)'};
+const C = {shell:'oklch(0.255 0.028 158)',cream:'oklch(0.962 0.018 92)',ink:'oklch(0.225 0.02 150)',ink2:'oklch(0.33 0.02 150)',mut:'oklch(0.505 0.02 150)',gold:'oklch(0.735 0.145 78)',gold2:'oklch(0.62 0.13 66)',jade:'oklch(0.60 0.10 158)',line:'oklch(0.875 0.018 92)'};
+
+const RAW = [
+  {id:'stage-1',num:'01',label:'Stage 1',title:'Initial Response to the Brief',weeks:'5th Year',dueISO:'2026-05-29',dateText:'Completed in 5th Year',shortDate:'5th Yr',sec:'§1',secName:'Title and Introduction',
+   desc:'Read the SEC brief on Membranes, Osmosis & Food Preservation and settle on the angle you want to investigate.',
+   check:'Signed off in 5th Year.',alwaysDone:true},
+  {id:'stage-2',num:'02',label:'Stage 2',title:'Background Research',weeks:'5th Year',dueISO:'2026-06-05',dateText:'Completed in 5th Year',shortDate:'5th Yr',sec:'§2',secName:'Background Research',
+   desc:'Secondary research gathered, evaluated and logged with full references.',
+   check:'Signed off in 5th Year.',alwaysDone:true},
+  {id:'stage-3',num:'03',label:'Stage 3',title:'Designing & Planning the Experiment',weeks:'Weeks 1–4',dueISO:'2026-09-25',dateText:'Fri 25 Sept 2026',shortDate:'25 Sep',sec:'§3',secName:'Designing and Planning',
+   desc:'Research question, hypothesis, a fair test with one variable, equipment list and a written safety assessment — detailed enough that someone else could repeat it.',
+   check:'Your plan and safety assessment are signed off before any practical work begins.',
+   due1:'your full experimental plan, equipment list and safety assessment.'},
+  {id:'stage-4',num:'04',label:'Stage 4',title:'Conducting the Experiment',weeks:'Weeks 5–7',dueISO:'2026-10-16',dateText:'Fri 16 Oct 2026',shortDate:'16 Oct',sec:'§4',secName:'Conducting the Experiment',
+   desc:'Run the experiment and gather your primary data. All practical work is supervised by your teacher — data collected outside class cannot be used.',
+   check:'Lab slots are booked in class; your log is checked at the end of each session.',
+   due1:'all primary data collected, with your method written up as you went.'},
+  {id:'catchup',num:'—',label:'Catch-up',title:'Catch-up window',weeks:'Weeks 8–9',dueISO:'2026-10-30',dateText:'Fri 30 Oct 2026',shortDate:'30 Oct',sec:'—',secName:'No new section due',
+   desc:'A deliberate buffer for repeats, missed labs and anomalous results. Nothing new starts here.',
+   check:'Book a re-run slot with your teacher if your data needs it.',isCatchup:true,
+   due1:'any repeat runs finished — this window exists so a bad result is not a crisis.'},
+  {id:'stage-5',num:'05',label:'Stage 5',title:'Data Analysis & Conclusions',weeks:'Weeks 10–11',dueISO:'2026-11-13',dateText:'Fri 13 Nov 2026',shortDate:'13 Nov',sec:'§5 · §6',secName:'Data and Data Analysis; Conclusions',
+   desc:'Present your data in tables and graphs, analyse the pattern and the sources of error, then draw conclusions that answer your research question.',
+   check:'Bring your graphs to class for review before you write your conclusions.',
+   due1:'data presented, analysed and concluded — two report sections in one go.'},
+  {id:'stage-6',num:'06',label:'Stage 6',title:'Finalising the Report',weeks:'Weeks 12–14',dueISO:'2026-12-11',dateText:'Draft 4 Dec → final 11–12 Dec',shortDate:'11 Dec',sec:'§7',secName:'References + full clean-up',
+   desc:'Full draft in for feedback on 4 Dec, then revise. Final pass: 1,500 words max, 20 images max, Arial 12pt at 1.5 spacing, references complete — including any AI use declared.',
+   check:'Your draft is read and returned with written comments the week of 4 Dec.',
+   due1:'the finished report, proofed, formatted and referenced.'}
+];
+
+const CROSS = [
+  {sec:'§1',name:'Title and Introduction',stage:'Stages 1–2',due:'5th Year',status:'Done'},
+  {sec:'§2',name:'Background Research',stage:'Stage 2',due:'5th Year',status:'Done'},
+  {sec:'§3',name:'Designing and Planning',stage:'Stage 3',due:'25 Sept 2026',status:''},
+  {sec:'§4',name:'Conducting the Experiment',stage:'Stage 4',due:'16 Oct 2026',status:''},
+  {sec:'§5',name:'Data and Data Analysis',stage:'Stage 5',due:'13 Nov 2026',status:''},
+  {sec:'§6',name:'Conclusions',stage:'Stage 5',due:'13 Nov 2026',status:''},
+  {sec:'§7',name:'References',stage:'Stage 6',due:'11–12 Dec 2026',status:''}
+];
+
+const DETAIL = {
+  'stage-3': {good:'Another student could run your experiment from your method alone, without asking you a single question.', tasks:[
+    {t:'State the research question you are actually answering.'},
+    {t:'Write a hypothesis that can be proved wrong.'},
+    {t:'Name your independent, dependent and controlled variables.'},
+    {t:'List equipment and quantities — the real ones, not the ideal ones.'},
+    {t:'Write the method as numbered steps.'},
+    {t:'Complete the safety assessment.'},
+    {t:'Decide now how you will record the data.'}]},
+  'stage-4': {good:'Raw data written down in the moment, with any change to the method noted as it happened — not reconstructed afterwards.', tasks:[
+    {t:'Run the experiment in supervised class time only.'},
+    {t:'Record raw data as you go, in pen, in your log.'},
+    {t:'Note every deviation from the plan and why.'},
+    {t:'Repeat runs so the result is not a one-off.'},
+    {t:'Photograph the setup — images count towards your 20.'}]},
+  'catchup': {good:'Nothing outstanding. You walk into Stage 5 with a complete data set.', tasks:[
+    {t:'Repeat any run that failed or looks anomalous.'},
+    {t:'Fill the gaps in your data table.'},
+    {t:'Tidy the lab log while you still remember the session.'},
+    {t:'Catch up §3 or §4 writing if you are behind.'}]},
+  'stage-5': {good:'Every claim in your conclusion traces back to a number in your table.', tasks:[
+    {t:'Build clean data tables with units.'},
+    {t:'Draw graphs — axes labelled, units stated, scale sensible.'},
+    {t:'Describe the trend in words before you explain it.'},
+    {t:'Identify sources of error and what each one did to your result.'},
+    {t:'Write conclusions that answer the research question directly.'},
+    {t:'State the limitations honestly — it earns marks.'}]},
+  'stage-6': {good:'It reads as one voice, formatted to the letter, with every source accounted for.', tasks:[
+    {t:'Full draft handed in for feedback on 4 December.'},
+    {t:'Act on every comment you get back.'},
+    {t:'Check the word count — 1,500 words maximum.'},
+    {t:'Check the image count — 20 maximum.'},
+    {t:'Apply the formatting rules exactly (see below).'},
+    {t:'Complete references, and declare any AI tool use.'},
+    {t:'Proofread it aloud. You will hear what you cannot see.'}]}
+};
+
+const RULES = [
+  {k:'Length',v:'1,500 words maximum. References, data tables, formulae and labels do not count.'},
+  {k:'Images',v:'20 maximum, including photographs, graphs and diagrams.'},
+  {k:'Font',v:'Arial, black text only. No colour, no highlighting, no other fonts.'},
+  {k:'Headings',v:'14pt bold. Each section starts on a new page.'},
+  {k:'Body text',v:'12pt at 1.5 line spacing.'},
+  {k:'Margins',v:'20mm on all four sides. Portrait orientation only.'},
+  {k:'Page numbers',v:'Bottom centre of every page.'},
+  {k:'AI use',v:'Any use of AI tools must be declared. This is assessed as your own individual authentic work.'}
+];
+
+const MARKS = [
+  {band:'A',pts:'50',what:'Title, Introduction, Background Research, References'},
+  {band:'B',pts:'50',what:'Designing and Planning, Conducting the Experiment'},
+  {band:'C',pts:'50',what:'Data and Data Analysis, Conclusions'},
+  {band:'D',pts:'50',what:'Scientific Literacy — assessed across the whole report, not as its own section'}
+];
+
+const MONTHS = [
+  {name:'September',items:[{d:'25',t:'Stage 3 due — §3 Designing and Planning'}]},
+  {name:'October',items:[{d:'16',t:'Stage 4 due — §4 Conducting the Experiment'},{d:'30',t:'Catch-up window closes'}]},
+  {name:'November',items:[{d:'13',t:'Stage 5 due — §5 Data and Analysis, §6 Conclusions'}]},
+  {name:'December',items:[{d:'4',t:'Full draft in for feedback'},{d:'11–12',t:'Final report due — §7 References'}]}
+];
+
+const NAV = ['Right now','Timeline','Report sections','Report rules'];
+
+const tok = (n,v) => ({n:n,v:v,chip:{background:v,height:34,borderRadius:3,border:'1px solid rgba(0,0,0,.12)'}});
+
+function styleA(st){
+  const cur = st==='current', done = st==='done';
+  return {
+    shell: cur ? {borderLeft:'2px solid '+A.terra,background:A.surf,boxShadow:'0 1px 3px oklch(0.4 0.02 60 / .08)'}
+               : {borderLeft:'2px solid '+A.rule,background:'transparent'},
+    title: {font:'400 19px/1.18 Newsreader,Georgia,serif',margin:'8px 0 0',color:done?A.mut:cur?A.ink:'oklch(0.34 0.014 60)'},
+    titleLg:{font:'400 23px/1.15 Newsreader,Georgia,serif',margin:'9px 0 0',color:done?A.mut:cur?A.ink:'oklch(0.34 0.014 60)'},
+    body: {font:'400 12.5px/1.5 Karla,sans-serif',margin:'9px 0 0',color:cur?A.ink2:A.mut,textWrap:'pretty'},
+    chip: {font:"500 9px/1 'IBM Plex Mono',monospace",letterSpacing:'.14em',textTransform:'uppercase',color:cur?A.terra:done?A.moss:A.mut},
+    badge: cur ? {display:'inline-block',font:"500 10px/1 'IBM Plex Mono',monospace",letterSpacing:'.09em',textTransform:'uppercase',padding:'5px 8px',background:A.terra,color:'oklch(0.99 0.008 84)',borderRadius:2}
+               : {display:'inline-block',font:"500 10px/1 'IBM Plex Mono',monospace",letterSpacing:'.09em',textTransform:'uppercase',padding:'5px 8px',border:'1px solid '+(done?A.moss:A.rule),color:done?A.moss:A.ink2,borderRadius:2}
+  };
+}
+function styleB(st){
+  const cur = st==='current', done = st==='done';
+  return {
+    shell: cur ? {background:B.surf,border:'1.5px solid '+B.now,borderRadius:12,boxShadow:'0 8px 24px oklch(0.52 0.14 268 / .14)'}
+          : done ? {background:B.surf,border:'1px solid '+B.line,borderRadius:12,opacity:.72}
+                 : {background:B.surf,border:'1px solid '+B.line,borderRadius:12},
+    title: {font:"600 17px/1.2 'Space Grotesk',sans-serif",letterSpacing:'-.015em',margin:'9px 0 0',color:cur?B.ink:done?B.mut:B.ink2},
+    titleLg:{font:"600 21px/1.18 'Space Grotesk',sans-serif",letterSpacing:'-.02em',margin:'10px 0 0',color:cur?B.ink:done?B.mut:B.ink2},
+    body: {font:"400 12.5px/1.5 'Public Sans',sans-serif",margin:'10px 0 0',color:cur?B.ink2:B.mut,textWrap:'pretty'},
+    chip: {font:"700 8.5px/1 'Space Mono',monospace",letterSpacing:'.12em',textTransform:'uppercase',padding:'4px 7px',borderRadius:99,
+           background:cur?B.now:done?'oklch(0.53 0.115 158 / .13)':'oklch(0.905 0.008 265)',
+           color:cur?'#fff':done?'oklch(0.42 0.10 158)':B.mut},
+    badge: {display:'inline-block',font:"700 10px/1 'Space Mono',monospace",letterSpacing:'.06em',padding:'5px 9px',borderRadius:7,
+            background:cur?'oklch(0.52 0.14 268 / .12)':'oklch(0.955 0.006 265)',
+            color:cur?'oklch(0.42 0.13 268)':B.ink2,border:'1px solid '+(cur?'oklch(0.52 0.14 268 / .3)':B.line)},
+    dot: {width:cur?16:12,height:cur?16:12,borderRadius:'50%',flex:'none',marginTop:cur?4:6,
+          background:cur?B.now:done?B.ok:'#fff',border:cur?'none':done?'none':'2px solid '+B.line,
+          boxShadow:cur?'0 0 0 5px oklch(0.52 0.14 268 / .16)':'none'},
+    rail: {width:2,flex:'1 1 auto',minHeight:24,background:done?B.ok:B.line,marginTop:6,opacity:done?.5:1},
+    stepline:{height:2,flex:'1 1 auto',background:done?B.ok:B.line,opacity:done?.5:1},
+    stepLabel:{font:"700 10px/1.2 'Space Mono',monospace",letterSpacing:'.08em',textTransform:'uppercase',color:cur?B.now:done?B.ink2:B.mut},
+    stepDate:{font:"400 10px/1.3 'Public Sans',sans-serif",color:B.mut,marginTop:3}
+  };
+}
+function styleC(st){
+  const cur = st==='current', done = st==='done';
+  return {
+    shell: cur ? {background:C.cream,border:'1px solid oklch(0.735 0.145 78 / .6)',boxShadow:'0 8px 22px oklch(0.255 0.028 158 / .12)',overflow:'hidden'}
+          : {background:done?'oklch(0.975 0.010 92)':'oklch(0.988 0.006 92)',border:'1px solid '+C.line,overflow:'hidden'},
+    band: {width:6,flex:'none',background:cur?C.gold:done?C.jade:C.line},
+    num:  {font:"400 26px/0.85 'Instrument Serif',Georgia,serif",color:cur?C.gold2:done?C.mut:'oklch(0.60 0.02 150)',flex:'none'},
+    title:{font:"400 19px/1.12 'Instrument Serif',Georgia,serif",margin:0,color:done?C.mut:cur?C.ink:C.ink2},
+    body: {font:'400 12.5px/1.5 Manrope,sans-serif',margin:'10px 0 0',color:cur?C.ink2:C.mut,textWrap:'pretty'},
+    chip: {font:'800 8.5px/1 Manrope,sans-serif',letterSpacing:'.16em',textTransform:'uppercase',
+           color:cur?C.gold2:done?'oklch(0.50 0.10 158)':C.mut},
+    badge:{display:'inline-block',font:'800 9.5px/1 Manrope,sans-serif',letterSpacing:'.12em',textTransform:'uppercase',padding:'5px 8px',borderRadius:2,
+           background:cur?C.gold:'transparent',color:cur?C.shell:done?'oklch(0.50 0.10 158)':C.ink2,
+           border:'1px solid '+(cur?C.gold:done?'oklch(0.50 0.10 158 / .5)':C.line)}
+  };
+}
+
+class Component extends DCLogic {
+  state = {};
+  renderVals(){
+    const today = D(this.props.previewDate || '2026-10-06');
+    let curIdx = RAW.findIndex(s => !s.alwaysDone && D(s.dueISO) >= today);
+    if (curIdx === -1) curIdx = RAW.length - 1;
+    const seeded = {}; seeded[RAW[curIdx].id] = true;
+    const open = Object.assign({}, seeded, this.state.open || {});
+
+    const stages = RAW.map((r,i) => {
+      const state = r.alwaysDone ? 'done' : i < curIdx ? 'done' : i === curIdx ? 'current' : 'upcoming';
+      return Object.assign({}, r, {
+        state: state,
+        stateWord: state === 'current' ? 'Now' : state === 'done' ? 'Done' : 'Upcoming',
+        badgeText: r.isCatchup ? 'No section due' : 'Report ' + r.sec + ' due',
+        tasks: (DETAIL[r.id] || {}).tasks || [],
+        goodLooks: (DETAIL[r.id] || {}).good || '',
+        detailStyle: {display: open[r.id] ? 'block' : 'none'},
+        toggleWord: open[r.id] ? 'Hide detail \u2014' : 'What this involves +',
+        toggle: () => this.setState(s => {
+          const o = Object.assign({}, seeded, s.open); o[r.id] = !o[r.id]; return {open:o};
+        }),
+        a: styleA(state), b: styleB(state), c: styleC(state)
+      });
+    });
+
+    const cur = stages[curIdx];
+    const days = Math.max(0, Math.round((D(cur.dueISO) - today) / DAY));
+    const span = TERM_END - TERM_START;
+    const pct = Math.max(2, Math.min(100, Math.round(((today - TERM_START) / span) * 100)));
+    const week = Math.max(1, Math.min(15, Math.floor((today - TERM_START) / (7 * DAY)) + 1));
+    const bar = c => ({width: pct + '%', height:'100%', background:c, borderRadius:99});
+
+    const trio = ['done','current','upcoming'].map(st => Object.assign({}, RAW[3], {
+      stateWord: st === 'current' ? 'Now' : st === 'done' ? 'Done' : 'Upcoming',
+      badgeText: 'Report §4 due',
+      a: styleA(st), b: styleB(st), c: styleC(st)
+    }));
+
+    const crosswalk = CROSS.map((r,i) => {
+      const isDone = r.status === 'Done' || (RAW.findIndex(s => s.sec.indexOf(r.sec) > -1) < curIdx);
+      const base = {padding:'10px 0',borderTop:'1px solid '+A.rule,color:isDone?A.mut:A.ink2};
+      return Object.assign({}, r, {
+        status: r.status || (isDone ? 'Done' : 'To come'),
+        cell: base,
+        cellStrong: Object.assign({}, base, {fontWeight:600, color:isDone?A.mut:A.ink, paddingRight:'16px'}),
+        cellEnd: Object.assign({}, base, {textAlign:'right', font:"500 10px/1.4 'IBM Plex Mono',monospace", letterSpacing:'.09em', textTransform:'uppercase', color:isDone?A.moss:A.mut})
+      });
+    });
+
+    const pos = iso => Math.max(0, Math.min(100, ((D(iso) - TERM_START) / span) * 100));
+    const ruler = stages.filter(s => !s.alwaysDone).map(s => ({
+      shortDate: s.shortDate,
+      label: s.isCatchup ? 'Catch-up' : s.label.replace('Stage ','St '),
+      wrap: (function(p){
+        if (p > 88) return {position:'absolute', right:0, top:0, textAlign:'right', width:74};
+        if (p < 6)  return {position:'absolute', left:0, top:0, textAlign:'left', width:74};
+        return {position:'absolute', left:p+'%', top:0, transform:'translateX(-50%)', textAlign:'center', width:74};
+      })(pos(s.dueISO)),
+      tick: {width:1, height:9, margin:pos(s.dueISO) > 88 ? '0 0 0 auto' : pos(s.dueISO) < 6 ? '0 auto 0 0' : '0 auto', background:s.state==='current'?B.now:s.state==='done'?B.ok:'oklch(0.83 0.01 265)'},
+      dateStyle: {font:"700 9.5px/1.2 'Space Mono',monospace", marginTop:6, color:s.state==='current'?B.now:s.state==='done'?B.ink2:B.mut},
+      labelStyle: {font:"400 8.5px/1.2 'Public Sans',sans-serif", marginTop:2, color:B.mut}
+    }));
+    const nowMark = {position:'absolute', left:pct+'%', top:-4, transform:'translateX(-50%)', width:9, height:9, borderRadius:'50%', background:B.now, boxShadow:'0 0 0 4px oklch(0.52 0.14 268 / .18)'};
+
+    const crossB = CROSS.map(r => {
+      const isDone = r.status === 'Done' || (RAW.findIndex(s => s.sec.indexOf(r.sec) > -1) < curIdx);
+      const isNow = cur.sec.indexOf(r.sec) > -1;
+      const base = {padding:'11px 0', borderTop:'1px solid '+B.line, color:isDone?B.mut:B.ink2, font:"400 12.5px/1.4 'Public Sans',sans-serif"};
+      return Object.assign({}, r, {
+        status: r.status || (isNow ? 'Due now' : isDone ? 'Done' : 'To come'),
+        cell: base,
+        cellSec: Object.assign({}, base, {font:"700 11.5px/1.4 'Space Mono',monospace", color:isNow?B.now:isDone?B.mut:B.ink}),
+        cellStrong: Object.assign({}, base, {fontWeight:600, color:isDone?B.mut:B.ink, paddingRight:'16px'}),
+        cellEnd: Object.assign({}, base, {textAlign:'right', font:"700 9px/1.6 'Space Mono',monospace", letterSpacing:'.1em', textTransform:'uppercase', color:isNow?B.now:isDone?'oklch(0.42 0.10 158)':B.mut})
+      });
+    });
+
+    return {
+      nav: NAV,
+      ruler: ruler,
+      nowMark: nowMark,
+      crossB: crossB,
+      stages: stages,
+      timeline: stages.slice(2),
+      donePair: stages.slice(0,2),
+      steps: stages,
+      upNext: stages.slice(curIdx + 1),
+      trio: trio,
+      crosswalk: crosswalk,
+      rules: RULES,
+      marks: MARKS,
+      months: MONTHS,
+      nextUp: stages[Math.min(curIdx + 1, stages.length - 1)],
+      cur: Object.assign({}, cur, {
+        due1: cur.due1 || cur.desc,
+        dueChip: 'Due\u00a0' + cur.dateText,
+        dueLead: 'Due ' + cur.dateText + ': ' + (cur.due1 || cur.desc)
+      }),
+      days: days,
+      daysWord: days === 1 ? 'day left' : 'days left',
+      daysOnly: days + (days === 1 ? ' day' : ' days'),
+      todayText: today.toLocaleDateString('en-IE',{day:'numeric',month:'short',year:'numeric'}),
+      weekLine: 'Week ' + week + ' of 15',
+      pctText: pct + '%',
+      pctA: bar(A.terra), pctB: bar(B.now),
+      nowCard: {background:'oklch(0.52 0.14 268 / .06)',border:'1.5px solid oklch(0.52 0.14 268 / .35)',borderRadius:14,padding:'16px 17px 17px'},
+      nowWide: {background:'#fff',border:'1.5px solid oklch(0.52 0.14 268 / .35)',borderRadius:16,padding:'26px 28px',boxShadow:'0 10px 30px oklch(0.52 0.14 268 / .10)'},
+      tokensA: [tok('--bg',A.paper),tok('--surface',A.surf),tok('--ink',A.ink),tok('--muted',A.mut),tok('--rule',A.rule),tok('--now',A.terra),tok('--done',A.moss)],
+      tokensB: [tok('--bg',B.bg),tok('--surface',B.surf),tok('--ink',B.ink),tok('--muted',B.mut),tok('--border',B.line),tok('--now',B.now),tok('--done',B.ok)],
+      tokensC: [tok('--shell',C.shell),tok('--bg',C.cream),tok('--ink',C.ink),tok('--muted',C.mut),tok('--rule',C.line),tok('--now',C.gold),tok('--done',C.jade)],
+      showDesktop: this.props.showDesktop !== false,
+      showCrosswalk: this.props.showCrosswalk !== false
+    };
+  }
+}
+</script>
+</body>
+</html>

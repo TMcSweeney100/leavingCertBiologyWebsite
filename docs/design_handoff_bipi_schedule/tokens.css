@@ -1,0 +1,59 @@
+/* BiPi Schedule Hub — design tokens
+   Authored in oklch; hex fallbacks are the exact rendered values from the design.
+   Chosen direction: "Progress Rail" (option 2a). */
+
+:root {
+  /* Surfaces */
+  --bipi-bg:            oklch(0.973 0.005 265); /* #F4F6FA  page ground */
+  --bipi-surface:       #ffffff;                /* cards, header, crosswalk band */
+  --bipi-surface-2:     oklch(0.955 0.006 265); /* #EEF0F4  inset chips/rows */
+
+  /* Text */
+  --bipi-ink:           oklch(0.215 0.02 262);  /* #141A23  headings, footer bg */
+  --bipi-ink-2:         oklch(0.34 0.018 262);  /* #333842  body */
+  --bipi-muted:         oklch(0.525 0.016 262); /* #656B74  labels, meta */
+
+  /* Lines */
+  --bipi-border:        oklch(0.905 0.008 265); /* #DDE0E5  hairlines, card borders */
+  --bipi-tick-idle:     oklch(0.83 0.01 265);   /* #C4C7CE  upcoming ruler ticks */
+
+  /* "Now" — reserved for the current stage. Never decorative. */
+  --bipi-now:           oklch(0.52 0.14 268);   /* #4662B9 */
+  --bipi-now-ink:       oklch(0.42 0.13 268);   /* #2F4693  text on tint */
+  --bipi-now-tint:      oklch(0.52 0.14 268 / 0.06);
+  --bipi-now-tint-2:    oklch(0.52 0.14 268 / 0.07);
+  --bipi-now-tint-3:    oklch(0.52 0.14 268 / 0.10);
+  --bipi-now-tint-4:    oklch(0.52 0.14 268 / 0.12);
+  --bipi-now-ring:      oklch(0.52 0.14 268 / 0.35);
+  --bipi-now-halo:      oklch(0.52 0.14 268 / 0.16);
+
+  /* "Done" */
+  --bipi-done:          oklch(0.53 0.115 158);  /* #1A7F51 */
+  --bipi-done-ink:      oklch(0.42 0.10 158);   /* #005D37 */
+  --bipi-done-tint:     oklch(0.53 0.115 158 / 0.07);
+  --bipi-done-tint-2:   oklch(0.53 0.115 158 / 0.13);
+
+  /* On dark (footer) */
+  --bipi-on-dark-body:  oklch(0.78 0.02 262);   /* #B0B8C5 */
+  --bipi-on-dark-meta:  oklch(0.65 0.02 262);   /* #898F9C */
+
+  /* Type */
+  --bipi-font-display:  'Space Grotesk', system-ui, sans-serif;  /* 500 600 700 */
+  --bipi-font-body:     'Public Sans', system-ui, sans-serif;    /* 400 600 700 */
+  --bipi-font-label:    'Space Mono', ui-monospace, monospace;   /* 400 700 */
+
+  /* Radii */
+  --bipi-r-card:   12px;
+  --bipi-r-panel:  14px;  /* mobile you-are-here */
+  --bipi-r-panel-lg: 16px; /* laptop you-are-here */
+  --bipi-r-inset:   8px;
+  --bipi-r-badge:   7px;
+  --bipi-r-pill:   99px;
+
+  /* Shadows */
+  --bipi-shadow-now:      0 8px 24px oklch(0.52 0.14 268 / 0.14); /* current stage card */
+  --bipi-shadow-now-lg:   0 10px 30px oklch(0.52 0.14 268 / 0.10); /* laptop you-are-here */
+
+  /* Spacing scale actually used (px) */
+  --bipi-space: 4 5 6 7 8 9 10 12 13 14 16 18 20 22 26 28 30 34 40;
+}
