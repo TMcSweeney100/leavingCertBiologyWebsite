@@ -1,4 +1,5 @@
 import { TermProgress } from "@/components/bipi/term-progress";
+import { TermRuler } from "@/components/bipi/term-ruler";
 import { DUE_TODAY, daysLeftWord, formatTodayLabel, type DerivedSchedule } from "@/lib/schedule";
 
 /**
@@ -17,15 +18,12 @@ import { DUE_TODAY, daysLeftWord, formatTodayLabel, type DerivedSchedule } from 
  * layout or accessibility tree at a given viewport — `display: none`
  * removes the other outright, so the two `<h2>`s never both count.
  *
- * Deliberately not here yet:
- * - **The laptop term ruler.** README §3's laptop treatment of term
- *   progress is a 46px band with a today-marker and one tick per deadline,
- *   which is Phase 6 (plan's build-order table). Until then the bar is
- *   mobile-only, exactly as spec'd, and the laptop panel has no progress
- *   element inside it.
- * - **The laptop "Coming up" aside.** The "Next up" row below is the mobile
- *   treatment; on laptop that information belongs to the sticky aside
- *   column, also Phase 6. Hence `lg:hidden` on both.
+ * Term progress appears in both layouts but as two different components:
+ * the 6px bar below the panel on mobile (`TermProgress`) and, on laptop,
+ * the term ruler *inside* the panel (`TermRuler`) — README §3 treats them
+ * as one element with two forms, and they are never both in the layout.
+ * The "Next up" row is mobile-only for the same kind of reason: on laptop
+ * that information is the aside's "Coming up" card.
  *
  * Every measured colour pairing introduced here was checked against the
  * real token values before use (the four §1.1 accessibility fixes exist
@@ -45,7 +43,8 @@ function NowDot() {
 }
 
 export function YouAreHere({ schedule }: YouAreHereProps) {
-  const { currentStage, nextStage, daysLeft, isDueToday, termPct, weekNumber, today } = schedule;
+  const { currentStage, nextStage, stages, daysLeft, isDueToday, termPct, weekNumber, today } =
+    schedule;
 
   const todayLabel = formatTodayLabel(today);
 
@@ -196,6 +195,13 @@ export function YouAreHere({ schedule }: YouAreHereProps) {
             )}
           </p>
         </div>
+
+        <TermRuler
+          className="mt-5.5 border-t border-border pt-4.5"
+          stages={stages}
+          termPct={termPct}
+          weekNumber={weekNumber}
+        />
       </div>
     </section>
   );

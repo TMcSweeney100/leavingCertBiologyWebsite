@@ -73,6 +73,7 @@
                                     what's-due paragraph, laptop */
   --text-card-title:    17px;   /* stage card title, mobile; "You are here" countdown number and its
                                     "Due today" replacement, mobile */
+  --text-card-title-lg: 21px;   /* stage card title, laptop */
   --text-section-title: 19px;   /* section h2 ("What's left this term"), mobile */
   --text-panel-title:   23px;   /* "You are here" stage title, mobile */
   --text-section-title-lg: 24px; /* section h2, laptop */
@@ -100,7 +101,18 @@
 
   /* Lines */
   --bipi-border:        oklch(0.905 0.008 265); /* #DDE0E5  hairlines, card borders */
-  --bipi-tick-idle:     oklch(0.83 0.01 265);   /* #C4C7CE  upcoming ruler ticks */
+  --bipi-tick-idle:     oklch(0.649 0.02 266);  /* #898F9C  upcoming ruler ticks + upcoming
+                                                    state-dot ring. Plan §1.1③: the source
+                                                    design's #C4C7CE measures 1.69:1 against
+                                                    white and fails WCAG 1.4.11 (3:1) for a
+                                                    graphic that encodes meaning. One step
+                                                    darker than the plan's own #8E94A1
+                                                    (3.04:1 on white) because the same token
+                                                    now also colours the timeline rail's
+                                                    upcoming dot, which sits on the page
+                                                    ground, not white — where #8E94A1 is
+                                                    2.81:1. This value measures 3.25:1 on
+                                                    --bipi-surface and 3.00:1 on --bipi-bg. */
 
   /* "Now" — reserved for the current stage. Never decorative. */
   --bipi-now:           oklch(0.52 0.14 268);   /* #4662B9 */
@@ -190,5 +202,33 @@
   html {
     @apply font-sans;
     color-scheme: light;
+  }
+}
+
+/* Term-ruler entry animation — plan §1.3 suggestion ②, the one piece of motion
+   on the page. On load the today-marker travels from the start of the term to
+   its real position while the elapsed fill grows underneath it, once, ~400ms,
+   ease-out: it draws the term elapsing rather than decorating it. Both halves
+   animate together because a marker sliding across an already-filled bar reads
+   as a glitch rather than as one movement.
+
+   Only a `from` frame is declared, so the `to` state is each element's own
+   computed style — the marker's `left` and the fill's `width` stay in the
+   markup, where the derived percentage belongs, and nothing has to be
+   duplicated into a keyframe. `animation-fill-mode: both` at the call site
+   holds the start frame until the animation begins.
+
+   Reduced motion is handled at the call site with Tailwind's `motion-reduce:`
+   variant (`motion-reduce:animate-none`), which leaves both elements at their
+   final position with no movement at all. */
+@keyframes bipi-ruler-marker {
+  from {
+    left: 0%;
+  }
+}
+
+@keyframes bipi-ruler-fill {
+  from {
+    width: 0%;
   }
 }

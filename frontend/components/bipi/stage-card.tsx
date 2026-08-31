@@ -2,10 +2,9 @@ import type { StageState } from "@/lib/schedule.data";
 import type { StageWithState } from "@/lib/schedule";
 
 /**
- * The stage card, static (Phase 4 — docs/IMPLEMENTATION_PLAN.md build-order
- * table). Renders one of `stage-3` / `stage-4` / `catchup` / `stage-5` /
- * `stage-6` in its `done` / `current` / `upcoming` state, mobile only (no
- * `lg:` layout — that's Phase 6).
+ * The stage card, static. Renders one of `stage-3` / `stage-4` / `catchup` /
+ * `stage-5` / `stage-6` in its `done` / `current` / `upcoming` state, in both
+ * the mobile and the laptop layout.
  *
  * No disclosure yet (Phase 7 adds Base UI `Collapsible` and turns this into
  * the app's only client component — see plan §4.3). Every field that would
@@ -140,40 +139,88 @@ export function StageCard({ stage }: StageCardProps) {
   // this stays correct for any future stage that hits the same fallback.
   const showSectionName = reportBadgeText !== stage.reportSectionName;
 
+  const eyebrow = (
+    <span className="font-mono text-eyebrow font-bold tracking-[.1em] whitespace-nowrap text-muted-foreground uppercase">
+      {stage.label} / {stage.weekRange}
+    </span>
+  );
+
+  const statePill = (
+    <span
+      className={`shrink-0 rounded-full px-1.75 py-1 font-mono text-label leading-none font-bold tracking-[.12em] uppercase ${PILL_BG[state]} ${PILL_TEXT[state]}`}
+    >
+      {STATE_WORD[state]}
+    </span>
+  );
+
+  const reportBadge = (
+    <span
+      className={`inline-block rounded-(--bipi-r-badge) border px-2.25 py-1.25 font-mono text-label leading-none font-bold tracking-[.06em] ${BADGE_BG[state]} ${BADGE_TEXT[state]} ${BADGE_BORDER[state]}`}
+    >
+      {reportBadgeText}
+    </span>
+  );
+
   return (
-    <article className={`rounded-lg bg-card pt-3.5 px-3.75 pb-3.75 ${CARD_SHELL[state]}`}>
-      <div className="flex items-center justify-between gap-2.5">
-        <span className="font-mono text-eyebrow font-bold tracking-[.1em] whitespace-nowrap text-muted-foreground uppercase">
-          {stage.label} / {stage.weekRange}
-        </span>
-        <span
-          className={`shrink-0 rounded-full px-1.75 py-1 font-mono text-label leading-none font-bold tracking-[.12em] uppercase ${PILL_BG[state]} ${PILL_TEXT[state]}`}
+    <article
+      className={`rounded-lg bg-card pt-3.5 px-3.75 pb-3.75 lg:pt-5 lg:px-5.5 lg:pb-5.25 ${CARD_SHELL[state]}`}
+    >
+      {/* Mobile header (below 1024px): the pill pushes to the right of the
+          eyebrow, then title, date and the report badge each take their own
+          full-width row — the card is too narrow to pair anything up. */}
+      <div className="lg:hidden">
+        <div className="flex items-center justify-between gap-2.5">
+          {eyebrow}
+          {statePill}
+        </div>
+
+        <h3
+          className={`mt-2.25 font-heading text-card-title leading-[1.2] font-semibold tracking-[-.015em] ${TITLE_COLOR[state]}`}
         >
-          {STATE_WORD[state]}
-        </span>
+          {stage.title}
+        </h3>
+
+        <div className="mt-1.75 font-mono text-pill leading-none font-bold text-(--bipi-ink-2) tabular-nums">
+          {stage.dueDateLabel}
+        </div>
+
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          {reportBadge}
+          {showSectionName && (
+            <span className="font-sans text-pill-lg leading-[1.35] text-muted-foreground">
+              {stage.reportSectionName}
+            </span>
+          )}
+        </div>
       </div>
 
-      <h3
-        className={`mt-2.25 font-heading text-card-title leading-[1.2] font-semibold tracking-[-.015em] ${TITLE_COLOR[state]}`}
-      >
-        {stage.title}
-      </h3>
-
-      <div className="mt-1.75 font-mono text-pill leading-none font-bold text-(--bipi-ink-2)">
-        {stage.dueDateLabel}
-      </div>
-
-      <div className="mt-3 flex flex-wrap items-center gap-2">
-        <span
-          className={`inline-block rounded-(--bipi-r-badge) border px-2.25 py-1.25 font-mono text-label leading-none font-bold tracking-[.06em] ${BADGE_BG[state]} ${BADGE_TEXT[state]} ${BADGE_BORDER[state]}`}
-        >
-          {reportBadgeText}
-        </span>
-        {showSectionName && (
-          <span className="font-sans text-pill-lg leading-[1.35] text-muted-foreground">
-            {stage.reportSectionName}
-          </span>
-        )}
+      {/* Laptop header (1024px and up): a `1fr auto` grid — eyebrow, pill and
+          title on the left, date and report badge right-aligned opposite them.
+          Two blocks rather than one responsive tree because the grouping
+          genuinely differs (the pill moves from the far right of its own row
+          to sitting beside the eyebrow) and because the design drops the
+          section name here, the badge alone being wide enough to read. Only
+          one block is ever in the layout or accessibility tree — `display:
+          none` removes the other, so the two <h3>s never both count. Same
+          convention as site-header.tsx and you-are-here.tsx. */}
+      <div className="hidden lg:grid lg:grid-cols-[1fr_auto] lg:items-start lg:gap-4">
+        <div>
+          <div className="flex flex-wrap items-center gap-3">
+            {eyebrow}
+            {statePill}
+          </div>
+          <h3
+            className={`mt-2.5 font-heading text-card-title-lg leading-[1.18] font-semibold tracking-[-.02em] ${TITLE_COLOR[state]}`}
+          >
+            {stage.title}
+          </h3>
+        </div>
+        <div className="flex-none text-right">
+          <div className="font-mono text-pill-lg leading-[1.3] font-bold text-(--bipi-ink-2) tabular-nums">
+            {stage.dueDateLabel}
+          </div>
+          <div className="mt-2.25">{reportBadge}</div>
+        </div>
       </div>
 
       <p className={`mt-2.5 font-sans text-body leading-normal text-pretty ${DESCRIPTION_COLOR[state]}`}>
@@ -181,7 +228,7 @@ export function StageCard({ stage }: StageCardProps) {
       </p>
 
       {stage.tasks.length > 0 && (
-        <ul className="mt-3.25 grid gap-1.75">
+        <ul className="mt-3.25 grid gap-1.75 lg:grid-cols-2 lg:gap-x-5.5 lg:gap-y-2">
           {stage.tasks.map((task) => (
             <li key={task} className="grid grid-cols-[14px_1fr] items-start gap-2.25">
               <span className="mt-1.5 size-1.25 rounded-full bg-(--bipi-now)" />
@@ -191,15 +238,21 @@ export function StageCard({ stage }: StageCardProps) {
         </ul>
       )}
 
-      {stage.whatGoodLooksLike && (
-        <p className="mt-3.25 rounded-(--bipi-r-inset) bg-background px-3 py-2.75 font-sans text-inset leading-[1.45] text-(--bipi-ink-2)">
-          <span className="font-bold">What good looks like ·</span> {stage.whatGoodLooksLike}
+      {/* Stacked on mobile, side by side on laptop. When a stage has no
+          "what good looks like" copy the checkpoint takes the full width
+          rather than sitting in a half-width column beside a gap. */}
+      <div className="mt-3.25 grid gap-2.25 lg:mt-3.75 lg:grid-cols-2 lg:gap-2.5">
+        {stage.whatGoodLooksLike && (
+          <p className="rounded-(--bipi-r-inset) bg-background px-3 py-2.75 font-sans text-inset leading-[1.45] text-(--bipi-ink-2) lg:px-3.25">
+            <span className="font-bold">What good looks like ·</span> {stage.whatGoodLooksLike}
+          </p>
+        )}
+        <p
+          className={`rounded-(--bipi-r-inset) bg-(--bipi-now-tint-2) px-3 py-2.75 font-sans text-inset leading-[1.45] text-(--bipi-ink-2) lg:px-3.25 ${stage.whatGoodLooksLike ? "" : "lg:col-span-2"}`}
+        >
+          <span className="font-bold">Teacher checkpoint ·</span> {stage.teacherCheckpoint}
         </p>
-      )}
-
-      <p className="mt-2.25 rounded-(--bipi-r-inset) bg-(--bipi-now-tint-2) px-3 py-2.75 font-sans text-inset leading-[1.45] text-(--bipi-ink-2)">
-        <span className="font-bold">Teacher checkpoint ·</span> {stage.teacherCheckpoint}
-      </p>
+      </div>
     </article>
   );
 }

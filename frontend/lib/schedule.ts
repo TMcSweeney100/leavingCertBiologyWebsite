@@ -56,6 +56,8 @@ export type DerivedSchedule = {
   isDueToday: boolean;
   /** The stage after `currentStage`, or `null` when it is the last one. */
   nextStage: StageWithState | null;
+  /** Every stage after `currentStage`, in order. Empty on the last stage. */
+  comingUp: StageWithState[];
   /** Percentage through the term, clamped to [2, 100]. */
   termPct: number;
   /** Week number of the term, clamped to [1, 15]. */
@@ -88,6 +90,7 @@ export function deriveSchedule(now: Date = new Date()): DerivedSchedule {
   }));
 
   const currentStage = stages[currentIndex];
+  const comingUp = stages.slice(currentIndex + 1);
   const termStart = day(TERM.start);
   const termEnd = day(TERM.end);
 
@@ -97,11 +100,41 @@ export function deriveSchedule(now: Date = new Date()): DerivedSchedule {
     currentStage,
     daysLeft: Math.max(0, Math.round((day(currentStage.dueDate) - today) / MS_PER_DAY)),
     isDueToday: day(currentStage.dueDate) === today,
-    nextStage: stages[currentIndex + 1] ?? null,
+    nextStage: comingUp[0] ?? null,
+    comingUp,
     termPct: clamp(2, 100, Math.round(((today - termStart) / (termEnd - termStart)) * 100)),
     weekNumber: clamp(1, 15, Math.floor((today - termStart) / (7 * MS_PER_DAY)) + 1),
   };
 }
+
+/**
+ * Where an ISO date sits along the term, as a percentage of the way from
+ * `TERM.start` to `TERM.end`, clamped to [0, 100].
+ *
+ * This is what gives the laptop term ruler *real date spacing* — ticks
+ * positioned by elapsed time rather than spread evenly, so the October
+ * crunch looks like a crunch. Note it is deliberately not the same clamp as
+ * `termPct`, which floors at 2 so the progress fill is never invisible in
+ * week 1: a deadline genuinely on the term's first day belongs at 0%.
+ */
+export function termPositionPct(isoDate: string): number {
+  const termStart = day(TERM.start);
+  return clamp(0, 100, ((day(isoDate) - termStart) / (day(TERM.end) - termStart)) * 100);
+}
+
+const TERM_START_LABEL = new Intl.DateTimeFormat('en-IE', { month: 'short', timeZone: 'UTC' });
+const TERM_END_LABEL = new Intl.DateTimeFormat('en-IE', {
+  day: 'numeric',
+  month: 'short',
+  timeZone: 'UTC',
+});
+
+/**
+ * The term's span as the ruler caption states it — "Sept → 12 Dec".
+ * Derived from `TERM` rather than typed out, so that editing
+ * `schedule.data.ts` alone still changes every date on the page.
+ */
+export const TERM_SPAN_LABEL = `${TERM_START_LABEL.format(day(TERM.start))} \u2192 ${TERM_END_LABEL.format(day(TERM.end))}`;
 
 /** Pluralises the countdown caption: "1 day left", "10 days left". */
 export function daysLeftWord(daysLeft: number): string {

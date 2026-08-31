@@ -6,8 +6,8 @@ detail. This file is just "where are we" so you don't have to reconstruct it fro
 
 ## Status
 
-**Phases 0-5 of `docs/IMPLEMENTATION_PLAN.md` are done and committed to `main`.** Working tree
-is clean. `npm run lint`, `npm run build` and `npm test` (23/23) all pass at HEAD, and the suite
+**Phases 0-6 of `docs/IMPLEMENTATION_PLAN.md` are done and committed to `main`.** Working tree
+is clean. `npm run lint`, `npm run build` and `npm test` (31/31) all pass at HEAD, and the suite
 also passes under `TZ=UTC` (i.e. as Vercel runs it).
 
 - Phase 0 — clean scaffold, shadcn init (Base UI, not Radix — see Decision #5), BiPi tokens, fonts.
@@ -19,41 +19,67 @@ also passes under `TZ=UTC` (i.e. as Vercel runs it).
 - Phase 5 — `you-are-here.tsx` (panel, mobile + laptop), `term-progress.tsx` (mobile bar, on
   shadcn `Progress`), `sticky-now-bar.tsx` (§1.3 suggestion ①), real `?date=` handling in
   `app/page.tsx`, and the `#timeline` section chrome. `PHASE_4_PREVIEW_DATE` is gone.
+- Phase 6 — `stepper.tsx` (laptop 7-column, in the header band), `term-ruler.tsx` (real date
+  spacing, edge clamping, the §1.3② entry animation), `aside.tsx` (sticky "Coming up" + "Term at
+  a glance"), the two-column timeline grid, the laptop stage-card layout, and `stage-dot.tsx`
+  extracted so the rail and the stepper share one dot. The last outstanding §1.1 accessibility
+  fix — ③, `--bipi-tick-idle` — landed with it.
 
-Phase 5's gate is met: `?date=` moves the page correctly through all of the plan's test dates,
-checked against rendered HTML at 1 Sept / 24 Sept / 25 Sept / 6 Oct / 30 Oct / 20 Nov / 20 Dec /
-1 Mar, plus an unparseable value (falls back to the real clock). No horizontal scroll at 320,
-390, 768, 1024, 1140, 1280 or 1440px; heading order runs h1 → h2 → h3 with no skips at both
-breakpoints; every new colour pairing was measured (lowest is 4.60:1, the laptop countdown
+Both gates are met, checked in a headless browser rather than assumed:
+
+- **Phase 5** — `?date=` moves the page correctly at 1 Sept / 24 Sept / 25 Sept / 6 Oct / 30 Oct /
+  20 Nov / 20 Dec / 1 Mar, plus an unparseable value (falls back to the real clock).
+- **Phase 6** — no ruler tick overhangs its band at 1024 / 1140 / 1280 / 1440 / 1600px on any of
+  those dates (the December tick, at 99.02%, is the one the plan names); the stepper's seven
+  columns fit with no clipped label at 1024 / 1140 / 1280 after the 10px type floor; the ruler
+  animation runs once and is fully suppressed under `prefers-reduced-motion`, landing on the
+  identical final position either way.
+
+Across both: no horizontal scroll at 320 → 1920px; heading order runs h1 → h2 → h3 with no skips
+at either breakpoint; every new colour pairing measured (lowest 4.60:1, the laptop countdown
 caption at `opacity:.85` — the design's own value, and it passes).
 
-## Three decisions taken in Phase 5 that a human should confirm
+## Decisions taken in these two phases that a human should confirm
 
-These were plan §7's open questions, answered the way the plan's author said they would answer
-them. All three are cheap to reverse — say the word.
+Mostly plan §7's open questions, answered the way the plan's author said they would answer them.
+All are cheap to reverse — say the word.
 
 1. **"Due today"** replaces the literal `0` on a deadline day (§1.2). Built.
 2. **Past a deadline it still reads "0 days left"** — reachable only after 11 Dec, where the last
    stage stays current forever. "Due today" would be false there, and anything better ("Deadline
    passed", "Term complete") is new copy nobody has approved. Flagging rather than inventing.
 3. **"Next up" is omitted on the last stage** rather than pointing back at the stage you are
-   already on, which is what the design prototype does.
+   already on, which is what the design prototype does. Same for the aside's "Coming up" card.
+4. **Motion**: ① (sticky mini-banner), ② (ruler entry) and ④ (tabular numerals) are built, ③
+   (scroll-spy on the nav pills) is not — exactly what plan §1.3 proposed.
+5. **`--bipi-tick-idle` is one step darker than the plan's own `#8E94A1`.** The plan measured
+   that value against white, which is right for the ruler; the same token now also colours the
+   timeline rail's upcoming dot, which sits on the page ground, where `#8E94A1` is 2.81:1. The
+   value used measures 3.25:1 on white and 3.00:1 on the page ground. Visually a hair darker.
+6. **Still open, and untouched:** the **4 December draft tick** on the ruler (plan §1.2's one
+   content gap). It is not there. The date does now appear in the laptop aside's "Term at a
+   glance", but on a phone in November it is still only inside Stage 6's task list. Roughly
+   fifteen minutes of work if you want it.
 
-## What's next: Phase 6 — laptop layout
+## What's next: Phase 7 — the disclosure
 
-Deliverable: the 7-column stage stepper, the term ruler with real date spacing and edge clamping,
-the two-column timeline grid, the sticky aside, and the ruler animation (§1.3 suggestion ②).
-Gate: the December tick must not overhang at **1140 / 1280 / 1440px**, and the stepper needs a
-re-check after the 10px type floor.
+Deliverable: a `Collapsible` per stage card, the current stage rendered **server-side already
+open**, panels independent, and the reduced-motion path. Gate: open two cards and the first must
+stay open; the whole thing must work with the keyboard alone.
 
-Two things Phase 5 deliberately left for it:
+What to know before starting:
 
-- **The laptop panel currently has no term progress inside it.** The mobile 6px bar is
-  `lg:hidden`, exactly as README §3 specifies, because the laptop treatment of that same number
-  is the ruler — Phase 6's job. `components/ui/progress.tsx` already takes `trackClassName` /
-  `indicatorClassName` so the 2px ruler track comes off the same primitive.
-- **The laptop "Coming up" aside.** The mobile "Next up" row is also `lg:hidden` for the same
-  reason: on laptop that information belongs to the sticky aside column.
+- `stage-card.tsx` is where `"use client"` finally lands, and per plan §4.3 it should stay the
+  only file under `components/bipi/` that has it. Pass primitives across the boundary, never
+  `Date` objects or the whole `Stage`.
+- It is **Base UI, not Radix** (`render=` instead of `asChild`) — read
+  `.claude/skills/shadcn/rules/base-vs-radix.md` before writing the trigger.
+- Do **not** use `Accordion`; it is single-open by default and the panels must be independent.
+- The card already renders every field that belongs inside the panel (description on mobile,
+  tasks, both insets) — Phase 7 wraps them, it does not add content. The trigger copy is
+  "What this involves +" / "Hide detail —", `min-height: 34px` on mobile.
+- The mobile hint copy "Tap a stage for what it involves." is already on the page and currently
+  promises an interaction that does not exist yet. Phase 7 makes it true.
 
 ## Working pattern used in earlier sessions (worth continuing)
 
