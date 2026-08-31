@@ -50,18 +50,25 @@
 
 @theme {
   /* BiPi type scale — named font-size steps, added per docs/IMPLEMENTATION_PLAN.md §4.4.
-     Scoped to what Phases 0-3 (site-header.tsx, site-footer.tsx) actually use today; later
-     phases should add new named sizes here as they're introduced, rather than reaching for
-     text-[…] arbitrary values again. Font-size only — line-height/letter-spacing stay as
-     the existing leading-[…]/tracking-[…] arbitrary values alongside these. */
+     One entry per distinct pixel value the design uses: reuse an existing step (extending
+     its comment with the new call site) when a size the scale already has recurs, and only
+     add a new named step for a pixel value that's genuinely new. Font-size only —
+     line-height/letter-spacing stay as the existing leading-[…]/tracking-[…] arbitrary
+     values alongside these. */
   --text-chip:          9px;    /* grade chip, mobile */
-  --text-eyebrow:       9.5px;  /* header eyebrow, mobile + laptop */
-  --text-label:         10px;   /* grade chip, laptop; footer meta/disclaimer line */
-  --text-pill:          10.5px; /* nav pill, mobile */
+  --text-eyebrow:       9.5px;  /* header eyebrow, mobile + laptop; stage card eyebrow */
+  --text-label:         10px;   /* grade chip, laptop; footer meta/disclaimer line; stage
+                                    card state pill (raised from 8.5px in the source design,
+                                    plan §1.1④ type-floor fix) and report badge */
+  --text-pill:          10.5px; /* nav pill, mobile; stage card date */
   --text-pill-lg:       11px;   /* nav pill, laptop */
-  --text-body:          12.5px; /* footer note paragraph */
+  --text-caption:       11px;   /* stage card report-section name, beside the report badge */
+  --text-inset:         11.5px; /* stage card "what good looks like" / teacher-checkpoint inset text */
+  --text-task:          12px;   /* stage card task-list item */
+  --text-body:          12.5px; /* footer note paragraph; stage card description */
   --text-standfirst:    13px;   /* header standfirst, mobile */
   --text-standfirst-lg: 14px;   /* header standfirst, laptop; footer heading */
+  --text-card-title:    17px;   /* stage card title, mobile */
   --text-h1-mobile:     26px;   /* header h1, mobile */
   --text-display-lg:    38px;   /* header h1, laptop */
 }
