@@ -11,7 +11,11 @@ import { Timeline } from "@/components/bipi/timeline";
 import { YouAreHere } from "@/components/bipi/you-are-here";
 import { countdownText, deriveSchedule, parsePreviewDate } from "@/lib/schedule";
 
-export default async function Home({ searchParams }: PageProps<"/">) {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ date?: string | string[] }>;
+}) {
   // Awaiting `searchParams` is what opts this page into dynamic rendering
   // (plan §4.1) — deliberate, and the only correct choice here: the page
   // does no I/O, so an SSR pass is a handful of pure function calls, while
