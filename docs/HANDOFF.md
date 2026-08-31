@@ -6,11 +6,15 @@ detail. This file is just "where are we" so you don't have to reconstruct it fro
 
 ## Status
 
-**Phases 0-8 of `docs/IMPLEMENTATION_PLAN.md` are done and committed to `main`, and that is
-v1** — every section of the site the spec asks for now exists. Only Phase 9 (extras and polish:
-print stylesheet, QR block, OG card) is left, and it is being built on the `phase-1.1` branch.
-`npm run lint`, `npx tsc --noEmit`, `npm run build` and `npm test` (39/39) all pass at the v1 tag,
-and the suite also passes under `TZ=UTC` (i.e. as Vercel runs it).
+**All ten phases of `docs/IMPLEMENTATION_PLAN.md` are built.** Phases 0-8 are on `main` and
+tagged **`v1`** — that is the whole site the spec asks for. Phase 9 (the extras: print stylesheet,
+QR block, OG card) is on the **`phase-1.1`** branch, not merged, waiting on a look from a human.
+`npm run lint`, `npx tsc --noEmit`, `npm run build` and `npm test` (39/39) pass on both, and the
+suite also passes under `TZ=UTC` (i.e. as Vercel runs it).
+
+**The one thing standing between this and a deploy: `NEXT_PUBLIC_SITE_URL`.** Set it in the
+Vercel project (no trailing slash) and the QR block appears and link previews resolve. Until
+then both are deliberately absent rather than wrong — see `lib/site.ts`.
 
 - Phase 0 — clean scaffold, shadcn init (Base UI, not Radix — see Decision #5), BiPi tokens, fonts.
 - Phase 1+2 — `lib/schedule.data.ts` (verbatim content) + `lib/schedule.ts` (Dublin-timezone-safe
@@ -38,8 +42,12 @@ and the suite also passes under `TZ=UTC` (i.e. as Vercel runs it).
   1-2), plus `section-heading.tsx`, which the three section headings now share. The crosswalk's
   live status is derived in `lib/schedule.ts` (`reportSections`) and tested there. `#report-
   sections` and `#report-rules` exist, so all four nav pills now land somewhere.
+- Phase 9 *(branch `phase-1.1`)* — the extras. A print stylesheet (`@media print` at the foot of
+  `globals.css` plus `print:` utilities at call sites), `qr-block.tsx` (build-time inline SVG, no
+  third-party service), `app/opengraph-image.tsx` with two `.ttf` faces vendored in
+  `assets/fonts/`, and `lib/site.ts` holding the one environment variable the site has.
 
-All four gates are met, checked in a headless browser rather than assumed:
+All five gates are met, checked in a headless browser rather than assumed:
 
 - **Phase 5** — `?date=` moves the page correctly at 1 Sept / 24 Sept / 25 Sept / 6 Oct / 30 Oct /
   20 Nov / 20 Dec / 1 Mar, plus an unparseable value (falls back to the real clock).
@@ -66,6 +74,12 @@ All four gates are met, checked in a headless browser rather than assumed:
   landing on a real target; no heading-order skips at either breakpoint; every new colour pairing
   at or above 4.5:1; no horizontal scroll 320-1920px; and the whole crosswalk, its live status
   and the rules all readable with JavaScript disabled.
+- **Phase 9** — 13 automated checks: in print, all five stage panels forced open, triggers, nav,
+  aside and sticky bar gone, footer text black rather than white-on-a-dropped-background, and the
+  QR and its URL on the sheet; on screen, the QR rendering as inline SVG in the footer, following
+  `currentColor`, laptop-only, with **zero third-party requests on the page**; and the
+  `opengraph-image` route returning a PNG that the page advertises with a large twitter card. The
+  card itself was rendered and looked at, not just status-checked.
 
 Across both: no horizontal scroll at 320 → 1920px; heading order runs h1 → h2 → h3 with no skips
 at either breakpoint; every new colour pairing measured (lowest 4.60:1, the laptop countdown
@@ -103,24 +117,33 @@ All are cheap to reverse — say the word.
    unmounted. Two reasons: Base UI omits `aria-controls` entirely while a panel is unmounted, and
    plan §5's Phase 9 print stylesheet has to force every disclosure open — CSS cannot reveal
    markup that was never rendered. Costs a little page weight, nothing else.
+9. **The print sheet is 5 A4 pages, not the plan's 1-2.** That target predates the content it has
+   to carry: five stage cards with their task lists and teacher checkpoints, seven crosswalk rows,
+   eight rules and the mark bands. At a readable size on paper they do not fit two sheets. It is
+   compressed as far as it goes without cutting anything (90% type, no page gutters, two-column
+   tasks, clean breaks so no stage card is split), and the two ways to go further are both content
+   decisions rather than tuning: drop the task lists in print (≈3 pages), or let cards split across
+   page boundaries (≈4). Say which, if either.
+10. **The QR block is laptop-and-print only, and it is absent entirely until
+   `NEXT_PUBLIC_SITE_URL` is set.** On a phone you are already on the page; and a QR code that
+   resolves to a placeholder is worse than no QR code.
+11. **The OG card names the current stage**, as plan §5 proposed. Worth knowing: WhatsApp and
+   Teams cache link previews hard, so the stage line someone sees can be days stale — the title
+   and the SEC deadline never are. Deleting that one block makes the card fully static if that
+   ever bothers anyone.
 
-## What's next: Phase 9 — extras and polish (branch `phase-1.1`)
+## What's next
 
-Deliverable, per plan §5 and its "Notes on the extras": a print stylesheet, the QR block, and the
-`opengraph-image` card. Tabular numerals (§1.3④) are already in.
+Nothing in the plan is unbuilt. What is left is decisions and a deploy:
 
-- **Print** — `@media print`: force every disclosure open (the panels *are* in the DOM even when
-  closed — Phase 7 set `keepMounted` partly for this — but they carry the `hidden` attribute and
-  `height: var(--collapsible-panel-height)`, so the stylesheet has to override `display`, the
-  `hidden` attribute and the height together), drop the nav, aside and sticky bar, black text,
-  hairline rules, print the URL in the footer. Target 1-2 A4 pages portrait.
-- **QR** — build-time inline SVG from the `qrcode` package in a server component. Nothing ships
-  to the client, no CDN call. **Blocked on the real URL**: build it against `SITE_URL` in
-  `lib/site.ts` and set that value before the QR means anything.
-- **OG card** — `app/opengraph-image.tsx` via `next/og`. Needs a raw `.ttf` of Space Grotesk
-  vendored into the repo; `next/og` cannot read `next/font`. Caveat from the plan: WhatsApp and
-  Teams cache previews hard, so a stage line in the card may lag reality by days — the title and
-  the deadline will always be right.
+1. **Review `phase-1.1` and merge it** (or say what to change first). It touches `globals.css`,
+   the footer, and adds three files; nothing in it changes what the site says.
+2. **Set `NEXT_PUBLIC_SITE_URL`** and deploy — plan §7's first open question. The QR block and
+   the link-preview card both come alive at that point, and nothing else needs editing.
+3. **Answer the open decisions above**, in particular the 4 December draft tick (#6) and the
+   print page count (#9). Both are small, and both are content calls rather than code problems.
+4. **Spot-check the SEC facts against the PDF** (plan §6, "Content") — the one acceptance item
+   that has to be done by a human who knows the brief, and it has not been done.
 
 ## Working pattern used in earlier sessions (worth continuing)
 

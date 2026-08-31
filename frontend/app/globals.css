@@ -232,3 +232,106 @@
     width: 0%;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Print — plan §5, Phase 9.
+
+   The use case is a physical noticeboard copy: a teacher prints this and pins
+   it up, or a student prints it for a folder. That means paper has different
+   needs from the screen, and this block states them once rather than making
+   every component carry print variants:
+
+   - Ink, not colour. Browsers drop background colours in print by default, so
+     the footer's ink band and the "Now" pill would otherwise print as white
+     text on white paper. Everything becomes black on white, and the state
+     words ("Now" / "Done" / "Upcoming" / "Due now") carry the state on their
+     own — which they already do on screen, by design, so nothing is lost.
+   - Hairlines, not tints. Card borders and row rules survive as light grey;
+     the halo shadow and the rounded surfaces do not.
+   - Nothing that only works on a screen. Navigation, the sticky mini-banner
+     and the disclosure triggers are `print:hidden` at their call sites; the
+     stage panels are forced open there too, which is what `keepMounted` on
+     Base UI's Collapsible exists for (see components/bipi/stage-disclosure.tsx
+     — CSS cannot reveal markup that was never rendered).
+
+   Element-level decisions live with their elements as `print:` utilities;
+   what is here is only what is genuinely page-wide. */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 11mm;
+  }
+
+  html {
+    /* The screen layout is drawn for a 390px phone and a 1024px+ laptop;
+       an A4 text column is ~188mm, and at that width the type set for a
+       laptop reads oversized. 90% pulls the whole page back a step without
+       touching a single component's own sizes. Paper resolves type far
+       better than a screen does, so this stays comfortably readable. */
+    font-size: 90%;
+  }
+
+  /* The page's own side gutters are redundant on paper — `@page` already
+     supplies the margin — and reclaiming them shortens every wrapped line
+     on the sheet. */
+  header,
+  footer,
+  main > div,
+  main > section {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  main > section {
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #000 !important;
+    /* Cards keep their outline; it just becomes a hairline. */
+    border-color: #b3b3b3 !important;
+  }
+
+  /* Keep a stage card, a crosswalk row, or a rule and its value together
+     on one page. Deliberately *not* `section`: the timeline and the
+     crosswalk are each taller than an A4 page, and asking the printer not
+     to break them costs a blank page each (measured — it took a four-page
+     document to six).  */
+  article,
+  tr,
+  dl > div {
+    break-inside: avoid;
+  }
+}
+
+/* Every stage disclosure, open on paper.
+
+   This lives in `@layer base`, and not as a `print:` utility on the panel
+   itself, for one specific reason: a closed panel carries the `hidden`
+   attribute, and Tailwind's preflight hides it with
+
+       [hidden]:where(:not([hidden="until-found"])) { display: none !important }
+
+   which is an author-origin *important* declaration in `@layer base`.
+   Important declarations reverse the layer order, so nothing in the
+   utilities layer can outrank it — `print:block!` on the panel computes to
+   `display: none` all the same (measured, not assumed). Matching it from
+   the same layer with a more specific selector is what actually wins.
+
+   The panels are in the DOM to be revealed at all only because
+   `stage-disclosure.tsx` passes `keepMounted` to Base UI's Collapsible. */
+@layer base {
+  @media print {
+    [data-slot='collapsible-content'] {
+      display: block !important;
+      height: auto !important;
+      overflow: visible !important;
+      opacity: 1 !important;
+    }
+  }
+}

@@ -247,7 +247,7 @@ export function StageCard({ stage }: StageCardProps) {
         </p>
 
         {stage.tasks.length > 0 && (
-          <ul className="mt-3.25 grid gap-1.75 lg:mt-1 lg:grid-cols-2 lg:gap-x-5.5 lg:gap-y-2">
+          <ul className="mt-3.25 grid gap-1.75 lg:mt-1 lg:grid-cols-2 lg:gap-x-5.5 lg:gap-y-2 print:grid-cols-2 print:gap-x-5.5 print:gap-y-2">
             {stage.tasks.map((task) => (
               <li key={task} className="grid grid-cols-[14px_1fr] items-start gap-2.25">
                 <span className="mt-1.5 size-1.25 rounded-full bg-(--bipi-now)" />
@@ -262,7 +262,7 @@ export function StageCard({ stage }: StageCardProps) {
         {/* Stacked on mobile, side by side on laptop. When a stage has no
             "what good looks like" copy the checkpoint takes the full width
             rather than sitting in a half-width column beside a gap. */}
-        <div className="mt-3.25 grid gap-2.25 lg:mt-3.75 lg:grid-cols-2 lg:gap-2.5">
+        <div className="mt-3.25 grid gap-2.25 lg:mt-3.75 lg:grid-cols-2 lg:gap-2.5 print:grid-cols-2 print:gap-2.5">
           {stage.whatGoodLooksLike && (
             <p className="rounded-(--bipi-r-inset) bg-background px-3 py-2.75 font-sans text-inset leading-[1.45] text-(--bipi-ink-2) lg:px-3.25">
               <span className="font-bold">What good looks like ·</span> {stage.whatGoodLooksLike}

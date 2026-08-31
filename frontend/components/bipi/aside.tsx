@@ -36,7 +36,7 @@ function AsideCard({ title, children }: { title: string; children: React.ReactNo
 
 export function Aside({ comingUp }: AsideProps) {
   return (
-    <aside className="sticky top-4 hidden gap-4 lg:grid">
+    <aside className="sticky top-4 hidden gap-4 lg:grid print:hidden">
       {comingUp.length > 0 && (
         <AsideCard title="Coming up">
           <div className="mt-3">

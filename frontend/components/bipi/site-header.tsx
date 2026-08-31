@@ -37,7 +37,7 @@ function GradeChip({ text }: { text: string }) {
 
 function NavPills({ className }: { className?: string }) {
   return (
-    <nav aria-label="Jump to section" className={cn("flex flex-wrap gap-1.5", className)}>
+    <nav aria-label="Jump to section" className={cn("flex flex-wrap gap-1.5 print:hidden", className)}>
       {HEADER.nav.map((label, i) => (
         <a
           key={NAV_IDS[i]}

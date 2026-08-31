@@ -76,7 +76,7 @@ export function StageDisclosure({ panelId, defaultOpen, children }: StageDisclos
           layer's `outline-ring/50` alone leaves it faint. */}
       <CollapsibleTrigger
         aria-controls={panelId}
-        className="flex min-h-8.5 w-full cursor-pointer items-center pt-2.25 pb-0.5 text-left font-mono text-label leading-none font-bold tracking-[.1em] text-(--bipi-now) uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--bipi-now) lg:min-h-7.5 lg:pt-2"
+        className="flex min-h-8.5 w-full cursor-pointer items-center pt-2.25 pb-0.5 text-left font-mono text-label leading-none font-bold tracking-[.1em] text-(--bipi-now) uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--bipi-now) lg:min-h-7.5 lg:pt-2 print:hidden"
       >
         {open ? "Hide detail —" : "What this involves +"}
       </CollapsibleTrigger>
@@ -89,7 +89,16 @@ export function StageDisclosure({ panelId, defaultOpen, children }: StageDisclos
           is what makes the height transition legible and also blocks
           margin collapse, which keeps the measured height honest.
           `motion-reduce:transition-none` drops the animation to an instant
-          state change — the same call-site pattern term-ruler.tsx uses. */}
+          state change — the same call-site pattern term-ruler.tsx uses.
+
+          Forcing every panel open on paper is handled in globals.css's
+          print block rather than by a `print:` utility here: a closed panel
+          carries the `hidden` attribute, and Tailwind's preflight hides
+          that with `display: none !important` from `@layer base` — which,
+          because important declarations reverse the layer order, no
+          utility-layer class can outrank (measured; even `print:block!`
+          computes to `display: none`). It works at all only because the
+          panel is `keepMounted` and therefore in the DOM to be revealed. */}
       <CollapsibleContent
         id={panelId}
         keepMounted
