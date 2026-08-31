@@ -18,7 +18,13 @@
  */
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { deriveSchedule } from './schedule.ts';
+import {
+  countdownText,
+  daysLeftWord,
+  deriveSchedule,
+  formatTodayLabel,
+  parsePreviewDate,
+} from './schedule.ts';
 
 /**
  * The UTC offset (in ms) that `timeZone` actually observes at `instant`,
@@ -145,5 +151,137 @@ describe('deriveSchedule — §3.3 verification table', () => {
     assert.equal(result.daysLeft, 0);
     assert.equal(result.termPct, 100);
     assert.equal(result.weekNumber, 15);
+  });
+});
+
+describe('deriveSchedule — isDueToday', () => {
+  test('is false while the current stage is still ahead of its due date', () => {
+    assert.equal(deriveSchedule(dublinDateTime('2026-09-24T21:00:00')).isDueToday, false);
+  });
+
+  test('is true on the due date itself — the day the countdown first reads 0', () => {
+    const result = deriveSchedule(dublinDateTime('2026-09-25T21:00:00'));
+    assert.equal(result.daysLeft, 0);
+    assert.equal(result.isDueToday, true);
+  });
+
+  test('is false once the due date has passed, even though the countdown clamps back to 0', () => {
+    // The distinction that matters: past the end of the term the last stage
+    // stays "current" and `daysLeft` clamps to 0 forever, so countdown copy
+    // keyed off `daysLeft === 0` alone would claim "Due today" every day
+    // from 12 Dec onwards.
+    for (const when of ['2026-12-20T09:00:00', '2027-03-01T09:00:00']) {
+      const result = deriveSchedule(dublinDateTime(when));
+      assert.equal(result.daysLeft, 0, when);
+      assert.equal(result.isDueToday, false, when);
+    }
+  });
+});
+
+describe('deriveSchedule — nextStage', () => {
+  test('is the stage immediately after the current one', () => {
+    const result = deriveSchedule(dublinDateTime('2026-10-06T09:00:00'));
+    assert.equal(result.currentStage.id, 'stage-4');
+    assert.equal(result.nextStage?.id, 'catchup');
+    assert.equal(result.nextStage?.state, 'upcoming');
+  });
+
+  test('is null on the last stage, rather than pointing back at the current one', () => {
+    const result = deriveSchedule(dublinDateTime('2026-11-20T09:00:00'));
+    assert.equal(result.currentStage.id, 'stage-6');
+    assert.equal(result.nextStage, null);
+  });
+});
+
+describe('daysLeftWord', () => {
+  test('is singular only at exactly one day', () => {
+    assert.equal(daysLeftWord(0), 'days left');
+    assert.equal(daysLeftWord(1), 'day left');
+    assert.equal(daysLeftWord(2), 'days left');
+    assert.equal(daysLeftWord(24), 'days left');
+  });
+});
+
+describe('formatTodayLabel', () => {
+  test('formats the Dublin civil date, reading the epoch as UTC', () => {
+    const result = deriveSchedule(dublinDateTime('2026-10-06T09:00:00'));
+    assert.equal(formatTodayLabel(result.today), '6 Oct 2026');
+  });
+
+  test('does not slip a day when the host machine is west of Greenwich', () => {
+    // `today` is a Dublin civil date pinned to UTC midnight. Formatting it
+    // in local time on, say, a US-hosted CI box would render the previous
+    // day; the formatter pins `timeZone: 'UTC'` to prevent that. Asserting
+    // the epoch directly keeps this test meaningful wherever it runs.
+    assert.equal(formatTodayLabel(Date.parse('2026-09-01T00:00:00Z')), '1 Sept 2026');
+  });
+});
+
+describe('parsePreviewDate', () => {
+  const fallback = new Date('2026-01-01T00:00:00Z');
+
+  test('resolves a valid ?date= to that Dublin calendar day, at either UTC offset', () => {
+    // 6 Oct is inside Irish Summer Time (UTC+1), 1 Dec is not (UTC+0):
+    // both must round-trip to the requested date, not the day either side.
+    for (const iso of ['2026-10-06', '2026-12-01']) {
+      const result = deriveSchedule(parsePreviewDate(iso, fallback));
+      assert.equal(formatTodayLabel(result.today), formatTodayLabel(Date.parse(`${iso}T00:00:00Z`)), iso);
+    }
+  });
+
+  test('drives the current stage — the ?date= gate for all five plan test dates', () => {
+    const expected: [string, string][] = [
+      ['2026-09-01', 'stage-3'],
+      ['2026-10-06', 'stage-4'],
+      ['2026-10-30', 'catchup'],
+      ['2026-11-20', 'stage-6'],
+      ['2026-12-20', 'stage-6'],
+    ];
+    for (const [iso, stageId] of expected) {
+      assert.equal(deriveSchedule(parsePreviewDate(iso, fallback)).currentStage.id, stageId, iso);
+    }
+  });
+
+  test('takes the first value when the param is repeated in the query string', () => {
+    assert.equal(parsePreviewDate(['2026-10-06', '2026-11-20'], fallback).toISOString(),
+      '2026-10-06T12:00:00.000Z');
+  });
+
+  test('falls back to `now` for anything it cannot make sense of', () => {
+    const rejected = [
+      undefined,          // no ?date= at all — the normal case
+      '',
+      'today',
+      '2026-10-6',        // not zero-padded
+      '06/10/2026',
+      '2026-10-06T09:00', // date-only, deliberately: no time component accepted
+      '2026-13-01',       // impossible month
+      '2026-02-30',       // impossible day — JS would silently roll this to 2 March
+      '2027-02-29',       // not a leap year
+      [],
+    ];
+    for (const input of rejected) {
+      assert.equal(parsePreviewDate(input, fallback), fallback, JSON.stringify(input));
+    }
+  });
+
+  test('defaults to the real clock when no override and no explicit `now` is given', () => {
+    const before = Date.now();
+    const result = parsePreviewDate(undefined).getTime();
+    assert.ok(result >= before && result <= Date.now());
+  });
+});
+
+describe('countdownText', () => {
+  test('counts down, pluralises, and swaps in "Due today" on the due date', () => {
+    assert.equal(countdownText(10, false), '10 days left');
+    assert.equal(countdownText(1, false), '1 day left');
+    assert.equal(countdownText(0, true), 'Due today');
+  });
+
+  test('keeps the literal zero once the due date has passed', () => {
+    // Reachable only past the end of the term, where the last stage stays
+    // current with a clamped countdown — "Due today" would be false there.
+    assert.equal(countdownText(0, false), '0 days left');
   });
 });

@@ -55,21 +55,32 @@
      add a new named step for a pixel value that's genuinely new. Font-size only —
      line-height/letter-spacing stay as the existing leading-[…]/tracking-[…] arbitrary
      values alongside these. */
-  --text-chip:          9px;    /* grade chip, mobile */
-  --text-eyebrow:       9.5px;  /* header eyebrow, mobile + laptop; stage card eyebrow */
+  --text-chip:          9px;    /* grade chip, mobile; term-progress label row; "Next up" label */
+  --text-eyebrow:       9.5px;  /* header eyebrow, mobile + laptop; stage card eyebrow;
+                                    "You are here" eyebrow and countdown caption */
   --text-label:         10px;   /* grade chip, laptop; footer meta/disclaimer line; stage
                                     card state pill (raised from 8.5px in the source design,
                                     plan §1.1④ type-floor fix) and report badge */
-  --text-pill:          10.5px; /* nav pill, mobile; stage card date */
-  --text-pill-lg:       11px;   /* nav pill, laptop; stage card report-section name, beside the report badge */
-  --text-inset:         11.5px; /* stage card "what good looks like" / teacher-checkpoint inset text */
+  --text-pill:          10.5px; /* nav pill, mobile; stage card date; "You are here" stage line, laptop */
+  --text-pill-lg:       11px;   /* nav pill, laptop; stage card report-section name, beside the report
+                                    badge; "Next up" short date */
+  --text-inset:         11.5px; /* stage card "what good looks like" / teacher-checkpoint inset text;
+                                    "You are here" report line, mobile */
   --text-task:          12px;   /* stage card task-list item */
-  --text-body:          12.5px; /* footer note paragraph; stage card description */
-  --text-standfirst:    13px;   /* header standfirst, mobile */
-  --text-standfirst-lg: 14px;   /* header standfirst, laptop; footer heading */
-  --text-card-title:    17px;   /* stage card title, mobile */
+  --text-body:          12.5px; /* footer note paragraph; stage card description; "Next up" stage title */
+  --text-standfirst:    13px;   /* header standfirst, mobile; "You are here" what's-due line, mobile */
+  --text-standfirst-lg: 14px;   /* header standfirst, laptop; footer heading; "You are here"
+                                    what's-due paragraph, laptop */
+  --text-card-title:    17px;   /* stage card title, mobile; "You are here" countdown number and its
+                                    "Due today" replacement, mobile */
+  --text-section-title: 19px;   /* section h2 ("What's left this term"), mobile */
+  --text-panel-title:   23px;   /* "You are here" stage title, mobile */
+  --text-section-title-lg: 24px; /* section h2, laptop */
   --text-h1-mobile:     26px;   /* header h1, mobile */
+  --text-panel-title-lg: 30px;  /* "You are here" stage title, laptop; its "Due today" countdown
+                                    replacement, laptop */
   --text-display-lg:    38px;   /* header h1, laptop */
+  --text-display-xl:    54px;   /* "You are here" countdown number, laptop */
 }
 
 :root {

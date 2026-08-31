@@ -1,48 +1,59 @@
 import { SiteHeader } from "@/components/bipi/site-header";
 import { SiteFooter } from "@/components/bipi/site-footer";
+import { StickyNowBar } from "@/components/bipi/sticky-now-bar";
 import { Timeline } from "@/components/bipi/timeline";
-import { deriveSchedule } from "@/lib/schedule";
+import { YouAreHere } from "@/components/bipi/you-are-here";
+import { countdownText, deriveSchedule, parsePreviewDate } from "@/lib/schedule";
 
-/**
- * TEMPORARY (Phase 4 only) — a fixed preview date so the stage-card
- * timeline actually shows all three states (done / current / upcoming)
- * before the real school term begins; today's real date would currently
- * derive every card as `current`/`upcoming` with nothing `done`. 6 Oct 2026
- * is one of the implementation plan's own pre-verified test dates (§3.2:
- * "Stage 4, 10 days left") and produces a genuine mix of all three states
- * among the five real stages (1 done / 1 current / 3 upcoming) — real
- * `deriveSchedule` output for a real date, not a mocked/fake state. Noon
- * UTC keeps the instant safely
- * inside the Dublin calendar day regardless of DST (Ireland is UTC+1 on
- * this date), matching the civil-date rule `dublinToday` implements.
- *
- * Superseded by Phase 5, which wires the real `?date=` query param
- * (falling back to a real `new Date()`) through this page — see plan §4.1.
- * Do not let this linger past that phase: docs/CLAUDE.md's rule is not to
- * hardcode a fake "today" in production code without isolating it exactly
- * like this, and documenting it, which is what this constant is doing.
- */
-const PHASE_4_PREVIEW_DATE = new Date("2026-10-06T12:00:00Z");
-
-export default function Home() {
-  const { stages } = deriveSchedule(PHASE_4_PREVIEW_DATE);
+export default async function Home({ searchParams }: PageProps<"/">) {
+  // Awaiting `searchParams` is what opts this page into dynamic rendering
+  // (plan §4.1) — deliberate, and the only correct choice here: the page
+  // does no I/O, so an SSR pass is a handful of pure function calls, while
+  // static generation would freeze `new Date()` at build time and leave the
+  // countdown wrong forever. `?date=YYYY-MM-DD` is the preview override
+  // (decision 6); anything else it cannot parse falls back to the real
+  // clock, so a mistyped link still renders a correct page.
+  const { date } = await searchParams;
+  const schedule = deriveSchedule(parsePreviewDate(date));
 
   return (
     <>
       <SiteHeader />
-      <main className="flex-1 px-4.5 pt-4 pb-4.5">
-        {/* Phase 4 preview mount: just enough to see the three card states
-            side by side (build-order gate: "Three states visually
-            distinct"). The real "Timeline" section chrome — eyebrow, H2
-            ("What's left this term"), mobile hint copy, and the
-            `#timeline` id site-header.tsx's nav pill already links to — is
-            deliberately not built here, so as not to preempt whichever
-            later phase composes the full page with its exact copy/markup
-            (see timeline.tsx's own note). Known, accepted consequence:
-            until that section header exists, this block sits between the
-            header's <h1> and the footer with no <h2> in between, even
-            though StageCard itself correctly emits <h3> for its title. */}
-        <Timeline stages={stages} />
+      <main className="flex-1">
+        <YouAreHere schedule={schedule} />
+
+        {/* Sits here rather than inside the section above so that it has the
+            rest of the page to stick against: `position: sticky` only pins
+            an element while its own parent is still in view. */}
+        <StickyNowBar
+          stageLabel={schedule.currentStage.label}
+          countdown={countdownText(schedule.daysLeft, schedule.isDueToday)}
+        />
+
+        {/* The `#timeline` anchor site-header.tsx's second nav pill points
+            at, with the section chrome from README §5. `scroll-mt` is larger
+            on mobile than the `scroll-mt-6` used elsewhere because the
+            sticky bar above would otherwise cover the heading it jumps to. */}
+        <section
+          id="timeline"
+          className="scroll-mt-10 px-4.5 pt-5 pb-4.5 lg:scroll-mt-6 lg:px-10 lg:pt-6 lg:pb-7.5"
+        >
+          <p className="font-mono text-eyebrow font-bold tracking-[.16em] text-muted-foreground uppercase">
+            Timeline
+          </p>
+          <h2 className="mt-2.25 font-heading text-section-title leading-[1.2] font-bold tracking-[-.02em] text-foreground lg:text-section-title-lg lg:leading-[1.18] lg:tracking-[-.025em]">
+            What&rsquo;s left this term
+          </h2>
+          {/* Mobile-only: on laptop the cards are wide enough to show their
+              detail without a disclosure hint. The tap affordance it refers
+              to arrives with the Collapsible in Phase 7. */}
+          <p className="mt-1.75 font-sans text-task leading-[1.5] text-muted-foreground lg:hidden">
+            Tap a stage for what it involves.
+          </p>
+          <div className="mt-5 lg:mt-4.5">
+            <Timeline stages={schedule.stages} />
+          </div>
+        </section>
       </main>
       <SiteFooter />
     </>

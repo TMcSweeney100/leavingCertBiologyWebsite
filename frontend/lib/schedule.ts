@@ -46,6 +46,16 @@ export type DerivedSchedule = {
   currentStage: StageWithState;
   /** Days remaining until `currentStage`'s due date. Never negative. */
   daysLeft: number;
+  /**
+   * True only on `currentStage`'s due date itself. `daysLeft === 0` is NOT
+   * the same test: it is also what the clamp returns once a due date has
+   * passed, which happens for real once the term ends and the last stage
+   * stays "current" forever after (plan §3.3's 20 Dec / 1 Mar rows). Copy
+   * that says "Due today" must branch on this, not on the countdown.
+   */
+  isDueToday: boolean;
+  /** The stage after `currentStage`, or `null` when it is the last one. */
+  nextStage: StageWithState | null;
   /** Percentage through the term, clamped to [2, 100]. */
   termPct: number;
   /** Week number of the term, clamped to [1, 15]. */
@@ -86,7 +96,82 @@ export function deriveSchedule(now: Date = new Date()): DerivedSchedule {
     stages,
     currentStage,
     daysLeft: Math.max(0, Math.round((day(currentStage.dueDate) - today) / MS_PER_DAY)),
+    isDueToday: day(currentStage.dueDate) === today,
+    nextStage: stages[currentIndex + 1] ?? null,
     termPct: clamp(2, 100, Math.round(((today - termStart) / (termEnd - termStart)) * 100)),
     weekNumber: clamp(1, 15, Math.floor((today - termStart) / (7 * MS_PER_DAY)) + 1),
   };
+}
+
+/** Pluralises the countdown caption: "1 day left", "10 days left". */
+export function daysLeftWord(daysLeft: number): string {
+  return daysLeft === 1 ? 'day left' : 'days left';
+}
+
+/**
+ * What the countdown says on the due date itself, in place of a literal
+ * "0" (plan §1.2: a student opening the page on 16 October should not be
+ * met with a large indigo zero). Exported so the panel — which renders the
+ * number and its caption as two separately-styled pieces — and the sticky
+ * mini-banner, which renders one string, cannot drift apart.
+ */
+export const DUE_TODAY = 'Due today';
+
+/** The countdown as a single phrase: "10 days left", "1 day left", "Due today". */
+export function countdownText(daysLeft: number, isDueToday: boolean): string {
+  return isDueToday ? DUE_TODAY : `${daysLeft} ${daysLeftWord(daysLeft)}`;
+}
+
+const TODAY_LABEL = new Intl.DateTimeFormat('en-IE', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+
+/**
+ * Formats a `DerivedSchedule['today']` epoch for display ("6 Oct 2026").
+ *
+ * `timeZone: 'UTC'` is not optional here: `today` is a *Dublin civil date*
+ * already normalised to UTC midnight, so formatting it in any other zone
+ * would shift it back a day for anyone west of Greenwich — reintroducing
+ * exactly the off-by-one this module exists to prevent.
+ */
+export function formatTodayLabel(today: number): string {
+  return TODAY_LABEL.format(today);
+}
+
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+/**
+ * Resolves the `?date=YYYY-MM-DD` preview override (plan §4.1 / decision 6)
+ * to the `now` that should be fed to `deriveSchedule`, falling back to
+ * `now` (the real clock) for a missing, malformed or impossible value. The
+ * override is a testing affordance, not a feature: anything it cannot make
+ * sense of degrades silently to today rather than erroring, so a mistyped
+ * link still shows a correct page.
+ *
+ * Two details that are load-bearing:
+ *
+ * - **Noon UTC**, not midnight. The returned instant is only ever read back
+ *   through `dublinToday`, and noon UTC lands inside the same Dublin
+ *   calendar day at either offset the country uses (UTC+0 / UTC+1), so the
+ *   requested date is the date you get all year round.
+ * - **The round-trip check.** `new Date('2026-02-30T12:00:00Z')` does not
+ *   throw and is not `Invalid Date`; JS rolls it over to 2 March. Verified,
+ *   not assumed. Re-formatting the parsed instant and comparing it against
+ *   the input string is what rejects impossible calendar dates.
+ */
+export function parsePreviewDate(
+  param: string | string[] | undefined,
+  now: Date = new Date(),
+): Date {
+  const iso = Array.isArray(param) ? param[0] : param;
+  if (!iso || !ISO_DATE.test(iso)) return now;
+
+  const parsed = new Date(`${iso}T12:00:00Z`);
+  if (Number.isNaN(parsed.getTime())) return now;
+  if (parsed.toISOString().slice(0, 10) !== iso) return now;
+
+  return parsed;
 }
