@@ -352,3 +352,84 @@ describe('deriveSchedule — comingUp', () => {
     }
   });
 });
+
+describe('deriveSchedule — reportSections (the crosswalk)', () => {
+  const statuses = (when: string) =>
+    Object.fromEntries(
+      deriveSchedule(dublinDateTime(when)).reportSections.map((r) => [r.section, r.statusLabel]),
+    );
+
+  test('always lists all seven sections, in the order the data file gives them', () => {
+    const result = deriveSchedule(dublinDateTime('2026-10-06T09:00:00'));
+    assert.deepEqual(
+      result.reportSections.map((r) => r.section),
+      ['§1', '§2', '§3', '§4', '§5', '§6', '§7'],
+    );
+  });
+
+  test('§1 and §2 are done at every point in the term (written in 5th Year)', () => {
+    for (const when of [
+      '2026-09-01T09:00:00',
+      '2026-10-06T09:00:00',
+      '2026-12-20T09:00:00',
+      '2027-03-01T09:00:00',
+    ]) {
+      const s = statuses(when);
+      assert.equal(s['§1'], 'Done', when);
+      assert.equal(s['§2'], 'Done', when);
+    }
+  });
+
+  test('1 Sept — Stage 3 is current, so §3 is due now and §4-§7 are still to come', () => {
+    assert.deepEqual(statuses('2026-09-01T09:00:00'), {
+      '§1': 'Done',
+      '§2': 'Done',
+      '§3': 'Due now',
+      '§4': 'To come',
+      '§5': 'To come',
+      '§6': 'To come',
+      '§7': 'To come',
+    });
+  });
+
+  test('6 Oct — Stage 4 is current, so §3 has flipped to done and §4 is due now', () => {
+    assert.deepEqual(statuses('2026-10-06T09:00:00'), {
+      '§1': 'Done',
+      '§2': 'Done',
+      '§3': 'Done',
+      '§4': 'Due now',
+      '§5': 'To come',
+      '§6': 'To come',
+      '§7': 'To come',
+    });
+  });
+
+  test('30 Oct — the catch-up window is current, so nothing new is due', () => {
+    const s = statuses('2026-10-30T09:00:00');
+    assert.equal(Object.values(s).filter((v) => v === 'Due now').length, 0);
+    assert.equal(s['§4'], 'Done');
+    assert.equal(s['§5'], 'To come');
+  });
+
+  test('13 Nov — §5 and §6 share Stage 5, so both read due now together', () => {
+    const s = statuses('2026-11-13T09:00:00');
+    assert.equal(s['§5'], 'Due now');
+    assert.equal(s['§6'], 'Due now');
+    assert.equal(s['§7'], 'To come');
+  });
+
+  test('20 Dec — past the end of term, Stage 6 stays current and §7 with it', () => {
+    const s = statuses('2026-12-20T09:00:00');
+    assert.equal(s['§7'], 'Due now');
+    assert.equal(s['§5'], 'Done');
+  });
+
+  test('status and statusLabel never disagree', () => {
+    const labels = { 'due-now': 'Due now', done: 'Done', 'to-come': 'To come' };
+    for (const when of ['2026-09-01T09:00:00', '2026-11-13T09:00:00', '2027-03-01T09:00:00']) {
+      for (const row of deriveSchedule(dublinDateTime(when)).reportSections) {
+        assert.equal(row.statusLabel, labels[row.status], `${when} ${row.section}`);
+      }
+    }
+  });
+});

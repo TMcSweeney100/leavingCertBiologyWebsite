@@ -12,7 +12,13 @@
  * only then do arithmetic — entirely in UTC-midnight epoch terms, so no
  * calculation ever crosses a DST offset change.
  */
-import { STAGES, TERM, type Stage, type StageState } from './schedule.data.ts';
+import {
+  REPORT_SECTIONS,
+  STAGES,
+  TERM,
+  type Stage,
+  type StageState,
+} from './schedule.data.ts';
 
 const MS_PER_DAY = 86_400_000;
 
@@ -37,6 +43,44 @@ const clamp = (min: number, max: number, value: number): number =>
 /** A stage annotated with its derived state as of a given `now`. */
 export type StageWithState = Stage & { state: StageState };
 
+/**
+ * One row of the report-section crosswalk, as `schedule.data.ts` writes it.
+ *
+ * Declared here rather than there because that file is copied byte-for-byte
+ * from the design handoff and must stay that way (see its header). Its
+ * `REPORT_SECTIONS` literal infers as a union — rows carrying `alwaysDone`
+ * and rows carrying `stageId` — which is awkward to read from; this widens
+ * both shapes into one, with the two distinguishing fields optional.
+ */
+export type ReportSectionRow = {
+  section: string;
+  name: string;
+  writtenDuring: string;
+  dueBy: string;
+  alwaysDone?: boolean;
+  stageId?: string;
+};
+
+/**
+ * The live status of a report section, derived from the state of the stage
+ * it is written during: "Due now" on the current stage, "Done" once that
+ * stage has passed, "To come" otherwise. Two sections (§5 and §6) share
+ * Stage 5, so they flip together — which is correct, they are due together.
+ */
+export type ReportSectionStatus = 'due-now' | 'done' | 'to-come';
+
+export type ReportSectionWithStatus = ReportSectionRow & {
+  status: ReportSectionStatus;
+  /** The word the status column prints. Never conveyed by colour alone. */
+  statusLabel: string;
+};
+
+const STATUS_LABEL: Record<ReportSectionStatus, string> = {
+  'due-now': 'Due now',
+  done: 'Done',
+  'to-come': 'To come',
+};
+
 export type DerivedSchedule = {
   /** Today's civil date in Dublin, as a UTC-midnight epoch (ms). */
   today: number;
@@ -58,11 +102,40 @@ export type DerivedSchedule = {
   nextStage: StageWithState | null;
   /** Every stage after `currentStage`, in order. Empty on the last stage. */
   comingUp: StageWithState[];
+  /** All seven report sections, each with its live crosswalk status. */
+  reportSections: ReportSectionWithStatus[];
   /** Percentage through the term, clamped to [2, 100]. */
   termPct: number;
   /** Week number of the term, clamped to [1, 15]. */
   weekNumber: number;
 };
+
+/**
+ * Annotates every report section with the status the crosswalk prints.
+ *
+ * A section takes the state of the stage it is written during, looked up by
+ * `stageId` — never by position, so reordering `REPORT_SECTIONS` or adding a
+ * section cannot silently mis-map it. Sections marked `alwaysDone` (§1 and
+ * §2, written in 5th Year) have no stage on this page's timeline and are
+ * always "Done"; so is any row whose `stageId` no longer matches a stage,
+ * which can only happen if the data file is edited inconsistently and is
+ * better rendered as done-and-quiet than crashed on.
+ */
+function reportSectionStatuses(stages: StageWithState[]): ReportSectionWithStatus[] {
+  const rows: ReportSectionRow[] = REPORT_SECTIONS;
+
+  return rows.map((row) => {
+    const stage = row.alwaysDone ? undefined : stages.find((s) => s.id === row.stageId);
+    const status: ReportSectionStatus =
+      stage === undefined || stage.state === 'done'
+        ? 'done'
+        : stage.state === 'current'
+          ? 'due-now'
+          : 'to-come';
+
+    return { ...row, status, statusLabel: STATUS_LABEL[status] };
+  });
+}
 
 /**
  * Derives the full schedule view — per-stage states, the current stage, the
@@ -102,6 +175,7 @@ export function deriveSchedule(now: Date = new Date()): DerivedSchedule {
     isDueToday: day(currentStage.dueDate) === today,
     nextStage: comingUp[0] ?? null,
     comingUp,
+    reportSections: reportSectionStatuses(stages),
     termPct: clamp(2, 100, Math.round(((today - termStart) / (termEnd - termStart)) * 100)),
     weekNumber: clamp(1, 15, Math.floor((today - termStart) / (7 * MS_PER_DAY)) + 1),
   };

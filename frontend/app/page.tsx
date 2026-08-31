@@ -1,4 +1,9 @@
 import { Aside } from "@/components/bipi/aside";
+import { CompletedStrip } from "@/components/bipi/completed-strip";
+import { MarksCard } from "@/components/bipi/marks-card";
+import { ReportCrosswalk } from "@/components/bipi/report-crosswalk";
+import { ReportRules } from "@/components/bipi/report-rules";
+import { SectionHeading } from "@/components/bipi/section-heading";
 import { SiteHeader } from "@/components/bipi/site-header";
 import { SiteFooter } from "@/components/bipi/site-footer";
 import { StickyNowBar } from "@/components/bipi/sticky-now-bar";
@@ -31,6 +36,11 @@ export default async function Home({ searchParams }: PageProps<"/">) {
           countdown={countdownText(schedule.daysLeft, schedule.isDueToday)}
         />
 
+        {/* Stages 1-2, which timeline.tsx filters out of the rail. Above
+            the timeline rather than below it because it reads as the line
+            the rail continues from. */}
+        <CompletedStrip />
+
         {/* The `#timeline` anchor site-header.tsx's second nav pill points
             at, with the section chrome from README §5. `scroll-mt` is larger
             on mobile than the `scroll-mt-6` used elsewhere because the
@@ -47,15 +57,11 @@ export default async function Home({ searchParams }: PageProps<"/">) {
               collapses to one column and drops the aside entirely. */}
           <div className="grid items-start gap-6.5 lg:grid-cols-[1fr_300px]">
             <div>
-              <p className="font-mono text-eyebrow font-bold tracking-[.16em] text-muted-foreground uppercase">
-                Timeline
-              </p>
-              <h2 className="mt-2.25 font-heading text-section-title leading-[1.2] font-bold tracking-[-.02em] text-foreground lg:text-section-title-lg lg:leading-[1.18] lg:tracking-[-.025em]">
-                What&rsquo;s left this term
-              </h2>
+              <SectionHeading eyebrow="Timeline" title="What’s left this term" />
               {/* Mobile-only: on laptop the cards are wide enough to show
-                  their detail without a disclosure hint. The tap affordance
-                  it refers to arrives with the Collapsible in Phase 7. */}
+                  their detail without a disclosure hint — and every card
+                  carries the disclosure trigger itself, so this is a hint
+                  about where to tap, not the only affordance. */}
               <p className="mt-1.75 font-sans text-task leading-[1.5] text-muted-foreground lg:hidden">
                 Tap a stage for what it involves.
               </p>
@@ -64,6 +70,41 @@ export default async function Home({ searchParams }: PageProps<"/">) {
               </div>
             </div>
             <Aside comingUp={schedule.comingUp} />
+          </div>
+        </section>
+
+        {/* `#report-sections` — the third nav pill. White band, so the
+            crosswalk reads as a table on a surface rather than as more of
+            the page ground the cards sit on. */}
+        <section
+          id="report-sections"
+          className="scroll-mt-10 border-t border-border bg-card px-4.5 py-5 lg:scroll-mt-6 lg:px-10 lg:pt-7 lg:pb-7.5"
+        >
+          <SectionHeading
+            eyebrow="Report sections"
+            title="All seven sections, and when each one should be written"
+          />
+          <div className="mt-3.5 lg:mt-4.5">
+            <ReportCrosswalk sections={schedule.reportSections} />
+          </div>
+        </section>
+
+        {/* `#report-rules` — the fourth and last nav pill. Reference content
+            from the SEC brief: the formatting rules and the mark split.
+            Laptop puts the marks card in a fixed 380px column beside the
+            rules; mobile stacks them. */}
+        <section
+          id="report-rules"
+          className="scroll-mt-10 border-t border-border px-4.5 py-5 lg:scroll-mt-6 lg:px-10 lg:pt-7 lg:pb-7.5"
+        >
+          <div className="grid items-start gap-3.5 lg:grid-cols-[1fr_380px] lg:gap-8.5">
+            <div>
+              <SectionHeading eyebrow="Report rules" title="The bits people lose marks on" />
+              <div className="mt-3.5 lg:mt-4">
+                <ReportRules />
+              </div>
+            </div>
+            <MarksCard />
           </div>
         </section>
       </main>

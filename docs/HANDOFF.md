@@ -6,10 +6,11 @@ detail. This file is just "where are we" so you don't have to reconstruct it fro
 
 ## Status
 
-**Phases 0-7 of `docs/IMPLEMENTATION_PLAN.md` are done.** Phases 0-6 are committed to `main`;
-Phase 7 is implemented and verified but **not committed** — review the diff first if you want to.
-`npm run lint`, `npx tsc --noEmit`, `npm run build` and `npm test` (31/31) all pass, and the suite
-also passes under `TZ=UTC` (i.e. as Vercel runs it).
+**Phases 0-8 of `docs/IMPLEMENTATION_PLAN.md` are done and committed to `main`, and that is
+v1** — every section of the site the spec asks for now exists. Only Phase 9 (extras and polish:
+print stylesheet, QR block, OG card) is left, and it is being built on the `phase-1.1` branch.
+`npm run lint`, `npx tsc --noEmit`, `npm run build` and `npm test` (39/39) all pass at the v1 tag,
+and the suite also passes under `TZ=UTC` (i.e. as Vercel runs it).
 
 - Phase 0 — clean scaffold, shadcn init (Base UI, not Radix — see Decision #5), BiPi tokens, fonts.
 - Phase 1+2 — `lib/schedule.data.ts` (verbatim content) + `lib/schedule.ts` (Dublin-timezone-safe
@@ -31,8 +32,14 @@ also passes under `TZ=UTC` (i.e. as Vercel runs it).
   Trigger copy flips "What this involves +" / "Hide detail —", the current stage is open in the
   server-rendered HTML, panels are independent, and the mobile hint "Tap a stage for what it
   involves." is now true.
+- Phase 8 — the remaining sections. `report-crosswalk.tsx` (all seven sections; a real `<table>`
+  with scoped headers on laptop, a three-column list on mobile), `report-rules.tsx` (the eight
+  SEC rules as a `<dl>`), `marks-card.tsx` (the 200-mark split), `completed-strip.tsx` (Stages
+  1-2), plus `section-heading.tsx`, which the three section headings now share. The crosswalk's
+  live status is derived in `lib/schedule.ts` (`reportSections`) and tested there. `#report-
+  sections` and `#report-rules` exist, so all four nav pills now land somewhere.
 
-All three gates are met, checked in a headless browser rather than assumed:
+All four gates are met, checked in a headless browser rather than assumed:
 
 - **Phase 5** — `?date=` moves the page correctly at 1 Sept / 24 Sept / 25 Sept / 6 Oct / 30 Oct /
   20 Nov / 20 Dec / 1 Mar, plus an unparseable value (falls back to the real clock).
@@ -51,6 +58,14 @@ All three gates are met, checked in a headless browser rather than assumed:
   off, both landing on the identical final height; with JavaScript disabled the current stage is
   still open and the whole timeline still readable; no horizontal scroll at 320-1920px with every
   panel open; trigger text measures 5.66:1.
+- **Phase 8** — 17 automated browser checks, all green: the gate itself (the crosswalk's "Due
+  now" and "Done" track `?date=` across eight dates, including both boundary days and the
+  after-term fallback); all seven sections in the data file's order; the laptop table's scoped
+  headers and its exact `56 / 1.5fr / 1fr / 1fr / 100` column ratio; the eight rules and the four
+  mark bands summing to the brief's 200; `COMPLETED_STRIP` rendered verbatim; every nav pill
+  landing on a real target; no heading-order skips at either breakpoint; every new colour pairing
+  at or above 4.5:1; no horizontal scroll 320-1920px; and the whole crosswalk, its live status
+  and the rules all readable with JavaScript disabled.
 
 Across both: no horizontal scroll at 320 → 1920px; heading order runs h1 → h2 → h3 with no skips
 at either breakpoint; every new colour pairing measured (lowest 4.60:1, the laptop countdown
@@ -89,31 +104,23 @@ All are cheap to reverse — say the word.
    plan §5's Phase 9 print stylesheet has to force every disclosure open — CSS cannot reveal
    markup that was never rendered. Costs a little page weight, nothing else.
 
-## What's next: Phase 8 — the remaining sections
+## What's next: Phase 9 — extras and polish (branch `phase-1.1`)
 
-Deliverable: the report-section crosswalk (all seven, with a live status), the report rules, the
-marks card, and the completed strip for Stages 1-2. Gate: the crosswalk's "Due now" tracks
-`?date=`.
+Deliverable, per plan §5 and its "Notes on the extras": a print stylesheet, the QR block, and the
+`opengraph-image` card. Tabular numerals (§1.3④) are already in.
 
-What to know before starting:
-
-- Four new server components, per plan §4.2: `report-crosswalk.tsx`, `report-rules.tsx`,
-  `marks-card.tsx`, `completed-strip.tsx`. None of them needs `"use client"` — Phase 7's
-  `stage-disclosure.tsx` should stay the only file under `components/bipi/` that has it.
-- The spec for all four is `docs/design_handoff_bipi_schedule/README.md` §6 and §7 (columns, type,
-  the mobile 3-column collapse, the 8 rules, the 200-mark bands). Status is **live**: a section is
-  "Due now" when its stage is the current stage, "Done" when its stage is earlier, "To come"
-  otherwise — derive it from `schedule.ts`, never from a hardcoded list.
-- Two nav anchors are still missing and this phase adds them: `#report-sections` and
-  `#report-rules`, both with `scroll-mt-10 lg:scroll-mt-6` (they sit below the sticky mini-banner
-  on mobile). `site-header.tsx` already emits all four links from its `NAV_IDS` constant.
-- `completed-strip.tsx` renders `COMPLETED_STRIP` and covers the two `isAlwaysDone` stages, which
-  `timeline.tsx` deliberately filters out of the rail.
-- shadcn `Table` is what plan §4.2 lists for the crosswalk — it is **not installed yet**
-  (`components/ui/` has `button`, `progress`, `collapsible`). Check what its markup actually costs
-  you against the design's grid before adding it; the mobile layout is a 3-column grid, not a
-  table, so a plain semantic `<table>` or a grid may well be simpler. Whatever you pick, read
-  `.claude/skills/shadcn/rules/base-vs-radix.md` first — this project is Base UI, not Radix.
+- **Print** — `@media print`: force every disclosure open (the panels *are* in the DOM even when
+  closed — Phase 7 set `keepMounted` partly for this — but they carry the `hidden` attribute and
+  `height: var(--collapsible-panel-height)`, so the stylesheet has to override `display`, the
+  `hidden` attribute and the height together), drop the nav, aside and sticky bar, black text,
+  hairline rules, print the URL in the footer. Target 1-2 A4 pages portrait.
+- **QR** — build-time inline SVG from the `qrcode` package in a server component. Nothing ships
+  to the client, no CDN call. **Blocked on the real URL**: build it against `SITE_URL` in
+  `lib/site.ts` and set that value before the QR means anything.
+- **OG card** — `app/opengraph-image.tsx` via `next/og`. Needs a raw `.ttf` of Space Grotesk
+  vendored into the repo; `next/og` cannot read `next/font`. Caveat from the plan: WhatsApp and
+  Teams cache previews hard, so a stage line in the card may lag reality by days — the title and
+  the deadline will always be right.
 
 ## Working pattern used in earlier sessions (worth continuing)
 
