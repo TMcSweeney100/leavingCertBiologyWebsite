@@ -1,15 +1,17 @@
+import { StageDisclosure } from "@/components/bipi/stage-disclosure";
 import type { StageState } from "@/lib/schedule.data";
 import type { StageWithState } from "@/lib/schedule";
 
 /**
- * The stage card, static. Renders one of `stage-3` / `stage-4` / `catchup` /
+ * The stage card. Renders one of `stage-3` / `stage-4` / `catchup` /
  * `stage-5` / `stage-6` in its `done` / `current` / `upcoming` state, in both
  * the mobile and the laptop layout.
  *
- * No disclosure yet (Phase 7 adds Base UI `Collapsible` and turns this into
- * the app's only client component — see plan §4.3). Every field that would
- * eventually live inside the collapsed panel (description, tasks, the two
- * insets) renders unconditionally for now, per this phase's own scope.
+ * This file stays a **server** component. The Phase 7 disclosure lives in
+ * `stage-disclosure.tsx`, which takes the panel's contents as `children`,
+ * so everything below is rendered on the server and only the toggle
+ * hydrates — see that file's header for why the `"use client"` boundary
+ * landed there rather than here.
  *
  * Classes are assembled with plain template literals, not `cn()`/
  * tailwind-merge — verified that twMerge doesn't know this project's custom
@@ -223,36 +225,56 @@ export function StageCard({ stage }: StageCardProps) {
         </div>
       </div>
 
-      <p className={`mt-2.5 font-sans text-body leading-normal text-pretty ${DESCRIPTION_COLOR[state]}`}>
+      {/* The description is the one field that changes side of the
+          disclosure between breakpoints: always visible on laptop, inside
+          the panel on mobile, where the card is too narrow to show it and
+          the trigger at once (README §5, "Laptop: always visible. Mobile:
+          inside the collapsible"). Rendered twice, `display: none` removing
+          whichever doesn't apply — the same convention the two header
+          blocks above use, and the only way to have one element sit in two
+          different places in the DOM. */}
+      <p
+        className={`mt-2.5 hidden font-sans text-body leading-normal text-pretty lg:block ${DESCRIPTION_COLOR[state]}`}
+      >
         {stage.description}
       </p>
 
-      {stage.tasks.length > 0 && (
-        <ul className="mt-3.25 grid gap-1.75 lg:grid-cols-2 lg:gap-x-5.5 lg:gap-y-2">
-          {stage.tasks.map((task) => (
-            <li key={task} className="grid grid-cols-[14px_1fr] items-start gap-2.25">
-              <span className="mt-1.5 size-1.25 rounded-full bg-(--bipi-now)" />
-              <span className="font-sans text-task leading-[1.45] text-(--bipi-ink-2)">{task}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {/* Stacked on mobile, side by side on laptop. When a stage has no
-          "what good looks like" copy the checkpoint takes the full width
-          rather than sitting in a half-width column beside a gap. */}
-      <div className="mt-3.25 grid gap-2.25 lg:mt-3.75 lg:grid-cols-2 lg:gap-2.5">
-        {stage.whatGoodLooksLike && (
-          <p className="rounded-(--bipi-r-inset) bg-background px-3 py-2.75 font-sans text-inset leading-[1.45] text-(--bipi-ink-2) lg:px-3.25">
-            <span className="font-bold">What good looks like ·</span> {stage.whatGoodLooksLike}
-          </p>
-        )}
+      <StageDisclosure panelId={`${stage.id}-detail`} defaultOpen={state === "current"}>
         <p
-          className={`rounded-(--bipi-r-inset) bg-(--bipi-now-tint-2) px-3 py-2.75 font-sans text-inset leading-[1.45] text-(--bipi-ink-2) lg:px-3.25 ${stage.whatGoodLooksLike ? "" : "lg:col-span-2"}`}
+          className={`mt-0.5 font-sans text-body leading-normal text-pretty lg:hidden ${DESCRIPTION_COLOR[state]}`}
         >
-          <span className="font-bold">Teacher checkpoint ·</span> {stage.teacherCheckpoint}
+          {stage.description}
         </p>
-      </div>
+
+        {stage.tasks.length > 0 && (
+          <ul className="mt-3.25 grid gap-1.75 lg:mt-1 lg:grid-cols-2 lg:gap-x-5.5 lg:gap-y-2">
+            {stage.tasks.map((task) => (
+              <li key={task} className="grid grid-cols-[14px_1fr] items-start gap-2.25">
+                <span className="mt-1.5 size-1.25 rounded-full bg-(--bipi-now)" />
+                <span className="font-sans text-task leading-[1.45] text-(--bipi-ink-2)">
+                  {task}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {/* Stacked on mobile, side by side on laptop. When a stage has no
+            "what good looks like" copy the checkpoint takes the full width
+            rather than sitting in a half-width column beside a gap. */}
+        <div className="mt-3.25 grid gap-2.25 lg:mt-3.75 lg:grid-cols-2 lg:gap-2.5">
+          {stage.whatGoodLooksLike && (
+            <p className="rounded-(--bipi-r-inset) bg-background px-3 py-2.75 font-sans text-inset leading-[1.45] text-(--bipi-ink-2) lg:px-3.25">
+              <span className="font-bold">What good looks like ·</span> {stage.whatGoodLooksLike}
+            </p>
+          )}
+          <p
+            className={`rounded-(--bipi-r-inset) bg-(--bipi-now-tint-2) px-3 py-2.75 font-sans text-inset leading-[1.45] text-(--bipi-ink-2) lg:px-3.25 ${stage.whatGoodLooksLike ? "" : "lg:col-span-2"}`}
+          >
+            <span className="font-bold">Teacher checkpoint ·</span> {stage.teacherCheckpoint}
+          </p>
+        </div>
+      </StageDisclosure>
     </article>
   );
 }

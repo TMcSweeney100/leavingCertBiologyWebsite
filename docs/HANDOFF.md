@@ -6,8 +6,9 @@ detail. This file is just "where are we" so you don't have to reconstruct it fro
 
 ## Status
 
-**Phases 0-6 of `docs/IMPLEMENTATION_PLAN.md` are done and committed to `main`.** Working tree
-is clean. `npm run lint`, `npm run build` and `npm test` (31/31) all pass at HEAD, and the suite
+**Phases 0-7 of `docs/IMPLEMENTATION_PLAN.md` are done.** Phases 0-6 are committed to `main`;
+Phase 7 is implemented and verified but **not committed** — review the diff first if you want to.
+`npm run lint`, `npx tsc --noEmit`, `npm run build` and `npm test` (31/31) all pass, and the suite
 also passes under `TZ=UTC` (i.e. as Vercel runs it).
 
 - Phase 0 — clean scaffold, shadcn init (Base UI, not Radix — see Decision #5), BiPi tokens, fonts.
@@ -24,8 +25,14 @@ also passes under `TZ=UTC` (i.e. as Vercel runs it).
   a glance"), the two-column timeline grid, the laptop stage-card layout, and `stage-dot.tsx`
   extracted so the rail and the stepper share one dot. The last outstanding §1.1 accessibility
   fix — ③, `--bipi-tick-idle` — landed with it.
+- Phase 7 — the disclosure. `components/ui/collapsible.tsx` (shadcn registry, unmodified) and
+  `components/bipi/stage-disclosure.tsx`, the site's **only** client component; `stage-card.tsx`
+  stays a server component and hands the panel its contents as `children` (see "Decisions" #7).
+  Trigger copy flips "What this involves +" / "Hide detail —", the current stage is open in the
+  server-rendered HTML, panels are independent, and the mobile hint "Tap a stage for what it
+  involves." is now true.
 
-Both gates are met, checked in a headless browser rather than assumed:
+All three gates are met, checked in a headless browser rather than assumed:
 
 - **Phase 5** — `?date=` moves the page correctly at 1 Sept / 24 Sept / 25 Sept / 6 Oct / 30 Oct /
   20 Nov / 20 Dec / 1 Mar, plus an unparseable value (falls back to the real clock).
@@ -34,12 +41,22 @@ Both gates are met, checked in a headless browser rather than assumed:
   columns fit with no clipped label at 1024 / 1140 / 1280 after the 10px type floor; the ruler
   animation runs once and is fully suppressed under `prefers-reduced-motion`, landing on the
   identical final position either way.
+- **Phase 7** — 28 automated browser checks, all green, at 390px and 1280px: only the current
+  stage open on load (and it tracks `?date=` at 1 Sept / 25 Sept / 16 Oct / 30 Oct / 20 Nov /
+  20 Dec / 1 Mar); opening a second and a third card leaves the earlier ones open; every trigger
+  is a real `<button>` whose `aria-controls` resolves whether open or closed; Tab reaches all
+  five, Enter opens and Space closes, and the focus ring is a visible 2px outline; hit targets
+  measure 34px on mobile and 30px on laptop; the description sits inside the panel on mobile and
+  outside it on laptop; the height transition runs at 180ms and `prefers-reduced-motion` turns it
+  off, both landing on the identical final height; with JavaScript disabled the current stage is
+  still open and the whole timeline still readable; no horizontal scroll at 320-1920px with every
+  panel open; trigger text measures 5.66:1.
 
 Across both: no horizontal scroll at 320 → 1920px; heading order runs h1 → h2 → h3 with no skips
 at either breakpoint; every new colour pairing measured (lowest 4.60:1, the laptop countdown
 caption at `opacity:.85` — the design's own value, and it passes).
 
-## Decisions taken in these two phases that a human should confirm
+## Decisions taken in these phases that a human should confirm
 
 Mostly plan §7's open questions, answered the way the plan's author said they would answer them.
 All are cheap to reverse — say the word.
@@ -60,26 +77,43 @@ All are cheap to reverse — say the word.
    content gap). It is not there. The date does now appear in the laptop aside's "Term at a
    glance", but on a phone in November it is still only inside Stage 6's task list. Roughly
    fifteen minutes of work if you want it.
+7. **`"use client"` went on a new `stage-disclosure.tsx`, not on `stage-card.tsx`** as plan §4.3
+   and this file previously said it would. Same rule in spirit — one client file under
+   `components/bipi/`, everything else a server component — but the boundary is smaller: the card
+   and all five panels' copy stay server-rendered and reach the client component as `children`,
+   so nothing but an id and a boolean is serialised as props. This is also what the design
+   README's progressive-enhancement line asks for ("let *only the disclosure toggles* hydrate").
+   Reversible, but reversing it makes the boundary bigger, not smaller.
+8. **The panel is `keepMounted`**, so closed panels are in the DOM (with `hidden`) rather than
+   unmounted. Two reasons: Base UI omits `aria-controls` entirely while a panel is unmounted, and
+   plan §5's Phase 9 print stylesheet has to force every disclosure open — CSS cannot reveal
+   markup that was never rendered. Costs a little page weight, nothing else.
 
-## What's next: Phase 7 — the disclosure
+## What's next: Phase 8 — the remaining sections
 
-Deliverable: a `Collapsible` per stage card, the current stage rendered **server-side already
-open**, panels independent, and the reduced-motion path. Gate: open two cards and the first must
-stay open; the whole thing must work with the keyboard alone.
+Deliverable: the report-section crosswalk (all seven, with a live status), the report rules, the
+marks card, and the completed strip for Stages 1-2. Gate: the crosswalk's "Due now" tracks
+`?date=`.
 
 What to know before starting:
 
-- `stage-card.tsx` is where `"use client"` finally lands, and per plan §4.3 it should stay the
-  only file under `components/bipi/` that has it. Pass primitives across the boundary, never
-  `Date` objects or the whole `Stage`.
-- It is **Base UI, not Radix** (`render=` instead of `asChild`) — read
-  `.claude/skills/shadcn/rules/base-vs-radix.md` before writing the trigger.
-- Do **not** use `Accordion`; it is single-open by default and the panels must be independent.
-- The card already renders every field that belongs inside the panel (description on mobile,
-  tasks, both insets) — Phase 7 wraps them, it does not add content. The trigger copy is
-  "What this involves +" / "Hide detail —", `min-height: 34px` on mobile.
-- The mobile hint copy "Tap a stage for what it involves." is already on the page and currently
-  promises an interaction that does not exist yet. Phase 7 makes it true.
+- Four new server components, per plan §4.2: `report-crosswalk.tsx`, `report-rules.tsx`,
+  `marks-card.tsx`, `completed-strip.tsx`. None of them needs `"use client"` — Phase 7's
+  `stage-disclosure.tsx` should stay the only file under `components/bipi/` that has it.
+- The spec for all four is `docs/design_handoff_bipi_schedule/README.md` §6 and §7 (columns, type,
+  the mobile 3-column collapse, the 8 rules, the 200-mark bands). Status is **live**: a section is
+  "Due now" when its stage is the current stage, "Done" when its stage is earlier, "To come"
+  otherwise — derive it from `schedule.ts`, never from a hardcoded list.
+- Two nav anchors are still missing and this phase adds them: `#report-sections` and
+  `#report-rules`, both with `scroll-mt-10 lg:scroll-mt-6` (they sit below the sticky mini-banner
+  on mobile). `site-header.tsx` already emits all four links from its `NAV_IDS` constant.
+- `completed-strip.tsx` renders `COMPLETED_STRIP` and covers the two `isAlwaysDone` stages, which
+  `timeline.tsx` deliberately filters out of the rail.
+- shadcn `Table` is what plan §4.2 lists for the crosswalk — it is **not installed yet**
+  (`components/ui/` has `button`, `progress`, `collapsible`). Check what its markup actually costs
+  you against the design's grid before adding it; the mobile layout is a 3-column grid, not a
+  table, so a plain semantic `<table>` or a grid may well be simpler. Whatever you pick, read
+  `.claude/skills/shadcn/rules/base-vs-radix.md` first — this project is Base UI, not Radix.
 
 ## Working pattern used in earlier sessions (worth continuing)
 
