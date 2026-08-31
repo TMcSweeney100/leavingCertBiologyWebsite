@@ -48,6 +48,24 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+@theme {
+  /* BiPi type scale — named font-size steps, added per docs/IMPLEMENTATION_PLAN.md §4.4.
+     Scoped to what Phases 0-3 (site-header.tsx, site-footer.tsx) actually use today; later
+     phases should add new named sizes here as they're introduced, rather than reaching for
+     text-[…] arbitrary values again. Font-size only — line-height/letter-spacing stay as
+     the existing leading-[…]/tracking-[…] arbitrary values alongside these. */
+  --text-chip:          9px;    /* grade chip, mobile */
+  --text-eyebrow:       9.5px;  /* header eyebrow, mobile + laptop */
+  --text-label:         10px;   /* grade chip, laptop; footer meta/disclaimer line */
+  --text-pill:          10.5px; /* nav pill, mobile */
+  --text-pill-lg:       11px;   /* nav pill, laptop */
+  --text-body:          12.5px; /* footer note paragraph */
+  --text-standfirst:    13px;   /* header standfirst, mobile */
+  --text-standfirst-lg: 14px;   /* header standfirst, laptop; footer heading */
+  --text-h1-mobile:     26px;   /* header h1, mobile */
+  --text-display-lg:    38px;   /* header h1, laptop */
+}
+
 :root {
   /* BiPi Schedule Hub — design tokens, from docs/design_handoff_bipi_schedule/tokens.css
      Authored in oklch; hex fallbacks in that file are the exact rendered values from the design.

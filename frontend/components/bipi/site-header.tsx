@@ -16,12 +16,19 @@ import { HEADER } from "@/lib/schedule.data";
  *   "Report sections"   -> #report-sections
  *   "Report rules"      -> #report-rules
  */
-const NAV_IDS = ["right-now", "timeline", "report-sections", "report-rules"] as const;
+export const NAV_IDS = ["right-now", "timeline", "report-sections", "report-rules"] as const;
 
-function GradeChip() {
+// Mobile-only short forms of HEADER.eyebrow / HEADER.gradeChip — schedule.data.ts only
+// carries the laptop long form, so these are hand-maintained here and must be updated by
+// hand if the design's copy ever changes. Verbatim from design_handoff_bipi_schedule/README.md
+// §1 (and the "2a" mobile frame in the prototype .dc.html) — not derived from HEADER above.
+const MOBILE_EYEBROW = "BiPi 2026-27";
+const MOBILE_GRADE_CHIP = "40% of grade";
+
+function GradeChip({ text }: { text: string }) {
   return (
-    <span className="shrink-0 rounded-full bg-[var(--bipi-ink)] px-[9px] py-[5px] font-mono text-[9px] font-bold tracking-[.1em] text-white uppercase lg:px-[14px] lg:py-[9px] lg:text-[10px]">
-      {HEADER.gradeChip}
+    <span className="shrink-0 rounded-full bg-[var(--bipi-ink)] px-[9px] py-[5px] font-mono text-chip font-bold tracking-[.1em] text-white uppercase lg:px-[14px] lg:py-[9px] lg:text-label">
+      {text}
     </span>
   );
 }
@@ -33,7 +40,7 @@ function NavPills({ className }: { className?: string }) {
         <a
           key={NAV_IDS[i]}
           href={`#${NAV_IDS[i]}`}
-          className="rounded-full border border-border bg-background px-[11px] py-2 font-sans text-[10.5px] font-semibold text-[var(--bipi-ink-2)] lg:text-[11px]"
+          className="rounded-full border border-border bg-background px-[11px] py-2 font-sans text-pill font-semibold text-[var(--bipi-ink-2)] lg:text-pill-lg"
         >
           {label}
         </a>
@@ -49,15 +56,15 @@ export function SiteHeader() {
           standfirst and nav pills each stack full-width beneath it. */}
       <div className="lg:hidden">
         <div className="flex items-center justify-between gap-2.5">
-          <p className="min-w-0 font-mono text-[9.5px] font-bold tracking-[.14em] text-muted-foreground uppercase">
-            {HEADER.eyebrow}
+          <p className="min-w-0 font-mono text-eyebrow font-bold tracking-[.14em] text-muted-foreground uppercase">
+            {MOBILE_EYEBROW}
           </p>
-          <GradeChip />
+          <GradeChip text={MOBILE_GRADE_CHIP} />
         </div>
-        <h1 className="mt-3.5 font-heading text-[26px] font-bold leading-[1.12] tracking-[-.025em] text-foreground">
+        <h1 className="mt-3.5 font-heading text-h1-mobile font-bold leading-[1.12] tracking-[-.025em] text-foreground">
           {HEADER.title}
         </h1>
-        <p className="mt-2 font-sans text-[13px] leading-[1.5] text-muted-foreground">
+        <p className="mt-2 font-sans text-standfirst leading-[1.5] text-muted-foreground">
           {HEADER.standfirst}
         </p>
         <NavPills className="mt-4" />
@@ -67,18 +74,18 @@ export function SiteHeader() {
           form their own right-hand column, bottom-aligned against the copy. */}
       <div className="hidden lg:flex lg:items-end lg:justify-between lg:gap-6">
         <div>
-          <p className="font-mono text-[9.5px] font-bold tracking-[.16em] text-muted-foreground uppercase">
+          <p className="font-mono text-eyebrow font-bold tracking-[.16em] text-muted-foreground uppercase">
             {HEADER.eyebrow}
           </p>
-          <h1 className="mt-3 font-heading text-[38px] font-bold leading-[1.08] tracking-[-.03em] text-foreground">
+          <h1 className="mt-3 font-heading text-display-lg font-bold leading-[1.08] tracking-[-.03em] text-foreground">
             {HEADER.title}
           </h1>
-          <p className="mt-[9px] font-sans text-[14px] leading-[1.5] text-muted-foreground">
+          <p className="mt-[9px] font-sans text-standfirst-lg leading-[1.5] text-muted-foreground">
             {HEADER.standfirst}
           </p>
         </div>
         <div className="flex flex-none flex-col items-end">
-          <GradeChip />
+          <GradeChip text={HEADER.gradeChip} />
           <NavPills className="mt-3.5 justify-end" />
         </div>
       </div>
