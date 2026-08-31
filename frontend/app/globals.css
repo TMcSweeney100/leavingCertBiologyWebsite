@@ -61,8 +61,7 @@
                                     card state pill (raised from 8.5px in the source design,
                                     plan §1.1④ type-floor fix) and report badge */
   --text-pill:          10.5px; /* nav pill, mobile; stage card date */
-  --text-pill-lg:       11px;   /* nav pill, laptop */
-  --text-caption:       11px;   /* stage card report-section name, beside the report badge */
+  --text-pill-lg:       11px;   /* nav pill, laptop; stage card report-section name, beside the report badge */
   --text-inset:         11.5px; /* stage card "what good looks like" / teacher-checkpoint inset text */
   --text-task:          12px;   /* stage card task-list item */
   --text-body:          12.5px; /* footer note paragraph; stage card description */

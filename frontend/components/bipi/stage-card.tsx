@@ -170,7 +170,7 @@ export function StageCard({ stage }: StageCardProps) {
           {reportBadgeText}
         </span>
         {showSectionName && (
-          <span className="font-sans text-caption leading-[1.35] text-muted-foreground">
+          <span className="font-sans text-pill-lg leading-[1.35] text-muted-foreground">
             {stage.reportSectionName}
           </span>
         )}

@@ -9,9 +9,10 @@ import { deriveSchedule } from "@/lib/schedule";
  * before the real school term begins; today's real date would currently
  * derive every card as `current`/`upcoming` with nothing `done`. 6 Oct 2026
  * is one of the implementation plan's own pre-verified test dates (§3.2:
- * "Stage 4, 10 days left") and happens to produce exactly one card of each
- * state among the five real stages — genuine `deriveSchedule` output for a
- * real date, not a mocked/fake state. Noon UTC keeps the instant safely
+ * "Stage 4, 10 days left") and produces a genuine mix of all three states
+ * among the five real stages (1 done / 1 current / 3 upcoming) — real
+ * `deriveSchedule` output for a real date, not a mocked/fake state. Noon
+ * UTC keeps the instant safely
  * inside the Dublin calendar day regardless of DST (Ireland is UTC+1 on
  * this date), matching the civil-date rule `dublinToday` implements.
  *
