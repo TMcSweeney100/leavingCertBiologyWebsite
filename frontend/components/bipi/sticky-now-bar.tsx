@@ -35,7 +35,7 @@ export function StickyNowBar({ stageLabel, countdown }: StickyNowBarProps) {
   return (
     <div
       aria-hidden="true"
-      className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border bg-card px-4.5 py-2.25 lg:hidden"
+      className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border bg-card px-4.5 py-2.25 lg:hidden print:hidden"
     >
       <p className="flex min-w-0 items-center gap-1.75 font-mono text-label leading-none font-bold tracking-[.1em] text-(--bipi-ink-2) uppercase">
         <span className="size-1.5 shrink-0 rounded-full bg-(--bipi-now)" />

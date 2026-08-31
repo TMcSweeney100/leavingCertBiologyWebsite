@@ -1,4 +1,5 @@
 import { StageCard } from "@/components/bipi/stage-card";
+import { StageDot } from "@/components/bipi/stage-dot";
 import type { StageState } from "@/lib/schedule.data";
 import type { StageWithState } from "@/lib/schedule";
 
@@ -30,27 +31,14 @@ type TimelineProps = {
   stages: StageWithState[];
 };
 
-const DOT_SIZE: Record<StageState, string> = {
-  current: "size-4", // 16px
-  done: "size-3", // 12px
-  upcoming: "size-3",
-};
-
+// Nudges the dot down onto the optical centre of the card's first line of
+// text. Current is 4px larger, so it needs 2px less. Positioning only — the
+// dot's own size and colour live in stage-dot.tsx, shared with the stepper.
 const DOT_MARGIN_TOP: Record<StageState, string> = {
   current: "mt-1", // 4px
   done: "mt-1.5", // 6px
   upcoming: "mt-1.5",
 };
-
-const DOT_FILL: Record<StageState, string> = {
-  current: "border-none bg-(--bipi-now) shadow-[0_0_0_5px_var(--bipi-now-halo)]",
-  done: "border-none bg-(--bipi-done)",
-  upcoming: "border-2 border-border bg-card",
-};
-
-function Dot({ state }: { state: StageState }) {
-  return <div className={`rounded-full ${DOT_SIZE[state]} ${DOT_MARGIN_TOP[state]} ${DOT_FILL[state]}`} />;
-}
 
 function Connector({ done }: { done: boolean }) {
   return (
@@ -70,13 +58,13 @@ export function Timeline({ stages }: TimelineProps) {
   return (
     <div>
       {rows.map((stage, index) => (
-        <div key={stage.id} className="grid grid-cols-[26px_1fr] gap-3">
+        <div key={stage.id} className="grid grid-cols-[26px_1fr] gap-3 lg:gap-3.5">
           <div className="flex flex-col items-center">
-            <Dot state={stage.state} />
+            <StageDot state={stage.state} className={DOT_MARGIN_TOP[stage.state]} />
             {/* Last row: no connector, nothing after it to link to. */}
             {index < rows.length - 1 && <Connector done={stage.state === "done"} />}
           </div>
-          <div className="pb-3.5">
+          <div className="pb-3.5 lg:pb-4">
             <StageCard stage={stage} />
           </div>
         </div>

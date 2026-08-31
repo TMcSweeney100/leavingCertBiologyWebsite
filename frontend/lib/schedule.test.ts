@@ -24,6 +24,8 @@ import {
   deriveSchedule,
   formatTodayLabel,
   parsePreviewDate,
+  TERM_SPAN_LABEL,
+  termPositionPct,
 } from './schedule.ts';
 
 /**
@@ -283,5 +285,151 @@ describe('countdownText', () => {
     // Reachable only past the end of the term, where the last stage stays
     // current with a clamped countdown — "Due today" would be false there.
     assert.equal(countdownText(0, false), '0 days left');
+  });
+});
+
+describe('termPositionPct — laptop ruler tick placement', () => {
+  test('spaces the five deadlines by real elapsed time, not evenly', () => {
+    // 1 Sept -> 12 Dec is 102 days. Evenly spaced, five ticks would land on
+    // 20/40/60/80/100; the real dates cluster differently, which is the
+    // whole point of the ruler.
+    const at = (iso: string) => Number(termPositionPct(iso).toFixed(2));
+    assert.equal(at('2026-09-25'), 23.53); // Stage 3
+    assert.equal(at('2026-10-16'), 44.12); // Stage 4
+    assert.equal(at('2026-10-30'), 57.84); // Catch-up
+    assert.equal(at('2026-11-13'), 71.57); // Stage 5
+    assert.equal(at('2026-12-11'), 99.02); // Stage 6
+  });
+
+  test('the December tick is past the 88% edge-clamp threshold', () => {
+    // The ruler right-anchors any tick above 88% instead of centring it.
+    // If this stops being true, the December label overhangs the panel —
+    // the one layout failure the plan calls out by name.
+    assert.ok(termPositionPct('2026-12-11') > 88);
+  });
+
+  test('no tick falls below the 6% left-edge threshold this year', () => {
+    for (const iso of ['2026-09-25', '2026-10-16', '2026-10-30', '2026-11-13', '2026-12-11']) {
+      assert.ok(termPositionPct(iso) >= 6, iso);
+    }
+  });
+
+  test('clamps to [0, 100] outside the term, and does not floor at 2 the way termPct does', () => {
+    assert.equal(termPositionPct('2026-09-01'), 0);
+    assert.equal(termPositionPct('2026-06-05'), 0);
+    assert.equal(termPositionPct('2026-12-12'), 100);
+    assert.equal(termPositionPct('2027-02-26'), 100);
+  });
+});
+
+describe('TERM_SPAN_LABEL', () => {
+  test('is derived from TERM, so editing only schedule.data.ts still moves it', () => {
+    assert.equal(TERM_SPAN_LABEL, 'Sept → 12 Dec');
+  });
+});
+
+describe('deriveSchedule — comingUp', () => {
+  test('is every stage after the current one, in order', () => {
+    const result = deriveSchedule(dublinDateTime('2026-10-06T09:00:00'));
+    assert.equal(result.currentStage.id, 'stage-4');
+    assert.deepEqual(
+      result.comingUp.map((s) => s.id),
+      ['catchup', 'stage-5', 'stage-6'],
+    );
+    assert.ok(result.comingUp.every((s) => s.state === 'upcoming'));
+  });
+
+  test('is empty on the last stage, and agrees with nextStage', () => {
+    const result = deriveSchedule(dublinDateTime('2026-11-20T09:00:00'));
+    assert.deepEqual(result.comingUp, []);
+    assert.equal(result.nextStage, null);
+  });
+
+  test('nextStage is always the head of comingUp', () => {
+    for (const when of ['2026-09-01T09:00:00', '2026-10-06T09:00:00', '2026-10-30T09:00:00']) {
+      const result = deriveSchedule(dublinDateTime(when));
+      assert.equal(result.nextStage, result.comingUp[0], when);
+    }
+  });
+});
+
+describe('deriveSchedule — reportSections (the crosswalk)', () => {
+  const statuses = (when: string) =>
+    Object.fromEntries(
+      deriveSchedule(dublinDateTime(when)).reportSections.map((r) => [r.section, r.statusLabel]),
+    );
+
+  test('always lists all seven sections, in the order the data file gives them', () => {
+    const result = deriveSchedule(dublinDateTime('2026-10-06T09:00:00'));
+    assert.deepEqual(
+      result.reportSections.map((r) => r.section),
+      ['§1', '§2', '§3', '§4', '§5', '§6', '§7'],
+    );
+  });
+
+  test('§1 and §2 are done at every point in the term (written in 5th Year)', () => {
+    for (const when of [
+      '2026-09-01T09:00:00',
+      '2026-10-06T09:00:00',
+      '2026-12-20T09:00:00',
+      '2027-03-01T09:00:00',
+    ]) {
+      const s = statuses(when);
+      assert.equal(s['§1'], 'Done', when);
+      assert.equal(s['§2'], 'Done', when);
+    }
+  });
+
+  test('1 Sept — Stage 3 is current, so §3 is due now and §4-§7 are still to come', () => {
+    assert.deepEqual(statuses('2026-09-01T09:00:00'), {
+      '§1': 'Done',
+      '§2': 'Done',
+      '§3': 'Due now',
+      '§4': 'To come',
+      '§5': 'To come',
+      '§6': 'To come',
+      '§7': 'To come',
+    });
+  });
+
+  test('6 Oct — Stage 4 is current, so §3 has flipped to done and §4 is due now', () => {
+    assert.deepEqual(statuses('2026-10-06T09:00:00'), {
+      '§1': 'Done',
+      '§2': 'Done',
+      '§3': 'Done',
+      '§4': 'Due now',
+      '§5': 'To come',
+      '§6': 'To come',
+      '§7': 'To come',
+    });
+  });
+
+  test('30 Oct — the catch-up window is current, so nothing new is due', () => {
+    const s = statuses('2026-10-30T09:00:00');
+    assert.equal(Object.values(s).filter((v) => v === 'Due now').length, 0);
+    assert.equal(s['§4'], 'Done');
+    assert.equal(s['§5'], 'To come');
+  });
+
+  test('13 Nov — §5 and §6 share Stage 5, so both read due now together', () => {
+    const s = statuses('2026-11-13T09:00:00');
+    assert.equal(s['§5'], 'Due now');
+    assert.equal(s['§6'], 'Due now');
+    assert.equal(s['§7'], 'To come');
+  });
+
+  test('20 Dec — past the end of term, Stage 6 stays current and §7 with it', () => {
+    const s = statuses('2026-12-20T09:00:00');
+    assert.equal(s['§7'], 'Due now');
+    assert.equal(s['§5'], 'Done');
+  });
+
+  test('status and statusLabel never disagree', () => {
+    const labels = { 'due-now': 'Due now', done: 'Done', 'to-come': 'To come' };
+    for (const when of ['2026-09-01T09:00:00', '2026-11-13T09:00:00', '2027-03-01T09:00:00']) {
+      for (const row of deriveSchedule(dublinDateTime(when)).reportSections) {
+        assert.equal(row.statusLabel, labels[row.status], `${when} ${row.section}`);
+      }
+    }
   });
 });

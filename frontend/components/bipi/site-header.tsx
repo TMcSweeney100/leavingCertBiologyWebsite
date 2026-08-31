@@ -1,5 +1,7 @@
+import { Stepper } from "@/components/bipi/stepper";
 import { cn } from "@/lib/utils";
 import { HEADER } from "@/lib/schedule.data";
+import type { StageWithState } from "@/lib/schedule";
 
 /**
  * In-page anchor targets for the four nav pills below, kebab-case and in the
@@ -35,7 +37,7 @@ function GradeChip({ text }: { text: string }) {
 
 function NavPills({ className }: { className?: string }) {
   return (
-    <nav aria-label="Jump to section" className={cn("flex flex-wrap gap-1.5", className)}>
+    <nav aria-label="Jump to section" className={cn("flex flex-wrap gap-1.5 print:hidden", className)}>
       {HEADER.nav.map((label, i) => (
         <a
           key={NAV_IDS[i]}
@@ -49,7 +51,12 @@ function NavPills({ className }: { className?: string }) {
   );
 }
 
-export function SiteHeader() {
+type SiteHeaderProps = {
+  /** All seven stages, for the laptop-only stepper at the foot of the band. */
+  stages: StageWithState[];
+};
+
+export function SiteHeader({ stages }: SiteHeaderProps) {
   return (
     <header className="border-b border-border bg-card px-5 py-5 lg:px-10 lg:py-[26px]">
       {/* Mobile (below 1024px): eyebrow + grade chip share a row; title,
@@ -89,6 +96,10 @@ export function SiteHeader() {
           <NavPills className="mt-3.5 justify-end" />
         </div>
       </div>
+
+      {/* Inside the header band, not a section of its own — the design puts
+          it directly under the masthead copy with no divider between them. */}
+      <Stepper stages={stages} />
     </header>
   );
 }
