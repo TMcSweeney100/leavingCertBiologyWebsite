@@ -1,6 +1,7 @@
 import { TermProgress } from "@/components/bipi/term-progress";
 import { TermRuler } from "@/components/bipi/term-ruler";
 import { DUE_TODAY, daysLeftWord, formatTodayLabel, type DerivedSchedule } from "@/lib/schedule";
+import { POST_TERM } from "@/lib/schedule.data";
 
 /**
  * The "You are here" panel — "the most important element on the page. First
@@ -43,8 +44,57 @@ function NowDot() {
 }
 
 export function YouAreHere({ schedule }: YouAreHereProps) {
-  const { currentStage, nextStage, stages, daysLeft, isDueToday, termPct, weekNumber, today } =
-    schedule;
+  const {
+    currentStage,
+    phase,
+    nextStage,
+    stages,
+    daysLeft,
+    isDueToday,
+    termPct,
+    weekNumber,
+    today,
+  } = schedule;
+
+  if (!currentStage) {
+    const copy = POST_TERM[phase === "buffer" ? "buffer" : "closed"];
+    return (
+      <section
+        id="right-now"
+        aria-label="You are here"
+        className="scroll-mt-6 border-b border-border bg-card px-4.5 py-4.5 lg:border-b-0 lg:bg-background lg:px-10 lg:pt-6 lg:pb-0"
+      >
+        <div className="rounded-(--bipi-r-panel) border-[1.5px] border-(--bipi-done) bg-card px-4.25 pt-4 pb-4.25 lg:rounded-(--bipi-r-panel-lg) lg:px-7 lg:py-6.5 lg:shadow-(--bipi-shadow-now-lg)">
+          <div className="flex items-center justify-between gap-2.5">
+            <p className="font-mono text-eyebrow font-bold tracking-[.14em] text-(--bipi-done-ink) uppercase">
+              {copy.eyebrow}
+            </p>
+            <p className="font-mono text-eyebrow text-muted-foreground tabular-nums">
+              {formatTodayLabel(schedule.today)}
+            </p>
+          </div>
+          <h2 className="mt-3.5 font-heading text-panel-title leading-[1.15] font-bold tracking-[-.02em] text-foreground lg:mt-4 lg:text-panel-title-lg">
+            {copy.headline}
+          </h2>
+          <p className="mt-3 max-w-[620px] font-sans text-standfirst leading-[1.5] text-(--bipi-ink-2) text-pretty lg:text-standfirst-lg">
+            {copy.body}
+          </p>
+          {phase === "buffer" && (
+            <p className="mt-3.5 inline-flex items-baseline gap-1.75 rounded-(--bipi-r-inset) bg-(--bipi-now) px-2.75 py-1.75 text-white">
+              <span className="font-heading text-card-title leading-none font-bold tabular-nums">
+                {schedule.isDueToday ? DUE_TODAY : schedule.daysLeft}
+              </span>
+              {!schedule.isDueToday && (
+                <span className="font-mono text-eyebrow leading-none tracking-[.06em] uppercase">
+                  {daysLeftWord(schedule.daysLeft)} {copy.countdownCaption}
+                </span>
+              )}
+            </p>
+          )}
+        </div>
+      </section>
+    );
+  }
 
   const todayLabel = formatTodayLabel(today);
 
