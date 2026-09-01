@@ -1,6 +1,8 @@
+import Image from "next/image";
+
 import { Stepper } from "@/components/bipi/stepper";
 import { cn } from "@/lib/utils";
-import { HEADER } from "@/lib/schedule.data";
+import { HEADER, SCHOOL } from "@/lib/schedule.data";
 import type { StageWithState } from "@/lib/schedule";
 
 /**
@@ -35,6 +37,49 @@ function GradeChip({ text }: { text: string }) {
   );
 }
 
+/**
+ * Whose page this is: the school crest and name, and the class teacher.
+ * A slim band above the masthead, divided from it by a hairline, so that the
+ * identity is settled before the eye reaches "Biology in Practice
+ * Investigation" — without competing with it for weight.
+ *
+ * Wraps rather than shrinks: below roughly 560px the teacher line drops onto
+ * its own row under the crest instead of squeezing the school name, which at
+ * 390px would otherwise wrap to three lines.
+ *
+ * The crest carries `alt=""` deliberately. It is not decorative — but the
+ * school name sits immediately beside it as real text, so describing it
+ * again would make a screen reader announce the school twice.
+ *
+ * Both `<Image>` dimensions are pinned per breakpoint rather than using
+ * `w-auto`, which is what keeps Next's "width or height modified, but not
+ * the other" warning quiet. 75/24 and 94/30 both hold the artwork's 3.14
+ * aspect ratio to within a subpixel.
+ */
+function BrandBar() {
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-2.5 border-b border-border pb-3.5 lg:pb-4">
+      <div className="flex min-w-0 items-center gap-2.5 lg:gap-3.5">
+        <Image
+          src="/nwetss-crest.png"
+          alt=""
+          width={565}
+          height={180}
+          priority
+          className="h-6 w-[75px] flex-none lg:h-[30px] lg:w-[94px]"
+        />
+        <p className="min-w-0 font-heading text-standfirst font-bold leading-[1.25] tracking-[-.01em] text-foreground lg:text-standfirst-lg">
+          {SCHOOL.name}
+        </p>
+      </div>
+      <p className="font-mono text-eyebrow font-bold tracking-[.1em] text-muted-foreground uppercase lg:text-label">
+        {`${SCHOOL.teacherLabel} · `}
+        <span className="text-[var(--bipi-ink-2)]">{SCHOOL.teacherName}</span>
+      </p>
+    </div>
+  );
+}
+
 function NavPills({ className }: { className?: string }) {
   return (
     <nav aria-label="Jump to section" className={cn("flex flex-wrap gap-1.5 print:hidden", className)}>
@@ -59,9 +104,11 @@ type SiteHeaderProps = {
 export function SiteHeader({ stages }: SiteHeaderProps) {
   return (
     <header className="border-b border-border bg-card px-5 py-5 lg:px-10 lg:py-[26px]">
+      <BrandBar />
+
       {/* Mobile (below 1024px): eyebrow + grade chip share a row; title,
           standfirst and nav pills each stack full-width beneath it. */}
-      <div className="lg:hidden">
+      <div className="mt-4 lg:hidden">
         <div className="flex items-center justify-between gap-2.5">
           <p className="min-w-0 font-mono text-eyebrow font-bold tracking-[.14em] text-muted-foreground uppercase">
             {MOBILE_EYEBROW}
@@ -79,7 +126,7 @@ export function SiteHeader({ stages }: SiteHeaderProps) {
 
       {/* Laptop (1024px and up): copy on the left; grade chip + nav pills
           form their own right-hand column, bottom-aligned against the copy. */}
-      <div className="hidden lg:flex lg:items-end lg:justify-between lg:gap-6">
+      <div className="hidden lg:mt-[18px] lg:flex lg:items-end lg:justify-between lg:gap-6">
         <div>
           <p className="font-mono text-eyebrow font-bold tracking-[.16em] text-muted-foreground uppercase">
             {HEADER.eyebrow}

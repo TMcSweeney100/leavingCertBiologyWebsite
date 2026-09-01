@@ -100,6 +100,11 @@ The SEC coursework submission deadline in the current specification is **26 Febr
 The application should provide:
 
 - A clear page header and concise context
+- School identity at the top of the header: the North Wicklow Educate Together Secondary
+  School crest (`frontend/public/nwetss-crest.png`, the school's own mark from nwetss.ie)
+  beside the school name, and the class teacher. The name and teacher are text, not part
+  of the image, and live in the `SCHOOL` export of `lib/schedule.data.ts` with the rest of
+  the editable content
 - A prominent live “You are here” area
 - Current-stage detection based on the schedule data
 - Days remaining until the current deadline

@@ -38,6 +38,25 @@ export const SEC_DEADLINE = {
   disclaimer: 'Class schedule — not an official SEC date. Dates set by your teacher for moderation.'
 };
 
+/**
+ * Who this schedule belongs to — the brand row at the very top of the header.
+ * Here rather than hardcoded in site-header.tsx so that reusing the site for
+ * another class or another year stays a one-file edit, like everything else
+ * in this file.
+ *
+ * The crest is `public/nwetss-crest.png` — the school's own three-tile mark,
+ * taken from nwetss.ie and trimmed to the artwork. The school *name* is set
+ * as live text beside it rather than using the school's full logo lockup
+ * (crest + wordmark as one image): text scales with the rest of the page,
+ * stays sharp in print, and is selectable, and the lockup's own typeface
+ * would clash with the page's.
+ */
+export const SCHOOL = {
+  name: 'North Wicklow Educate Together Secondary School',
+  teacherLabel: 'Class teacher',
+  teacherName: 'Katelyn Hanlon'
+};
+
 export const HEADER = {
   eyebrow: 'BiPi 2026-27 · class schedule',
   title: 'Biology in Practice Investigation',
