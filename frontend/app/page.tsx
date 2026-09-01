@@ -35,10 +35,12 @@ export default async function Home({
         {/* Sits here rather than inside the section above so that it has the
             rest of the page to stick against: `position: sticky` only pins
             an element while its own parent is still in view. */}
-        <StickyNowBar
-          stageLabel={schedule.currentStage.label}
-          countdown={countdownText(schedule.daysLeft, schedule.isDueToday)}
-        />
+        {schedule.currentStage && (
+          <StickyNowBar
+            stageLabel={schedule.currentStage.label}
+            countdown={countdownText(schedule.daysLeft, schedule.isDueToday)}
+          />
+        )}
 
         {/* Stages 1-2, which timeline.tsx filters out of the rail. Above
             the timeline rather than below it because it reads as the line

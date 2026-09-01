@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
 import { countdownText, deriveSchedule, formatTodayLabel } from "@/lib/schedule";
-import { HEADER, SEC_DEADLINE } from "@/lib/schedule.data";
+import { HEADER, SEC_DEADLINE, POST_TERM } from "@/lib/schedule.data";
 
 /**
  * The link-preview card (plan §5, Phase 9) — what WhatsApp, Teams, Slack and
@@ -105,10 +105,14 @@ export default async function OpengraphImage() {
             {`AS OF ${formatTodayLabel(schedule.today).toUpperCase()}`}
           </div>
           <div style={{ marginTop: 12, fontSize: 44, color: NOW }}>
-            {`${schedule.currentStage.label} · ${schedule.currentStage.title}`}
+            {schedule.currentStage
+              ? `${schedule.currentStage.label} · ${schedule.currentStage.title}`
+              : POST_TERM[schedule.phase === 'buffer' ? 'buffer' : 'closed'].headline}
           </div>
           <div style={{ marginTop: 10, fontFamily: "Space Mono", fontSize: 28, color: INK_2 }}>
-            {`${countdownText(schedule.daysLeft, schedule.isDueToday)} · due ${schedule.currentStage.shortDate}`}
+            {schedule.currentStage
+              ? `${countdownText(schedule.daysLeft, schedule.isDueToday)} · due ${schedule.currentStage.shortDate}`
+              : `SEC deadline · ${SEC_DEADLINE.label}`}
           </div>
         </div>
 

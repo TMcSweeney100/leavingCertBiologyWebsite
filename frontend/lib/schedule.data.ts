@@ -39,6 +39,29 @@ export const SEC_DEADLINE = {
 };
 
 /**
+ * What the "You are here" panel says once the timeline is finished.
+ *
+ * `buffer` runs from the day after the last stage to the SEC deadline —
+ * 76 days this year, longer than any single stage — and `closed` runs
+ * after it. Both were previously rendered as "Stage 6 · 0 days left",
+ * which was false in `buffer` and meaningless in `closed`.
+ */
+export const POST_TERM = {
+  buffer: {
+    eyebrow: 'Term complete',
+    headline: 'All six stages complete',
+    body: 'Your report is with your teacher. The remaining weeks are revision and buffer before the SEC submission deadline.',
+    countdownCaption: 'to the SEC deadline'
+  },
+  closed: {
+    eyebrow: 'Submitted',
+    headline: 'Coursework submitted',
+    body: 'The SEC submission deadline has passed. This schedule covered the 2026-27 cohort.',
+    countdownCaption: ''
+  }
+};
+
+/**
  * Who this schedule belongs to — the brand row at the very top of the header.
  * Here rather than hardcoded in site-header.tsx so that reusing the site for
  * another class or another year stays a one-file edit, like everything else
