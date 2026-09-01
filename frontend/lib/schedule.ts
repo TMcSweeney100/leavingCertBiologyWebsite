@@ -13,6 +13,7 @@
  * calculation ever crosses a DST offset change.
  */
 import {
+  DRAFT,
   REPORT_SECTIONS,
   SEC_DEADLINE,
   STAGES,
@@ -94,6 +95,21 @@ const STATUS_LABEL: Record<ReportSectionStatus, string> = {
  */
 export type SchedulePhase = 'in-term' | 'buffer' | 'closed';
 
+/**
+ * One mark on the laptop term ruler. Built here rather than derived inside
+ * `term-ruler.tsx` so that the ruler, the aside's "Term at a glance" and
+ * (in Phase C) the calendar feed all read one array and cannot drift.
+ */
+export type RulerTick = {
+  id: string;
+  /** ISO date, for `termPositionPct` and the calendar feed. */
+  date: string;
+  shortDate: string;
+  /** The second label line: "St 3", "Catch-up", "Draft". */
+  caption: string;
+  state: StageState;
+};
+
 export type DerivedSchedule = {
   /** Today's civil date in Dublin, as a UTC-midnight epoch (ms). */
   today: number;
@@ -135,6 +151,8 @@ export type DerivedSchedule = {
   termPct: number;
   /** Week number of the term, clamped to [1, 15]. */
   weekNumber: number;
+  /** The laptop term ruler's marks: stage deadlines plus the draft. */
+  rulerTicks: RulerTick[];
 };
 
 /**
@@ -162,6 +180,38 @@ function reportSectionStatuses(stages: StageWithState[]): ReportSectionWithStatu
 
     return { ...row, status, statusLabel: STATUS_LABEL[status] };
   });
+}
+
+/**
+ * The ruler's marks: every stage that has a real deadline this term, plus
+ * the draft milestone, in date order.
+ *
+ * The draft is never `current`. `--bipi-now` is reserved for the stage in
+ * progress and for today's marker — a second indigo mark inside Stage 6
+ * would break the one discipline that keeps a page this dense legible. It
+ * stays `upcoming` through its own date and flips to `done` the morning
+ * after, which is the same rule stages follow.
+ */
+function buildRulerTicks(stages: StageWithState[], today: number): RulerTick[] {
+  const ticks: RulerTick[] = stages
+    .filter((stage) => !stage.isAlwaysDone)
+    .map((stage) => ({
+      id: stage.id,
+      date: stage.dueDate,
+      shortDate: stage.shortDate,
+      caption: stage.isCatchup ? 'Catch-up' : stage.label.replace('Stage ', 'St '),
+      state: stage.state,
+    }));
+
+  ticks.push({
+    id: 'draft',
+    date: DRAFT.date,
+    shortDate: DRAFT.shortDate,
+    caption: DRAFT.caption,
+    state: today > day(DRAFT.date) ? 'done' : 'upcoming',
+  });
+
+  return ticks.sort((a, b) => day(a.date) - day(b.date));
 }
 
 /**
@@ -221,6 +271,7 @@ export function deriveSchedule(now: Date = new Date()): DerivedSchedule {
     reportSections: reportSectionStatuses(stages),
     termPct: clamp(2, 100, Math.round(((today - termStart) / (termEnd - termStart)) * 100)),
     weekNumber: clamp(1, 15, Math.floor((today - termStart) / (7 * MS_PER_DAY)) + 1),
+    rulerTicks: buildRulerTicks(stages, today),
   };
 }
 

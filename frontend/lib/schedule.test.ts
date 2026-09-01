@@ -390,6 +390,67 @@ describe('termPositionPct — laptop ruler tick placement', () => {
   });
 });
 
+describe('deriveSchedule — rulerTicks', () => {
+  test('is the five stage deadlines plus the draft, in date order', () => {
+    const { rulerTicks } = deriveSchedule(dublinDateTime('2026-09-01T09:00:00'));
+    assert.deepEqual(
+      rulerTicks.map((t) => t.id),
+      ['stage-3', 'stage-4', 'catchup', 'stage-5', 'draft', 'stage-6'],
+    );
+  });
+
+  test('omits the two 5th-Year stages, which have no tick', () => {
+    const { rulerTicks } = deriveSchedule(dublinDateTime('2026-09-01T09:00:00'));
+    assert.ok(!rulerTicks.some((t) => t.id === 'stage-1' || t.id === 'stage-2'));
+  });
+
+  test('the draft is upcoming through its own date and done the morning after', () => {
+    const before = deriveSchedule(dublinDateTime('2026-12-03T09:00:00'));
+    const on = deriveSchedule(dublinDateTime('2026-12-04T09:00:00'));
+    const after = deriveSchedule(dublinDateTime('2026-12-05T09:00:00'));
+    const draft = (r: ReturnType<typeof deriveSchedule>) =>
+      r.rulerTicks.find((t) => t.id === 'draft')!;
+    assert.equal(draft(before).state, 'upcoming');
+    assert.equal(draft(on).state, 'upcoming');
+    assert.equal(draft(after).state, 'done');
+  });
+
+  test('the draft is never "current" — indigo is reserved for the current stage', () => {
+    for (const d of ['2026-12-01', '2026-12-04', '2026-12-05'] as const) {
+      const { rulerTicks } = deriveSchedule(dublinDateTime(`${d}T09:00:00`));
+      assert.notEqual(rulerTicks.find((t) => t.id === 'draft')!.state, 'current');
+    }
+  });
+
+  test('stage ticks carry short captions, and the catch-up window says so', () => {
+    const { rulerTicks } = deriveSchedule(dublinDateTime('2026-09-01T09:00:00'));
+    const caption = (id: string) => rulerTicks.find((t) => t.id === id)!.caption;
+    assert.equal(caption('stage-3'), 'St 3');
+    assert.equal(caption('catchup'), 'Catch-up');
+    assert.equal(caption('draft'), 'Draft');
+  });
+
+  test('tick state tracks stage state, so the ruler cannot disagree with the cards', () => {
+    const result = deriveSchedule(dublinDateTime('2026-10-06T09:00:00'));
+    for (const tick of result.rulerTicks) {
+      if (tick.id === 'draft') continue;
+      assert.equal(tick.state, result.stages.find((s) => s.id === tick.id)!.state);
+    }
+  });
+});
+
+describe('termPositionPct — the draft tick and the right-edge clamp', () => {
+  test('the draft and the final deadline are both past the 88% legacy threshold', () => {
+    assert.ok(termPositionPct('2026-12-04') > 88);
+    assert.ok(termPositionPct('2026-12-11') > 88);
+  });
+
+  test('the draft sits below the raised 95% threshold, so only the last tick clamps', () => {
+    assert.ok(termPositionPct('2026-12-04') < 95);
+    assert.ok(termPositionPct('2026-12-11') > 95);
+  });
+});
+
 describe('TERM_SPAN_LABEL', () => {
   test('is derived from TERM, so editing only schedule.data.ts still moves it', () => {
     assert.equal(TERM_SPAN_LABEL, 'Sept → 12 Dec');

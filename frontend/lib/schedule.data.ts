@@ -31,6 +31,15 @@ export type Stage = {
 
 export const TERM = { start: '2026-09-01', end: '2026-12-12', weeks: 15 };
 
+/**
+ * The draft hand-in. A milestone *inside* Stage 6, not a stage of its own:
+ * it has a date and a done/upcoming state, but no report section, no task
+ * list and no card. Before this it existed only in the laptop aside and
+ * inside Stage 6's collapsed task list — invisible on a phone in November,
+ * which is exactly when it matters.
+ */
+export const DRAFT = { date: '2026-12-04', shortDate: '4 Dec', caption: 'Draft' };
+
 export const SEC_DEADLINE = {
   date: '2027-02-26',
   label: '26 February 2027',
