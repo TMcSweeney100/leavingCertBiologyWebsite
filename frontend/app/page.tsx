@@ -75,7 +75,7 @@ export default async function Home({
                 <Timeline stages={schedule.stages} />
               </div>
             </div>
-            <Aside comingUp={schedule.comingUp} />
+            <Aside comingUp={schedule.comingUp} termAtAGlance={schedule.termAtAGlance} />
           </div>
         </section>
 

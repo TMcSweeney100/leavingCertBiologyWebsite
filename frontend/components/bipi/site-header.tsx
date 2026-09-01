@@ -22,13 +22,6 @@ import type { StageWithState } from "@/lib/schedule";
  */
 export const NAV_IDS = ["right-now", "timeline", "report-sections", "report-rules"] as const;
 
-// Mobile-only short forms of HEADER.eyebrow / HEADER.gradeChip — schedule.data.ts only
-// carries the laptop long form, so these are hand-maintained here and must be updated by
-// hand if the design's copy ever changes. Verbatim from design_handoff_bipi_schedule/README.md
-// §1 (and the "2a" mobile frame in the prototype .dc.html) — not derived from HEADER above.
-const MOBILE_EYEBROW = "BiPi 2026-27";
-const MOBILE_GRADE_CHIP = "40% of grade";
-
 function GradeChip({ text }: { text: string }) {
   return (
     <span className="shrink-0 rounded-full bg-[var(--bipi-ink)] px-[9px] py-[5px] font-mono text-chip font-bold tracking-[.1em] text-white uppercase lg:px-[14px] lg:py-[9px] lg:text-label">
@@ -111,9 +104,9 @@ export function SiteHeader({ stages }: SiteHeaderProps) {
       <div className="mt-4 lg:hidden">
         <div className="flex items-center justify-between gap-2.5">
           <p className="min-w-0 font-mono text-eyebrow font-bold tracking-[.14em] text-muted-foreground uppercase">
-            {MOBILE_EYEBROW}
+            {HEADER.eyebrowMobile}
           </p>
-          <GradeChip text={MOBILE_GRADE_CHIP} />
+          <GradeChip text={HEADER.gradeChipMobile} />
         </div>
         <h1 className="mt-3.5 font-heading text-h1-mobile font-bold leading-[1.12] tracking-[-.025em] text-foreground">
           {HEADER.title}

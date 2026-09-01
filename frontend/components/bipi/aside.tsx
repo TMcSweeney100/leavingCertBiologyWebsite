@@ -1,5 +1,4 @@
-import { TERM_AT_A_GLANCE } from "@/lib/schedule.data";
-import type { StageWithState } from "@/lib/schedule";
+import type { GlanceMonth, StageWithState } from "@/lib/schedule";
 
 /**
  * The laptop-only sticky aside — the right-hand column of the timeline grid
@@ -11,16 +10,19 @@ import type { StageWithState } from "@/lib/schedule";
  * as the term progresses and disappears entirely on the last stage — the
  * card is omitted rather than rendered with a heading and nothing under it.
  *
- * "Term at a glance" is the one place the **4 December draft deadline**
- * appears outside Stage 6's own task list (plan §1.2 flags that gap). It
- * reads `TERM_AT_A_GLANCE` from the data file, which the file's own comment
- * marks as derived content to keep in sync with `STAGES` by hand — so if a
- * stage date ever moves, that array has to move with it.
+ * "Term at a glance" is one of the two places the **4 December draft
+ * deadline** appears outside Stage 6's own task list (plan §1.2 flagged
+ * that gap) — the other is the laptop term ruler (`TermRuler`, inside
+ * `you-are-here.tsx`). It takes `termAtAGlance` as a prop, built by
+ * `deriveSchedule` from the same `rulerTicks` the laptop ruler renders — so
+ * it cannot drift from `STAGES` the way a hand-written copy could.
  */
 
 type AsideProps = {
   /** The stages after the current one, in order. May be empty. */
   comingUp: StageWithState[];
+  /** The term's dates grouped by month, derived from `rulerTicks`. */
+  termAtAGlance: GlanceMonth[];
 };
 
 function AsideCard({ title, children }: { title: string; children: React.ReactNode }) {
@@ -34,7 +36,7 @@ function AsideCard({ title, children }: { title: string; children: React.ReactNo
   );
 }
 
-export function Aside({ comingUp }: AsideProps) {
+export function Aside({ comingUp, termAtAGlance }: AsideProps) {
   return (
     <aside className="sticky top-4 hidden gap-4 lg:grid print:hidden">
       {comingUp.length > 0 && (
@@ -66,7 +68,7 @@ export function Aside({ comingUp }: AsideProps) {
 
       <AsideCard title="Term at a glance">
         <div className="mt-3.5 grid gap-3.5">
-          {TERM_AT_A_GLANCE.map((month) => (
+          {termAtAGlance.map((month) => (
             <div key={month.month}>
               <p className="font-heading text-pill-lg leading-none font-bold tracking-[-.01em] text-foreground">
                 {month.month}

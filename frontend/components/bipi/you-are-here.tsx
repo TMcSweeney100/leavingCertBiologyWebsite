@@ -1,7 +1,12 @@
 import { TermProgress } from "@/components/bipi/term-progress";
 import { TermRuler } from "@/components/bipi/term-ruler";
-import { DUE_TODAY, daysLeftWord, formatTodayLabel, type DerivedSchedule } from "@/lib/schedule";
-import { POST_TERM } from "@/lib/schedule.data";
+import {
+  DUE_TODAY,
+  daysLeftWord,
+  formatTodayLabel,
+  postTermCopy,
+  type DerivedSchedule,
+} from "@/lib/schedule";
 
 /**
  * The "You are here" panel — "the most important element on the page. First
@@ -48,7 +53,6 @@ export function YouAreHere({ schedule }: YouAreHereProps) {
     currentStage,
     phase,
     nextStage,
-    stages,
     daysLeft,
     isDueToday,
     termPct,
@@ -57,7 +61,7 @@ export function YouAreHere({ schedule }: YouAreHereProps) {
   } = schedule;
 
   if (!currentStage) {
-    const copy = POST_TERM[phase === "buffer" ? "buffer" : "closed"];
+    const copy = postTermCopy(phase);
     return (
       <section
         id="right-now"
@@ -248,7 +252,7 @@ export function YouAreHere({ schedule }: YouAreHereProps) {
 
         <TermRuler
           className="mt-5.5 border-t border-border pt-4.5"
-          stages={stages}
+          ticks={schedule.rulerTicks}
           termPct={termPct}
           weekNumber={weekNumber}
         />

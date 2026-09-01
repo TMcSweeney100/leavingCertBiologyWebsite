@@ -3,8 +3,8 @@ import { join } from "node:path";
 
 import { ImageResponse } from "next/og";
 
-import { countdownText, deriveSchedule, formatTodayLabel } from "@/lib/schedule";
-import { HEADER, SEC_DEADLINE, POST_TERM } from "@/lib/schedule.data";
+import { countdownText, deriveSchedule, formatTodayLabel, postTermCopy } from "@/lib/schedule";
+import { HEADER, SEC_DEADLINE } from "@/lib/schedule.data";
 
 /**
  * The link-preview card (plan §5, Phase 9) — what WhatsApp, Teams, Slack and
@@ -107,7 +107,7 @@ export default async function OpengraphImage() {
           <div style={{ marginTop: 12, fontSize: 44, color: NOW }}>
             {schedule.currentStage
               ? `${schedule.currentStage.label} · ${schedule.currentStage.title}`
-              : POST_TERM[schedule.phase === 'buffer' ? 'buffer' : 'closed'].headline}
+              : postTermCopy(schedule.phase).headline}
           </div>
           <div style={{ marginTop: 10, fontFamily: "Space Mono", fontSize: 28, color: INK_2 }}>
             {schedule.currentStage

@@ -24,6 +24,8 @@ export type Stage = {
   teacherCheckpoint: string;
   whatsDue: string;         // used by the "You are here" panel: "Due <date>: <whatsDue>"
   whatGoodLooksLike: string;
+  /** One line for the aside's "Term at a glance". Empty for the two 5th-Year stages, which produce no tick. */
+  glanceText: string;
   tasks: string[];
   isCatchup?: boolean;
   isAlwaysDone?: boolean;   // Stages 1-2: completed in 5th Year, never date-derived
@@ -34,11 +36,19 @@ export const TERM = { start: '2026-09-01', end: '2026-12-12', weeks: 15 };
 /**
  * The draft hand-in. A milestone *inside* Stage 6, not a stage of its own:
  * it has a date and a done/upcoming state, but no report section, no task
- * list and no card. Before this it existed only in the laptop aside and
- * inside Stage 6's collapsed task list — invisible on a phone in November,
- * which is exactly when it matters.
+ * list and no card. It now appears on the laptop term ruler and in the
+ * laptop "Term at a glance" aside (`TermRuler` inside `you-are-here.tsx`
+ * and `Aside`, both `hidden lg:block` / `hidden lg:grid`), derived from
+ * one source (`rulerTicks`) so the two can't drift. That is still
+ * laptop-only: on a phone in November it remains visible only inside
+ * Stage 6's collapsed task list, exactly as before.
  */
-export const DRAFT = { date: '2026-12-04', shortDate: '4 Dec', caption: 'Draft' };
+export const DRAFT = {
+  date: '2026-12-04',
+  shortDate: '4 Dec',
+  caption: 'Draft',
+  glanceText: 'Full draft in for feedback',
+};
 
 export const SEC_DEADLINE = {
   date: '2027-02-26',
@@ -54,6 +64,10 @@ export const SEC_DEADLINE = {
  * 76 days this year, longer than any single stage — and `closed` runs
  * after it. Both were previously rendered as "Stage 6 · 0 days left",
  * which was false in `buffer` and meaningless in `closed`.
+ *
+ * The copy below is provisional and wants a sign-off from the class
+ * teacher (Katelyn) before it counts as final content — it lives here
+ * precisely so that approving different wording is a one-line change.
  */
 export const POST_TERM = {
   buffer: {
@@ -91,9 +105,13 @@ export const SCHOOL = {
 
 export const HEADER = {
   eyebrow: 'BiPi 2026-27 · class schedule',
+  /** Mobile short form of `eyebrow` — the header band is too narrow for the long one below 1024px. */
+  eyebrowMobile: 'BiPi 2026-27',
   title: 'Biology in Practice Investigation',
   standfirst: 'Membranes, Osmosis & Food Preservation. Six stages, seven report sections, one deadline.',
   gradeChip: '40% of the Biology grade',
+  /** Mobile short form of `gradeChip`. */
+  gradeChipMobile: '40% of grade',
   nav: ['Right now', 'Timeline', 'Report sections', 'Report rules']
 };
 
@@ -110,7 +128,7 @@ export const STAGES: Stage[] = [
     description: 'Read the SEC brief on Membranes, Osmosis & Food Preservation and settle on the angle you want to investigate.',
     teacherCheckpoint: 'Signed off in 5th Year.',
     whatsDue: 'nothing further — signed off last year.',
-    whatGoodLooksLike: '', tasks: [], isAlwaysDone: true
+    whatGoodLooksLike: '', glanceText: '', tasks: [], isAlwaysDone: true
   },
   {
     id: 'stage-2', order: 2, label: 'Stage 2',
@@ -121,7 +139,7 @@ export const STAGES: Stage[] = [
     description: 'Secondary research gathered, evaluated and logged with full references.',
     teacherCheckpoint: 'Signed off in 5th Year.',
     whatsDue: 'nothing further — signed off last year.',
-    whatGoodLooksLike: '', tasks: [], isAlwaysDone: true
+    whatGoodLooksLike: '', glanceText: '', tasks: [], isAlwaysDone: true
   },
   {
     id: 'stage-3', order: 3, label: 'Stage 3',
@@ -133,6 +151,7 @@ export const STAGES: Stage[] = [
     teacherCheckpoint: 'Your plan and safety assessment are signed off before any practical work begins.',
     whatsDue: 'your full experimental plan, equipment list and safety assessment.',
     whatGoodLooksLike: 'Another student could run your experiment from your method alone, without asking you a single question.',
+    glanceText: 'Stage 3 due — §3 Designing and Planning',
     tasks: [
       'State the research question you are actually answering.',
       'Write a hypothesis that can be proved wrong.',
@@ -153,6 +172,7 @@ export const STAGES: Stage[] = [
     teacherCheckpoint: 'Lab slots are booked in class; your log is checked at the end of each session.',
     whatsDue: 'all primary data collected, with your method written up as you went.',
     whatGoodLooksLike: 'Raw data written down in the moment, with any change to the method noted as it happened — not reconstructed afterwards.',
+    glanceText: 'Stage 4 due — §4 Conducting the Experiment',
     tasks: [
       'Run the experiment in supervised class time only.',
       'Record raw data as you go, in pen, in your log.',
@@ -171,6 +191,7 @@ export const STAGES: Stage[] = [
     teacherCheckpoint: 'Book a re-run slot with your teacher if your data needs it.',
     whatsDue: 'any repeat runs finished — this window exists so a bad result is not a crisis.',
     whatGoodLooksLike: 'Nothing outstanding. You walk into Stage 5 with a complete data set.',
+    glanceText: 'Catch-up window closes',
     tasks: [
       'Repeat any run that failed or looks anomalous.',
       'Fill the gaps in your data table.',
@@ -189,6 +210,7 @@ export const STAGES: Stage[] = [
     teacherCheckpoint: 'Bring your graphs to class for review before you write your conclusions.',
     whatsDue: 'data presented, analysed and concluded — two report sections in one go.',
     whatGoodLooksLike: 'Every claim in your conclusion traces back to a number in your table.',
+    glanceText: 'Stage 5 due — §5 Data and Analysis, §6 Conclusions',
     tasks: [
       'Build clean data tables with units.',
       'Draw graphs — axes labelled, units stated, scale sensible.',
@@ -202,12 +224,13 @@ export const STAGES: Stage[] = [
     id: 'stage-6', order: 7, label: 'Stage 6',
     title: 'Finalising the Report',
     weekRange: 'Weeks 12-14', dueDate: '2026-12-11',
-    dueDateLabel: 'Draft 4 Dec -> final 11-12 Dec', shortDate: '11 Dec',
+    dueDateLabel: 'Draft 4 Dec → final 11-12 Dec', shortDate: '11 Dec',
     reportSectionLabel: '§7', reportSectionName: 'References + full clean-up',
     description: 'Full draft in for feedback on 4 Dec, then revise. Final pass: 1,500 words max, 20 images max, Arial 12pt at 1.5 spacing, references complete — including any AI use declared.',
     teacherCheckpoint: 'Your draft is read and returned with written comments the week of 4 Dec.',
     whatsDue: 'the finished report, proofed, formatted and referenced.',
     whatGoodLooksLike: 'It reads as one voice, formatted to the letter, with every source accounted for.',
+    glanceText: 'Final report due — §7 References',
     tasks: [
       'Full draft handed in for feedback on 4 December.',
       'Act on every comment you get back.',
@@ -224,11 +247,11 @@ export const STAGES: Stage[] = [
 export const REPORT_SECTIONS = [
   { section: '§1', name: 'Title and Introduction',     writtenDuring: 'Stages 1-2', dueBy: '5th Year',         alwaysDone: true },
   { section: '§2', name: 'Background Research',        writtenDuring: 'Stage 2',    dueBy: '5th Year',         alwaysDone: true },
-  { section: '§3', name: 'Designing and Planning',     writtenDuring: 'Stage 3',    dueBy: '25 Sept 2026',     stageId: 'stage-3' },
-  { section: '§4', name: 'Conducting the Experiment',  writtenDuring: 'Stage 4',    dueBy: '16 Oct 2026',      stageId: 'stage-4' },
-  { section: '§5', name: 'Data and Data Analysis',     writtenDuring: 'Stage 5',    dueBy: '13 Nov 2026',      stageId: 'stage-5' },
-  { section: '§6', name: 'Conclusions',                writtenDuring: 'Stage 5',    dueBy: '13 Nov 2026',      stageId: 'stage-5' },
-  { section: '§7', name: 'References',                 writtenDuring: 'Stage 6',    dueBy: '11-12 Dec 2026',   stageId: 'stage-6' }
+  { section: '§3', name: 'Designing and Planning',     writtenDuring: 'Stage 3',    stageId: 'stage-3' },
+  { section: '§4', name: 'Conducting the Experiment',  writtenDuring: 'Stage 4',    stageId: 'stage-4' },
+  { section: '§5', name: 'Data and Data Analysis',     writtenDuring: 'Stage 5',    stageId: 'stage-5' },
+  { section: '§6', name: 'Conclusions',                writtenDuring: 'Stage 5',    stageId: 'stage-5' },
+  { section: '§7', name: 'References',                 writtenDuring: 'Stage 6',    stageId: 'stage-6' }
 ];
 
 /** Report rules, from the official SEC brief. Reference content — never changes mid-year. */
@@ -251,32 +274,10 @@ export const MARK_BANDS = [
 ];
 export const MARKS_TOTAL = 200;
 
-/** "Term at a glance" aside. Derived content — keep in sync with STAGES. */
-export const TERM_AT_A_GLANCE = [
-  { month: 'September', items: [{ day: '25',    text: 'Stage 3 due — §3 Designing and Planning' }] },
-  { month: 'October',   items: [{ day: '16',    text: 'Stage 4 due — §4 Conducting the Experiment' },
-                                { day: '30',    text: 'Catch-up window closes' }] },
-  { month: 'November',  items: [{ day: '13',    text: 'Stage 5 due — §5 Data and Analysis, §6 Conclusions' }] },
-  { month: 'December',  items: [{ day: '4',     text: 'Full draft in for feedback' },
-                                { day: '11-12', text: 'Final report due — §7 References' }] }
-];
-
 /* ---------------------------------------------------------------------------
-   Current-stage detection (the one piece of live logic on the site).
-
-   const today = startOfDay(new Date());               // Europe/Dublin
-   let currentIndex = STAGES.findIndex(
-     s => !s.isAlwaysDone && new Date(s.dueDate) >= today
-   );
-   if (currentIndex === -1) currentIndex = STAGES.length - 1;   // past the end
-
-   state(stage, i) =
-     stage.isAlwaysDone       -> 'done'
-     i <  currentIndex        -> 'done'
-     i === currentIndex       -> 'current'
-     i >  currentIndex        -> 'upcoming'
-
-   daysLeft   = max(0, round((dueDate - today) / 86400000))
-   termPct    = clamp(2, 100, round((today - TERM.start) / (TERM.end - TERM.start) * 100))
-   weekNumber = clamp(1, 15, floor((today - TERM.start) / 7 days) + 1)
+   Current-stage / phase detection is live logic, not content, so it is not
+   documented here. See `deriveSchedule` in `lib/schedule.ts` for how these
+   dates become `phase` ('in-term' | 'buffer' | 'closed'), `currentStage`
+   (null outside `in-term`) and `daysLeft` (counts to the current stage's
+   due date in `in-term`, to the SEC deadline in `buffer`, zero in `closed`).
 --------------------------------------------------------------------------- */

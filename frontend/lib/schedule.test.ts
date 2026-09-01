@@ -439,6 +439,32 @@ describe('deriveSchedule — rulerTicks', () => {
   });
 });
 
+describe('deriveSchedule — termAtAGlance', () => {
+  test('groups every ruler tick by month, in date order', () => {
+    const { termAtAGlance } = deriveSchedule(dublinDateTime('2026-09-01T09:00:00'));
+    assert.deepEqual(
+      termAtAGlance.map((m) => m.month),
+      ['September', 'October', 'November', 'December'],
+    );
+    assert.deepEqual(
+      termAtAGlance.flatMap((m) => m.items.map((i) => i.day)),
+      ['25', '16', '30', '13', '4', '11'],
+    );
+  });
+
+  test('every item names the stage or milestone it came from', () => {
+    const { termAtAGlance } = deriveSchedule(dublinDateTime('2026-09-01T09:00:00'));
+    const items = termAtAGlance.flatMap((m) => m.items);
+    assert.match(items[0].text, /Stage 3/);
+    assert.match(items.find((i) => i.day === '4')!.text, /draft/i);
+  });
+
+  test('cannot drift from STAGES — every stage deadline appears exactly once', () => {
+    const { termAtAGlance, rulerTicks } = deriveSchedule(dublinDateTime('2026-09-01T09:00:00'));
+    assert.equal(termAtAGlance.flatMap((m) => m.items).length, rulerTicks.length);
+  });
+});
+
 describe('termPositionPct — the draft tick and the right-edge clamp', () => {
   test('the draft and the final deadline are both past the 88% legacy threshold', () => {
     assert.ok(termPositionPct('2026-12-04') > 88);
@@ -560,5 +586,21 @@ describe('deriveSchedule — reportSections (the crosswalk)', () => {
         assert.equal(row.statusLabel, labels[row.status], `${when} ${row.section}`);
       }
     }
+  });
+});
+
+describe('deriveSchedule — reportSections dueBy', () => {
+  test('every dated section takes its due date from the stage it maps to', () => {
+    const { reportSections, stages } = deriveSchedule(dublinDateTime('2026-09-01T09:00:00'));
+    for (const section of reportSections) {
+      if (!section.stageId) continue;
+      assert.equal(section.dueBy, stages.find((s) => s.id === section.stageId)!.dueDateLabel);
+    }
+  });
+
+  test('the two 5th-Year sections keep their literal, having no stage to read', () => {
+    const { reportSections } = deriveSchedule(dublinDateTime('2026-09-01T09:00:00'));
+    assert.equal(reportSections[0].dueBy, '5th Year');
+    assert.equal(reportSections[1].dueBy, '5th Year');
   });
 });

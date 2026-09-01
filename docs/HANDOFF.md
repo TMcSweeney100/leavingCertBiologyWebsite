@@ -12,6 +12,13 @@ QR block, OG card) is on the **`phase-1.1`** branch, not merged, waiting on a lo
 `npm run lint`, `npx tsc --noEmit`, `npm run build` and `npm test` (39/39) pass on both, and the
 suite also passes under `TZ=UTC` (i.e. as Vercel runs it).
 
+**Phase A** (`docs/superpowers/plans/2026-09-01-phase-a-make-it-correct.md`) is built on the
+**`phase2.0`** branch, not merged — same pattern as Phase 9/`phase-1.1` above. It fixes the
+eleven-week post-term countdown bug (decision #2 below), adds the 4 December draft tick to the
+laptop ruler and aside (decision #6), and adds `robots.ts`/`sitemap.ts`. `npm run lint`, `npx tsc
+--noEmit`, `npm run build` and `npm test` (60/60, up from 39/39) all pass on `phase2.0`, and the
+suite passes under `TZ=UTC` there too.
+
 **The one thing standing between this and a deploy: `NEXT_PUBLIC_SITE_URL`.** Set it in the
 Vercel project (no trailing slash) and the QR block appears and link previews resolve. Until
 then both are deliberately absent rather than wrong — see `lib/site.ts`.
@@ -91,9 +98,10 @@ Mostly plan §7's open questions, answered the way the plan's author said they w
 All are cheap to reverse — say the word.
 
 1. **"Due today"** replaces the literal `0` on a deadline day (§1.2). Built.
-2. **Past a deadline it still reads "0 days left"** — reachable only after 11 Dec, where the last
-   stage stays current forever. "Due today" would be false there, and anything better ("Deadline
-   passed", "Term complete") is new copy nobody has approved. Flagging rather than inventing.
+2. **Past a deadline it still reads "0 days left"** — resolved by Phase A. `DerivedSchedule` now
+   carries a `phase` discriminator (`in-term` / `buffer` / `closed`); `buffer` counts down to the
+   real SEC deadline (26 Feb 2027) instead of clamping at zero, and `closed` shows a plain, honest
+   "coursework submitted" state.
 3. **"Next up" is omitted on the last stage** rather than pointing back at the stage you are
    already on, which is what the design prototype does. Same for the aside's "Coming up" card.
 4. **Motion**: ① (sticky mini-banner), ② (ruler entry) and ④ (tabular numerals) are built, ③
@@ -102,10 +110,11 @@ All are cheap to reverse — say the word.
    that value against white, which is right for the ruler; the same token now also colours the
    timeline rail's upcoming dot, which sits on the page ground, where `#8E94A1` is 2.81:1. The
    value used measures 3.25:1 on white and 3.00:1 on the page ground. Visually a hair darker.
-6. **Still open, and untouched:** the **4 December draft tick** on the ruler (plan §1.2's one
-   content gap). It is not there. The date does now appear in the laptop aside's "Term at a
-   glance", but on a phone in November it is still only inside Stage 6's task list. Roughly
-   fifteen minutes of work if you want it.
+6. **Resolved by Phase A, on laptop only.** The 4 December draft tick (plan §1.2's content gap)
+   now appears on both the laptop term ruler (`TermRuler`, inside `you-are-here.tsx`) and the
+   laptop aside's "Term at a glance" — `hidden lg:block` and `hidden lg:grid` respectively — both
+   derived from one source (`rulerTicks`) so they can't drift apart. On a phone it is still only
+   inside Stage 6's collapsed task list, unchanged from before Phase A.
 7. **`"use client"` went on a new `stage-disclosure.tsx`, not on `stage-card.tsx`** as plan §4.3
    and this file previously said it would. Same rule in spirit — one client file under
    `components/bipi/`, everything else a server component — but the boundary is smaller: the card
@@ -130,7 +139,12 @@ All are cheap to reverse — say the word.
 11. **The OG card names the current stage**, as plan §5 proposed. Worth knowing: WhatsApp and
    Teams cache link previews hard, so the stage line someone sees can be days stale — the title
    and the SEC deadline never are. Deleting that one block makes the card fully static if that
-   ever bothers anyone.
+   ever bothers anyone. Since Phase A, it also has a sensible fallback once there is no current
+   stage: post-term it names the phase instead — "All six stages complete" or "Coursework
+   submitted" — rather than a stale or broken stage reference.
+12. **`POST_TERM`'s wording is provisional.** The buffer/closed panel copy (`lib/schedule.data.ts`,
+   the `POST_TERM` export) has not yet been shown to the class teacher (Katelyn) for sign-off.
+   Approving different wording is a one-line edit there.
 
 ## What's next
 
@@ -140,10 +154,13 @@ Nothing in the plan is unbuilt. What is left is decisions and a deploy:
    the footer, and adds three files; nothing in it changes what the site says.
 2. **Set `NEXT_PUBLIC_SITE_URL`** and deploy — plan §7's first open question. The QR block and
    the link-preview card both come alive at that point, and nothing else needs editing.
-3. **Answer the open decisions above**, in particular the 4 December draft tick (#6) and the
-   print page count (#9). Both are small, and both are content calls rather than code problems.
+3. **Answer the open decisions above**, in particular the draft tick's remaining mobile gap (#6,
+   laptop-only so far) and the print page count (#9). Both are small, and both are content calls
+   rather than code problems.
 4. **Spot-check the SEC facts against the PDF** (plan §6, "Content") — the one acceptance item
    that has to be done by a human who knows the brief, and it has not been done.
+5. **Get Katelyn's sign-off on the `POST_TERM` copy** (decision #12) — the buffer/closed panel
+   wording in `lib/schedule.data.ts` is provisional placeholder text, not yet reviewed.
 
 ## Working pattern used in earlier sessions (worth continuing)
 

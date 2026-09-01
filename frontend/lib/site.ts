@@ -1,10 +1,12 @@
 /**
  * Where this site lives, once it lives anywhere.
  *
- * Two things need the deployed URL and cannot be derived from anything in
- * the repo: the noticeboard QR block (`components/bipi/qr-block.tsx`) and
- * the link-preview card's `metadataBase` (`app/layout.tsx`). Both read it
- * from here so there is one place to set it.
+ * Several things need the deployed URL and cannot derive it from anything
+ * else in the repo: the noticeboard QR block (`components/bipi/qr-block.tsx`),
+ * the link-preview card's `metadataBase` (`app/layout.tsx`), and the crawler
+ * config (`app/robots.ts`, `app/sitemap.ts`) — all of it URL-dependent, all
+ * of it reading `hasSiteUrl`/`SITE_URL` from here rather than the env var
+ * directly, so there is one place to set it and one gate to stay behind.
  *
  * It is read from `NEXT_PUBLIC_SITE_URL` at build time and is deliberately
  * **empty by default**: a QR code that resolves to a placeholder domain is

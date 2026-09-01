@@ -14,6 +14,7 @@
  */
 import {
   DRAFT,
+  POST_TERM,
   REPORT_SECTIONS,
   SEC_DEADLINE,
   STAGES,
@@ -58,7 +59,13 @@ export type ReportSectionRow = {
   section: string;
   name: string;
   writtenDuring: string;
-  dueBy: string;
+  /**
+   * Optional: rows that map to a stage (`stageId`) leave this unset and take
+   * the stage's own `dueDateLabel` instead — see `reportSectionStatuses`. Only
+   * the two `alwaysDone` 5th-Year rows, which have no stage to read a date
+   * from, carry a literal here.
+   */
+  dueBy?: string;
   alwaysDone?: boolean;
   stageId?: string;
 };
@@ -72,6 +79,8 @@ export type ReportSectionRow = {
 export type ReportSectionStatus = 'due-now' | 'done' | 'to-come';
 
 export type ReportSectionWithStatus = ReportSectionRow & {
+  /** Resolved by `reportSectionStatuses` — always present here, unlike on `ReportSectionRow`. */
+  dueBy: string;
   status: ReportSectionStatus;
   /** The word the status column prints. Never conveyed by colour alone. */
   statusLabel: string;
@@ -94,6 +103,19 @@ const STATUS_LABEL: Record<ReportSectionStatus, string> = {
  * advertised a deadline the page refused to count toward.
  */
 export type SchedulePhase = 'in-term' | 'buffer' | 'closed';
+
+/**
+ * Which `POST_TERM` entry to show once there is no current stage.
+ *
+ * TypeScript cannot narrow `SchedulePhase` from `!currentStage` alone —
+ * `in-term` is impossible whenever `currentStage` is null, but the type
+ * system doesn't know that — so every consumer needs the same
+ * `buffer`-or-`closed` ternary. One place to write it rather than two
+ * (`you-are-here.tsx`, `opengraph-image.tsx`) that could drift apart.
+ */
+export function postTermCopy(phase: SchedulePhase) {
+  return POST_TERM[phase === 'buffer' ? 'buffer' : 'closed'];
+}
 
 /**
  * One mark on the laptop term ruler. Built here rather than derived inside
@@ -153,7 +175,24 @@ export type DerivedSchedule = {
   weekNumber: number;
   /** The laptop term ruler's marks: stage deadlines plus the draft. */
   rulerTicks: RulerTick[];
+  /** The aside's "Term at a glance", grouped by month. Derived from `rulerTicks`. */
+  termAtAGlance: GlanceMonth[];
 };
+
+export type GlanceItem = { day: string; text: string };
+export type GlanceMonth = { month: string; items: GlanceItem[] };
+
+const GLANCE_MONTH = new Intl.DateTimeFormat('en-IE', { month: 'long', timeZone: 'UTC' });
+const GLANCE_DAY = new Intl.DateTimeFormat('en-IE', { day: 'numeric', timeZone: 'UTC' });
+
+/**
+ * Tick id -> its one-line summary for "Term at a glance". Built once: the
+ * mapping is content, not a function of the current date.
+ */
+const GLANCE_TEXT = new Map<string, string>([
+  ...STAGES.map((stage) => [stage.id, stage.glanceText] as const),
+  ['draft', DRAFT.glanceText],
+]);
 
 /**
  * Annotates every report section with the status the crosswalk prints.
@@ -165,6 +204,13 @@ export type DerivedSchedule = {
  * always "Done"; so is any row whose `stageId` no longer matches a stage,
  * which can only happen if the data file is edited inconsistently and is
  * better rendered as done-and-quiet than crashed on.
+ *
+ * `dueBy` is resolved the same way: a row with a `stageId` reads its due
+ * date off that stage's `dueDateLabel` rather than carrying its own literal,
+ * so the crosswalk cannot state a different date than the stage card does.
+ * Only the two `alwaysDone` rows carry a literal (`'5th Year'`), having no
+ * stage to read one from; `'—'` is the fallback for the data-inconsistency
+ * case above.
  */
 function reportSectionStatuses(stages: StageWithState[]): ReportSectionWithStatus[] {
   const rows: ReportSectionRow[] = REPORT_SECTIONS;
@@ -178,7 +224,12 @@ function reportSectionStatuses(stages: StageWithState[]): ReportSectionWithStatu
           ? 'due-now'
           : 'to-come';
 
-    return { ...row, status, statusLabel: STATUS_LABEL[status] };
+    return {
+      ...row,
+      dueBy: row.dueBy ?? stage?.dueDateLabel ?? '—',
+      status,
+      statusLabel: STATUS_LABEL[status],
+    };
   });
 }
 
@@ -212,6 +263,26 @@ function buildRulerTicks(stages: StageWithState[], today: number): RulerTick[] {
   });
 
   return ticks.sort((a, b) => day(a.date) - day(b.date));
+}
+
+/**
+ * The aside's "Term at a glance", grouped by month.
+ *
+ * Derived from `rulerTicks` rather than hand-written, which is what stops it
+ * from disagreeing with the timeline — it previously restated every date as
+ * a literal, under a comment asking a human to keep them in sync.
+ */
+function buildTermAtAGlance(ticks: RulerTick[], glanceText: Map<string, string>): GlanceMonth[] {
+  const months: GlanceMonth[] = [];
+  for (const tick of ticks) {
+    const epoch = day(tick.date);
+    const month = GLANCE_MONTH.format(epoch);
+    const item = { day: GLANCE_DAY.format(epoch), text: glanceText.get(tick.id) ?? '' };
+    const last = months[months.length - 1];
+    if (last?.month === month) last.items.push(item);
+    else months.push({ month, items: [item] });
+  }
+  return months;
 }
 
 /**
@@ -259,6 +330,8 @@ export function deriveSchedule(now: Date = new Date()): DerivedSchedule {
   const deadlineDay =
     phase === 'in-term' ? day(currentStage!.dueDate) : phase === 'buffer' ? secDay : today;
 
+  const ticks = buildRulerTicks(stages, today);
+
   return {
     today,
     phase,
@@ -271,7 +344,8 @@ export function deriveSchedule(now: Date = new Date()): DerivedSchedule {
     reportSections: reportSectionStatuses(stages),
     termPct: clamp(2, 100, Math.round(((today - termStart) / (termEnd - termStart)) * 100)),
     weekNumber: clamp(1, 15, Math.floor((today - termStart) / (7 * MS_PER_DAY)) + 1),
-    rulerTicks: buildRulerTicks(stages, today),
+    rulerTicks: ticks,
+    termAtAGlance: buildTermAtAGlance(ticks, GLANCE_TEXT),
   };
 }
 
