@@ -14,6 +14,7 @@
  */
 import {
   REPORT_SECTIONS,
+  SEC_DEADLINE,
   STAGES,
   TERM,
   type Stage,
@@ -81,21 +82,47 @@ const STATUS_LABEL: Record<ReportSectionStatus, string> = {
   'to-come': 'To come',
 };
 
+/**
+ * Which of the schedule's three lives the page is in.
+ *
+ * The site spends longer in `buffer` than most of the term — 12 December to
+ * 26 February is 76 days — so this is not an edge case to degrade
+ * gracefully into. It is a first-class state with its own copy, and it
+ * exists because clamping the countdown at zero left the largest element on
+ * the page reading "0 days left" for eleven weeks while the footer
+ * advertised a deadline the page refused to count toward.
+ */
+export type SchedulePhase = 'in-term' | 'buffer' | 'closed';
+
 export type DerivedSchedule = {
   /** Today's civil date in Dublin, as a UTC-midnight epoch (ms). */
   today: number;
+  /** Which of the schedule's three lives the page is in. */
+  phase: SchedulePhase;
   /** Every stage, in order, each annotated with its derived state. */
   stages: StageWithState[];
-  /** The stage currently in focus (falls back to the last stage once the term ends). */
-  currentStage: StageWithState;
-  /** Days remaining until `currentStage`'s due date. Never negative. */
+  /**
+   * The stage in progress, or `null` once the last one's due date passes.
+   *
+   * Nullable on purpose. Every consumer that renders "the current stage"
+   * must decide what to show in `buffer` and `closed`, and a non-null type
+   * pointing at a finished Stage 6 would let them all silently render it as
+   * live — which is exactly the bug this phase exists to fix.
+   */
+  currentStage: StageWithState | null;
+  /**
+   * Days to whichever deadline is live: the current stage's in `in-term`,
+   * the SEC deadline in `buffer`, and zero in `closed`. Never negative.
+   */
   daysLeft: number;
   /**
-   * True only on `currentStage`'s due date itself. `daysLeft === 0` is NOT
-   * the same test: it is also what the clamp returns once a due date has
-   * passed, which happens for real once the term ends and the last stage
-   * stays "current" forever after (plan §3.3's 20 Dec / 1 Mar rows). Copy
-   * that says "Due today" must branch on this, not on the countdown.
+   * True only on the live deadline's due date itself. `daysLeft === 0` is
+   * NOT the same test: in `closed` the countdown has nothing left to point
+   * at and reads zero every day, which would read as "Due today" forever if
+   * copy branched on the countdown alone. It now tracks whichever deadline
+   * is live for the current phase — the current stage's due date in
+   * `in-term`, the SEC deadline in `buffer` — and is unconditionally false
+   * in `closed`.
    */
   isDueToday: boolean;
   /** The stage after `currentStage`, or `null` when it is the last one. */
@@ -147,32 +174,48 @@ function reportSectionStatuses(stages: StageWithState[]): ReportSectionWithStatu
  */
 export function deriveSchedule(now: Date = new Date()): DerivedSchedule {
   const today = dublinToday(now);
+  const lastStage = STAGES[STAGES.length - 1];
+  const secDay = day(SEC_DEADLINE.date);
 
-  let currentIndex = STAGES.findIndex((s) => !s.isAlwaysDone && day(s.dueDate) >= today);
-  if (currentIndex === -1) currentIndex = STAGES.length - 1; // past the end -> last stage
+  const phase: SchedulePhase =
+    today <= day(lastStage.dueDate) ? 'in-term' : today <= secDay ? 'buffer' : 'closed';
+
+  // Guaranteed to find a stage while `in-term` — the phase test above is
+  // precisely the condition that the last stage has not passed — so the -1
+  // fallback the old code needed is gone. Outside `in-term` there is no
+  // current stage at all, which is what `-1` means here.
+  const currentIndex =
+    phase === 'in-term' ? STAGES.findIndex((s) => !s.isAlwaysDone && day(s.dueDate) >= today) : -1;
 
   const stages: StageWithState[] = STAGES.map((stage, index) => ({
     ...stage,
-    state: stage.isAlwaysDone
-      ? 'done'
-      : index < currentIndex
+    state:
+      stage.isAlwaysDone || currentIndex === -1 || index < currentIndex
         ? 'done'
         : index === currentIndex
           ? 'current'
           : 'upcoming',
   }));
 
-  const currentStage = stages[currentIndex];
-  const comingUp = stages.slice(currentIndex + 1);
+  const currentStage = currentIndex === -1 ? null : stages[currentIndex];
+  const comingUp = currentIndex === -1 ? [] : stages.slice(currentIndex + 1);
   const termStart = day(TERM.start);
   const termEnd = day(TERM.end);
 
+  // The day the live countdown points at. In `closed` there is no live
+  // deadline, so it resolves to today — which yields zero days left, and is
+  // why `isDueToday` has to exclude `closed` explicitly rather than just
+  // comparing the two.
+  const deadlineDay =
+    phase === 'in-term' ? day(currentStage!.dueDate) : phase === 'buffer' ? secDay : today;
+
   return {
     today,
+    phase,
     stages,
     currentStage,
-    daysLeft: Math.max(0, Math.round((day(currentStage.dueDate) - today) / MS_PER_DAY)),
-    isDueToday: day(currentStage.dueDate) === today,
+    daysLeft: Math.max(0, Math.round((deadlineDay - today) / MS_PER_DAY)),
+    isDueToday: phase !== 'closed' && deadlineDay === today,
     nextStage: comingUp[0] ?? null,
     comingUp,
     reportSections: reportSectionStatuses(stages),
