@@ -1,4 +1,4 @@
-import { MARK_BANDS, MARKS_TOTAL } from "@/lib/schedule.data";
+import type { ResolvedClass } from "@/lib/schedule.types";
 
 /**
  * How the 200 marks split across the four assessment bands
@@ -11,11 +11,16 @@ import { MARK_BANDS, MARKS_TOTAL } from "@/lib/schedule.data";
  * report rather than as a section of its own, which is why the crosswalk
  * has seven sections and this card has four bands.
  *
- * The total is `MARKS_TOTAL` rather than a typed-out "200" — and the band
- * rows do not sum it themselves, because the brief states the total and the
- * site should print what the brief states, not a number it computed.
+ * The total is `total` rather than a typed-out "200" — and the band rows do
+ * not sum it themselves, because the brief states the total and the site
+ * should print what the brief states, not a number it computed.
  */
-export function MarksCard() {
+type MarksCardProps = {
+  bands: ResolvedClass["markBands"];
+  total: number;
+};
+
+export function MarksCard({ bands, total }: MarksCardProps) {
   return (
     <section
       aria-label="How the report is marked"
@@ -26,12 +31,12 @@ export function MarksCard() {
           How it&rsquo;s marked
         </h3>
         <p className="font-mono text-pill-lg leading-none font-bold text-foreground tabular-nums lg:text-task">
-          {MARKS_TOTAL} marks
+          {total} marks
         </p>
       </div>
 
       <dl className="mt-2.5 lg:mt-3">
-        {MARK_BANDS.map((band) => (
+        {bands.map((band) => (
           <div
             key={band.band}
             className="grid grid-cols-[20px_1fr_34px] items-baseline gap-2.5 border-t border-border py-2.25 lg:grid-cols-[22px_1fr_34px] lg:py-2.75"

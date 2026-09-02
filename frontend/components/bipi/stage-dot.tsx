@@ -1,4 +1,4 @@
-import type { StageState } from "@/lib/schedule.data";
+import type { StageState } from "@/lib/schedule.types";
 
 /**
  * The state dot, shared by the timeline rail and the laptop stepper —

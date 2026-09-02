@@ -1,5 +1,5 @@
 import { Progress } from "@/components/ui/progress";
-import type { StageState } from "@/lib/schedule.data";
+import type { StageState } from "@/lib/schedule.types";
 import type { RulerTick } from "@/lib/schedule";
 
 /**

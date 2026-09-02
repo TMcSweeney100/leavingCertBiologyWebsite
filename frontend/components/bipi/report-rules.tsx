@@ -1,4 +1,4 @@
-import { REPORT_RULES } from "@/lib/schedule.data";
+import type { ResolvedClass } from "@/lib/schedule.types";
 
 /**
  * The eight report rules from the official SEC brief — word count, image
@@ -24,10 +24,14 @@ import { REPORT_RULES } from "@/lib/schedule.data";
  * else on it at that width, and drops it on laptop where the block sits
  * beside the marks card and would otherwise read as two competing panels.
  */
-export function ReportRules() {
+type ReportRulesProps = {
+  rules: ResolvedClass["reportRules"];
+};
+
+export function ReportRules({ rules }: ReportRulesProps) {
   return (
     <dl className="rounded-(--bipi-r-card) border border-border bg-card px-3.75 pt-1 pb-3.5 lg:columns-2 lg:gap-x-6.5 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0">
-      {REPORT_RULES.map((rule) => (
+      {rules.map((rule) => (
         // `break-inside-avoid` keeps a key and its value in the same column;
         // without it the CSS column break can land between them.
         <div

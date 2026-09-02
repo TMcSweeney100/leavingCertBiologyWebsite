@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
 import { ImageResponse } from "next/og";
+import { notFound } from "next/navigation";
 
 import { countdownText, deriveSchedule, formatTodayLabel, postTermCopy } from "@/lib/schedule";
 import { resolveClass } from "@/lib/class-resolve";
@@ -50,9 +51,11 @@ const BG = "#F4F6FA"; // --bipi-bg
 
 const font = (file: string) => readFile(join(process.cwd(), "assets", "fonts", file));
 
-export default async function OpengraphImage() {
-  // Step 4: hardcoded slug, replaced by the `/[class]` route param.
-  const cls = resolveClass(getClass("nwetss-hanlon")!);
+export default async function OpengraphImage({ params }: { params: Promise<{ class: string }> }) {
+  const { class: slug } = await params;
+  const config = getClass(slug);
+  if (!config) notFound();
+  const cls = resolveClass(config);
   const schedule = deriveSchedule(cls);
   const [grotesk, mono] = await Promise.all([
     font("SpaceGrotesk-Bold.ttf"),

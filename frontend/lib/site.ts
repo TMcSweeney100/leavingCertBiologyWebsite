@@ -1,5 +1,6 @@
 /**
- * Where this site lives, once it lives anywhere.
+ * Where this site lives, once it lives anywhere — and which class it lives
+ * at by default.
  *
  * Several things need the deployed URL and cannot derive it from anything
  * else in the repo: the noticeboard QR block (`components/bipi/qr-block.tsx`),
@@ -17,7 +18,13 @@
  * To set it: add `NEXT_PUBLIC_SITE_URL=https://…` to the Vercel project's
  * environment variables (or to `.env.local` for a local check), with no
  * trailing slash, then redeploy. Nothing else needs to change.
+ *
+ * `NEXT_PUBLIC_DEFAULT_CLASS` (below) is separate: it is read at build time
+ * too, but it picks which class `/` redirects to, and has a sane fallback
+ * (the first registered class) so the site works with it unset.
  */
+import { CLASS_SLUGS } from './classes/index.ts';
+
 const RAW_SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.trim() ?? '';
 
 /** The site's canonical origin, or `''` when it has not been configured. */
@@ -32,3 +39,6 @@ export const hasSiteUrl = /^https?:\/\/\S+$/.test(SITE_URL);
  * URL, and is what someone would type if the scan failed.
  */
 export const SITE_URL_LABEL = SITE_URL.replace(/^https?:\/\//, '');
+
+/** Which class `/` redirects to. Falls back to the first registered class when unset. */
+export const DEFAULT_CLASS = process.env.NEXT_PUBLIC_DEFAULT_CLASS?.trim() || CLASS_SLUGS[0];

@@ -1,6 +1,6 @@
 import { StageCard } from "@/components/bipi/stage-card";
 import { StageDot } from "@/components/bipi/stage-dot";
-import type { StageState } from "@/lib/schedule.data";
+import type { StageState } from "@/lib/schedule.types";
 import type { StageWithState } from "@/lib/schedule";
 
 /**

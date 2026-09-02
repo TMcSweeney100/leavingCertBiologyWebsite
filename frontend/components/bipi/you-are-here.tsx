@@ -183,7 +183,7 @@ export function YouAreHere({ schedule, cls }: YouAreHereProps) {
           </p>
         </div>
 
-        <TermProgress className="mt-3.5" weekNumber={weekNumber} termPct={termPct} />
+        <TermProgress className="mt-3.5" weekNumber={weekNumber} weeks={cls.term.weeks} termPct={termPct} />
 
         {/* Omitted rather than clamped to the current stage: past the last
             stage there genuinely is nothing next, and the design's own

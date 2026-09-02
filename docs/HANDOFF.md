@@ -19,9 +19,23 @@ laptop ruler and aside (decision #6), and adds `robots.ts`/`sitemap.ts`. `npm ru
 --noEmit`, `npm run build` and `npm test` (60/60, up from 39/39) all pass on `phase2.0`, and the
 suite passes under `TZ=UTC` there too.
 
+**Phase B** (`docs/superpowers/plans/2026-09-02-phase-b-one-config-many-classes.md`) is built on
+the same **`phase2.0`** branch (stacked on top of Phase A), not merged. It splits the single-class
+data file into a shared `Brief` (`lib/briefs/biology-2027.ts` — what the SEC decides) and a
+per-teacher `ClassConfig` (`lib/classes/` — identity and dates), and moves the site from one page
+at `/` to one page per class at **`/[class]`**: `/nwetss-hanlon` is Katelyn's real class (listed,
+in the sitemap); `/demo-2027` is a fictional demo class added to prove a `ClassConfig` and its
+`Brief` vary independently (unlisted, `noindex`, no crest). `/` now redirects to
+`NEXT_PUBLIC_DEFAULT_CLASS` (or the first registered class if unset); an unknown slug gets a real
+404. `npm run lint`, `npx tsc --noEmit`, `npm run build` and `npm test` (74/74, up from 60/60) all
+pass, and the suite passes under `TZ=UTC` too.
+
 **The one thing standing between this and a deploy: `NEXT_PUBLIC_SITE_URL`.** Set it in the
 Vercel project (no trailing slash) and the QR block appears and link previews resolve. Until
-then both are deliberately absent rather than wrong — see `lib/site.ts`.
+then both are deliberately absent rather than wrong — see `lib/site.ts`. The other environment
+variable, `NEXT_PUBLIC_DEFAULT_CLASS` (also `lib/site.ts`, Phase B), is optional: it only picks
+which class `/` redirects to, and falls back to the first registered class when unset, so the
+site works correctly without it.
 
 - Phase 0 — clean scaffold, shadcn init (Base UI, not Radix — see Decision #5), BiPi tokens, fonts.
 - Phase 1+2 — `lib/schedule.data.ts` (verbatim content) + `lib/schedule.ts` (Dublin-timezone-safe
@@ -53,6 +67,12 @@ then both are deliberately absent rather than wrong — see `lib/site.ts`.
   `globals.css` plus `print:` utilities at call sites), `qr-block.tsx` (build-time inline SVG, no
   third-party service), `app/opengraph-image.tsx` with two `.ttf` faces vendored in
   `assets/fonts/`, and `lib/site.ts` holding the one environment variable the site has.
+- Phase B *(branch `phase2.0`, stacked on Phase A)* — one config, many classes. `lib/schedule.ts`
+  and every component now take a resolved class rather than reading module-level data;
+  `lib/schedule.data.ts` is deleted. `lib/class-resolve.ts` (`resolveClass`) merges a
+  `ClassConfig` with its `Brief` into the header strings, dated stages and SEC-deadline note the
+  page renders. Routing moved to `app/[class]/`, with `app/page.tsx` now just a redirect and a
+  real `app/not-found.tsx` for an unknown slug.
 
 All five gates are met, checked in a headless browser rather than assumed:
 
@@ -142,9 +162,18 @@ All are cheap to reverse — say the word.
    ever bothers anyone. Since Phase A, it also has a sensible fallback once there is no current
    stage: post-term it names the phase instead — "All six stages complete" or "Coursework
    submitted" — rather than a stale or broken stage reference.
-12. **`POST_TERM`'s wording is provisional.** The buffer/closed panel copy (`lib/schedule.data.ts`,
-   the `POST_TERM` export) has not yet been shown to the class teacher (Katelyn) for sign-off.
-   Approving different wording is a one-line edit there.
+12. **`POST_TERM`'s wording is provisional.** The buffer/closed panel copy (now
+   `lib/briefs/biology-2027.ts`'s `postTerm` field) has not yet been shown to the class teacher
+   (Katelyn) for sign-off. Approving different wording is a one-line edit there.
+13. **(Phase B) The SEC-deadline footer note now says "roughly eleven weeks of buffer", not
+   "ten".** Phase B derives the buffer length from Stage 6's due date to the SEC deadline instead
+   of storing it as a literal — 77 days is exactly eleven weeks, so the pre-Phase-B string was
+   simply wrong by a week. This is a factual correction, not a wording choice, but it is new text
+   on the page and worth Katelyn's sign-off alongside #12.
+14. **(Phase B) Stage 6's card now says "Weeks 12-15", not "Weeks 12-14".** Also derived rather
+   than literal: the laptop term ruler already showed "Week 15 of 15" on 11 December, so the old
+   literal and the ruler silently disagreed. The derived value is the one that agrees with the
+   ruler. Worth a glance from Katelyn, though it is a smaller change than #13.
 
 ## What's next
 
@@ -160,7 +189,9 @@ Nothing in the plan is unbuilt. What is left is decisions and a deploy:
 4. **Spot-check the SEC facts against the PDF** (plan §6, "Content") — the one acceptance item
    that has to be done by a human who knows the brief, and it has not been done.
 5. **Get Katelyn's sign-off on the `POST_TERM` copy** (decision #12) — the buffer/closed panel
-   wording in `lib/schedule.data.ts` is provisional placeholder text, not yet reviewed.
+   wording in `lib/briefs/biology-2027.ts` is provisional placeholder text, not yet reviewed.
+   **Also get sign-off on the two Phase B copy corrections** (decisions #13, #14): the SEC-note
+   buffer length ("eleven weeks", not "ten") and Stage 6's week range ("Weeks 12-15", not "12-14").
 
 ## Working pattern used in earlier sessions (worth continuing)
 

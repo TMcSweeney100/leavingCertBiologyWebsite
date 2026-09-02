@@ -20,8 +20,11 @@ const spaceMono = Space_Mono({
   subsets: ["latin"],
 });
 
-const DESCRIPTION =
-  "Membranes, Osmosis & Food Preservation. Six stages, seven report sections, one deadline.";
+// Site-level and generic — a specific class's title, description and
+// openGraph copy now come from `generateMetadata` in `app/[class]/page.tsx`,
+// which overrides this for every class route. This is what's left for `/`
+// (which only ever redirects) and `not-found.tsx`.
+const DESCRIPTION = "Class schedule hub for the SEC Biology in Practice Investigation.";
 
 export const metadata: Metadata = {
   title: "BiPi Schedule Hub",

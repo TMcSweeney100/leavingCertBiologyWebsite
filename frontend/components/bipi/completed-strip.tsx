@@ -1,5 +1,3 @@
-import { COMPLETED_STRIP } from "@/lib/schedule.data";
-
 /**
  * The completed strip — one line saying Stages 1-2 are already behind the
  * class (design_handoff_bipi_schedule/README.md §4). It sits between the
@@ -11,20 +9,24 @@ import { COMPLETED_STRIP } from "@/lib/schedule.data";
  * Static by design. These two stages were finished in 5th Year, so nothing
  * here is date-derived and `--bipi-now` correctly appears nowhere in it.
  *
- * Copy comes from `COMPLETED_STRIP` at both breakpoints. The design
- * prototype shortens it on mobile ("Stages 1-2 done in 5th Year — §1 & §2
- * written"), but that shorter string exists nowhere in `schedule.data.ts`
- * and the data file is copied byte-for-byte from the handoff, so inventing
- * a second copy of the same sentence in JSX would break the rule that
- * editing the data file alone re-words the site. The full sentence wraps to
- * three lines on a 390px phone, which is fine — this is reassurance, not
- * something anyone needs to scan.
+ * Copy comes from the brief's `completedStrip` at both breakpoints. The
+ * design prototype shortens it on mobile ("Stages 1-2 done in 5th Year —
+ * §1 & §2 written"), but that shorter string exists nowhere in the brief,
+ * which is copied byte-for-byte from the handoff, so inventing a second
+ * copy of the same sentence in JSX would break the rule that editing the
+ * brief alone re-words the site. The full sentence wraps to three lines on
+ * a 390px phone, which is fine — this is reassurance, not something anyone
+ * needs to scan.
  *
  * The green check is decorative: it repeats what the sentence already says,
  * so it is `aria-hidden` and the tick is drawn as a Unicode glyph in a CSS
  * circle rather than as an icon (README §"no heavy imagery").
  */
-export function CompletedStrip() {
+type CompletedStripProps = {
+  text: string;
+};
+
+export function CompletedStrip({ text }: CompletedStripProps) {
   return (
     // Mobile: a full-bleed tinted band with a hairline under it, which is
     // what separates it from the timeline section below. Laptop: the tint
@@ -42,7 +44,7 @@ export function CompletedStrip() {
         ✓
       </span>
       <p className="font-sans text-inset leading-[1.4] font-semibold text-(--bipi-ink-2) lg:text-body">
-        {COMPLETED_STRIP}
+        {text}
       </p>
     </div>
   );

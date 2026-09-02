@@ -5,10 +5,10 @@
  * split, spec §4.1). Editing this file changes the schedule for every
  * school running it at once.
  *
- * Moved from `schedule.data.ts` — SEC content only, with the four
- * per-class date fields (`dueDate`, `dueDateLabel`, `shortDate`,
- * `weekRange`) stripped off each stage; `lib/class-resolve.ts` derives
- * them back from a class's own dates.
+ * Moved from the site's original, single-class data file — SEC content
+ * only, with the four per-class date fields (`dueDate`, `dueDateLabel`,
+ * `shortDate`, `weekRange`) stripped off each stage; `lib/class-resolve.ts`
+ * derives them back from a class's own dates.
  */
 import type { Brief } from '../schedule.types.ts';
 
