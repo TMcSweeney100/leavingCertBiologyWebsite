@@ -1,7 +1,8 @@
 /**
  * Schedule derivation — the one piece of live logic on the site (see
- * `docs/IMPLEMENTATION_PLAN.md` §3). Everything here is a pure function of
- * an injectable `now`; nothing reads the clock unless the caller lets it.
+ * `docs/IMPLEMENTATION_PLAN.md` §3). Everything here is a pure function of a
+ * `ResolvedClass` and an injectable `now`; nothing reads the clock or any
+ * module-level data unless the caller lets it.
  *
  * The core hazard this file exists to avoid: "today" must be a civil
  * calendar date in Europe/Dublin, not the server's local date. Vercel runs
@@ -12,16 +13,7 @@
  * only then do arithmetic — entirely in UTC-midnight epoch terms, so no
  * calculation ever crosses a DST offset change.
  */
-import {
-  DRAFT,
-  POST_TERM,
-  REPORT_SECTIONS,
-  SEC_DEADLINE,
-  STAGES,
-  TERM,
-  type Stage,
-  type StageState,
-} from './schedule.data.ts';
+import type { ReportSectionRow, ResolvedClass, Stage, StageState } from './schedule.types.ts';
 
 const MS_PER_DAY = 86_400_000;
 
@@ -45,30 +37,6 @@ const clamp = (min: number, max: number, value: number): number =>
 
 /** A stage annotated with its derived state as of a given `now`. */
 export type StageWithState = Stage & { state: StageState };
-
-/**
- * One row of the report-section crosswalk, as `schedule.data.ts` writes it.
- *
- * Declared here rather than there because that file is copied byte-for-byte
- * from the design handoff and must stay that way (see its header). Its
- * `REPORT_SECTIONS` literal infers as a union — rows carrying `alwaysDone`
- * and rows carrying `stageId` — which is awkward to read from; this widens
- * both shapes into one, with the two distinguishing fields optional.
- */
-export type ReportSectionRow = {
-  section: string;
-  name: string;
-  writtenDuring: string;
-  /**
-   * Optional: rows that map to a stage (`stageId`) leave this unset and take
-   * the stage's own `dueDateLabel` instead — see `reportSectionStatuses`. Only
-   * the two `alwaysDone` 5th-Year rows, which have no stage to read a date
-   * from, carry a literal here.
-   */
-  dueBy?: string;
-  alwaysDone?: boolean;
-  stageId?: string;
-};
 
 /**
  * The live status of a report section, derived from the state of the stage
@@ -105,7 +73,7 @@ const STATUS_LABEL: Record<ReportSectionStatus, string> = {
 export type SchedulePhase = 'in-term' | 'buffer' | 'closed';
 
 /**
- * Which `POST_TERM` entry to show once there is no current stage.
+ * Which `postTerm` entry to show once there is no current stage.
  *
  * TypeScript cannot narrow `SchedulePhase` from `!currentStage` alone —
  * `in-term` is impossible whenever `currentStage` is null, but the type
@@ -113,8 +81,8 @@ export type SchedulePhase = 'in-term' | 'buffer' | 'closed';
  * `buffer`-or-`closed` ternary. One place to write it rather than two
  * (`you-are-here.tsx`, `opengraph-image.tsx`) that could drift apart.
  */
-export function postTermCopy(phase: SchedulePhase) {
-  return POST_TERM[phase === 'buffer' ? 'buffer' : 'closed'];
+export function postTermCopy(cls: ResolvedClass, phase: SchedulePhase) {
+  return cls.postTerm[phase === 'buffer' ? 'buffer' : 'closed'];
 }
 
 /**
@@ -124,12 +92,14 @@ export function postTermCopy(phase: SchedulePhase) {
  */
 export type RulerTick = {
   id: string;
-  /** ISO date, for `termPositionPct` and the calendar feed. */
+  /** ISO date, for the calendar feed. */
   date: string;
   shortDate: string;
   /** The second label line: "St 3", "Catch-up", "Draft". */
   caption: string;
   state: StageState;
+  /** Where this tick sits along the term, from `termPositionPct` — spares `term-ruler.tsx` any `lib/` import but its own type. */
+  positionPct: number;
 };
 
 export type DerivedSchedule = {
@@ -171,12 +141,14 @@ export type DerivedSchedule = {
   reportSections: ReportSectionWithStatus[];
   /** Percentage through the term, clamped to [2, 100]. */
   termPct: number;
-  /** Week number of the term, clamped to [1, 15]. */
+  /** Week number of the term, clamped to [1, term.weeks]. */
   weekNumber: number;
   /** The laptop term ruler's marks: stage deadlines plus the draft. */
   rulerTicks: RulerTick[];
   /** The aside's "Term at a glance", grouped by month. Derived from `rulerTicks`. */
   termAtAGlance: GlanceMonth[];
+  /** The term's span as the ruler caption states it — "Sept → 12 Dec". */
+  termSpanLabel: string;
 };
 
 export type GlanceItem = { day: string; text: string };
@@ -186,24 +158,15 @@ const GLANCE_MONTH = new Intl.DateTimeFormat('en-IE', { month: 'long', timeZone:
 const GLANCE_DAY = new Intl.DateTimeFormat('en-IE', { day: 'numeric', timeZone: 'UTC' });
 
 /**
- * Tick id -> its one-line summary for "Term at a glance". Built once: the
- * mapping is content, not a function of the current date.
- */
-const GLANCE_TEXT = new Map<string, string>([
-  ...STAGES.map((stage) => [stage.id, stage.glanceText] as const),
-  ['draft', DRAFT.glanceText],
-]);
-
-/**
  * Annotates every report section with the status the crosswalk prints.
  *
  * A section takes the state of the stage it is written during, looked up by
- * `stageId` — never by position, so reordering `REPORT_SECTIONS` or adding a
+ * `stageId` — never by position, so reordering `reportSections` or adding a
  * section cannot silently mis-map it. Sections marked `alwaysDone` (§1 and
  * §2, written in 5th Year) have no stage on this page's timeline and are
  * always "Done"; so is any row whose `stageId` no longer matches a stage,
- * which can only happen if the data file is edited inconsistently and is
- * better rendered as done-and-quiet than crashed on.
+ * which can only happen if the brief is edited inconsistently and is better
+ * rendered as done-and-quiet than crashed on.
  *
  * `dueBy` is resolved the same way: a row with a `stageId` reads its due
  * date off that stage's `dueDateLabel` rather than carrying its own literal,
@@ -212,10 +175,8 @@ const GLANCE_TEXT = new Map<string, string>([
  * stage to read one from; `'—'` is the fallback for the data-inconsistency
  * case above.
  */
-function reportSectionStatuses(stages: StageWithState[]): ReportSectionWithStatus[] {
-  const rows: ReportSectionRow[] = REPORT_SECTIONS;
-
-  return rows.map((row) => {
+function reportSectionStatuses(cls: ResolvedClass, stages: StageWithState[]): ReportSectionWithStatus[] {
+  return cls.reportSections.map((row) => {
     const stage = row.alwaysDone ? undefined : stages.find((s) => s.id === row.stageId);
     const status: ReportSectionStatus =
       stage === undefined || stage.state === 'done'
@@ -243,7 +204,7 @@ function reportSectionStatuses(stages: StageWithState[]): ReportSectionWithStatu
  * stays `upcoming` through its own date and flips to `done` the morning
  * after, which is the same rule stages follow.
  */
-function buildRulerTicks(stages: StageWithState[], today: number): RulerTick[] {
+function buildRulerTicks(cls: ResolvedClass, stages: StageWithState[], today: number): RulerTick[] {
   const ticks: RulerTick[] = stages
     .filter((stage) => !stage.isAlwaysDone)
     .map((stage) => ({
@@ -252,14 +213,16 @@ function buildRulerTicks(stages: StageWithState[], today: number): RulerTick[] {
       shortDate: stage.shortDate,
       caption: stage.isCatchup ? 'Catch-up' : stage.label.replace('Stage ', 'St '),
       state: stage.state,
+      positionPct: termPositionPct(stage.dueDate, cls.term),
     }));
 
   ticks.push({
     id: 'draft',
-    date: DRAFT.date,
-    shortDate: DRAFT.shortDate,
-    caption: DRAFT.caption,
-    state: today > day(DRAFT.date) ? 'done' : 'upcoming',
+    date: cls.draft.date,
+    shortDate: cls.draft.shortDate,
+    caption: cls.draft.caption,
+    state: today > day(cls.draft.date) ? 'done' : 'upcoming',
+    positionPct: termPositionPct(cls.draft.date, cls.term),
   });
 
   return ticks.sort((a, b) => day(a.date) - day(b.date));
@@ -287,16 +250,17 @@ function buildTermAtAGlance(ticks: RulerTick[], glanceText: Map<string, string>)
 
 /**
  * Derives the full schedule view — per-stage states, the current stage, the
- * countdown to it, and term progress — as of `now`.
+ * countdown to it, and term progress — as of `now`, for a given resolved
+ * class.
  *
  * `now` defaults to the real current time. Pass an explicit `Date` for
  * tests or for a preview override (e.g. a future `?date=` query param) —
  * this function never reads the clock on its own behalf.
  */
-export function deriveSchedule(now: Date = new Date()): DerivedSchedule {
+export function deriveSchedule(cls: ResolvedClass, now: Date = new Date()): DerivedSchedule {
   const today = dublinToday(now);
-  const lastStage = STAGES[STAGES.length - 1];
-  const secDay = day(SEC_DEADLINE.date);
+  const lastStage = cls.stages[cls.stages.length - 1];
+  const secDay = day(cls.secDeadline.date);
 
   const phase: SchedulePhase =
     today <= day(lastStage.dueDate) ? 'in-term' : today <= secDay ? 'buffer' : 'closed';
@@ -306,9 +270,9 @@ export function deriveSchedule(now: Date = new Date()): DerivedSchedule {
   // fallback the old code needed is gone. Outside `in-term` there is no
   // current stage at all, which is what `-1` means here.
   const currentIndex =
-    phase === 'in-term' ? STAGES.findIndex((s) => !s.isAlwaysDone && day(s.dueDate) >= today) : -1;
+    phase === 'in-term' ? cls.stages.findIndex((s) => !s.isAlwaysDone && day(s.dueDate) >= today) : -1;
 
-  const stages: StageWithState[] = STAGES.map((stage, index) => ({
+  const stages: StageWithState[] = cls.stages.map((stage, index) => ({
     ...stage,
     state:
       stage.isAlwaysDone || currentIndex === -1 || index < currentIndex
@@ -320,8 +284,8 @@ export function deriveSchedule(now: Date = new Date()): DerivedSchedule {
 
   const currentStage = currentIndex === -1 ? null : stages[currentIndex];
   const comingUp = currentIndex === -1 ? [] : stages.slice(currentIndex + 1);
-  const termStart = day(TERM.start);
-  const termEnd = day(TERM.end);
+  const termStart = day(cls.term.start);
+  const termEnd = day(cls.term.end);
 
   // The day the live countdown points at. In `closed` there is no live
   // deadline, so it resolves to today — which yields zero days left, and is
@@ -330,7 +294,7 @@ export function deriveSchedule(now: Date = new Date()): DerivedSchedule {
   const deadlineDay =
     phase === 'in-term' ? day(currentStage!.dueDate) : phase === 'buffer' ? secDay : today;
 
-  const ticks = buildRulerTicks(stages, today);
+  const ticks = buildRulerTicks(cls, stages, today);
 
   return {
     today,
@@ -341,17 +305,18 @@ export function deriveSchedule(now: Date = new Date()): DerivedSchedule {
     isDueToday: phase !== 'closed' && deadlineDay === today,
     nextStage: comingUp[0] ?? null,
     comingUp,
-    reportSections: reportSectionStatuses(stages),
+    reportSections: reportSectionStatuses(cls, stages),
     termPct: clamp(2, 100, Math.round(((today - termStart) / (termEnd - termStart)) * 100)),
-    weekNumber: clamp(1, 15, Math.floor((today - termStart) / (7 * MS_PER_DAY)) + 1),
+    weekNumber: clamp(1, cls.term.weeks, Math.floor((today - termStart) / (7 * MS_PER_DAY)) + 1),
     rulerTicks: ticks,
-    termAtAGlance: buildTermAtAGlance(ticks, GLANCE_TEXT),
+    termAtAGlance: buildTermAtAGlance(ticks, cls.glanceText),
+    termSpanLabel: termSpanLabel(cls.term),
   };
 }
 
 /**
- * Where an ISO date sits along the term, as a percentage of the way from
- * `TERM.start` to `TERM.end`, clamped to [0, 100].
+ * Where an ISO date sits along a class's term, as a percentage of the way
+ * from `term.start` to `term.end`, clamped to [0, 100].
  *
  * This is what gives the laptop term ruler *real date spacing* — ticks
  * positioned by elapsed time rather than spread evenly, so the October
@@ -359,9 +324,9 @@ export function deriveSchedule(now: Date = new Date()): DerivedSchedule {
  * `termPct`, which floors at 2 so the progress fill is never invisible in
  * week 1: a deadline genuinely on the term's first day belongs at 0%.
  */
-export function termPositionPct(isoDate: string): number {
-  const termStart = day(TERM.start);
-  return clamp(0, 100, ((day(isoDate) - termStart) / (day(TERM.end) - termStart)) * 100);
+export function termPositionPct(isoDate: string, term: ResolvedClass['term']): number {
+  const termStart = day(term.start);
+  return clamp(0, 100, ((day(isoDate) - termStart) / (day(term.end) - termStart)) * 100);
 }
 
 const TERM_START_LABEL = new Intl.DateTimeFormat('en-IE', { month: 'short', timeZone: 'UTC' });
@@ -372,11 +337,13 @@ const TERM_END_LABEL = new Intl.DateTimeFormat('en-IE', {
 });
 
 /**
- * The term's span as the ruler caption states it — "Sept → 12 Dec".
- * Derived from `TERM` rather than typed out, so that editing
- * `schedule.data.ts` alone still changes every date on the page.
+ * A class's term span as the ruler caption states it — "Sept → 12 Dec".
+ * Derived from `term` rather than typed out, so that editing a class's
+ * dates alone still changes what the ruler says.
  */
-export const TERM_SPAN_LABEL = `${TERM_START_LABEL.format(day(TERM.start))} \u2192 ${TERM_END_LABEL.format(day(TERM.end))}`;
+export function termSpanLabel(term: ResolvedClass['term']): string {
+  return `${TERM_START_LABEL.format(day(term.start))} → ${TERM_END_LABEL.format(day(term.end))}`;
+}
 
 /** Pluralises the countdown caption: "1 day left", "10 days left". */
 export function daysLeftWord(daysLeft: number): string {

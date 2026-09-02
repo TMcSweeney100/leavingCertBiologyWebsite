@@ -7,6 +7,7 @@ import {
   postTermCopy,
   type DerivedSchedule,
 } from "@/lib/schedule";
+import type { ResolvedClass } from "@/lib/schedule.types";
 
 /**
  * The "You are here" panel — "the most important element on the page. First
@@ -41,6 +42,8 @@ import {
 
 type YouAreHereProps = {
   schedule: DerivedSchedule;
+  /** Passed through to `postTermCopy` and the term ruler's total week count. */
+  cls: ResolvedClass;
 };
 
 /** The dot in "● You are here" — pure decoration, and noise when spoken. */
@@ -48,7 +51,7 @@ function NowDot() {
   return <span aria-hidden="true">●</span>;
 }
 
-export function YouAreHere({ schedule }: YouAreHereProps) {
+export function YouAreHere({ schedule, cls }: YouAreHereProps) {
   const {
     currentStage,
     phase,
@@ -61,7 +64,7 @@ export function YouAreHere({ schedule }: YouAreHereProps) {
   } = schedule;
 
   if (!currentStage) {
-    const copy = postTermCopy(phase);
+    const copy = postTermCopy(cls, phase);
     return (
       <section
         id="right-now"
@@ -255,6 +258,8 @@ export function YouAreHere({ schedule }: YouAreHereProps) {
           ticks={schedule.rulerTicks}
           termPct={termPct}
           weekNumber={weekNumber}
+          weeks={cls.term.weeks}
+          spanLabel={schedule.termSpanLabel}
         />
       </div>
     </section>

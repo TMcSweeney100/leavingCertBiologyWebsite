@@ -1,7 +1,6 @@
 import { Progress } from "@/components/ui/progress";
-import { TERM } from "@/lib/schedule.data";
 import type { StageState } from "@/lib/schedule.data";
-import { TERM_SPAN_LABEL, termPositionPct, type RulerTick } from "@/lib/schedule";
+import type { RulerTick } from "@/lib/schedule";
 
 /**
  * The laptop term ruler — the two-pixel track inside the "You are here"
@@ -44,6 +43,9 @@ type TermRulerProps = {
   /** Percentage of the term elapsed, already clamped by `deriveSchedule`. */
   termPct: number;
   weekNumber: number;
+  weeks: number;
+  /** "Sept → 12 Dec" — see `termSpanLabel`. */
+  spanLabel: string;
   className?: string;
 };
 
@@ -77,15 +79,15 @@ function tickAnchor(pct: number) {
   return { wrap: "-translate-x-1/2 text-center", tick: "mx-auto", style: { left: `${pct}%` } };
 }
 
-export function TermRuler({ ticks, termPct, weekNumber, className }: TermRulerProps) {
+export function TermRuler({ ticks, termPct, weekNumber, weeks, spanLabel, className }: TermRulerProps) {
   return (
     <div className={className}>
       <div className="mb-3 flex items-baseline justify-between gap-4 font-mono text-chip font-bold tracking-[.1em] text-muted-foreground uppercase">
         <span>
-          Week {weekNumber} of {TERM.weeks}
+          Week {weekNumber} of {weeks}
         </span>
         <span className="tabular-nums">
-          {TERM_SPAN_LABEL} · {termPct}% elapsed
+          {spanLabel} · {termPct}% elapsed
         </span>
       </div>
 
@@ -105,7 +107,7 @@ export function TermRuler({ ticks, termPct, weekNumber, className }: TermRulerPr
         />
 
         {ticks.map((tick) => {
-          const pct = termPositionPct(tick.date);
+          const pct = tick.positionPct;
           const anchor = tickAnchor(pct);
           return (
             <div

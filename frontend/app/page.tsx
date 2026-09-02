@@ -10,6 +10,8 @@ import { StickyNowBar } from "@/components/bipi/sticky-now-bar";
 import { Timeline } from "@/components/bipi/timeline";
 import { YouAreHere } from "@/components/bipi/you-are-here";
 import { countdownText, deriveSchedule, parsePreviewDate } from "@/lib/schedule";
+import { resolveClass } from "@/lib/class-resolve";
+import { getClass } from "@/lib/classes";
 
 export default async function Home({
   searchParams,
@@ -24,7 +26,9 @@ export default async function Home({
   // (decision 6); anything else it cannot parse falls back to the real
   // clock, so a mistyped link still renders a correct page.
   const { date } = await searchParams;
-  const schedule = deriveSchedule(parsePreviewDate(date));
+  // Step 4: hardcoded slug, replaced by the `/[class]` route param.
+  const cls = resolveClass(getClass("nwetss-hanlon")!);
+  const schedule = deriveSchedule(cls, parsePreviewDate(date));
 
   return (
     <>

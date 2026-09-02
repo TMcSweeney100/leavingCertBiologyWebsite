@@ -24,9 +24,13 @@ import {
   deriveSchedule,
   formatTodayLabel,
   parsePreviewDate,
-  TERM_SPAN_LABEL,
   termPositionPct,
+  termSpanLabel,
 } from './schedule.ts';
+import { resolveClass } from './class-resolve.ts';
+import { NWETSS_HANLON } from './classes/nwetss-hanlon.ts';
+
+const CLS = resolveClass(NWETSS_HANLON);
 
 /**
  * The UTC offset (in ms) that `timeZone` actually observes at `instant`,
@@ -81,7 +85,7 @@ function dublinDateTime(localIso: string): Date {
 
 describe('deriveSchedule — §3.3 verification table', () => {
   test('row 1: 1 Sept 2026 (term start) — Stage 3 current, 24 days left', () => {
-    const result = deriveSchedule(dublinDateTime('2026-09-01T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2026-09-01T09:00:00'));
     assert.equal(result.currentStage?.id, 'stage-3');
     assert.equal(result.currentStage?.state, 'current');
     assert.equal(result.daysLeft, 24);
@@ -90,7 +94,7 @@ describe('deriveSchedule — §3.3 verification table', () => {
   });
 
   test('row 2: 24 Sept 2026, 21:00 Dublin — singular "1 day left" boundary', () => {
-    const result = deriveSchedule(dublinDateTime('2026-09-24T21:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2026-09-24T21:00:00'));
     assert.equal(result.currentStage?.id, 'stage-3');
     assert.equal(result.currentStage?.state, 'current');
     assert.equal(result.daysLeft, 1);
@@ -99,7 +103,7 @@ describe('deriveSchedule — §3.3 verification table', () => {
   });
 
   test('row 3: 25 Sept 2026, 21:00 Dublin — Stage 3 still current on its own due date', () => {
-    const result = deriveSchedule(dublinDateTime('2026-09-25T21:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2026-09-25T21:00:00'));
     assert.equal(result.currentStage?.id, 'stage-3');
     assert.equal(result.currentStage?.state, 'current');
     assert.equal(result.daysLeft, 0);
@@ -108,7 +112,7 @@ describe('deriveSchedule — §3.3 verification table', () => {
   });
 
   test('row 4: 6 Oct 2026 — Stage 4 current, 10 days left', () => {
-    const result = deriveSchedule(dublinDateTime('2026-10-06T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2026-10-06T09:00:00'));
     assert.equal(result.currentStage?.id, 'stage-4');
     assert.equal(result.currentStage?.state, 'current');
     assert.equal(result.daysLeft, 10);
@@ -120,7 +124,7 @@ describe('deriveSchedule — §3.3 verification table', () => {
     // Late evening of the 24th, Dublin time — still IST (UTC+1); the clocks
     // change in the early hours that follow (01:00 UTC on the 25th). The
     // Dublin civil date at this instant is 2026-10-24.
-    const result = deriveSchedule(dublinDateTime('2026-10-24T23:30:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2026-10-24T23:30:00'));
     assert.equal(result.currentStage?.id, 'catchup');
     assert.equal(result.currentStage?.state, 'current');
     assert.equal(result.daysLeft, 6);
@@ -129,7 +133,7 @@ describe('deriveSchedule — §3.3 verification table', () => {
   });
 
   test('row 6: 20 Nov 2026 — Stage 6 current, 21 days left', () => {
-    const result = deriveSchedule(dublinDateTime('2026-11-20T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2026-11-20T09:00:00'));
     assert.equal(result.currentStage?.id, 'stage-6');
     assert.equal(result.currentStage?.state, 'current');
     assert.equal(result.daysLeft, 21);
@@ -138,7 +142,7 @@ describe('deriveSchedule — §3.3 verification table', () => {
   });
 
   test('row 7: 20 Dec 2026 (past term end) — buffer, no stage current, no negative countdown', () => {
-    const result = deriveSchedule(dublinDateTime('2026-12-20T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2026-12-20T09:00:00'));
     assert.equal(result.phase, 'buffer');
     assert.equal(result.currentStage, null);
     assert.equal(result.daysLeft, 68);
@@ -147,7 +151,7 @@ describe('deriveSchedule — §3.3 verification table', () => {
   });
 
   test('row 8: 1 Mar 2027 (past the SEC deadline) — closed, no crash', () => {
-    const result = deriveSchedule(dublinDateTime('2027-03-01T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2027-03-01T09:00:00'));
     assert.equal(result.phase, 'closed');
     assert.equal(result.currentStage, null);
     assert.equal(result.daysLeft, 0);
@@ -158,7 +162,7 @@ describe('deriveSchedule — §3.3 verification table', () => {
 
 describe('deriveSchedule — phase boundaries', () => {
   test('11 Dec 2026 — the last stage is still in progress on its own due date', () => {
-    const result = deriveSchedule(dublinDateTime('2026-12-11T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2026-12-11T09:00:00'));
     assert.equal(result.phase, 'in-term');
     assert.equal(result.currentStage?.id, 'stage-6');
     assert.equal(result.daysLeft, 0);
@@ -166,7 +170,7 @@ describe('deriveSchedule — phase boundaries', () => {
   });
 
   test('12 Dec 2026 — the morning after: buffer, counting to the SEC deadline', () => {
-    const result = deriveSchedule(dublinDateTime('2026-12-12T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2026-12-12T09:00:00'));
     assert.equal(result.phase, 'buffer');
     assert.equal(result.currentStage, null);
     assert.equal(result.daysLeft, 76);
@@ -175,21 +179,21 @@ describe('deriveSchedule — phase boundaries', () => {
   });
 
   test('25 Feb 2027 — one day before the SEC deadline', () => {
-    const result = deriveSchedule(dublinDateTime('2027-02-25T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2027-02-25T09:00:00'));
     assert.equal(result.phase, 'buffer');
     assert.equal(result.daysLeft, 1);
     assert.equal(result.isDueToday, false);
   });
 
   test('26 Feb 2027 — the SEC deadline itself is still buffer, and is due today', () => {
-    const result = deriveSchedule(dublinDateTime('2027-02-26T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2027-02-26T09:00:00'));
     assert.equal(result.phase, 'buffer');
     assert.equal(result.daysLeft, 0);
     assert.equal(result.isDueToday, true);
   });
 
   test('27 Feb 2027 — past the SEC deadline: closed, and nothing is due today', () => {
-    const result = deriveSchedule(dublinDateTime('2027-02-27T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2027-02-27T09:00:00'));
     assert.equal(result.phase, 'closed');
     assert.equal(result.currentStage, null);
     assert.equal(result.daysLeft, 0);
@@ -197,31 +201,31 @@ describe('deriveSchedule — phase boundaries', () => {
   });
 
   test('15 Mar 2027 — long past the deadline, still closed and still not crashing', () => {
-    const result = deriveSchedule(dublinDateTime('2027-03-15T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2027-03-15T09:00:00'));
     assert.equal(result.phase, 'closed');
     assert.equal(result.currentStage, null);
     assert.ok(result.stages.every((s) => s.state === 'done'));
   });
 
   test('comingUp and nextStage are empty once there is no current stage', () => {
-    const result = deriveSchedule(dublinDateTime('2027-01-15T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2027-01-15T09:00:00'));
     assert.equal(result.nextStage, null);
     assert.deepEqual(result.comingUp, []);
   });
 
   test('every report section reads Done once the term is over', () => {
-    const result = deriveSchedule(dublinDateTime('2027-01-15T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2027-01-15T09:00:00'));
     assert.ok(result.reportSections.every((s) => s.status === 'done'));
   });
 });
 
 describe('deriveSchedule — isDueToday', () => {
   test('is false while the current stage is still ahead of its due date', () => {
-    assert.equal(deriveSchedule(dublinDateTime('2026-09-24T21:00:00')).isDueToday, false);
+    assert.equal(deriveSchedule(CLS, dublinDateTime('2026-09-24T21:00:00')).isDueToday, false);
   });
 
   test('is true on the due date itself — the day the countdown first reads 0', () => {
-    const result = deriveSchedule(dublinDateTime('2026-09-25T21:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2026-09-25T21:00:00'));
     assert.equal(result.daysLeft, 0);
     assert.equal(result.isDueToday, true);
   });
@@ -232,12 +236,12 @@ describe('deriveSchedule — isDueToday', () => {
     // today" every day once the SEC deadline has passed. `buffer` is not
     // even at zero — it is still counting down to 26 Feb — which is the
     // whole reason `phase` exists.
-    const buffer = deriveSchedule(dublinDateTime('2026-12-20T09:00:00'));
+    const buffer = deriveSchedule(CLS, dublinDateTime('2026-12-20T09:00:00'));
     assert.equal(buffer.phase, 'buffer');
     assert.equal(buffer.daysLeft, 68);
     assert.equal(buffer.isDueToday, false);
 
-    const closed = deriveSchedule(dublinDateTime('2027-03-01T09:00:00'));
+    const closed = deriveSchedule(CLS, dublinDateTime('2027-03-01T09:00:00'));
     assert.equal(closed.phase, 'closed');
     assert.equal(closed.daysLeft, 0);
     assert.equal(closed.isDueToday, false);
@@ -246,14 +250,14 @@ describe('deriveSchedule — isDueToday', () => {
 
 describe('deriveSchedule — nextStage', () => {
   test('is the stage immediately after the current one', () => {
-    const result = deriveSchedule(dublinDateTime('2026-10-06T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2026-10-06T09:00:00'));
     assert.equal(result.currentStage?.id, 'stage-4');
     assert.equal(result.nextStage?.id, 'catchup');
     assert.equal(result.nextStage?.state, 'upcoming');
   });
 
   test('is null on the last stage, rather than pointing back at the current one', () => {
-    const result = deriveSchedule(dublinDateTime('2026-11-20T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2026-11-20T09:00:00'));
     assert.equal(result.currentStage?.id, 'stage-6');
     assert.equal(result.nextStage, null);
   });
@@ -270,7 +274,7 @@ describe('daysLeftWord', () => {
 
 describe('formatTodayLabel', () => {
   test('formats the Dublin civil date, reading the epoch as UTC', () => {
-    const result = deriveSchedule(dublinDateTime('2026-10-06T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2026-10-06T09:00:00'));
     assert.equal(formatTodayLabel(result.today), '6 Oct 2026');
   });
 
@@ -290,7 +294,7 @@ describe('parsePreviewDate', () => {
     // 6 Oct is inside Irish Summer Time (UTC+1), 1 Dec is not (UTC+0):
     // both must round-trip to the requested date, not the day either side.
     for (const iso of ['2026-10-06', '2026-12-01']) {
-      const result = deriveSchedule(parsePreviewDate(iso, fallback));
+      const result = deriveSchedule(CLS, parsePreviewDate(iso, fallback));
       assert.equal(formatTodayLabel(result.today), formatTodayLabel(Date.parse(`${iso}T00:00:00Z`)), iso);
     }
   });
@@ -305,7 +309,7 @@ describe('parsePreviewDate', () => {
     ];
     for (const [iso, stageId] of expected) {
       assert.equal(
-        deriveSchedule(parsePreviewDate(iso, fallback)).currentStage?.id ?? null,
+        deriveSchedule(CLS, parsePreviewDate(iso, fallback)).currentStage?.id ?? null,
         stageId,
         iso,
       );
@@ -361,7 +365,7 @@ describe('termPositionPct — laptop ruler tick placement', () => {
     // 1 Sept -> 12 Dec is 102 days. Evenly spaced, five ticks would land on
     // 20/40/60/80/100; the real dates cluster differently, which is the
     // whole point of the ruler.
-    const at = (iso: string) => Number(termPositionPct(iso).toFixed(2));
+    const at = (iso: string) => Number(termPositionPct(iso, CLS.term).toFixed(2));
     assert.equal(at('2026-09-25'), 23.53); // Stage 3
     assert.equal(at('2026-10-16'), 44.12); // Stage 4
     assert.equal(at('2026-10-30'), 57.84); // Catch-up
@@ -373,26 +377,26 @@ describe('termPositionPct — laptop ruler tick placement', () => {
     // The ruler right-anchors any tick above 88% instead of centring it.
     // If this stops being true, the December label overhangs the panel —
     // the one layout failure the plan calls out by name.
-    assert.ok(termPositionPct('2026-12-11') > 88);
+    assert.ok(termPositionPct('2026-12-11', CLS.term) > 88);
   });
 
   test('no tick falls below the 6% left-edge threshold this year', () => {
     for (const iso of ['2026-09-25', '2026-10-16', '2026-10-30', '2026-11-13', '2026-12-11']) {
-      assert.ok(termPositionPct(iso) >= 6, iso);
+      assert.ok(termPositionPct(iso, CLS.term) >= 6, iso);
     }
   });
 
   test('clamps to [0, 100] outside the term, and does not floor at 2 the way termPct does', () => {
-    assert.equal(termPositionPct('2026-09-01'), 0);
-    assert.equal(termPositionPct('2026-06-05'), 0);
-    assert.equal(termPositionPct('2026-12-12'), 100);
-    assert.equal(termPositionPct('2027-02-26'), 100);
+    assert.equal(termPositionPct('2026-09-01', CLS.term), 0);
+    assert.equal(termPositionPct('2026-06-05', CLS.term), 0);
+    assert.equal(termPositionPct('2026-12-12', CLS.term), 100);
+    assert.equal(termPositionPct('2027-02-26', CLS.term), 100);
   });
 });
 
 describe('deriveSchedule — rulerTicks', () => {
   test('is the five stage deadlines plus the draft, in date order', () => {
-    const { rulerTicks } = deriveSchedule(dublinDateTime('2026-09-01T09:00:00'));
+    const { rulerTicks } = deriveSchedule(CLS, dublinDateTime('2026-09-01T09:00:00'));
     assert.deepEqual(
       rulerTicks.map((t) => t.id),
       ['stage-3', 'stage-4', 'catchup', 'stage-5', 'draft', 'stage-6'],
@@ -400,14 +404,14 @@ describe('deriveSchedule — rulerTicks', () => {
   });
 
   test('omits the two 5th-Year stages, which have no tick', () => {
-    const { rulerTicks } = deriveSchedule(dublinDateTime('2026-09-01T09:00:00'));
+    const { rulerTicks } = deriveSchedule(CLS, dublinDateTime('2026-09-01T09:00:00'));
     assert.ok(!rulerTicks.some((t) => t.id === 'stage-1' || t.id === 'stage-2'));
   });
 
   test('the draft is upcoming through its own date and done the morning after', () => {
-    const before = deriveSchedule(dublinDateTime('2026-12-03T09:00:00'));
-    const on = deriveSchedule(dublinDateTime('2026-12-04T09:00:00'));
-    const after = deriveSchedule(dublinDateTime('2026-12-05T09:00:00'));
+    const before = deriveSchedule(CLS, dublinDateTime('2026-12-03T09:00:00'));
+    const on = deriveSchedule(CLS, dublinDateTime('2026-12-04T09:00:00'));
+    const after = deriveSchedule(CLS, dublinDateTime('2026-12-05T09:00:00'));
     const draft = (r: ReturnType<typeof deriveSchedule>) =>
       r.rulerTicks.find((t) => t.id === 'draft')!;
     assert.equal(draft(before).state, 'upcoming');
@@ -417,13 +421,13 @@ describe('deriveSchedule — rulerTicks', () => {
 
   test('the draft is never "current" — indigo is reserved for the current stage', () => {
     for (const d of ['2026-12-01', '2026-12-04', '2026-12-05'] as const) {
-      const { rulerTicks } = deriveSchedule(dublinDateTime(`${d}T09:00:00`));
+      const { rulerTicks } = deriveSchedule(CLS, dublinDateTime(`${d}T09:00:00`));
       assert.notEqual(rulerTicks.find((t) => t.id === 'draft')!.state, 'current');
     }
   });
 
   test('stage ticks carry short captions, and the catch-up window says so', () => {
-    const { rulerTicks } = deriveSchedule(dublinDateTime('2026-09-01T09:00:00'));
+    const { rulerTicks } = deriveSchedule(CLS, dublinDateTime('2026-09-01T09:00:00'));
     const caption = (id: string) => rulerTicks.find((t) => t.id === id)!.caption;
     assert.equal(caption('stage-3'), 'St 3');
     assert.equal(caption('catchup'), 'Catch-up');
@@ -431,7 +435,7 @@ describe('deriveSchedule — rulerTicks', () => {
   });
 
   test('tick state tracks stage state, so the ruler cannot disagree with the cards', () => {
-    const result = deriveSchedule(dublinDateTime('2026-10-06T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2026-10-06T09:00:00'));
     for (const tick of result.rulerTicks) {
       if (tick.id === 'draft') continue;
       assert.equal(tick.state, result.stages.find((s) => s.id === tick.id)!.state);
@@ -441,7 +445,7 @@ describe('deriveSchedule — rulerTicks', () => {
 
 describe('deriveSchedule — termAtAGlance', () => {
   test('groups every ruler tick by month, in date order', () => {
-    const { termAtAGlance } = deriveSchedule(dublinDateTime('2026-09-01T09:00:00'));
+    const { termAtAGlance } = deriveSchedule(CLS, dublinDateTime('2026-09-01T09:00:00'));
     assert.deepEqual(
       termAtAGlance.map((m) => m.month),
       ['September', 'October', 'November', 'December'],
@@ -453,39 +457,39 @@ describe('deriveSchedule — termAtAGlance', () => {
   });
 
   test('every item names the stage or milestone it came from', () => {
-    const { termAtAGlance } = deriveSchedule(dublinDateTime('2026-09-01T09:00:00'));
+    const { termAtAGlance } = deriveSchedule(CLS, dublinDateTime('2026-09-01T09:00:00'));
     const items = termAtAGlance.flatMap((m) => m.items);
     assert.match(items[0].text, /Stage 3/);
     assert.match(items.find((i) => i.day === '4')!.text, /draft/i);
   });
 
   test('cannot drift from STAGES — every stage deadline appears exactly once', () => {
-    const { termAtAGlance, rulerTicks } = deriveSchedule(dublinDateTime('2026-09-01T09:00:00'));
+    const { termAtAGlance, rulerTicks } = deriveSchedule(CLS, dublinDateTime('2026-09-01T09:00:00'));
     assert.equal(termAtAGlance.flatMap((m) => m.items).length, rulerTicks.length);
   });
 });
 
 describe('termPositionPct — the draft tick and the right-edge clamp', () => {
   test('the draft and the final deadline are both past the 88% legacy threshold', () => {
-    assert.ok(termPositionPct('2026-12-04') > 88);
-    assert.ok(termPositionPct('2026-12-11') > 88);
+    assert.ok(termPositionPct('2026-12-04', CLS.term) > 88);
+    assert.ok(termPositionPct('2026-12-11', CLS.term) > 88);
   });
 
   test('the draft sits below the raised 95% threshold, so only the last tick clamps', () => {
-    assert.ok(termPositionPct('2026-12-04') < 95);
-    assert.ok(termPositionPct('2026-12-11') > 95);
+    assert.ok(termPositionPct('2026-12-04', CLS.term) < 95);
+    assert.ok(termPositionPct('2026-12-11', CLS.term) > 95);
   });
 });
 
-describe('TERM_SPAN_LABEL', () => {
-  test('is derived from TERM, so editing only schedule.data.ts still moves it', () => {
-    assert.equal(TERM_SPAN_LABEL, 'Sept → 12 Dec');
+describe('termSpanLabel', () => {
+  test('is derived from the term, so editing only the class config still moves it', () => {
+    assert.equal(termSpanLabel(CLS.term), 'Sept → 12 Dec');
   });
 });
 
 describe('deriveSchedule — comingUp', () => {
   test('is every stage after the current one, in order', () => {
-    const result = deriveSchedule(dublinDateTime('2026-10-06T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2026-10-06T09:00:00'));
     assert.equal(result.currentStage?.id, 'stage-4');
     assert.deepEqual(
       result.comingUp.map((s) => s.id),
@@ -495,14 +499,14 @@ describe('deriveSchedule — comingUp', () => {
   });
 
   test('is empty on the last stage, and agrees with nextStage', () => {
-    const result = deriveSchedule(dublinDateTime('2026-11-20T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2026-11-20T09:00:00'));
     assert.deepEqual(result.comingUp, []);
     assert.equal(result.nextStage, null);
   });
 
   test('nextStage is always the head of comingUp', () => {
     for (const when of ['2026-09-01T09:00:00', '2026-10-06T09:00:00', '2026-10-30T09:00:00']) {
-      const result = deriveSchedule(dublinDateTime(when));
+      const result = deriveSchedule(CLS, dublinDateTime(when));
       assert.equal(result.nextStage, result.comingUp[0], when);
     }
   });
@@ -511,11 +515,11 @@ describe('deriveSchedule — comingUp', () => {
 describe('deriveSchedule — reportSections (the crosswalk)', () => {
   const statuses = (when: string) =>
     Object.fromEntries(
-      deriveSchedule(dublinDateTime(when)).reportSections.map((r) => [r.section, r.statusLabel]),
+      deriveSchedule(CLS, dublinDateTime(when)).reportSections.map((r) => [r.section, r.statusLabel]),
     );
 
   test('always lists all seven sections, in the order the data file gives them', () => {
-    const result = deriveSchedule(dublinDateTime('2026-10-06T09:00:00'));
+    const result = deriveSchedule(CLS, dublinDateTime('2026-10-06T09:00:00'));
     assert.deepEqual(
       result.reportSections.map((r) => r.section),
       ['§1', '§2', '§3', '§4', '§5', '§6', '§7'],
@@ -582,7 +586,7 @@ describe('deriveSchedule — reportSections (the crosswalk)', () => {
   test('status and statusLabel never disagree', () => {
     const labels = { 'due-now': 'Due now', done: 'Done', 'to-come': 'To come' };
     for (const when of ['2026-09-01T09:00:00', '2026-11-13T09:00:00', '2027-03-01T09:00:00']) {
-      for (const row of deriveSchedule(dublinDateTime(when)).reportSections) {
+      for (const row of deriveSchedule(CLS, dublinDateTime(when)).reportSections) {
         assert.equal(row.statusLabel, labels[row.status], `${when} ${row.section}`);
       }
     }
@@ -591,7 +595,7 @@ describe('deriveSchedule — reportSections (the crosswalk)', () => {
 
 describe('deriveSchedule — reportSections dueBy', () => {
   test('every dated section takes its due date from the stage it maps to', () => {
-    const { reportSections, stages } = deriveSchedule(dublinDateTime('2026-09-01T09:00:00'));
+    const { reportSections, stages } = deriveSchedule(CLS, dublinDateTime('2026-09-01T09:00:00'));
     for (const section of reportSections) {
       if (!section.stageId) continue;
       assert.equal(section.dueBy, stages.find((s) => s.id === section.stageId)!.dueDateLabel);
@@ -599,7 +603,7 @@ describe('deriveSchedule — reportSections dueBy', () => {
   });
 
   test('the two 5th-Year sections keep their literal, having no stage to read', () => {
-    const { reportSections } = deriveSchedule(dublinDateTime('2026-09-01T09:00:00'));
+    const { reportSections } = deriveSchedule(CLS, dublinDateTime('2026-09-01T09:00:00'));
     assert.equal(reportSections[0].dueBy, '5th Year');
     assert.equal(reportSections[1].dueBy, '5th Year');
   });
