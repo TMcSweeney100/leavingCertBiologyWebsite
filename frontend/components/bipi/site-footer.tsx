@@ -1,15 +1,21 @@
 import { QrBlock } from "@/components/bipi/qr-block";
-import { SEC_DEADLINE } from "@/lib/schedule.data";
+import type { ResolvedClass } from "@/lib/schedule.types";
 
-export function SiteFooter() {
+type SiteFooterProps = {
+  secDeadline: ResolvedClass["secDeadline"];
+  /** This class's page path (e.g. `/nwetss-hanlon`), for the noticeboard QR. */
+  path: string;
+};
+
+export function SiteFooter({ secDeadline, path }: SiteFooterProps) {
   return (
     <footer className="grid gap-2 bg-[var(--bipi-ink)] p-[18px] lg:flex lg:flex-wrap lg:items-end lg:justify-between lg:gap-[30px] lg:px-10 lg:py-6">
       <div className="lg:max-w-[640px]">
         <h2 className="font-heading text-standfirst-lg font-bold leading-[1.35] text-white">
-          {`SEC deadline — ${SEC_DEADLINE.label}`}
+          {`SEC deadline — ${secDeadline.label}`}
         </h2>
         <p className="mt-2 font-sans text-body leading-[1.55] text-[var(--bipi-on-dark-body)] lg:mt-[6px]">
-          {SEC_DEADLINE.note}
+          {secDeadline.note}
         </p>
       </div>
       {/* The disclaimer and the noticeboard QR share the footer's right-hand
@@ -18,9 +24,9 @@ export function SiteFooter() {
           until the site has a real address. */}
       <div className="grid gap-3.5 lg:justify-items-end">
         <p className="font-mono text-label leading-[1.5] text-[var(--bipi-on-dark-meta)] lg:text-right">
-          {SEC_DEADLINE.disclaimer}
+          {secDeadline.disclaimer}
         </p>
-        <QrBlock />
+        <QrBlock path={path} />
       </div>
     </footer>
   );

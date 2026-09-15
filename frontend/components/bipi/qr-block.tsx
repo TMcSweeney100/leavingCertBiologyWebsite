@@ -27,7 +27,12 @@ import { hasSiteUrl, SITE_URL, SITE_URL_LABEL } from "@/lib/site";
  * when the scan fails, and it is the only part of a photocopied sheet that
  * still works when the QR is too faint to read.
  */
-export async function QrBlock() {
+type QrBlockProps = {
+  /** This class's page path (e.g. `/nwetss-hanlon`), appended to `SITE_URL`. */
+  path: string;
+};
+
+export async function QrBlock({ path }: QrBlockProps) {
   if (!hasSiteUrl) return null;
 
   // `margin: 0` because the surrounding padding already provides the quiet
@@ -35,7 +40,7 @@ export async function QrBlock() {
   // the module count low enough to stay scannable at ~96px on a printout.
   // The light half is fully transparent so the footer's ink background
   // shows through as the quiet zone.
-  const svg = await QRCode.toString(SITE_URL, {
+  const svg = await QRCode.toString(`${SITE_URL}${path}`, {
     type: "svg",
     margin: 0,
     errorCorrectionLevel: "M",
@@ -64,7 +69,7 @@ export async function QrBlock() {
       />
       <p className="font-mono text-label leading-[1.5] text-(--bipi-on-dark-meta)">
         Scan to open on your phone
-        <span className="mt-0.5 block text-white">{SITE_URL_LABEL}</span>
+        <span className="mt-0.5 block text-white">{`${SITE_URL_LABEL}${path}`}</span>
       </p>
     </div>
   );

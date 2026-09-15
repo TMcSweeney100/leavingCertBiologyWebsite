@@ -1,5 +1,5 @@
 import { StageDisclosure } from "@/components/bipi/stage-disclosure";
-import type { StageState } from "@/lib/schedule.data";
+import type { StageState } from "@/lib/schedule.types";
 import type { StageWithState } from "@/lib/schedule";
 
 /**
@@ -128,7 +128,7 @@ export function StageCard({ stage }: StageCardProps) {
   // due would render correctly the same way with no code change. Its
   // `reportSectionName` field already reads correctly on its own ("No new
   // section due"), so that's reused instead of inventing new copy that
-  // doesn't live in schedule.data.ts.
+  // doesn't live in the brief.
   const reportBadgeText =
     stage.reportSectionLabel === "—"
       ? stage.reportSectionName

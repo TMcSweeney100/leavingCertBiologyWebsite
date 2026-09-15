@@ -1,5 +1,4 @@
 import { Progress, ProgressLabel, ProgressValue } from "@/components/ui/progress";
-import { TERM } from "@/lib/schedule.data";
 
 /**
  * Mobile term progress — the 6px bar under the "You are here" panel
@@ -32,12 +31,13 @@ import { TERM } from "@/lib/schedule.data";
 
 type TermProgressProps = {
   weekNumber: number;
+  weeks: number;
   /** Percentage of the term elapsed, already clamped by `deriveSchedule`. */
   termPct: number;
   className?: string;
 };
 
-export function TermProgress({ weekNumber, termPct, className }: TermProgressProps) {
+export function TermProgress({ weekNumber, weeks, termPct, className }: TermProgressProps) {
   return (
     <Progress
       value={termPct}
@@ -55,7 +55,7 @@ export function TermProgress({ weekNumber, termPct, className }: TermProgressPro
           only to displace the primitives' own `text-sm` default. */}
       <div className="mb-1.75 flex w-full items-baseline justify-between gap-2 font-mono text-chip font-bold tracking-[.1em] text-muted-foreground uppercase">
         <ProgressLabel className="text-[length:inherit] font-bold">
-          Week {weekNumber} of {TERM.weeks}
+          Week {weekNumber} of {weeks}
         </ProgressLabel>
         <ProgressValue className="text-[length:inherit] font-bold" />
       </div>
