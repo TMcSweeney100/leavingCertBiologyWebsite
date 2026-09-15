@@ -19,6 +19,8 @@ import org.springframework.security.web.csrf.CsrfException;
  * no CORS configuration and no {@code @CrossOrigin} anywhere.
  *
  * <p>Every rejection is a problem response, never an HTML page, a redirect or a Basic challenge.
+ *
+ * <p>Web-only: an operator process has no web server, so no filter chain is built for it.
  */
 @Configuration
 @ConditionalOnWebApplication
@@ -33,6 +35,7 @@ public class SecurityConfig {
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/health", "/api/v1/auth/csrf").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint((request, response, exception) ->

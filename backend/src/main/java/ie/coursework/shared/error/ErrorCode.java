@@ -16,6 +16,7 @@ public enum ErrorCode {
     PASSWORD_TOO_LONG(HttpStatus.BAD_REQUEST, "Password too long"),
     MALFORMED_REQUEST(HttpStatus.BAD_REQUEST, "Malformed request"),
     UNAUTHENTICATED(HttpStatus.UNAUTHORIZED, "Not signed in"),
+    INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "Wrong username or password"),
     FORBIDDEN(HttpStatus.FORBIDDEN, "Forbidden"),
     CSRF_TOKEN_INVALID(HttpStatus.FORBIDDEN, "Security token missing or invalid"),
     NOT_FOUND(HttpStatus.NOT_FOUND, "Not found"),
