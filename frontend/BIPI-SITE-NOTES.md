@@ -1,4 +1,4 @@
-# CLAUDE.md
+# BiPi public schedule — site notes
 
 ## Purpose of this file
 
@@ -73,7 +73,7 @@ Prefer:
 - Native platform and framework features over unnecessary dependencies
 - Simple solutions appropriate to a small read-only website
 
-Do not add a backend, database, authentication, tracking, forms, accounts, or content management system unless the requirements explicitly change.
+**This file covers the live public schedule only** (`app/[class]/`, `components/bipi/`, `lib/schedule*`, `lib/briefs/`, `lib/classes/`). That part of the site stays read-only: no accounts, tracking or forms on those pages. The coursework pilot app — which does have a backend, accounts and a database — follows the root `CLAUDE.md` and `docs/PILOT-ROADMAP.md`.
 
 ---
 
@@ -311,20 +311,9 @@ When changing content, update the central data source rather than editing copies
 
 ---
 
-## Scope boundaries for version 1
+## Scope boundaries for the public schedule
 
-Unless requirements change, the following are out of scope:
-
-- Student accounts
-- Individual progress tracking
-- Assignment uploads or submissions
-- An admin editing interface
-- Multi-class or multi-teacher support
-- Investigation-topic teaching content
-- Heavy analytics
-- A general-purpose school portal
-
-Optional ideas such as QR codes, print styles, or a report-rules section should not delay the core timeline experience.
+The public schedule pages remain a read-only view of a class's dates. Student accounts, progress tracking, logs and multi-class dashboards belong to the pilot app, not to these pages. Don't add them here.
 
 ---
 
@@ -367,7 +356,7 @@ When updating this file:
 
 ## Repository-specific details to fill in
 
-- **Framework:** Next.js 16.3.3, App Router, React 19.2.8, TypeScript, Tailwind v4 (CSS-first — no `tailwind.config.js`, everything lives in `app/globals.css`). shadcn/ui initialized on the **Base UI** primitive library (`components.json` → `"base": "base"`, preset `base-nova`), not Radix — shadcn's CLI default changed after the implementation plan was first written; see `docs/IMPLEMENTATION_PLAN.md` Decision #5 for why. A `shadcn` skill with current CLI/theming/component docs is installed at `.claude/skills/shadcn` (and a `migrate-radix-to-base` skill alongside it) — prefer it over training-data knowledge of shadcn, which is stale against the current CLI.
+- **Framework:** Next.js 15.3.9 (pinned: Next 16 broke Vercel deploys, commit 8b077e8), App Router, React 19.2.8, TypeScript, Tailwind v4 (CSS-first — no `tailwind.config.js`, everything lives in `app/globals.css`). shadcn/ui initialized on the **Base UI** primitive library (`components.json` → `"base": "base"`, preset `base-nova`), not Radix — shadcn's CLI default changed after the implementation plan was first written; see `docs/archive/bipi-site/IMPLEMENTATION_PLAN.md` Decision #5 for why. A `shadcn` skill with current CLI/theming/component docs is installed at `.claude/skills/shadcn` (and a `migrate-radix-to-base` skill alongside it) — prefer it over training-data knowledge of shadcn, which is stale against the current CLI.
 - **Package manager:** npm (`package-lock.json`).
 - **Node version:** v23.10.0 confirmed working. `node --test "lib/**/*.test.ts"` runs TypeScript tests natively — the glob is required, a bare directory path won't discover `.ts` files. Node's native TS type-stripping is still an experimental feature (prints a warning on every run) and is version-sensitive — don't assume it on an older Node LTS. Relative imports between files under `lib/` that the test runner touches need explicit `.ts` extensions (e.g. `from './schedule.types.ts'`, `from '../briefs/biology-2027.ts'`) — Node's ESM resolver doesn't guess extensions the way the bundler does elsewhere in this app. That's why `tsconfig.json` has `allowImportingTsExtensions: true` (`tsc` would otherwise reject the extension with `TS5097`) — this is a project-wide compiler option, but by convention only `lib/`'s test-reached files actually use the extension; don't add it to imports in `app/`/`components/`, they'll fail bundler resolution.
 - **Development command:** `npm run dev` from `frontend/`.
@@ -376,7 +365,7 @@ When updating this file:
 - **Test command:** `npm test` (`node --test "lib/**/*.test.ts"`), from `frontend/`.
 - **Build command:** `npm run build` (Turbopack).
 - **Schedule data location (Phase B — replaces the single `schedule.data.ts` file):** content
-  now splits along who decides it (spec §4.1; `docs/superpowers/plans/2026-09-02-phase-b-one-config-many-classes.md`).
+  now splits along who decides it (spec §4.1; `docs/archive/bipi-site/plans/2026-09-02-phase-b-one-config-many-classes.md`).
   `frontend/lib/briefs/biology-2027.ts` holds what the SEC decides — stage content, report
   rules, mark bands, report sections — shared by every class running this brief.
   `frontend/lib/classes/<teacher>.ts` holds what a teacher decides — identity and dates, about
@@ -435,9 +424,9 @@ When updating this file:
 - **Nav anchor-id convention (fixed, from `HEADER.nav`, kebab-case):** all four targets now exist — `#right-now`, `#timeline`, `#report-sections`, `#report-rules` — each carrying `scroll-mt-10 lg:scroll-mt-6` (mobile has to clear the sticky mini-banner's 29px; `lg` has nothing sticky above it and only wants breathing room). `site-header.tsx` emits the links from its `NAV_IDS` constant. Any new anchor target gets the same treatment.
 - **Grade chip is a plain `<span>`, not shadcn `Badge`:** checked Badge's actual installed source (`npx shadcn@latest add badge --view`) — none of its variants (`default/secondary/destructive/outline/ghost/link`) produce white text on a `--bipi-ink` background, and matching the exact spec (Space Mono 700, 9px/10px, `5px 9px`/`9px 14px` padding) would mean overriding Badge's own `h-5`, padding, font-size, font-weight and color classes wholesale. Nothing of the component survives, so a styled `<span>` is cleaner. Re-evaluate only if a future badge-like element in this design actually matches one of Badge's existing variants.
 - **Mobile vs. laptop header/footer are two separate JSX blocks** (`lg:hidden` / `hidden lg:flex`), not one responsive flex/grid tree — the grade chip's parent grouping genuinely differs (sits next to the eyebrow on mobile, next to the nav pills on laptop), which plain responsive utility classes on a single DOM structure can't express without duplicating content anyway. Both blocks read from the same `HEADER/SEC_DEADLINE` data, so copy stays single-sourced even though the JSX doesn't; only one block is ever in the layout/accessibility tree at a given viewport (`display: none` fully removes the other, confirmed via Playwright — no duplicate-heading issue). Follow the same pattern rather than fighting a unified grid for any future element that regroups across the breakpoint.
-- **Known, minor spec discrepancies (mobile-vs-laptop numbers only, not content) between the design HTML prototype (`docs/design_handoff_bipi_schedule/design/BiPi Schedule Hub.dc.html`, option `2a`) and the written README/plan spec, resolved in favour of the written spec since the prototype's inline-style layer is explicitly "not production code to copy directly":** footer heading is `14px` at both breakpoints here (the prototype's mobile frame renders it at `12.5px`); nav pill padding is `8px 11px` at both breakpoints here (the prototype's laptop frame uses `8px 12px`). Both differences are sub-2px and not visually significant either way — flagging so nobody rediscovers this as unexplained drift.
-- **Design tokens:** `frontend/app/globals.css` — the BiPi palette (from `docs/design_handoff_bipi_schedule/tokens.css`) is layered into `:root` and mapped onto shadcn's semantic variables (`--background`, `--primary`, etc.). Light-only design — no `.dark` values are defined, `color-scheme: light` is set on `<html>`, don't wire up `next-themes` or a dark-mode toggle.
+- **Known, minor spec discrepancies (mobile-vs-laptop numbers only, not content) between the design HTML prototype (`docs/archive/bipi-site/design_handoff_bipi_schedule/design/BiPi Schedule Hub.dc.html`, option `2a`) and the written README/plan spec, resolved in favour of the written spec since the prototype's inline-style layer is explicitly "not production code to copy directly":** footer heading is `14px` at both breakpoints here (the prototype's mobile frame renders it at `12.5px`); nav pill padding is `8px 11px` at both breakpoints here (the prototype's laptop frame uses `8px 12px`). Both differences are sub-2px and not visually significant either way — flagging so nobody rediscovers this as unexplained drift.
+- **Design tokens:** `frontend/app/globals.css` — the BiPi palette (from `docs/archive/bipi-site/design_handoff_bipi_schedule/tokens.css`) is layered into `:root` and mapped onto shadcn's semantic variables (`--background`, `--primary`, etc.). Light-only design — no `.dark` values are defined, `color-scheme: light` is set on `<html>`, don't wire up `next-themes` or a dark-mode toggle.
   **Verified semantic-alias mapping (check `globals.css`'s `:root` block directly if this drifts — don't trust this list blindly once tokens change):** `--bipi-bg`→`bg-background`, `--bipi-surface`→`bg-card` (also `bg-popover`, same value — `card` used for the header background in Phase 3 as the more general "elevated surface" role), `--bipi-ink`→`text-foreground` **as text only** (there's no semantic *background* role for it — `bg-foreground` would be misleading since "foreground" implies text/icon color; use the raw `bg-[var(--bipi-ink)]` for ink-colored fills like the grade chip and footer), `--bipi-muted`→`text-muted-foreground` (this **does** have a clean alias — despite what an earlier task brief for this repo claimed, `--muted-foreground: var(--bipi-muted)` is real, check before assuming otherwise), `--bipi-border`→`border-border`. **Genuinely unaliased** (use the raw `--bipi-*` var): `--bipi-ink-2`, `--bipi-on-dark-body`, `--bipi-on-dark-meta`. **Aliased but not cleanly** — `--bipi-surface-2` maps to `--secondary`, `--muted`, *and* `--accent` simultaneously (all three happen to share one value in this palette); picking any one of those Tailwind utilities (`bg-secondary`/`bg-muted`/`bg-accent`) works visually but implies a specific role (secondary fill / de-emphasis / hover-accent) that may not match why that spot is actually `--bipi-surface-2` in the design — consider the raw var instead when the semantic role doesn't obviously fit.
 - **Fonts:** self-hosted via `next/font/google` in `frontend/app/layout.tsx` — Space Grotesk (display), Public Sans (body), Space Mono (label, static weights 400/700 only — not a variable font). Resolve through `--bipi-font-display`/`-body`/`-label` in `globals.css`; don't reference the font family names as literal strings, `next/font` renames them internally.
 - **Deployment target:** Vercel (per spec), not yet deployed — do not push live without explicit sign-off (implementation plan §7).
-- **Approved design direction:** Option `2a` ("Progress Rail") from `docs/design_handoff_bipi_schedule/design/BiPi Schedule Hub.dc.html`. Full token/typography/component detail in `docs/IMPLEMENTATION_PLAN.md`, which takes precedence over the handoff README where they disagree.
+- **Approved design direction:** Option `2a` ("Progress Rail") from `docs/archive/bipi-site/design_handoff_bipi_schedule/design/BiPi Schedule Hub.dc.html`. Full token/typography/component detail in `docs/archive/bipi-site/IMPLEMENTATION_PLAN.md`, which takes precedence over the handoff README where they disagree.
