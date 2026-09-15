@@ -1,5 +1,6 @@
 package ie.coursework.security;
 
+import ie.coursework.identity.adapter.persistence.UserAccountRepository;
 import ie.coursework.shared.error.ErrorCode;
 import ie.coursework.shared.error.ProblemResponses;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.csrf.CsrfException;
 
 /**
@@ -27,7 +29,8 @@ import org.springframework.security.web.csrf.CsrfException;
 public class SecurityConfig {
 
     @Bean
-    SecurityFilterChain apiFilterChain(HttpSecurity http, ProblemResponses problems) throws Exception {
+    SecurityFilterChain apiFilterChain(HttpSecurity http, ProblemResponses problems, UserAccountRepository users)
+            throws Exception {
         http
                 .csrf(csrf -> csrf.spa())
                 .authorizeHttpRequests(auth -> auth
@@ -52,6 +55,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
                 .requestCache(cache -> cache.disable());
+        http.addFilterAfter(new PasswordChangeRequiredFilter(users, problems), AuthorizationFilter.class);
         return http.build();
     }
 }

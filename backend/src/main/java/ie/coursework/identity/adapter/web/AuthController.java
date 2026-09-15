@@ -1,6 +1,7 @@
 package ie.coursework.identity.adapter.web;
 
 import ie.coursework.identity.application.AccountQueries;
+import ie.coursework.identity.application.PasswordService;
 import ie.coursework.identity.domain.Actor;
 import ie.coursework.identity.domain.Username;
 import ie.coursework.security.ClientAddressResolver;
@@ -36,14 +37,17 @@ public class AuthController {
     private final AccountQueries accounts;
     private final LoginThrottle throttle;
     private final ClientAddressResolver clientAddress;
+    private final PasswordService passwords;
 
     public AuthController(AuthenticationManager authenticationManager, SessionEstablisher sessions,
-            AccountQueries accounts, LoginThrottle throttle, ClientAddressResolver clientAddress) {
+            AccountQueries accounts, LoginThrottle throttle, ClientAddressResolver clientAddress,
+            PasswordService passwords) {
         this.authenticationManager = authenticationManager;
         this.sessions = sessions;
         this.accounts = accounts;
         this.throttle = throttle;
         this.clientAddress = clientAddress;
+        this.passwords = passwords;
     }
 
     @PostMapping("/login")
@@ -73,6 +77,12 @@ public class AuthController {
     @GetMapping("/me")
     MeResponse me(Actor actor) {
         return MeResponse.from(accounts.account(actor.userId()));
+    }
+
+    @PostMapping("/password")
+    ResponseEntity<Void> changePassword(Actor actor, @Valid @RequestBody ChangePasswordRequest body, HttpServletRequest request) {
+        passwords.change(actor, body.currentPassword(), body.newPassword(), request.getSession().getId());
+        return ResponseEntity.noContent().build();
     }
 
     private UUID authenticate(String username, String password) {
