@@ -2,6 +2,7 @@ package ie.coursework.security;
 
 import ie.coursework.shared.error.ErrorCode;
 import ie.coursework.shared.error.ProblemResponses;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,6 +21,7 @@ import org.springframework.security.web.csrf.CsrfException;
  * <p>Every rejection is a problem response, never an HTML page, a redirect or a Basic challenge.
  */
 @Configuration
+@ConditionalOnWebApplication
 public class SecurityConfig {
 
     @Bean

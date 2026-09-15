@@ -28,7 +28,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 public abstract class PostgresIntegrationTest {
 
     @ServiceConnection
-    static final PostgreSQLContainer POSTGRES = new PostgreSQLContainer("postgres:18");
+    protected static final PostgreSQLContainer POSTGRES = new PostgreSQLContainer("postgres:18");
 
     static {
         POSTGRES.start();
