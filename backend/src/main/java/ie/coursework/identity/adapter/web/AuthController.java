@@ -1,8 +1,8 @@
 package ie.coursework.identity.adapter.web;
 
 import ie.coursework.identity.application.AccountQueries;
+import ie.coursework.identity.domain.Actor;
 import ie.coursework.identity.domain.Username;
-import ie.coursework.security.AuthenticatedUser;
 import ie.coursework.security.ClientAddressResolver;
 import ie.coursework.security.LoginThrottle;
 import ie.coursework.security.SessionEstablisher;
@@ -18,7 +18,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -71,10 +70,9 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 
-    /** Replaced in Task 9 by a version that takes the resolved Actor. */
     @GetMapping("/me")
-    MeResponse me(@AuthenticationPrincipal AuthenticatedUser user) {
-        return MeResponse.from(accounts.account(user.userId()));
+    MeResponse me(Actor actor) {
+        return MeResponse.from(accounts.account(actor.userId()));
     }
 
     private UUID authenticate(String username, String password) {
