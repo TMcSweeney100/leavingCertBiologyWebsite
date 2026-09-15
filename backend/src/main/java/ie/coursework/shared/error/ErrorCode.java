@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
  */
 public enum ErrorCode {
     VALIDATION_FAILED(HttpStatus.BAD_REQUEST, "Validation failed"),
+    USERNAME_INVALID(HttpStatus.BAD_REQUEST, "Username not allowed"),
+    PASSWORD_TOO_SHORT(HttpStatus.BAD_REQUEST, "Password too short"),
+    PASSWORD_TOO_LONG(HttpStatus.BAD_REQUEST, "Password too long"),
     MALFORMED_REQUEST(HttpStatus.BAD_REQUEST, "Malformed request"),
     UNAUTHENTICATED(HttpStatus.UNAUTHORIZED, "Not signed in"),
     FORBIDDEN(HttpStatus.FORBIDDEN, "Forbidden"),
