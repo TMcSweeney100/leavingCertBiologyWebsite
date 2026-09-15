@@ -13,7 +13,7 @@ Detailed plans so far:
 |---|---|
 | 1A Walking skeleton | `docs/superpowers/plans/2026-09-15-pilot-1a-walking-skeleton.md` |
 | 1B Accounts and sessions | `docs/superpowers/plans/2026-09-15-pilot-1b-accounts-and-sessions.md` |
-| 1C Classes and enrolment | Not written yet. Write it once 1B is built. |
+| 1C Classes and enrolment | `docs/superpowers/plans/2026-09-15-pilot-1c-classes-and-enrolment.md` |
 | 1D App shell and first journey | Not written yet. Write it once 1C is built. |
 
 ---
@@ -40,9 +40,9 @@ Detailed plans so far:
 
 | Phase | Milestone | Plan | Status | Gate |
 |---|---|---|---|---|
-| 1 Foundation | 1A Walking skeleton | written | in progress — Tasks 1–10 done, 11 waiting on H1 | §8.1 Gate 1A |
-| | 1B Accounts and sessions | written | not started | Gate 1B |
-| | 1C Classes and enrolment | to write after 1B | not started | Gate 1C |
+| 1 Foundation | 1A Walking skeleton | written | built; gate waiting on Vercel preview (see HANDOFF) | §8.1 Gate 1A |
+| | 1B Accounts and sessions | written | built; gate passed locally, preview walk waiting on Tim | Gate 1B |
+| | 1C Classes and enrolment | written | not started | Gate 1C |
 | | 1D App shell and first journey | to write after 1C | not started | **Gate P1** |
 | 2 Components | 2A–2F | to write at phase start | — | **Gate P2** |
 | 3 The log | 3A–3C | to write | — | **Gate P3** |
