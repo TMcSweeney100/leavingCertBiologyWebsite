@@ -2670,7 +2670,7 @@ docker stop $(docker ps -q --filter ancestor=coursework-backend)
 
 Expected: `{"status":"UP"}`. If the build fails downloading Maven inside the image, the wrapper script found neither `curl` nor `wget`; add `RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*` to the build stage.
 
-- [ ] **Step 3: Decide hosting with Tim (H1)**
+- [x] **Step 3: Decide hosting with Tim (H1)**
 
 Present this to Tim and wait for the answer. Don't treat the shortlist as verified: **check each claim on the vendor's current pages at the time of the decision**, since offerings and prices change.
 
@@ -2695,7 +2695,7 @@ If nothing else decides it, prefer the option where API and database are one ven
 
 Record the decision and the reason in `docs/HANDOFF.md`, and mark H1 answered in `docs/PILOT-ROADMAP.md` §3.
 
-- [ ] **Step 4: Stand up the backend and database**
+- [x] **Step 4: Stand up the backend and database**
 
 On the chosen host:
 - Create the Postgres database in the EU region and **turn on point-in-time recovery**.

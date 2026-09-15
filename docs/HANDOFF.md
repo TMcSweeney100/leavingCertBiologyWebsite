@@ -11,13 +11,14 @@ Rewritten at the end of every session. The live BiPi site's final handoff is arc
 
 ## Half-done
 
-- **Task 11 (deploy).** `backend/Dockerfile`, `backend/.dockerignore` and `frontend/vercel.json` are written and committed. The image builds and, run against the local Compose database, `/actuator/health` returns UP. Steps 3–7 (choose the host, stand up the EU database and API, set Vercel Preview variables, push, verify the preview) are not started: they need the H1 decision below.
-- **Task 12 (Gate 1A).** `make verify` passes. The other four gate items depend on the deployment.
+- **Task 11 (deploy).** Done on the Render side: web service `https://leavingcertpractical.onrender.com` (Frankfurt, free, Docker from `backend/`, health check `/actuator/health`) and the free Frankfurt Postgres 18.6. Verified from outside on 15 Sep 2026: `/actuator/health` and `/api/v1/health` return UP, `/api/v1/auth/csrf` sets `XSRF-TOKEN`, `/api/v1/auth/me` returns the `UNAUTHENTICATED` problem, `/login` is 401. Both Flyway histories applied. **Not done, needs Tim (no Vercel CLI on this machine):** Vercel Preview variables (`APP_ENABLED=true`, `BACKEND_INTERNAL_URL=https://leavingcertpractical.onrender.com`, `PROXY_SHARED_SECRET` matching Render), then the preview check in Task 11 Step 7.
+- **Task 12 (Gate 1A).** `make verify` passes. Still open: preview `/api/v1/health` through the proxy, the `dub1` header (H3), and the post-merge Production check. PITR deferred (below).
+- **PR for 1A not opened** (no `gh` here). Open it from `https://github.com/TMcSweeney100/leavingCertBiologyWebsite/compare/main...pilot/1a-walking-skeleton` with the body in the 1A plan, Task 12 Step 4. Don't merge until the preview check passes.
+- **1B is being built on `pilot/1b-accounts-and-sessions`, branched from the 1A branch** (not `main`) because 1A isn't merged. Merge 1A first; the 1B PR then rebases cleanly or targets `main` with 1A's commits already in.
 
 ## Waiting on a human
 
-- **Render resources.** Tim creates the Frankfurt web service and Postgres in the Render dashboard (steps in the session notes below); Claude finishes Task 11 once the backend URL and database credentials exist.
-- **Roadmap §3 H3** — can the Vercel project set its function region to `dub1`? Check in the project settings once the branch is pushed.
+- Vercel Preview variables, preview URL, H3 (`dub1` accepted?), Deployment Protection bypass if on. Then the 1A PR.
 - Roadmap §9 R3, R4, R5 — calendar-bound, start now.
 
 ## Hosting decision (H1) — 15 Sep 2026
