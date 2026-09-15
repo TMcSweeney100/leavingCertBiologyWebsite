@@ -1,10 +1,12 @@
 package ie.coursework;
 
+import ie.coursework.shared.InMemoryState;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
@@ -39,6 +41,7 @@ public abstract class PostgresIntegrationTest {
             Set.of("flyway_schema_history", "flyway_content_history", "subject");
 
     @Autowired protected JdbcTemplate jdbcTemplate;
+    @Autowired private ApplicationContext applicationContext;
 
     @BeforeEach
     void resetApplicationData() {
@@ -51,5 +54,8 @@ public abstract class PostgresIntegrationTest {
         if (!tables.isEmpty()) {
             jdbcTemplate.execute("TRUNCATE TABLE " + String.join(", ", tables) + " CASCADE");
         }
+
+        // In-memory state (login throttles) is reset the same way the tables are.
+        applicationContext.getBeansOfType(InMemoryState.class).values().forEach(InMemoryState::clear);
     }
 }

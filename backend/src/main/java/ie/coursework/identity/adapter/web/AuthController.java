@@ -1,7 +1,10 @@
 package ie.coursework.identity.adapter.web;
 
 import ie.coursework.identity.application.AccountQueries;
+import ie.coursework.identity.domain.Username;
 import ie.coursework.security.AuthenticatedUser;
+import ie.coursework.security.ClientAddressResolver;
+import ie.coursework.security.LoginThrottle;
 import ie.coursework.security.SessionEstablisher;
 import ie.coursework.shared.error.DomainException;
 import ie.coursework.shared.error.ErrorCode;
@@ -32,16 +35,32 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final SessionEstablisher sessions;
     private final AccountQueries accounts;
+    private final LoginThrottle throttle;
+    private final ClientAddressResolver clientAddress;
 
-    public AuthController(AuthenticationManager authenticationManager, SessionEstablisher sessions, AccountQueries accounts) {
+    public AuthController(AuthenticationManager authenticationManager, SessionEstablisher sessions,
+            AccountQueries accounts, LoginThrottle throttle, ClientAddressResolver clientAddress) {
         this.authenticationManager = authenticationManager;
         this.sessions = sessions;
         this.accounts = accounts;
+        this.throttle = throttle;
+        this.clientAddress = clientAddress;
     }
 
     @PostMapping("/login")
     MeResponse login(@Valid @RequestBody LoginRequest body, HttpServletRequest request, HttpServletResponse response) {
-        UUID userId = authenticate(body.username(), body.password());
+        String username = Username.normalise(body.username());
+        String address = clientAddress.resolve(request);
+        throttle.checkAllowed(username, address);
+
+        UUID userId;
+        try {
+            userId = authenticate(body.username(), body.password());
+        } catch (DomainException wrong) {
+            throttle.recordFailure(username, address);
+            throw wrong;
+        }
+        throttle.recordSuccess(username);
         sessions.signIn(userId, request, response);
         return MeResponse.from(accounts.account(userId));
     }

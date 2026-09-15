@@ -4,9 +4,11 @@ import ie.coursework.identity.adapter.cli.OperatorCommandRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
+@ConfigurationPropertiesScan
 public class CourseworkApplication {
 
     public static void main(String[] args) {

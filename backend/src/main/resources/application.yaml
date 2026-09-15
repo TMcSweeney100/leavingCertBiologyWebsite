@@ -50,6 +50,13 @@ management:
     health:
       show-details: never
 
+app:
+  proxy-secret: ${PROXY_SHARED_SECRET:}
+  login-limits:
+    per-username: 5
+    per-address: 100
+    window: 15m
+
 ---
 spring:
   config:

@@ -21,6 +21,7 @@ public enum ErrorCode {
     CSRF_TOKEN_INVALID(HttpStatus.FORBIDDEN, "Security token missing or invalid"),
     NOT_FOUND(HttpStatus.NOT_FOUND, "Not found"),
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "Method not allowed"),
+    TOO_MANY_ATTEMPTS(HttpStatus.TOO_MANY_REQUESTS, "Too many attempts"),
     USERNAME_TAKEN(HttpStatus.CONFLICT, "Username taken"),
     ROLL_NUMBER_TAKEN(HttpStatus.CONFLICT, "Roll number already registered"),
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal error");
