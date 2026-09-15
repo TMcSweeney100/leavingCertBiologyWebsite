@@ -87,7 +87,7 @@ From design §11, plus the ones this roadmap adds (H1–H4).
 |---|---|---|
 | **Q9** | Which cohort: 6th years now, 5th years in spring 2027, or both? | **Go-live, not build order.** The phases are the same for either cohort. Q9 decides which briefs are *live* content (R5 in §9) and the go-live date. Note Physics' 2027 completion date is 11 December 2026. Phases 1–4 won't be ready for that class, so a 6th-year pilot realistically means Biology, Business and Chemistry. |
 | Q8 | Confirm D1: same repository. | 1A Task 2. Every plan assumes yes. |
-| **H1** | Which EU host runs Spring Boot, and which managed EU Postgres with point-in-time recovery? | **Gate 1A** (the skeleton deploys). §8.1 1A Task 11 lists the criteria and a shortlist. |
+| **H1** | Which EU host runs Spring Boot, and which managed EU Postgres with point-in-time recovery? | **Answered 15 Sep 2026: Render, Frankfurt, for both.** Free tiers during the build; the Gate 1A point-in-time-recovery item is deferred to the go-live gate (§9 R1) and the database is upgraded before the first real account exists. See `docs/HANDOFF.md`. |
 | H2 | Which school is the pilot, and who are the teachers and school leader? | Readiness R6. Also Q1. |
 | H3 | Can the Vercel project set its function region, and is it on a plan that allows `dub1`? | Gate 1A |
 | H4 | Is there a product name, for the privacy notice and page titles? | Readiness R3 |
@@ -376,7 +376,7 @@ Each phase lists what it delivers, the outline of its tasks (each becomes TDD st
 - [ ] Vercel Preview `GET /api/v1/health` returns `{"status":"UP"}` through the proxy from the EU backend
 - [ ] Response headers show the function ran in `dub1`
 - [ ] Production `/login` returns 404 (flag off) and the live class pages are unchanged
-- [ ] The database has a point-in-time-recovery setting turned on (screenshot or CLI output in `docs/HANDOFF.md`)
+- [ ] ~~The database has a point-in-time-recovery setting turned on~~ Deferred to the go-live gate by Tim, 15 Sep 2026 (free Render Postgres during the build; no real data until onboarding). Must be on, with a restore tested, before go-live (§9 R1).
 
 #### 1B Accounts and sessions — plan written
 

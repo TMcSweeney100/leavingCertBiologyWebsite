@@ -16,9 +16,15 @@ Rewritten at the end of every session. The live BiPi site's final handoff is arc
 
 ## Waiting on a human
 
-- **Roadmap §3 H1 — hosting vendor.** Task 11 Step 3 lists the criteria and a shortlist (Render, Fly.io, Scaleway, Railway). Needs EU region for API and database, managed Postgres 18, point-in-time recovery, Dockerfile deploys, a health-check path. Nothing in Task 11 or Gate 1A can move until this is chosen.
+- **Render resources.** Tim creates the Frankfurt web service and Postgres in the Render dashboard (steps in the session notes below); Claude finishes Task 11 once the backend URL and database credentials exist.
 - **Roadmap §3 H3** — can the Vercel project set its function region to `dub1`? Check in the project settings once the branch is pushed.
 - Roadmap §9 R3, R4, R5 — calendar-bound, start now.
+
+## Hosting decision (H1) — 15 Sep 2026
+
+**Render, Frankfurt, for both the API and the database.** Chosen over Railway (PITR needs extra pgBackRest machinery, usage-priced), Scaleway (managed Postgres 18 not offered yet) and Fly.io (Postgres 16 only, and dearer). Render can't move a resource between regions later, so both are created in Frankfurt from the start.
+
+**Free tiers during the build.** The free web service sleeps when idle, so the first request after a pause can fail at the proxy while the JVM wakes; hit the backend URL directly before testing. The free database has no point-in-time recovery, so that Gate 1A item is deferred to the go-live gate (roadmap §9 R1). Until onboarding there is no data worth keeping: Flyway rebuilds everything. **Upgrade the database to a paid instance before the first real account is created**, and check Render's current free-Postgres expiry rule.
 
 ## Things this session confirmed
 
