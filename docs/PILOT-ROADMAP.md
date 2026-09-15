@@ -40,7 +40,7 @@ Detailed plans so far:
 
 | Phase | Milestone | Plan | Status | Gate |
 |---|---|---|---|---|
-| 1 Foundation | 1A Walking skeleton | written | not started | §8.1 Gate 1A |
+| 1 Foundation | 1A Walking skeleton | written | in progress — Tasks 1–10 done, 11 waiting on H1 | §8.1 Gate 1A |
 | | 1B Accounts and sessions | written | not started | Gate 1B |
 | | 1C Classes and enrolment | to write after 1B | not started | Gate 1C |
 | | 1D App shell and first journey | to write after 1C | not started | **Gate P1** |

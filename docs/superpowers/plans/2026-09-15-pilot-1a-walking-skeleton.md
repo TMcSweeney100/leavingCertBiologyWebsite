@@ -73,7 +73,7 @@ No tests: documents only. Roadmap R14, design §12.
 - Move: see Step 2
 - Modify: `frontend/BIPI-SITE-NOTES.md` (after the move)
 
-- [ ] **Step 1: Commit the design document where Tim put it**
+- [x] **Step 1: Commit the design document where Tim put it**
 
 ```bash
 git add docs/PILOT-DESIGN.md docs/PILOT-ROADMAP.md docs/superpowers/plans/2026-09-15-pilot-1*.md
@@ -88,7 +88,7 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 
 Expected: `git status` no longer lists either design path.
 
-- [ ] **Step 2: Archive the live site's finished planning documents**
+- [x] **Step 2: Archive the live site's finished planning documents**
 
 ```bash
 mkdir -p docs/archive/bipi-site/plans docs/archive/bipi-site/specs
@@ -105,7 +105,7 @@ git mv docs/CLAUDE.md frontend/BIPI-SITE-NOTES.md
 
 `docs/Biology in Practice Investigation Brief 2027.pdf` stays where it is: it's a source document, and design §4.1 cites that path.
 
-- [ ] **Step 3: Repoint references inside the moved notes**
+- [x] **Step 3: Repoint references inside the moved notes**
 
 ```bash
 cd frontend
@@ -121,7 +121,7 @@ cd ..
 
 Expected: every hit now shows an `archive/bipi-site` path, and no `16.3.3` remains.
 
-- [ ] **Step 4: Correct the scope rules (design §12)**
+- [x] **Step 4: Correct the scope rules (design §12)**
 
 In `frontend/BIPI-SITE-NOTES.md`, use the Edit tool.
 
@@ -147,7 +147,7 @@ The public schedule pages remain a read-only view of a class's dates. Student ac
 
 Replace the opening line of `# CLAUDE.md` with `# BiPi public schedule — site notes`.
 
-- [ ] **Step 5: Write the root `CLAUDE.md`**
+- [x] **Step 5: Write the root `CLAUDE.md`**
 
 ```markdown
 # CLAUDE.md
@@ -200,7 +200,7 @@ Two things that share a Next.js app:
 - Server components call Spring through `lib/api/server.ts`; client components through `lib/api/client.ts`. Mutations happen from client components only.
 ```
 
-- [ ] **Step 6: Write the root `.gitignore`**
+- [x] **Step 6: Write the root `.gitignore`**
 
 ```gitignore
 .DS_Store
@@ -216,7 +216,7 @@ And make the example files committable in `frontend/.gitignore` — append:
 !.env.example
 ```
 
-- [ ] **Step 7: Write the new `docs/HANDOFF.md`**
+- [x] **Step 7: Write the new `docs/HANDOFF.md`**
 
 ```markdown
 # Handoff — coursework pilot
@@ -239,7 +239,7 @@ Nothing.
 - Roadmap §9 R3, R4, R5 — calendar-bound, start now
 ```
 
-- [ ] **Step 8: Verify nothing in the live site broke, then commit**
+- [x] **Step 8: Verify nothing in the live site broke, then commit**
 
 ```bash
 cd frontend && npm test && npx tsc --noEmit && npm run lint && cd ..
@@ -264,7 +264,7 @@ Expected: 74 tests passing, types and lint clean.
 - Copy: `backend/mvnw`, `backend/mvnw.cmd`, `backend/.mvn/wrapper/maven-wrapper.properties` from contentCreater
 - Test: `backend/src/test/java/ie/coursework/PostgresIntegrationTest.java`, `backend/src/test/java/ie/coursework/CourseworkApplicationTests.java`
 
-- [ ] **Step 1: Copy the Maven wrapper**
+- [x] **Step 1: Copy the Maven wrapper**
 
 ```bash
 mkdir -p backend/.mvn/wrapper
@@ -275,7 +275,7 @@ chmod +x backend/mvnw
 
 The wrapper uses `distributionType=only-script`, so no jar is committed.
 
-- [ ] **Step 2: Write `backend/pom.xml`**
+- [x] **Step 2: Write `backend/pom.xml`**
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -372,7 +372,7 @@ The wrapper uses `distributionType=only-script`, so no jar is committed.
 </project>
 ```
 
-- [ ] **Step 3: Write `backend/.gitignore`**
+- [x] **Step 3: Write `backend/.gitignore`**
 
 ```gitignore
 target/
@@ -382,7 +382,7 @@ target/
 .vscode/
 ```
 
-- [ ] **Step 4: Write the shared integration-test base**
+- [x] **Step 4: Write the shared integration-test base**
 
 `backend/src/test/java/ie/coursework/PostgresIntegrationTest.java`:
 
@@ -444,7 +444,7 @@ public abstract class PostgresIntegrationTest {
 }
 ```
 
-- [ ] **Step 5: Write the failing test**
+- [x] **Step 5: Write the failing test**
 
 `backend/src/test/java/ie/coursework/CourseworkApplicationTests.java`:
 
@@ -463,12 +463,12 @@ class CourseworkApplicationTests extends PostgresIntegrationTest {
 }
 ```
 
-- [ ] **Step 6: Run it and watch it fail**
+- [x] **Step 6: Run it and watch it fail**
 
 Run: `cd backend && ./mvnw test`
 Expected: FAIL — compilation or "Unable to find a @SpringBootConfiguration", because no application class exists.
 
-- [ ] **Step 7: Write the application class and configuration**
+- [x] **Step 7: Write the application class and configuration**
 
 `backend/src/main/java/ie/coursework/CourseworkApplication.java`:
 
@@ -541,12 +541,12 @@ mkdir -p backend/src/main/resources/db/migration backend/src/main/resources/db/c
 touch backend/src/main/resources/db/migration/.gitkeep backend/src/main/resources/db/content/.gitkeep
 ```
 
-- [ ] **Step 8: Run the test and watch it pass**
+- [x] **Step 8: Run the test and watch it pass**
 
 Run: `cd backend && ./mvnw test`
 Expected: `Tests run: 1, Failures: 0, Errors: 0` and `BUILD SUCCESS`. The first run downloads Maven, dependencies and the `postgres:18` image, so it's slow.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add backend
@@ -564,7 +564,7 @@ Infrastructure only; verified by running it.
 **Files:**
 - Create: `compose.yaml`, `Makefile`, `backend/.env.example`
 
-- [ ] **Step 1: Write `compose.yaml`**
+- [x] **Step 1: Write `compose.yaml`**
 
 ```yaml
 services:
@@ -614,7 +614,7 @@ volumes:
 
 If port 5432 is already taken by another project's Postgres (contentCreater uses it too), stop that one first: `docker stop content-engine-postgres`.
 
-- [ ] **Step 2: Write the `Makefile`**
+- [x] **Step 2: Write the `Makefile`**
 
 Recipe lines must start with a tab, not spaces.
 
@@ -686,7 +686,7 @@ clean:
 
 `scripts/e2e.sh` arrives in 1D, and `npm run typecheck` in Task 7. Until then `make verify` fails at `frontend-typecheck`; that's expected.
 
-- [ ] **Step 3: Write `backend/.env.example`**
+- [x] **Step 3: Write `backend/.env.example`**
 
 ```bash
 # Copy to backend/.env for local overrides. Never commit backend/.env.
@@ -696,7 +696,7 @@ DATABASE_PASSWORD=coursework
 PROXY_SHARED_SECRET=local-dev-proxy-secret
 ```
 
-- [ ] **Step 4: Verify**
+- [x] **Step 4: Verify**
 
 ```bash
 make db-up
@@ -706,7 +706,7 @@ make backend-run
 In a second terminal: `curl -s http://127.0.0.1:8080/actuator/health`
 Expected: `{"status":"UP"}`. Stop the backend with Ctrl-C.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add compose.yaml Makefile backend/.env.example
@@ -723,7 +723,7 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 - Create: `backend/src/main/java/ie/coursework/shared/error/ErrorCode.java`, `DomainException.java`, `FieldError.java`, `ProblemDetailsAdvice.java`, `ProblemResponses.java`
 - Test: `backend/src/test/java/ie/coursework/shared/error/ProblemDetailsAdviceTest.java`, `ErrorCodeTest.java`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `ErrorCodeTest.java`:
 
@@ -864,12 +864,12 @@ class ProblemDetailsAdviceTest {
 }
 ```
 
-- [ ] **Step 2: Run them and watch them fail**
+- [x] **Step 2: Run them and watch them fail**
 
 Run: `cd backend && ./mvnw test -Dtest='ErrorCodeTest,ProblemDetailsAdviceTest'`
 Expected: FAIL — compilation errors, `ErrorCode` and friends don't exist.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 `ErrorCode.java`:
 
@@ -1087,14 +1087,14 @@ public class ProblemResponses {
 }
 ```
 
-- [ ] **Step 4: Run the tests and watch them pass**
+- [x] **Step 4: Run the tests and watch them pass**
 
 Run: `cd backend && ./mvnw test -Dtest='ErrorCodeTest,ProblemDetailsAdviceTest'`
 Expected: 8 tests, 0 failures.
 
 If `unknownPathIsANotFoundProblem` returns a plain 404 with no body, check that `spring.web.resources.add-mappings` hasn't been set to `false`: Spring throws `NoResourceFoundException` for an unmapped path only while static resource handling is on.
 
-- [ ] **Step 5: Run the whole suite, then commit**
+- [x] **Step 5: Run the whole suite, then commit**
 
 ```bash
 cd backend && ./mvnw test && cd ..
@@ -1116,7 +1116,7 @@ Design §7.1, tech spec §6, roadmap R15.
 - Delete: the two `.gitkeep` files from Task 2
 - Test: `backend/src/test/java/ie/coursework/shared/config/ContentMigrationsTest.java`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```java
 package ie.coursework.shared.config;
@@ -1170,12 +1170,12 @@ class ContentMigrationsTest extends PostgresIntegrationTest {
 }
 ```
 
-- [ ] **Step 2: Run it and watch it fail**
+- [x] **Step 2: Run it and watch it fail**
 
 Run: `cd backend && ./mvnw test -Dtest=ContentMigrationsTest`
 Expected: FAIL — `relation "subject" does not exist`.
 
-- [ ] **Step 3: Write the schema and content migrations**
+- [x] **Step 3: Write the schema and content migrations**
 
 `db/migration/V1__subject_table.sql`:
 
@@ -1205,7 +1205,7 @@ INSERT INTO subject (code, name) VALUES
 rm backend/src/main/resources/db/migration/.gitkeep backend/src/main/resources/db/content/.gitkeep
 ```
 
-- [ ] **Step 4: Write the second Flyway instance**
+- [x] **Step 4: Write the second Flyway instance**
 
 `ContentMigrationsConfig.java`:
 
@@ -1250,12 +1250,12 @@ public class ContentMigrationsConfig {
 }
 ```
 
-- [ ] **Step 5: Run the test and watch it pass**
+- [x] **Step 5: Run the test and watch it pass**
 
 Run: `cd backend && ./mvnw test -Dtest=ContentMigrationsTest`
 Expected: 4 tests, 0 failures.
 
-- [ ] **Step 6: Run the whole suite, then commit**
+- [x] **Step 6: Run the whole suite, then commit**
 
 ```bash
 cd backend && ./mvnw test && cd ..
@@ -1277,7 +1277,7 @@ Design §5.1–5.2. Everything under `/api/v1` needs a session except health and
 - Create: `backend/src/main/java/ie/coursework/shared/web/HealthController.java`
 - Test: `backend/src/test/java/ie/coursework/security/SecurityBaselineTest.java`
 
-- [ ] **Step 1: Add Spring Security to `pom.xml`**
+- [x] **Step 1: Add Spring Security to `pom.xml`**
 
 Inside `<dependencies>`, after `spring-boot-starter-actuator`:
 
@@ -1298,7 +1298,7 @@ and with the test dependencies:
         </dependency>
 ```
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 ```java
 package ie.coursework.security;
@@ -1367,12 +1367,12 @@ class SecurityBaselineTest extends PostgresIntegrationTest {
 }
 ```
 
-- [ ] **Step 3: Run it and watch it fail**
+- [x] **Step 3: Run it and watch it fail**
 
 Run: `cd backend && ./mvnw test -Dtest=SecurityBaselineTest`
 Expected: FAIL — `/api/v1/health` returns 401 (Boot's default security), `code` missing, no CSRF endpoint.
 
-- [ ] **Step 4: Write the implementation**
+- [x] **Step 4: Write the implementation**
 
 `shared/web/HealthController.java`:
 
@@ -1479,14 +1479,14 @@ public class SecurityConfig {
 }
 ```
 
-- [ ] **Step 5: Run the test and watch it pass**
+- [x] **Step 5: Run the test and watch it pass**
 
 Run: `cd backend && ./mvnw test -Dtest=SecurityBaselineTest`
 Expected: 6 tests, 0 failures.
 
 If `anUnsafeRequestWithoutTheCsrfHeaderIsRejectedWithItsOwnCode` returns 401 instead of 403, the authorisation filter ran before CSRF. Check that nothing reordered the chain; in the default order `CsrfFilter` runs before `AuthorizationFilter`.
 
-- [ ] **Step 6: Run the whole suite, then commit**
+- [x] **Step 6: Run the whole suite, then commit**
 
 ```bash
 cd backend && ./mvnw test && cd ..
@@ -1506,7 +1506,7 @@ Roadmap R5. The 74 existing `node --test` tests stay exactly as they are. Vitest
 - Modify: `frontend/package.json`
 - Create: `frontend/vitest.config.ts`, `frontend/test/setup.ts`, `frontend/test/tooling.spec.tsx`, `frontend/.env.example`
 
-- [ ] **Step 1: Install**
+- [x] **Step 1: Install**
 
 ```bash
 cd frontend
@@ -1516,7 +1516,7 @@ npm install -D vitest@^3.2.7 jsdom@^27.0.1 @testing-library/react@^16.3.2 @testi
 
 These are the versions contentCreater runs with React 19.2.8. If npm reports a peer conflict with React 19.2.8 or Next 15.3.9, stop and report it rather than using `--force`.
 
-- [ ] **Step 2: Write the canary spec**
+- [x] **Step 2: Write the canary spec**
 
 `frontend/test/tooling.spec.tsx`:
 
@@ -1534,12 +1534,12 @@ describe("spec tooling", () => {
 });
 ```
 
-- [ ] **Step 3: Run it and watch it fail**
+- [x] **Step 3: Run it and watch it fail**
 
 Run: `npx vitest run`
 Expected: FAIL — `document is not defined` or `toBeInTheDocument is not a function`, because there's no config or setup yet.
 
-- [ ] **Step 4: Write the config, setup and scripts**
+- [x] **Step 4: Write the config, setup and scripts**
 
 `frontend/vitest.config.ts`:
 
@@ -1602,7 +1602,7 @@ BACKEND_INTERNAL_URL=http://localhost:8080
 PROXY_SHARED_SECRET=local-dev-proxy-secret
 ```
 
-- [ ] **Step 5: Run everything and watch it pass**
+- [x] **Step 5: Run everything and watch it pass**
 
 ```bash
 npm test          # 74 node tests, then 1 spec
@@ -1610,7 +1610,7 @@ npm run typecheck # clean
 npm run lint      # clean
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 cd ..
@@ -1630,7 +1630,7 @@ Roadmap R1 and §6.4; design §5.3. This comes before the proxy so the proxy can
 - Create: `frontend/lib/app/routes.ts`, `frontend/lib/app/routes.test.ts`
 - Create: `frontend/app/(auth)/layout.tsx`, `frontend/app/(auth)/layout.spec.tsx`, `frontend/app/(auth)/login/page.tsx`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `frontend/lib/app/routes.test.ts` (node:test, so imports carry `.ts`):
 
@@ -1697,12 +1697,12 @@ describe("auth pages behind the app flag", () => {
 });
 ```
 
-- [ ] **Step 2: Run them and watch them fail**
+- [x] **Step 2: Run them and watch them fail**
 
 Run: `cd frontend && npm test`
 Expected: FAIL — `Cannot find module './routes.ts'` and `Failed to resolve import "./layout"`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 `frontend/lib/app/routes.ts`:
 
@@ -1761,12 +1761,12 @@ export default function LoginPage() {
 }
 ```
 
-- [ ] **Step 4: Run the tests and watch them pass**
+- [x] **Step 4: Run the tests and watch them pass**
 
 Run: `npm test`
 Expected: 78 node tests (74 + 4), 3 specs, all passing.
 
-- [ ] **Step 5: Check both flag states in a real build**
+- [x] **Step 5: Check both flag states in a real build**
 
 ```bash
 npm run build && npx next start -p 3100 &
@@ -1781,7 +1781,7 @@ kill %1
 
 Expected: the codes in the comments. If `/login` is 200 with the flag unset, the page was prerendered with a stale environment — delete `.next/` and rebuild.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 cd ..
@@ -1805,7 +1805,7 @@ Design §5.1 and §10; roadmap R8. Adapted from contentCreater's proxy, which fo
 - Create: `frontend/app/api/v1/[...path]/route.ts`
 - Test: `frontend/app/api/v1/[...path]/route.spec.ts`
 
-- [ ] **Step 1: Write the failing spec**
+- [x] **Step 1: Write the failing spec**
 
 ```ts
 // @vitest-environment node
@@ -1971,12 +1971,12 @@ describe("the proxy", () => {
 });
 ```
 
-- [ ] **Step 2: Run it and watch it fail**
+- [x] **Step 2: Run it and watch it fail**
 
 Run: `cd frontend && npx vitest run app/api`
 Expected: FAIL — `Failed to resolve import "./route"`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 `frontend/app/api/v1/[...path]/route.ts`:
 
@@ -2072,12 +2072,12 @@ async function proxy(request: NextRequest, context: { params: Promise<{ path: st
 export { proxy as GET, proxy as POST, proxy as PUT, proxy as PATCH, proxy as DELETE };
 ```
 
-- [ ] **Step 4: Run the spec and watch it pass**
+- [x] **Step 4: Run the spec and watch it pass**
 
 Run: `npx vitest run app/api`
 Expected: 13 tests, 0 failures.
 
-- [ ] **Step 5: Check it against the real backend**
+- [x] **Step 5: Check it against the real backend**
 
 ```bash
 cp .env.example .env.local        # if not already present
@@ -2090,7 +2090,7 @@ curl -s http://localhost:3000/api/v1/auth/me                        # {"...","co
 
 Stop both servers afterwards (`kill %1 %2`, or Ctrl-C in their terminals).
 
-- [ ] **Step 6: Run the whole frontend suite, then commit**
+- [x] **Step 6: Run the whole frontend suite, then commit**
 
 ```bash
 npm test && npm run typecheck && npm run lint
@@ -2111,7 +2111,7 @@ Adapted from contentCreater's `lib/api/`. Two differences: the browser client se
 - Create: `frontend/lib/api/problem.ts`, `frontend/lib/api/client.ts`, `frontend/lib/api/server.ts`
 - Test: `frontend/lib/api/problem.spec.ts`, `frontend/lib/api/client.spec.ts`, `frontend/lib/api/server.spec.ts`
 
-- [ ] **Step 1: Write the failing specs**
+- [x] **Step 1: Write the failing specs**
 
 `frontend/lib/api/problem.spec.ts`:
 
@@ -2344,12 +2344,12 @@ describe("serverApi", () => {
 });
 ```
 
-- [ ] **Step 2: Run them and watch them fail**
+- [x] **Step 2: Run them and watch them fail**
 
 Run: `cd frontend && npx vitest run lib/api`
 Expected: FAIL — `Failed to resolve import "./problem"`, `"./client"`, `"./server"`.
 
-- [ ] **Step 3: Write `problem.ts`**
+- [x] **Step 3: Write `problem.ts`**
 
 ```ts
 import { z } from "zod";
@@ -2446,7 +2446,7 @@ export class ApiError extends Error {
 }
 ```
 
-- [ ] **Step 4: Write `client.ts`**
+- [x] **Step 4: Write `client.ts`**
 
 ```ts
 import type { ZodType } from "zod";
@@ -2569,7 +2569,7 @@ export function createApiClient(transport: ApiTransport): ApiClient {
 export const api = createApiClient({ baseUrl: () => "", extraHeaders: async () => ({}), csrf: true });
 ```
 
-- [ ] **Step 5: Write `server.ts`**
+- [x] **Step 5: Write `server.ts`**
 
 ```ts
 import { headers } from "next/headers";
@@ -2595,12 +2595,12 @@ const client = createApiClient({
 export const serverApi: Pick<ApiClient, "get"> = { get: client.get };
 ```
 
-- [ ] **Step 6: Run the specs and watch them pass**
+- [x] **Step 6: Run the specs and watch them pass**
 
 Run: `npx vitest run lib/api`
 Expected: 16 tests, 0 failures.
 
-- [ ] **Step 7: Run the whole frontend suite, then commit**
+- [x] **Step 7: Run the whole frontend suite, then commit**
 
 ```bash
 npm test && npm run typecheck && npm run lint
@@ -2620,7 +2620,7 @@ Design §5.4; roadmap R16, H1, H3. **This task has a human decision in it.** Don
 **Files:**
 - Create: `backend/Dockerfile`, `backend/.dockerignore`, `frontend/vercel.json`
 
-- [ ] **Step 1: Write the Dockerfile**
+- [x] **Step 1: Write the Dockerfile**
 
 `backend/Dockerfile`:
 
@@ -2656,7 +2656,7 @@ target
 .env
 ```
 
-- [ ] **Step 2: Build and run the image locally**
+- [x] **Step 2: Build and run the image locally**
 
 ```bash
 docker build -t coursework-backend backend
@@ -2711,7 +2711,7 @@ PROXY_SHARED_SECRET=<output of: openssl rand -base64 32>
 
 Verify: `curl -s https://<backend-host>/actuator/health` returns `{"status":"UP"}`.
 
-- [ ] **Step 5: Pin the Vercel function region**
+- [x] **Step 5: Pin the Vercel function region**
 
 `frontend/vercel.json`:
 
@@ -2750,7 +2750,7 @@ If the preview answers 401 with a Vercel login page, Deployment Protection is on
 
 ## Task 12: Gate 1A
 
-- [ ] **Step 1: Run every check**
+- [x] **Step 1: Run every check**
 
 ```bash
 make verify
@@ -2760,7 +2760,7 @@ Expected: `verify: all checks passed`.
 
 - [ ] **Step 2: Walk the gate** (roadmap §8.1)
 
-- [ ] `make verify` green
+- [x] `make verify` green
 - [ ] Preview `GET /api/v1/health` returns `{"status":"UP"}` through the proxy from the EU backend
 - [ ] `x-vercel-id` shows the function ran in `dub1`
 - [ ] Point-in-time recovery is on (note the setting, or paste CLI output, in `docs/HANDOFF.md`)
