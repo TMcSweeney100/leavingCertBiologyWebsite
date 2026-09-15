@@ -6,17 +6,26 @@ Rewritten at the end of every session. The live BiPi site's final handoff is arc
 
 - **Current milestone:** 1C Classes and enrolment. Its plan is `docs/superpowers/plans/2026-09-15-pilot-1c-classes-and-enrolment.md` (nothing built yet). It takes three product decisions (P-1 to P-3) listed at its top for Tim to confirm before Task 1.
 - **Next plan also written:** 1D, `docs/superpowers/plans/2026-09-15-pilot-1d-app-shell-and-first-journey.md`, with four more decisions (P-4 to P-7) at its top. It mirrors the 1C response records in Zod, so if 1C changes a field name during the build, update `lib/api/schemas.ts` in the 1D plan to match.
-- **Branches, stacked and unmerged:** `pilot/1a-walking-skeleton` (Tasks 1–10 plus the Render half of Task 11) and `pilot/1b-accounts-and-sessions` on top of it (all ten tasks). Both pushed. Merge 1A first, then 1B.
+- **Branches, stacked and unmerged:** `pilot/1a-walking-skeleton` (Tasks 1–10 plus the Render half of Task 11) and `pilot/1b-accounts-and-sessions` on top of it (all ten tasks). Both pushed. Merge 1A into `pilotMain` first, then 1B.
 - **Session 1 (15 Sep 2026):** 1A Tasks 1–11 (local half) and all of 1B in one session, roughly four hours of wall-clock time including first-time downloads and the Render setup. Roadmap §10 wants this number for estimating later phases: about two hours per milestone of this size once tooling is warm.
+
+## Branch strategy — changed 15 Sep 2026
+
+`pilotMain` (created by Tim from `main`) is now the pilot's production branch; `main` stays Katelyn's live site. Roadmap R1 is amended. What follows from it:
+
+- The 1A PR base is `pilotMain`; the 1B PR base is `pilotMain` after 1A merges (or `pilot/1a-walking-skeleton` before). Future milestone branches start from `pilotMain`.
+- A second Vercel project on the same repo, Root Directory `frontend`, Production Branch `pilotMain`, with `APP_ENABLED=true`, `BACKEND_INTERNAL_URL=https://leavingcertpractical.onrender.com` and `PROXY_SHARED_SECRET` in **both** Production and Preview. Katelyn's project keeps `main` and no app variables. Optional, in her project: Settings → Git → Ignored Build Step `[ "$VERCEL_GIT_COMMIT_REF" != "main" ]` so pilot branches don't build there.
+- The Render web service should track `pilotMain` once 1A is merged.
+- After any change to `main`, merge `main` → `pilotMain`.
 
 ## Gate 1A — waiting on Vercel
 
 Render side done and verified from outside: `https://leavingcertpractical.onrender.com` (Frankfurt, free web service and free Postgres 18.6, Docker from `backend/`, health check `/actuator/health`). Still needs Tim, because this machine has no Vercel or GitHub CLI:
 
-1. Vercel → Settings → Environment Variables, **Preview only**: `APP_ENABLED=true`, `BACKEND_INTERNAL_URL=https://leavingcertpractical.onrender.com`, `PROXY_SHARED_SECRET=<same value as in Render>`. Redeploy the preview after saving.
+1. In the **pilot** Vercel project (see branch strategy above): `APP_ENABLED=true`, `BACKEND_INTERNAL_URL=https://leavingcertpractical.onrender.com`, `PROXY_SHARED_SECRET=<same value as in Render>`, Production and Preview. Redeploy after saving.
 2. Check `curl -si https://<preview-url>/api/v1/health` returns `{"status":"UP"}` and an `x-vercel-id` whose second segment is `dub1` (H3). If Deployment Protection is on, use a Protection Bypass for Automation secret.
-3. Open the 1A PR from `https://github.com/TMcSweeney100/leavingCertBiologyWebsite/compare/main...pilot/1a-walking-skeleton`, body in the 1A plan Task 12 Step 4. Don't merge until step 2 passes.
-4. After merge: Production `/login` and `/api/v1/health` return 404, `/nwetss-hanlon` returns 200.
+3. Open the 1A PR from `https://github.com/TMcSweeney100/leavingCertBiologyWebsite/compare/pilotMain...pilot/1a-walking-skeleton`, body in the 1A plan Task 12 Step 4. Don't merge until step 2 passes.
+4. After merge: Katelyn's project still returns 404 for `/login` and `/api/v1/health` and 200 for `/nwetss-hanlon`; the pilot project serves `/login`.
 
 PITR is deferred to the go-live gate (hosting decision below).
 
@@ -29,7 +38,7 @@ PITR is deferred to the go-live gate (hosting decision below).
 - The backend process was stopped and restarted; the same cookie still returned 200 from `/auth/me` (Spring Session JDBC).
 - Six wrong passwords: five `INVALID_CREDENTIALS`, then `TOO_MANY_ATTEMPTS`.
 
-**To finish the gate on the preview:** the Render web service tracks `pilot/1a-walking-skeleton`. Switch it to `pilot/1b-accounts-and-sessions` (or merge 1A and 1B and point it at `main`), redeploy, then run the operator commands from Render's shell (same image, `operator …` arguments) and the curl script in the 1B plan Task 11 Step 2 against the preview URL. Then open the 1B PR from `compare/pilot/1a-walking-skeleton...pilot/1b-accounts-and-sessions` (or against `main` once 1A is merged).
+**To finish the gate on the preview:** the Render web service tracks `pilot/1a-walking-skeleton`. Switch it to `pilot/1b-accounts-and-sessions` (or merge 1A and 1B and point it at `main`), redeploy, then run the operator commands from Render's shell (same image, `operator …` arguments) and the curl script in the 1B plan Task 11 Step 2 against the preview URL. Then open the 1B PR from `compare/pilot/1a-walking-skeleton...pilot/1b-accounts-and-sessions` (or against `pilotMain` once 1A is merged).
 
 ## Deviations from the 1B plan, all small
 

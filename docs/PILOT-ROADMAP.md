@@ -59,7 +59,7 @@ The design left these open, or left them to "the Phase 1 plan". Each is what I'd
 
 | # | Decision | Why |
 |---|---|---|
-| R1 | **Build on `main`, behind a flag.** App routes render only when `APP_ENABLED=true`. It's set in local dev and Vercel Preview, and left unset in Vercel Production until go-live. Each milestone is a branch (`pilot/1a-walking-skeleton`, …) merged by PR. | Katelyn's live site deploys from `main`. A long-lived pilot branch would drift from it; the flag keeps half-built app pages off the live site. |
+| R1 | **Amended 15 Sep 2026: the pilot lives on `pilotMain`, its own Vercel project, still behind the flag.** `main` stays Katelyn's live BiPi site (its Vercel project, `APP_ENABLED` unset). `pilotMain` is the pilot's production branch: a second Vercel project on the same repo with Production Branch `pilotMain` and `APP_ENABLED=true`, `BACKEND_INTERNAL_URL`, `PROXY_SHARED_SECRET` in both Production and Preview; the Render web service tracks it too. Each milestone is a branch (`pilot/1a-walking-skeleton`, …) merged by PR **into `pilotMain`**. Whenever `main` changes, merge `main` → `pilotMain` promptly; never the other way until the go-live decision. The original wording (build on `main` behind the flag) was replaced because a separate production branch and project let the pilot deploy for real without touching the live site; the flag stays as the safety net. | Katelyn's live site deploys from `main` and must never change by accident. Two Vercel projects give the pilot its own URL, secrets and region. Drift is the risk of a long-lived branch, so `main` → `pilotMain` merges are routine. |
 | R2 | **Spring `JdbcClient` with SQL, not JPA.** Repositories live in `adapter.persistence` as contentCreater does, but use plain SQL mapped to records. | The design leans on Postgres features — triggers, `jsonb`, one teacher-view projection, union queries for the timeline, count queries for the leader view. JPA adds lazy loading, dirty checking and `open-in-view` traps to all of that, and gives nothing back. |
 | R3 | **Operator setup is a command-line runner, not an admin screen or endpoint.** `java -jar app.jar operator create-school …` (or `scripts/operator.sh create-school …`) starts without a web server, runs one command against the database, and exits. | Design §3: "The operator sets up the school, teacher accounts and the school-leader role", with no admin screen in the pilot. A CLI has no network-exposed surface to secure. |
 | R4 | **Java base package `ie.coursework`.** | The product has no name yet (positioning doc). Renaming later is a mechanical IDE refactor. |
@@ -144,7 +144,7 @@ make e2e            # Playwright journey against a throwaway database
 
 ### 4.3 Branches, commits, reviews
 
-- One branch per milestone off `main`: `pilot/1a-walking-skeleton`. One PR per milestone, merged when its gate passes.
+- One branch per milestone off `pilotMain` (or off the previous unmerged milestone branch): `pilot/1a-walking-skeleton`. One PR per milestone, base `pilotMain`, merged when its gate passes. `main` is Katelyn's site: only BiPi fixes go there, and `main` is merged into `pilotMain` afterwards (R1).
 - Commit per task. Message: imperative, and it says the behaviour ("Reject stage dates after the completion date"), not the file.
 - After each task: a spec-compliance review against the plan, then a code-quality review (`superpowers:requesting-code-review`). After each milestone: `/code-review` on the branch.
 - Never commit secrets. `.env*` is already ignored in `frontend/`. 1A adds `backend/.env` to the ignore list.
@@ -373,9 +373,9 @@ Each phase lists what it delivers, the outline of its tasks (each becomes TDD st
 
 **Gate 1A**
 - [ ] `make verify` green
-- [ ] Vercel Preview `GET /api/v1/health` returns `{"status":"UP"}` through the proxy from the EU backend
+- [ ] The pilot Vercel project's deployment of `pilotMain` returns `{"status":"UP"}` from `GET /api/v1/health` through the proxy from the EU backend
 - [ ] Response headers show the function ran in `dub1`
-- [ ] Production `/login` returns 404 (flag off) and the live class pages are unchanged
+- [ ] Katelyn's Vercel project (`main`) still returns 404 for `/login` and 200 for the live class pages; the pilot project (`pilotMain`) serves `/login`
 - [ ] ~~The database has a point-in-time-recovery setting turned on~~ Deferred to the go-live gate by Tim, 15 Sep 2026 (free Render Postgres during the build; no real data until onboarding). Must be on, with a restore tested, before go-live (§9 R1).
 
 #### 1B Accounts and sessions — plan written

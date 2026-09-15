@@ -33,6 +33,7 @@ Two things that share a Next.js app:
 - **No file or blob columns, no upload endpoints, no server-side fetching of student links.**
 - **Next.js stays on 15.3.9** until Vercel supports Next 16's Adapter API.
 - **App routes stay behind `APP_ENABLED`** until the go-live gate.
+- **Branches (roadmap R1, amended 15 Sep 2026):** `main` is Katelyn's live BiPi site; `pilotMain` is the pilot's production branch with its own Vercel project and the Render backend. Milestone branches (`pilot/1x-…`) branch from `pilotMain` and merge into `pilotMain` by PR. Merge `main` into `pilotMain` after any BiPi change; never merge `pilotMain` into `main` without Tim's go-live decision. Tim opens and merges PRs.
 
 ## Backend conventions
 
