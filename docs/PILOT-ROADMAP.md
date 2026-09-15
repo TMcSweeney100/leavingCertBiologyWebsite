@@ -14,7 +14,7 @@ Detailed plans so far:
 | 1A Walking skeleton | `docs/superpowers/plans/2026-09-15-pilot-1a-walking-skeleton.md` |
 | 1B Accounts and sessions | `docs/superpowers/plans/2026-09-15-pilot-1b-accounts-and-sessions.md` |
 | 1C Classes and enrolment | `docs/superpowers/plans/2026-09-15-pilot-1c-classes-and-enrolment.md` |
-| 1D App shell and first journey | Not written yet. Write it once 1C is built. |
+| 1D App shell and first journey | `docs/superpowers/plans/2026-09-15-pilot-1d-app-shell-and-first-journey.md` |
 
 ---
 
@@ -43,7 +43,7 @@ Detailed plans so far:
 | 1 Foundation | 1A Walking skeleton | written | built; gate waiting on Vercel preview (see HANDOFF) | §8.1 Gate 1A |
 | | 1B Accounts and sessions | written | built; gate passed locally, preview walk waiting on Tim | Gate 1B |
 | | 1C Classes and enrolment | written | not started | Gate 1C |
-| | 1D App shell and first journey | to write after 1C | not started | **Gate P1** |
+| | 1D App shell and first journey | written | not started | **Gate P1** |
 | 2 Components | 2A–2F | to write at phase start | — | **Gate P2** |
 | 3 The log | 3A–3C | to write | — | **Gate P3** |
 | 4 Teacher grid | 4A–4B | to write | — | **Gate P4 = pilot can start** |
@@ -415,7 +415,7 @@ Each phase lists what it delivers, the outline of its tasks (each becomes TDD st
 - [ ] Every endpoint in §7 Phase 1 has a scope test: another teacher's class → 404; a student calling teacher endpoints → 404; an enrolment id from another class → 404
 - [ ] Audit rows exist for role grants, enrolment decisions, reset codes and code rotation
 
-#### 1D App shell and first journey — plan to write after 1C
+#### 1D App shell and first journey — plan written
 
 1. Server session helper and `(app)` layout with the nav from §6.1
 2. `/login` and post-sign-in routing

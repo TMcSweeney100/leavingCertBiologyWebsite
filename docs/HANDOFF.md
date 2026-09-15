@@ -4,7 +4,8 @@ Rewritten at the end of every session. The live BiPi site's final handoff is arc
 
 ## Where things are
 
-- **Current milestone:** 1C Classes and enrolment. Its plan is `docs/superpowers/plans/2026-09-15-pilot-1c-classes-and-enrolment.md` (written at the end of session 1; nothing built yet). It takes three product decisions the design left open; they're listed at the top of the plan for Tim to confirm before Task 1.
+- **Current milestone:** 1C Classes and enrolment. Its plan is `docs/superpowers/plans/2026-09-15-pilot-1c-classes-and-enrolment.md` (nothing built yet). It takes three product decisions (P-1 to P-3) listed at its top for Tim to confirm before Task 1.
+- **Next plan also written:** 1D, `docs/superpowers/plans/2026-09-15-pilot-1d-app-shell-and-first-journey.md`, with four more decisions (P-4 to P-7) at its top. It mirrors the 1C response records in Zod, so if 1C changes a field name during the build, update `lib/api/schemas.ts` in the 1D plan to match.
 - **Branches, stacked and unmerged:** `pilot/1a-walking-skeleton` (Tasks 1–10 plus the Render half of Task 11) and `pilot/1b-accounts-and-sessions` on top of it (all ten tasks). Both pushed. Merge 1A first, then 1B.
 - **Session 1 (15 Sep 2026):** 1A Tasks 1–11 (local half) and all of 1B in one session, roughly four hours of wall-clock time including first-time downloads and the Render setup. Roadmap §10 wants this number for estimating later phases: about two hours per milestone of this size once tooling is warm.
 
@@ -44,7 +45,7 @@ Nothing in code. Both gates' preview steps are Tim's (above).
 
 - Vercel Preview variables, preview URL, H3, Deployment Protection bypass. Then the 1A PR, then the 1B PR.
 - Render: switch the web service's branch for the 1B gate walk (or merge first).
-- The three 1C plan decisions (join-code lifetime, class-creation body, reset-code redeem status). Defaults are in the plan; say if any should change.
+- The 1C decisions P-1 to P-3 and the 1D decisions P-4 to P-7. Defaults are in the plans; say if any should change.
 - Roadmap §9 R3, R4, R5 — calendar-bound, start now.
 
 ## Hosting decision (H1) — 15 Sep 2026
