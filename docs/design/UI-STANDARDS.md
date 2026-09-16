@@ -12,11 +12,11 @@ The live BiPi schedule (`app/[class]/`, `components/bipi/`) has its own notes in
 
 | What | Where | Rule |
 |---|---|---|
-| Design tokens | `frontend/app/globals.css` | `--bipi-*` values are the live schedule's and never change. The app adds `--app-*` beside them and maps shadcn's semantic variables (`--primary`, `--ring`, `--destructive`…) onto them. Until the first pack lands, those semantic variables still point at BiPi values (so `bg-primary` is BiPi blue today); the restyle re-points them and nothing in a component changes. Components use semantic utilities (`bg-primary`, `text-muted-foreground`) or `var(--app-*)`, never a raw hex. |
-| Type scale | `@theme` block in `globals.css` | Named `--text-*` steps. The app's scale is separate from the BiPi one and has about five steps, body first. |
+| Design tokens | `frontend/app/globals.css` | `--bipi-*` values are the live schedule's and never change. The app's own tokens are `--app-*` (from the D-1/D-2 `tokens.css`; `UI-BRIEF.md` §5), exposed as Tailwind colours (`bg-app-accent`, `text-app-muted`…). shadcn's semantic variables (`--primary`, `--ring`, `--destructive`…) are re-pointed at the app tokens **only inside `.app-theme`**, the wrapper the `(app)` and `(auth)` layouts render. `:root` keeps them on BiPi values because the live schedule uses `bg-card`, `text-muted-foreground` and `Progress`. Never raw hex in a component. |
+| Type scale | `@theme` block in `globals.css` | Named `--text-app-*` steps, separate from the BiPi ones. |
 | Fonts | `frontend/app/layout.tsx` via `next/font/google` | Resolve through `--bipi-font-display/-body/-label`. Never write a family name as a string. |
 | Primitives | `frontend/components/ui/` (shadcn on Base UI) | Add with `npx shadcn@latest add <name>`; restyle through tokens and `cva` variants, not by editing markup in call sites. |
-| App components | `frontend/components/app/` | Client components that call `api` then `router.refresh()`. Each has a `*.spec.tsx` that queries by role and accessible name. |
+| App components | `frontend/components/app/` | Client components that call `api` then `router.refresh()`. Each has a `*.spec.tsx` that queries by role and accessible name. Build forms from `Field`/`FieldGroup`, messages from `Notice`/`ErrorPanel`, page bodies inside `AppMain`, and shared class strings from `styles.ts`. |
 | Pages | `frontend/app/(app)`, `(auth)` | Server components that load through `serverApi` inside `attempt()` and render `ErrorPanel` on failure. |
 | Design packs | `docs/design/pilot/<pack>/` | Read `NOTES.md` first. Anything there that changes behaviour is a roadmap §6.2 change and goes first. |
 
@@ -29,6 +29,10 @@ The live BiPi schedule (`app/[class]/`, `components/bipi/`) has its own notes in
 - **Focus rings come from `--ring`** (`focus-visible:ring-3 focus-visible:ring-ring/50` is shadcn's default and is fine). Never `outline-none` without a `focus-visible:` replacement on the same element.
 - **Reduced motion at the call site:** `motion-reduce:transition-none` or `motion-reduce:animate-none` on the animated element. Note the former zeroes `transition-property`, so tests must not check `transitionDuration`.
 - **Print** is a BiPi concern. App pages don't need print styles unless a design pack says so.
+
+- **Name an app colour and an app size differently.** `--color-app-body` and `--text-app-body` would both be `text-app-body`. The body colour is `app-copy` for that reason.
+- **Unlayered CSS beats every utility.** A global rule written outside `@layer` wins over any Tailwind class, whatever its specificity. Page-wide defaults like the app's focus outline go in `@layer base`.
+- **Axe measures a transition halfway.** A route's CSS can arrive just after first paint and start every button's colour transition, and axe then reports contrast between two in-between colours. `expectAccessible` waits for `document.getAnimations()` to finish first.
 
 ## 3. Layout and responsive
 
@@ -53,15 +57,16 @@ The live BiPi schedule (`app/[class]/`, `components/bipi/`) has its own notes in
 ## 5. Colour
 
 - Light only. `color-scheme: light` stays on `<html>`; no `.dark` values, no theme toggle.
+- The app's palette is its own (`UI-BRIEF.md` §5, roadmap R25). Navy accent for action, amber only for pending work and throttling, green for approved or done, red for errors and destructive actions, subject hues only as a row's edge bar.
 - Text 4.5:1 against its background (large text 3:1); controls, borders that carry meaning, focus rings and icons 3:1. Measure; don't eyeball. Record ratios in `NOTES.md` when a token is added.
-- BiPi blue means "now" and green means "done", inside the app too. The app's accent is a different hue.
+- BiPi blue and green appear only inside reused BiPi components, where they mean "now" and "done". App code never uses `--bipi-*`.
 - No state carried by colour alone: pair it with a word, and where useful an icon.
 - Disabled: `disabled` attribute plus reduced opacity and no pointer events. Read-only looks different from disabled.
 
 ## 6. Interactive elements
 
 - `<button>` for actions, `<Link>` / `<a>` for navigation. Never a `div` with `onClick`. Links keep middle-click and Cmd-click working.
-- Every control at least 44×44px on touch (the visual can be smaller if the hit area is padded), 8px between neighbours. On laptop pointer targets at least 24×24px.
+- Every control at least 44×44px on touch (the visual can be smaller if the hit area is padded), 8px between neighbours. On laptop pointer targets at least 24×24px. `Button`'s sizes already meet this; the D-2 exports draw 40px row buttons, which the build rounds up to 44.
 - Hover states on everything clickable, but nothing that only works on hover. `cursor-pointer` on custom controls.
 - `touch-action: manipulation` on buttons and links.
 - Icons come from `lucide-react` only, one stroke width, sized by a token. Decorative icons beside text get `aria-hidden="true"`; an icon-only control gets `aria-label` and, where it applies, `aria-pressed` or `aria-expanded`.

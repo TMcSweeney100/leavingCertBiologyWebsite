@@ -2683,31 +2683,33 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 
 ## Task 11: Restyle from design packs D-1 and D-2
 
+**Done 16 Sep 2026.** Deviations: the app moved away from BiPi's neutrals and radii (roadmap R25), so tokens are applied through a `.app-theme` wrapper rather than by re-pointing `:root`. Commits are per layer (theme and shell, auth pages, teacher pages) rather than per page. Spec changes the packs required went into the same commits as the restyle, each named in its message, so every commit stays green. Backend `school.short_name` (R26) was added first.
+
 Roadmap §6.3. **Do not start this task until `docs/design/pilot/` holds the handoff folders for the app shell and auth pages (D-1) and the teacher class pages (D-2).** If they haven't arrived, stop here and record it in `docs/HANDOFF.md`; the milestone can still go to Gate P1 review with the plain pages.
 
 **Files:**
 - Modify: every component in `components/app/` and page in `app/(app)`, `app/(auth)` that the packs cover
 - Do not modify: any `*.spec.tsx` (except in a separate, visible commit if the design renames a control)
 
-- [ ] **Step 1: Read the packs**
+- [x] **Step 1: Read the packs**
 
 Read `docs/design/UI-STANDARDS.md` first (§15 is this task's method). Then, for each of `docs/design/pilot/<pack>/`: the Claude Design export, `tokens.css` and `NOTES.md`. Anything in `NOTES.md` that changes behaviour (a new state, a removed action, something moved to another page) is a roadmap change: update `docs/PILOT-ROADMAP.md` §6.2 first, and stop to ask if it conflicts with a decision in this plan.
 
-- [ ] **Step 2: Establish the app's visual system**
+- [x] **Step 2: Establish the app's visual system**
 
 The first pack defines tokens, type and components for the app (roadmap §6.3 point 5). Add them to `app/globals.css` under a new `@theme` block or as `--app-*` variables beside the `--bipi-*` ones, never by changing the BiPi values (the live schedule uses them).
 
-- [ ] **Step 3: Restyle one page at a time, specs unchanged**
+- [x] **Step 3: Restyle one page at a time, specs unchanged**
 
 For each page: apply the design to the rules in `docs/design/UI-STANDARDS.md` (the `shadcn` skill for adding primitives), run `docs/design/UI-CHECKLIST.md` on it, then `npx vitest run components/app`. A red spec means the accessible names changed. If the design genuinely renames a control ("Approve" → "Accept"), change the spec in its own commit first, with the message naming the design pack, then restyle.
 
-- [ ] **Step 4: Run everything**
+- [x] **Step 4: Run everything**
 
 ```bash
 make verify && make e2e
 ```
 
-- [ ] **Step 5: Commit per page**
+- [x] **Step 5: Commit per page**
 
 ```bash
 git commit -m "Restyle /login from design pack D-1

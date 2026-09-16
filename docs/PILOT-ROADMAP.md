@@ -43,7 +43,7 @@ Detailed plans so far:
 | 1 Foundation | 1A Walking skeleton | written | built; gate waiting on Vercel preview (see HANDOFF) | §8.1 Gate 1A |
 | | 1B Accounts and sessions | written | built; gate passed locally, preview walk waiting on Tim | Gate 1B |
 | | 1C Classes and enrolment | written | built; Gate 1C walked locally, all checks green | Gate 1C |
-| | 1D App shell and first journey | written | built (16 Sep 2026); `make verify` and `make e2e` green, axe clean on every page; preview walk, Tim's review and the D-1/D-2 restyle still open | **Gate P1** |
+| | 1D App shell and first journey | written | built and restyled from D-1/D-2 (16 Sep 2026); `make verify` and `make e2e` green, axe clean on every page; preview walk and Tim's review still open | **Gate P1** |
 | 2 Components | 2A–2F | to write at phase start | — | **Gate P2** |
 | 3 The log | 3A–3C | to write | — | **Gate P3** |
 | 4 Teacher grid | 4A–4B | to write | — | **Gate P4 = pilot can start** |
@@ -83,6 +83,10 @@ The design left these open, or left them to "the Phase 1 plan". Each is what I'd
 | R22 | **`/reset` sends the student to `/login` after success**, the page-side half of R20. Confirmed by Tim, 16 Sep 2026 (1D plan P-5). | Redeeming doesn't sign in, so the page has nowhere else to go. `ResetForm`. |
 | R23 | **`/school` is a placeholder page until Phase 5** ("Your school overview arrives in Phase 5"). Confirmed by Tim, 16 Sep 2026 (1D plan P-6). | A school leader needs somewhere to land from §6.1's routing before 5A exists. |
 | R24 | **`middleware.ts` checks only that a `SESSION` cookie exists**, to redirect a signed-out visitor to `/login?next=…`; the `(app)` layout validates the session against Spring. Confirmed by Tim, 16 Sep 2026 (1D plan P-7). | Middleware can't reach Spring cheaply on every request. A stale cookie lands on `/login` without `next`, which is acceptable. |
+| R25 | **The app has its own visual system, direction 2e "Navy", and no longer shares BiPi's look.** Decided by Tim, 16 Sep 2026, when design packs D-1 and D-2 were chosen. It replaces the earlier rule that the app keeps BiPi's neutrals and radii and only picks its own accent. Only the three typefaces are still shared. Navy `#1F3A6E` accent, amber `#A04806` for pending work only, cool graphite neutrals, 10/8/6px radii, hairline field groups, subject edge bars. Values live in `docs/design/pilot/D-1-app-shell-auth/tokens.css`, built as `--app-*` in `globals.css` and applied through `.app-theme`. BiPi tokens are untouched and are used only by the live schedule and by BiPi components reused in D-3. | The packs showed a sleeker, more distinct look that suits a signed-in tool better than a poster schedule. Keeping the BiPi palette would make the pilot's primary button compete with BiPi's "now" blue. `UI-BRIEF.md` §5 has the full system. |
+| R26 | **A school has an optional short name for the app header** (`school.short_name`, `Me.roles[].schoolShortName`, null when unset; the header then shows the full name). The operator sets it with `create-school --short-name=…` or `set-school-short-name`. Confirmed by Tim, 16 Sep 2026 (D-1 open question 1). | The legal name ("North Wicklow Educate Together Secondary School") doesn't fit a header row. |
+| R27 | **Class page additions from D-2, confirmed by Tim 16 Sep 2026:** "Turn joining off" and "Remove" both confirm inline in place (no `window.confirm`); a copy button on the join code with a short "Copied" status; pending requests show when they asked ("asked 2 days ago", from `requestedAt`); the issued reset code shows inline in that student's row with **Hide code** and warns that hiding it can't be undone. | Destructive actions confirm in place. The relative time needs no API change. |
+| R28 | **Brand placeholders until H4:** the header and auth pages show the North Wicklow ETSS crest (`frontend/public/app/crest.png`) and the name "Leaving Cert Practical" (`APP_NAME` in `frontend/lib/app/brand.ts`). Auth pages have no session, so their lockup's school name is `PILOT_SCHOOL_SHORT_NAME` in the same file. Both are one-file swaps. Confirmed by Tim, 16 Sep 2026. | The frames assume both, and the pilot has a single school. |
 
 ---
 
@@ -97,7 +101,7 @@ From design §11, plus the ones this roadmap adds (H1–H4).
 | **H1** | Which EU host runs Spring Boot, and which managed EU Postgres with point-in-time recovery? | **Answered 15 Sep 2026: Render, Frankfurt, for both.** Free tiers during the build; the Gate 1A point-in-time-recovery item is deferred to the go-live gate (§9 R1) and the database is upgraded before the first real account exists. See `docs/HANDOFF.md`. |
 | H2 | Which school is the pilot, and who are the teachers and school leader? | Readiness R6. Also Q1. |
 | H3 | Can the Vercel project set its function region, and is it on a plan that allows `dub1`? | Gate 1A |
-| H4 | Is there a product name, for the privacy notice and page titles? | Readiness R3 |
+| H4 | Is there a product name, for the privacy notice and page titles? | Readiness R3. Until then "Leaving Cert Practical" is a placeholder (R28). |
 | Q1 | Which Chemistry, Physics and Business teachers review their subject's checkpoints, and by when? | Gate P2 (content marked reviewed) |
 | Q3 | Should a teacher see that a student hid an entry that used to be visible? | Phase 3 plan |
 | Q2 | Leader view on-track threshold (80% is a placeholder) | Phase 5 plan |
@@ -230,9 +234,10 @@ This is what Claude Design needs to design against: every page, who sees it, wha
 
 **Signed out:** any app route redirects to `/login?next=<path>`.
 
-**App header**, on every app page:
-- a role switcher, shown only when the user holds more than one role (e.g. a year head who teaches). It links to `/teach`, `/school` and `/home` for the roles held.
-- an account menu with "Change password" and "Sign out".
+**App header**, on every app page (D-1):
+- the crest and app name (a link to the landing page), then the school's short name (R26; hidden on phones);
+- a role switcher, shown only when the user holds more than one role (e.g. a year head who teaches). It links to `/teach`, `/school` and `/home` for the roles held. On phones it's a full-width segmented row, with "School overview" shortened on screen to "School" (the accessible name stays the same);
+- an account menu with the person's name, "Change password" and "Sign out".
 
 **Student** (mobile-first):
 - Primary: **Timeline** (`/home`) · **My components** (Phase 2, one entry per component, labelled by subject) · **Join a class** (`/join`)
@@ -253,11 +258,11 @@ This is what Claude Design needs to design against: every page, who sees it, wha
 
 | Route | Phase | Shows | Actions | States |
 |---|---|---|---|---|
-| `/login` | 1D | Username and password form | Sign in | Wrong credentials (one message for both), too many attempts (with retry time), already signed in → routed as in §6.1 |
+| `/login` | 1D | Crest lockup; username and password form; links to `/join` and `/reset` | Sign in | Wrong credentials (one message for both), too many attempts (amber, with retry time; Sign in stays enabled because the API gives the wait only as text), already signed in → routed as in §6.1 |
 | `/account/password` | 1D | Current password, new password, confirm | Change password | Forced mode (no way out except Sign out), new password too short, current password wrong |
-| `/join` | 1D | Join-code entry | Continue | Code unknown or expired (one message) |
-| `/join/[code]` | 1D | Class name, subject and school for that code. Signed out: "Create account" form (first name, surname, username, password) plus a "Sign in instead" link. Signed in: "Join this class" button. | Create account and request to join · Join | Username taken, password too short, already enrolled (shows current status), code expired between steps |
-| `/reset` | 1D | Username, reset code from teacher, new password | Set new password | Code wrong or expired (one message), too many attempts |
+| `/join` | 1D | Join-code entry, with "Your teacher reads an 8-character code out in class. Lowercase is fine." | Continue | Code unknown or expired (one message) |
+| `/join/[code]` | 1D | Heading "Join a class", then a "You're joining" card with class name, subject and school (subject edge bar). Signed out: "Create account" form (first name, surname, username, password) plus a "Sign in instead" link. Signed in: "Join this class" button. | Create account and request to join · Join | Username taken, password too short, already enrolled (shows current status as a Pending approval / Approved eyebrow), code expired between steps (the form is dropped for the error and an "Enter a different join code" link) |
+| `/reset` | 1D | Username, reset code from teacher, new password | Set new password | Code wrong or expired (one message), too many attempts (amber), done ("Password set" with a Sign in button, R22) |
 
 **Student pages** — route group `(app)`
 
@@ -276,9 +281,9 @@ This is what Claude Design needs to design against: every page, who sees it, wha
 
 | Route | Phase | Shows | Actions | States |
 |---|---|---|---|---|
-| `/teach` | 1D | My classes: subject, name, year group, academic year, pending-request count | Create class | No classes |
-| `/teach/classes/new` | 1D | Subject, name, year group, academic year, level (optional) | Create | Validation |
-| `/teach/classes/[id]` (Students tab) | 1D | Join code with expiry, pending requests, approved students | Rotate code · Turn joining off · Approve · Decline/remove · Issue reset code (shown once, 24-hour expiry) | No students; code expired; code off |
+| `/teach` | 1D | My classes as cards with a subject edge bar: name, then subject · year · academic year · level, and an amber pending-request badge only when above zero (API order, not sorted by pending) | Create class | No classes (a card with the sentence and Create class) |
+| `/teach/classes/new` | 1D | "My classes" link; subject, name, year group, academic year, level (optional) | Create · Cancel | Validation (the error panel, and each invalid row marked with its message) |
+| `/teach/classes/[id]` (Students tab) | 1D | "My classes" link; section tabs (Students current; Component and Progress shown disabled until P2/P4); join code on a navy card with expiry and a copy button; pending requests with username and "asked …"; approved students | Copy code ("Copied") · New code · Turn joining off (confirm in place) · Approve · Decline · Remove (confirm in place) · Issue reset code (inline in that row, shown once, 24-hour expiry, Hide code, warns hiding can't be undone) | No students; nothing waiting; code off (R27) |
 | `/teach/classes/[id]/component` | 2D | No component yet: choose the brief (subject + exam year). Component set: stage date for each stage, the completion date, my own items per stage | Create component · Set/change dates · Add, edit, retire my items | Date after completion date (named error); out-of-order dates (warning, allowed); brief's completion date changed (warning) |
 | `/teach/classes/[id]/progress` | 4A | Grid: students × checkpoints, sign-off state and date, due markers, "behind by N", days since last log entry; furthest behind first | Sign off · Revoke | No component; nothing due yet; no approved students |
 | `/teach/classes/[id]/students/[studentId]` | 3C / 4B | One student: their log in the teacher projection (hidden entries show kind and date only), their checkpoints | Sign off/revoke (4B) | Hidden entries; no entries |
@@ -295,7 +300,7 @@ This is what Claude Design needs to design against: every page, who sees it, wha
 2. **Tim's design arrives as a folder** in `docs/design/pilot/<pack-name>/`: the Claude Design export, a `tokens.css` of `--app-*` additions, and a `NOTES.md` on the template in `docs/design/UI-BRIEF.md` §8. Claude Design is briefed with `UI-BRIEF.md` plus this section's rows for the pages in the pack.
 3. **A restyle task** follows, built to `docs/design/UI-STANDARDS.md` (§15 is the working method) and checked against `docs/design/UI-CHECKLIST.md`. Its rule: **the existing specs must pass unchanged.** If the design renames a button, change the spec in a separate, visible commit first.
 4. **If the design changes behaviour** — adds a state, removes an action, moves something to another page — that's a roadmap change. Update §6.2 before building it.
-5. The app's visual system shares BiPi's type, neutrals and radii and chooses its own accent and status colours (decided 16 Sep 2026, `UI-BRIEF.md` §5); the first handoff fixes the values. Light only. Until then, app pages borrow the BiPi tokens in `frontend/app/globals.css` as a neutral placeholder.
+5. The app's visual system is its own, direction 2e "Navy" (R25, `UI-BRIEF.md` §5), fixed by D-1 and D-2. Only the typefaces are shared with BiPi. Later packs build on `docs/design/pilot/D-1-app-shell-auth/tokens.css` and don't choose a new palette. Light only.
 
 **Design packs to request, and when they're needed:**
 
@@ -331,7 +336,7 @@ All under `/api/v1`. JSON, camelCase. Errors are RFC 9457 problem details with a
 | `GET /auth/csrf` | anyone | 204. Issues the `XSRF-TOKEN` cookie. |
 | `POST /auth/login` | anyone | Starts a session. Returns `Me`. Codes: `INVALID_CREDENTIALS`, `TOO_MANY_ATTEMPTS`. |
 | `POST /auth/logout` | signed in | 204. Ends the session. |
-| `GET /auth/me` | signed in | `Me` = `{ userId, username, firstName, lastName, mustChangePassword, roles: [{ schoolId, schoolName, role }] }` |
+| `GET /auth/me` | signed in | `Me` = `{ userId, username, firstName, lastName, mustChangePassword, roles: [{ schoolId, schoolName, schoolShortName, role }] }` (`schoolShortName` nullable, R26) |
 | `POST /auth/password` | signed in | Changes password, clears `mustChange`. Codes: `INVALID_CREDENTIALS`, `PASSWORD_TOO_SHORT`. |
 | `POST /auth/password-reset` | anyone | `{ username, code, newPassword }`. Ends that user's other sessions. Code: `RESET_CODE_INVALID`. |
 | `GET /subjects` | signed in | The four subjects |
@@ -438,7 +443,7 @@ Results in `docs/HANDOFF.md`. 151 backend tests pass (schema through the complet
 7. `/teach/classes/[id]` Students tab
 8. `/reset`
 9. Playwright harness (`scripts/e2e.sh`, `make e2e`) and the Phase 1 journey
-10. Restyle from D-1 and D-2 when they arrive (§6.3) — **not started: `docs/design/pilot/` doesn't exist yet (16 Sep 2026).** Pages are plain, semantic HTML with the shadcn `Button`; every spec queries by role and name, so the restyle must keep them green.
+10. Restyle from D-1 and D-2 (§6.3) — **done 16 Sep 2026.** The app moved to its own Navy system (R25), with the short school name (R26), the class-page additions (R27) and brand placeholders (R28). Specs changed only where a pack changed a control or behaviour, each named in its commit.
 
 **Gate P1 — end of Phase 1** (tasks 1–9 built 16 Sep 2026, see `docs/HANDOFF.md`)
 - [x] `make verify` and `make e2e` green — locally, 16 Sep 2026: the journey passes on both Playwright projects (laptop and phone)

@@ -19,6 +19,12 @@ const STUDENT = {
 };
 
 async function expectAccessible(page: Page) {
+  // Measure the settled page: a colour transition caught halfway (a route's CSS arriving just after
+  // first paint starts one on every button) reads as a contrast failure that no user ever sees.
+  // A cancelled animation (its element replaced by navigation) rejects `finished`; that's settled too.
+  await page.evaluate(() =>
+    Promise.all(document.getAnimations().map((animation) => animation.finished.catch(() => undefined))),
+  );
   const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag22aa"]).analyze();
   expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([]);
 }
@@ -79,7 +85,8 @@ test("the Phase 1 journey", async ({ page: teacher, browser }) => {
   await expectAccessible(student);
   await student.getByRole("textbox", { name: "Join code" }).fill(code.toLowerCase());
   await student.getByRole("button", { name: "Continue" }).click();
-  await expect(student.getByRole("heading", { name: "Join 6A Biology" })).toBeVisible();
+  await expect(student.getByRole("heading", { name: "Join a class" })).toBeVisible();
+  await expect(student.getByText("6A Biology")).toBeVisible();
   await expectAccessible(student);
   await student.getByRole("textbox", { name: "First name" }).fill("Aoife");
   await student.getByRole("textbox", { name: "Surname" }).fill("Byrne");
@@ -103,6 +110,7 @@ test("the Phase 1 journey", async ({ page: teacher, browser }) => {
   await teacher.getByRole("button", { name: "Issue reset code for Aoife Byrne" }).click();
   const resetCode = (await teacher.getByRole("status").locator("strong").textContent())?.trim() ?? "";
   expect(resetCode).toMatch(/^[A-HJKMNP-Z2-9]{8}$/);
+  await expectAccessible(teacher);
 
   // The phone signs out, resets, and signs back in.
   await student.getByRole("button", { name: "Sign out" }).click();

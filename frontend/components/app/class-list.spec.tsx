@@ -18,4 +18,14 @@ describe("ClassList", () => {
     render(<ClassList classes={[]} />);
     expect(screen.getByText(/no classes yet/i)).toBeInTheDocument();
   });
+
+  it("offers to create a class from the empty state", () => {
+    render(<ClassList classes={[]} />);
+    expect(screen.getByRole("link", { name: "Create class" })).toHaveAttribute("href", "/teach/classes/new");
+  });
+
+  it("gives each class its subject, year, academic year and level in words", () => {
+    render(<ClassList classes={[summary]} />);
+    expect(screen.getByRole("listitem")).toHaveTextContent("Biology · Year 6 · 2026/27 · Higher");
+  });
 });

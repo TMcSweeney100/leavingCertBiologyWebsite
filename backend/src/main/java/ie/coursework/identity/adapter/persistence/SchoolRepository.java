@@ -16,11 +16,24 @@ public class SchoolRepository {
     }
 
     public UUID insert(String name, String rollNumber) {
-        return jdbc.sql("INSERT INTO school (name, roll_number) VALUES (:name, :roll) RETURNING id")
+        return insert(name, null, rollNumber);
+    }
+
+    public UUID insert(String name, String shortName, String rollNumber) {
+        return jdbc.sql("INSERT INTO school (name, short_name, roll_number) VALUES (:name, :shortName, :roll) RETURNING id")
                 .param("name", name.strip())
+                .param("shortName", shortName == null ? null : shortName.strip())
                 .param("roll", rollNumber.strip())
                 .query(UUID.class)
                 .single();
+    }
+
+    /** True if a school has that roll number. */
+    public boolean setShortName(String rollNumber, String shortName) {
+        return jdbc.sql("UPDATE school SET short_name = :shortName WHERE roll_number = :roll")
+                .param("shortName", shortName.strip())
+                .param("roll", rollNumber.strip())
+                .update() == 1;
     }
 
     public Optional<School> findByRollNumber(String rollNumber) {

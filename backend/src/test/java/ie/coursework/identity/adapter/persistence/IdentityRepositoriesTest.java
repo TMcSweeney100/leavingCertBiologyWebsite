@@ -73,7 +73,7 @@ class IdentityRepositoriesTest extends PostgresIntegrationTest {
         assertThat(roles.grant(userId, schoolId, Role.TEACHER)).isTrue();
         assertThat(roles.grant(userId, schoolId, Role.TEACHER)).isFalse();
         assertThat(roles.grantsFor(userId))
-                .containsExactly(new RoleGrant(schoolId, "North Wicklow ETSS", Role.TEACHER));
+                .containsExactly(new RoleGrant(schoolId, "North Wicklow ETSS", null, Role.TEACHER));
     }
 
     @Test

@@ -46,9 +46,60 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* The pilot app's own palette (roadmap R25, docs/design/UI-BRIEF.md §5), as Tailwind colours:
+     bg-app-accent, text-app-muted, border-app-line… Colour names never share a suffix with a
+     --text-app-* size, so `text-app-<x>` is always one or the other. */
+  --color-app-accent: var(--app-accent);
+  --color-app-accent-hover: var(--app-accent-hover);
+  --color-app-accent-tint: var(--app-accent-tint);
+  --color-app-on-accent: var(--app-on-accent);
+  --color-app-on-accent-muted: var(--app-on-accent-muted);
+  --color-app-attention: var(--app-attention);
+  --color-app-attention-tint: var(--app-attention-tint);
+  --color-app-approved: var(--app-approved);
+  --color-app-approved-tint: var(--app-approved-tint);
+  --color-app-error: var(--app-error);
+  --color-app-error-hover: var(--app-error-hover);
+  --color-app-error-tint: var(--app-error-tint);
+  --color-app-ink: var(--app-ink);
+  --color-app-copy: var(--app-body);
+  --color-app-grey: var(--app-grey);
+  --color-app-muted: var(--app-muted);
+  --color-app-disabled: var(--app-disabled);
+  --color-app-line: var(--app-line);
+  --color-app-field-border: var(--app-field-border);
+  --color-app-inset: var(--app-inset);
+  --color-app-ground: var(--app-ground);
+  --color-app-surface: var(--app-surface);
+  --color-app-subject-biology: var(--app-subject-biology);
+  --color-app-subject-business: var(--app-subject-business);
+  --color-app-subject-chemistry: var(--app-subject-chemistry);
+  --color-app-subject-physics: var(--app-subject-physics);
+  --radius-app-card: var(--app-radius-card);
+  --radius-app-control: var(--app-radius-control);
+  --radius-app-inner: var(--app-radius-inner);
+  --ease-app: var(--app-ease);
 }
 
 @theme {
+  /* Pilot app type scale (design packs D-1 and D-2). Separate from the BiPi steps below, which
+     belong to the live schedule. Nothing under 12px (UI-BRIEF §5): the packs' 11px field labels
+     are built at 12px. */
+  --text-app-label:     12px;   /* uppercase mono field labels, status eyebrows */
+  --text-app-help:      13px;   /* helper and inline error text under a field; usernames in rows */
+  --text-app-small:     14px;   /* header links and name, row metadata */
+  --text-app-meta:      15px;   /* row buttons, class metadata, "My classes" back link */
+  --text-app-base:      16px;   /* body, inputs, form buttons */
+  --text-app-lead:      17px;   /* student name in a row, header app name */
+  --text-app-title:     19px;   /* class name in the /teach list */
+  --text-app-section:   21px;   /* section h2 */
+  --text-app-h1:        28px;   /* page h1, phone */
+  --text-app-h1-lg:     32px;   /* page h1, laptop */
+  --text-app-code-sm:   30px;   /* issued reset code */
+  --text-app-code:      38px;   /* join code on the navy card, phone */
+  --text-app-code-lg:   68px;   /* join code on the navy card, laptop: read from the back row */
+
   /* BiPi type scale — named font-size steps, added per docs/IMPLEMENTATION_PLAN.md §4.4.
      One entry per distinct pixel value the design uses: reuse an existing step (extending
      its comment with the new call site) when a size the scale already has recurs, and only
@@ -156,6 +207,41 @@
   /* Spacing scale actually used (px) */
   --bipi-space: 4 5 6 7 8 9 10 12 13 14 16 18 20 22 26 28 30 34 40;
 
+  /* Pilot app tokens — docs/design/pilot/D-1-app-shell-auth/tokens.css (direction 2e "Navy",
+     roadmap R25). Contrast is measured on white unless noted; the full table is in the pack's
+     NOTES.md. Used only under app/(app) and app/(auth). */
+  --app-accent: #1F3A6E;            /* 11.12:1 — primary actions, links, focus ring, selected role */
+  --app-accent-hover: #16294E;      /* 14.37:1 */
+  --app-accent-tint: #F4F5F8;       /* focused field row; accent on it 10.20:1 */
+  --app-on-accent: #FFFFFF;         /* 11.12:1 on the accent */
+  --app-on-accent-muted: #C3CDE1;   /* 6.96:1 on the accent — join-code card label and expiry */
+  --app-attention: #A04806;         /* 6.13:1; white on it 6.13:1 — pending work and throttling only */
+  --app-attention-tint: #F6EDE6;    /* amber on it 5.31:1 */
+  --app-approved: #0F5C3A;          /* 8.04:1 */
+  --app-approved-tint: #F1F6F4;     /* approved green on it 7.36:1 — "Password set" panel */
+  --app-error: #B3251E;             /* 6.56:1 */
+  --app-error-hover: #8E1D17;       /* 8.98:1 */
+  --app-error-tint: #FBF1F0;        /* error text on it ≥ 7:1 */
+  --app-ink: #101419;               /* 18.48:1 — headings */
+  --app-body: #343A42;              /* 11.48:1 — body copy */
+  --app-grey: #4B535C;              /*  7.80:1 — secondary copy */
+  --app-muted: #636B75;             /*  5.40:1 — field labels, metadata */
+  --app-disabled: #9AA2AC;          /* tabs not yet available; exempt from contrast as disabled */
+  --app-line: #E3E6EA;              /* hairlines, header rule */
+  --app-field-border: #DDE1E6;      /* field group and secondary button borders */
+  --app-inset: #EFF1F3;             /* switcher track, disabled button */
+  --app-ground: #F7F8F9;            /* page ground */
+  --app-surface: #FFFFFF;
+  --app-subject-biology: #0E6E7A;   /* 5.95:1 — row edge bar only */
+  --app-subject-business: #6D3AA8;  /* 7.44:1 */
+  --app-subject-chemistry: #8E2846; /* 8.26:1 */
+  --app-subject-physics: #4B535C;   /* 7.80:1 */
+  --app-radius-card: 10px;
+  --app-radius-control: 8px;
+  --app-radius-inner: 6px;
+  --app-ease: cubic-bezier(.2, .7, .3, 1);
+  --app-duration: 160ms;
+
   /* shadcn semantic variables — mapped onto the BiPi tokens above so every primitive
      (Card, Badge, Progress, Collapsible, Table, Button) inherits the BiPi palette. */
   --background: var(--bipi-bg);
@@ -190,6 +276,61 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+}
+
+/* The pilot app's theme. `(app)` and `(auth)` layouts render inside `.app-theme`, which re-points
+   shadcn's semantic variables at the app tokens. `:root` keeps them on BiPi values because the
+   live schedule uses bg-card, text-muted-foreground and Progress (UI-STANDARDS §1). */
+.app-theme {
+  --background: var(--app-ground);
+  --foreground: var(--app-ink);
+  --card: var(--app-surface);
+  --card-foreground: var(--app-ink);
+  --popover: var(--app-surface);
+  --popover-foreground: var(--app-ink);
+  --primary: var(--app-accent);
+  --primary-foreground: var(--app-on-accent);
+  --secondary: var(--app-inset);
+  --secondary-foreground: var(--app-ink);
+  --muted: var(--app-inset);
+  --muted-foreground: var(--app-muted);
+  --accent: var(--app-inset);
+  --accent-foreground: var(--app-ink);
+  --destructive: var(--app-error);
+  --border: var(--app-line);
+  --input: var(--app-field-border);
+  --ring: var(--app-accent);
+  --radius: var(--app-radius-card);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --app-duration: 0ms;
+  }
+}
+
+/* One motion moment per page (packs D-1, D-2): a message or panel appearing rises 4px and fades in.
+   Only a `from` frame, so the end state is the element's own style and never waits on the
+   animation. Duration comes from --app-duration, which is 0ms under reduced motion. */
+@keyframes app-appear {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+/* Focus for the app, per D-1: a 2px accent outline at 2px offset on every link and control. In
+   `@layer base` so a component's own utilities win (field inputs hand their focus to the field
+   row); unlayered, it would beat every utility whatever its specificity. */
+@layer base {
+  .app-theme :where(a, button, select, input, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--app-accent);
+    outline-offset: 2px;
+  }
+}
+
+.app-appear {
+  animation: app-appear var(--app-duration) var(--app-ease);
 }
 
 @layer base {

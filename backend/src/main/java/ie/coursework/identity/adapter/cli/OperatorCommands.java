@@ -19,7 +19,8 @@ public class OperatorCommands {
 
     private static final String USAGE_TEXT = """
             usage:
-              operator create-school --name=<name> --roll=<roll number>
+              operator create-school --name=<name> --roll=<roll number> [--short-name=<name for the app header>]
+              operator set-school-short-name --roll=<roll number> --short-name=<name for the app header>
               operator create-user   --first-name=<name> --last-name=<name> --username=<username>
               operator grant-role    --username=<username> --roll=<roll number> --role=STUDENT|TEACHER|SCHOOL_LEADER
             """;
@@ -36,6 +37,7 @@ public class OperatorCommands {
         try {
             return switch (command) {
                 case "create-school" -> createSchool(args, out);
+                case "set-school-short-name" -> setSchoolShortName(args, out);
                 case "create-user" -> createUser(args, out);
                 case "grant-role" -> grantRole(args, out);
                 default -> usage(out);
@@ -52,7 +54,16 @@ public class OperatorCommands {
     private int createSchool(ApplicationArguments args, PrintStream out) {
         String name = required(args, "name");
         String roll = required(args, "roll");
-        out.println("Created school " + name + " (" + roll + ") id=" + operator.createSchool(name, roll));
+        String shortName = optional(args, "short-name");
+        out.println("Created school " + name + " (" + roll + ") id=" + operator.createSchool(name, shortName, roll));
+        return OK;
+    }
+
+    private int setSchoolShortName(ApplicationArguments args, PrintStream out) {
+        String roll = required(args, "roll");
+        String shortName = required(args, "short-name");
+        operator.setSchoolShortName(roll, shortName);
+        out.println("Short name of " + roll + " is now " + shortName);
         return OK;
     }
 
@@ -81,6 +92,11 @@ public class OperatorCommands {
     private int usage(PrintStream out) {
         out.print(USAGE_TEXT);
         return USAGE;
+    }
+
+    private static String optional(ApplicationArguments args, String name) {
+        List<String> values = args.getOptionValues(name);
+        return values == null || values.isEmpty() || values.getFirst().isBlank() ? null : values.getFirst();
     }
 
     private static String required(ApplicationArguments args, String name) {

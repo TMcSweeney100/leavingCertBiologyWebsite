@@ -12,9 +12,15 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   if (!me) redirect("/login");
   if (me.mustChangePassword) redirect("/account/password");
   return (
-    <>
+    <div className="app-theme min-h-dvh bg-app-ground text-app-copy">
+      <a
+        href="#main"
+        className="sr-only z-10 rounded-app-control bg-app-accent px-4 py-3 font-semibold text-app-on-accent focus:not-sr-only focus:absolute focus:top-2 focus:left-2"
+      >
+        Skip to content
+      </a>
       <AppHeader me={me} />
       {children}
-    </>
+    </div>
   );
 }

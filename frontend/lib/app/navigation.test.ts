@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { APP_NAV, landingFor, safeNext, teacherSchoolId } from './navigation.ts';
 import type { Me } from '../api/schemas.ts';
 
-const school = { schoolId: '11111111-1111-1111-1111-111111111111', schoolName: 'School A' };
+const school = { schoolId: '11111111-1111-1111-1111-111111111111', schoolName: 'School A', schoolShortName: null };
 
 function me(roles: Me['roles'], mustChangePassword = false): Me {
   return {

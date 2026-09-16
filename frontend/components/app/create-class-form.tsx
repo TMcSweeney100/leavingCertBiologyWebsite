@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
 
@@ -8,6 +9,8 @@ import { api, ApiError } from "@/lib/api/client";
 import { classDetailSchema, type Subject } from "@/lib/api/schemas";
 
 import { ErrorPanel } from "./error-panel";
+import { Field, FieldGroup } from "./field";
+import { backLink, pageTitle, textLink } from "./styles";
 
 /** Roadmap §6.2 `/teach/classes/new`: subject, name, year group, academic year, level optional. */
 export function CreateClassForm({
@@ -47,47 +50,73 @@ export function CreateClassForm({
     }
   }
 
+  // Pack D-2: each field the API refused carries its own message in its row, as well as the panel.
+  const fieldError = (field: string) => error?.fieldErrors.find((f) => f.field === field)?.message;
+
   return (
     <form onSubmit={submit} aria-labelledby="new-class-heading">
-      <h1 id="new-class-heading">Create a class</h1>
-      {error && <ErrorPanel error={error} />}
-      <label>
-        Subject
-        <select value={subjectCode} onChange={(e) => setSubjectCode(e.target.value)} required>
-          {subjects.map((s) => (
-            <option key={s.code} value={s.code}>
-              {s.name}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label>
-        Class name
-        <input required maxLength={80} value={name} onChange={(e) => setName(e.target.value)} />
-      </label>
-      <label>
-        Year group
-        <select value={yearGroup} onChange={(e) => setYearGroup(e.target.value)}>
-          <option value="5">5th year</option>
-          <option value="6">6th year</option>
-        </select>
-      </label>
-      <label>
-        Academic year
-        <input required value={academicYear} onChange={(e) => setAcademicYear(e.target.value)} />
-      </label>
-      <label>
-        Level (optional)
-        <select value={level} onChange={(e) => setLevel(e.target.value)}>
-          <option value="">Not set</option>
-          <option value="HIGHER">Higher</option>
-          <option value="ORDINARY">Ordinary</option>
-          <option value="MIXED">Mixed</option>
-        </select>
-      </label>
-      <Button type="submit" disabled={busy}>
-        Create
-      </Button>
+      <Link href="/teach" className={backLink}>
+        My classes
+      </Link>
+      <h1 id="new-class-heading" className={`mt-2.5 ${pageTitle}`}>
+        Create a class
+      </h1>
+      {error && (
+        <div className="mt-[22px]">
+          <ErrorPanel error={error} />
+        </div>
+      )}
+      <div className="mt-[22px] flex flex-col gap-4">
+        <FieldGroup>
+          <Field id="class-subject" label="Subject" error={fieldError("subjectCode")}>
+            {(control) => (
+              <select {...control} value={subjectCode} onChange={(e) => setSubjectCode(e.target.value)} required>
+                {subjects.map((s) => (
+                  <option key={s.code} value={s.code}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            )}
+          </Field>
+          <Field id="class-name" label="Class name" error={fieldError("name")}>
+            {(control) => (
+              <input {...control} required maxLength={80} value={name} onChange={(e) => setName(e.target.value)} />
+            )}
+          </Field>
+          <Field id="class-year-group" label="Year group" error={fieldError("yearGroup")}>
+            {(control) => (
+              <select {...control} value={yearGroup} onChange={(e) => setYearGroup(e.target.value)}>
+                <option value="5">5th year</option>
+                <option value="6">6th year</option>
+              </select>
+            )}
+          </Field>
+          <Field id="class-academic-year" label="Academic year" error={fieldError("academicYear")}>
+            {(control) => (
+              <input {...control} required value={academicYear} onChange={(e) => setAcademicYear(e.target.value)} />
+            )}
+          </Field>
+          <Field id="class-level" label="Level (optional)" error={fieldError("level")}>
+            {(control) => (
+              <select {...control} value={level} onChange={(e) => setLevel(e.target.value)}>
+                <option value="">Not set</option>
+                <option value="HIGHER">Higher</option>
+                <option value="ORDINARY">Ordinary</option>
+                <option value="MIXED">Mixed</option>
+              </select>
+            )}
+          </Field>
+        </FieldGroup>
+        <div className="flex flex-wrap items-center gap-3.5">
+          <Button type="submit" size="form" disabled={busy}>
+            Create
+          </Button>
+          <Link href="/teach" className={`text-app-base ${textLink}`}>
+            Cancel
+          </Link>
+        </div>
+      </div>
     </form>
   );
 }

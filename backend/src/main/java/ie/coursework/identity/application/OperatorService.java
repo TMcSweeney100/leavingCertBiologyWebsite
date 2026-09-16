@@ -40,13 +40,20 @@ public class OperatorService {
     }
 
     @Transactional
-    public UUID createSchool(String name, String rollNumber) {
+    public UUID createSchool(String name, String shortName, String rollNumber) {
         try {
-            UUID schoolId = schools.insert(name, rollNumber);
+            UUID schoolId = schools.insert(name, shortName, rollNumber);
             auditLog.record(null, AuditEventType.SCHOOL_CREATED, "school", schoolId, Map.of());
             return schoolId;
         } catch (DuplicateKeyException e) {
             throw new DomainException(ErrorCode.ROLL_NUMBER_TAKEN, "A school with that roll number already exists.");
+        }
+    }
+
+    @Transactional
+    public void setSchoolShortName(String rollNumber, String shortName) {
+        if (!schools.setShortName(rollNumber, shortName)) {
+            throw new DomainException(ErrorCode.NOT_FOUND, "No school with that roll number.");
         }
     }
 

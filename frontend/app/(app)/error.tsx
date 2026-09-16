@@ -1,5 +1,6 @@
 "use client";
 
+import { AppMain } from "@/components/app/app-main";
 import { ErrorPanel } from "@/components/app/error-panel";
 import { ApiError } from "@/lib/api/problem";
 
@@ -7,8 +8,8 @@ import { ApiError } from "@/lib/api/problem";
 export default function AppError({ error }: { error: Error }) {
   const apiError = error instanceof ApiError ? error : ApiError.unreachable(error);
   return (
-    <main>
+    <AppMain>
       <ErrorPanel error={apiError} />
-    </main>
+    </AppMain>
   );
 }

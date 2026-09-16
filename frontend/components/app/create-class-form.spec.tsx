@@ -52,4 +52,25 @@ describe("CreateClassForm", () => {
 
     expect(screen.getByRole("alert")).toHaveTextContent("academicYear: must look like 2026/27");
   });
+
+  it("marks the field the API refused, with its message", async () => {
+    vi.mocked(api.send).mockRejectedValue(new ApiError({
+      code: "VALIDATION_FAILED", status: 400, detail: "One or more fields are invalid.",
+      fieldErrors: [{ field: "academicYear", message: "must look like 2026/27" }],
+    }));
+    render(<CreateClassForm schoolId="s1" subjects={subjects} defaultAcademicYear="2026/27" />);
+
+    await userEvent.type(screen.getByRole("textbox", { name: "Class name" }), "6A");
+    await userEvent.click(screen.getByRole("button", { name: "Create" }));
+
+    const year = screen.getByRole("textbox", { name: "Academic year" });
+    expect(year).toHaveAttribute("aria-invalid", "true");
+    expect(year).toHaveAccessibleDescription("must look like 2026/27");
+    expect(screen.getByRole("textbox", { name: "Class name" })).not.toHaveAttribute("aria-invalid");
+  });
+
+  it("offers cancel back to my classes", () => {
+    render(<CreateClassForm schoolId="s1" subjects={subjects} defaultAcademicYear="2026/27" />);
+    expect(screen.getByRole("link", { name: "Cancel" })).toHaveAttribute("href", "/teach");
+  });
 });

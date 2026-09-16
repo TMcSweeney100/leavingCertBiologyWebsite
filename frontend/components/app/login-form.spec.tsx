@@ -18,7 +18,7 @@ import { LoginForm } from "./login-form";
 
 const teacher: Me = {
   userId: "u1", username: "k.hanlon", firstName: "K", lastName: "H", mustChangePassword: false,
-  roles: [{ schoolId: "s1", schoolName: "School A", role: "TEACHER" }],
+  roles: [{ schoolId: "s1", schoolName: "School A", schoolShortName: null, role: "TEACHER" }],
 };
 
 async function fillAndSubmit(username = "k.hanlon", password = "correct-horse-battery") {
