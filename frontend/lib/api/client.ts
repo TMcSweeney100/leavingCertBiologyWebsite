@@ -49,13 +49,16 @@ export function createApiClient(transport: ApiTransport): ApiClient {
     headers: Record<string, string>,
     signal?: AbortSignal,
   ): Promise<Response> {
+    // Outside the try: on the server these come from Next's headers(), which throws a bailout
+    // signal during a static build to mark the route dynamic. That must propagate as itself.
+    const transportHeaders = await transport.extraHeaders();
     let response: Response;
     try {
       response = await fetch(`${transport.baseUrl()}${API_PREFIX}${path}`, {
         method,
         headers: {
           accept: "application/json",
-          ...(await transport.extraHeaders()),
+          ...transportHeaders,
           ...(body === undefined ? {} : { "content-type": "application/json" }),
           ...headers,
         },

@@ -64,6 +64,16 @@ describe("get", () => {
     expect((error as ApiError).code).toBe(ApiErrorCode.BACKEND_UNREACHABLE);
   });
 
+  it("lets a failure in the transport's own headers propagate untouched", async () => {
+    // Next's headers() throws a bailout signal during a static build; wrapping it as "unreachable"
+    // would hide that signal and fail the build instead of marking the route dynamic.
+    const bailout = new Error("DYNAMIC_SERVER_USAGE");
+    const client = createApiClient({ baseUrl: () => "", extraHeaders: async () => { throw bailout; }, csrf: false });
+
+    await expect(client.get("/auth/me", meSchema)).rejects.toBe(bailout);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it("sends no CSRF header on a GET", async () => {
     document.cookie = "XSRF-TOKEN=tok; path=/";
     fetchMock.mockResolvedValue(json({ userId: "u1", username: "a" }));

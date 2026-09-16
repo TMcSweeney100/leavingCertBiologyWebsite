@@ -3,6 +3,7 @@ package ie.coursework.classes.adapter.persistence;
 import ie.coursework.classes.domain.Subject;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +23,13 @@ public class SubjectRepository {
     public Optional<Subject> findByCode(String code) {
         return jdbc.sql("SELECT id, code, name FROM subject WHERE code = :code")
                 .param("code", code)
+                .query(Subject.class)
+                .optional();
+    }
+
+    public Optional<Subject> findById(UUID id) {
+        return jdbc.sql("SELECT id, code, name FROM subject WHERE id = :id")
+                .param("id", id)
                 .query(Subject.class)
                 .optional();
     }

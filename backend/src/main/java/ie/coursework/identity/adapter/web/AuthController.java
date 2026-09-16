@@ -1,6 +1,7 @@
 package ie.coursework.identity.adapter.web;
 
 import ie.coursework.identity.application.AccountQueries;
+import ie.coursework.identity.application.PasswordResetService;
 import ie.coursework.identity.application.PasswordService;
 import ie.coursework.identity.domain.Actor;
 import ie.coursework.identity.domain.Username;
@@ -38,16 +39,18 @@ public class AuthController {
     private final LoginThrottle throttle;
     private final ClientAddressResolver clientAddress;
     private final PasswordService passwords;
+    private final PasswordResetService passwordResets;
 
     public AuthController(AuthenticationManager authenticationManager, SessionEstablisher sessions,
             AccountQueries accounts, LoginThrottle throttle, ClientAddressResolver clientAddress,
-            PasswordService passwords) {
+            PasswordService passwords, PasswordResetService passwordResets) {
         this.authenticationManager = authenticationManager;
         this.sessions = sessions;
         this.accounts = accounts;
         this.throttle = throttle;
         this.clientAddress = clientAddress;
         this.passwords = passwords;
+        this.passwordResets = passwordResets;
     }
 
     @PostMapping("/login")
@@ -82,6 +85,12 @@ public class AuthController {
     @PostMapping("/password")
     ResponseEntity<Void> changePassword(Actor actor, @Valid @RequestBody ChangePasswordRequest body, HttpServletRequest request) {
         passwords.change(actor, body.currentPassword(), body.newPassword(), request.getSession().getId());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/password-reset")
+    ResponseEntity<Void> passwordReset(@Valid @RequestBody PasswordResetRequest body, HttpServletRequest request) {
+        passwordResets.redeem(body.username(), body.code(), body.newPassword(), clientAddress.resolve(request));
         return ResponseEntity.noContent().build();
     }
 
