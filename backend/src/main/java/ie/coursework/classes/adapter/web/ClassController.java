@@ -3,7 +3,9 @@ package ie.coursework.classes.adapter.web;
 import ie.coursework.classes.application.ClassService;
 import ie.coursework.classes.application.ClassViews.ClassDetail;
 import ie.coursework.classes.application.ClassViews.ClassSummary;
+import ie.coursework.classes.application.ClassViews.EnrolmentView;
 import ie.coursework.classes.application.ClassViews.JoinCodeView;
+import ie.coursework.classes.application.EnrolmentService;
 import ie.coursework.identity.domain.Actor;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -24,9 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ClassController {
 
     private final ClassService classes;
+    private final EnrolmentService enrolments;
 
-    public ClassController(ClassService classes) {
+    public ClassController(ClassService classes, EnrolmentService enrolments) {
         this.classes = classes;
+        this.enrolments = enrolments;
     }
 
     @GetMapping
@@ -55,5 +59,15 @@ public class ClassController {
     ResponseEntity<Void> disableJoinCode(Actor actor, @PathVariable UUID classId) {
         classes.disableJoinCode(actor, classId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{classId}/enrolments/{enrolmentId}/approve")
+    EnrolmentView approve(Actor actor, @PathVariable UUID classId, @PathVariable UUID enrolmentId) {
+        return enrolments.approve(actor, classId, enrolmentId);
+    }
+
+    @PostMapping("/{classId}/enrolments/{enrolmentId}/remove")
+    EnrolmentView remove(Actor actor, @PathVariable UUID classId, @PathVariable UUID enrolmentId) {
+        return enrolments.remove(actor, classId, enrolmentId);
     }
 }
