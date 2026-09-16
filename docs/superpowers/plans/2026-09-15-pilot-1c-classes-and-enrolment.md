@@ -19,11 +19,11 @@
 - Read from 1B: `identity/domain/Actor.java`, `support/ApiSession.java`, `support/TestAccounts.java`, `security/SecurityConfig.java`, `shared/error/ErrorCode.java`, `audit/AuditLog.java`, `identity/application/PasswordService.java`. This plan extends all of them and follows their patterns.
 - The JDBC traps from the 1B plan still apply: bind `Timestamps.utc(instant)`, never an `Instant`; read `timestamptz` as `OffsetDateTime` in a row mapper.
 
-**Three decisions this plan takes** (the design leaves them open). Confirm with Tim before Task 1; each is one constant or one record field to change.
+**Three decisions this plan takes** (the design leaves them open). **All confirmed by Tim on 16 Sep 2026**; P-1 was changed from 14 days to 30, P-2 and P-3 stand as written.
 
 | # | Decision | Where |
 |---|---|---|
-| P-1 | **A join code lives 14 days** from creation or rotation. Rotating replaces it and restarts the clock; "turn joining off" clears it. | `JoinCode.LIFETIME` |
+| P-1 | **A join code lives 30 days** from creation or rotation (Tim, 16 Sep 2026; the plan originally proposed 14). Rotating replaces it and restarts the clock; "turn joining off" clears it. | `JoinCode.LIFETIME` |
 | P-2 | **`POST /classes` names the school by id** (`schoolId`), and the teacher must hold TEACHER there. In the pilot every teacher has one school, so the frontend fills it from `/auth/me`. | `CreateClassRequest` |
 | P-3 | **Redeeming a reset code does not sign the student in.** It sets the password, ends every session of that user, and returns 204; the page then sends them to `/login`. Simpler than 1D's `/reset` page carrying a session across, and the roadmap's §6.2 row for `/reset` doesn't require sign-in. | `AuthController.passwordReset` |
 
@@ -392,7 +392,7 @@ public record JoinCode(String value) {
     private static final int LENGTH = 8;
 
     /** Plan decision P-1. */
-    public static final Duration LIFETIME = Duration.ofDays(14);
+    public static final Duration LIFETIME = Duration.ofDays(30);
 
     public JoinCode {
         if (value == null || !FORMAT.matcher(value).matches()) {

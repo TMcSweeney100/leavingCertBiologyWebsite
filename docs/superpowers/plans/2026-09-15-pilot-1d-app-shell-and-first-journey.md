@@ -19,7 +19,7 @@
 - Read from earlier milestones: `frontend/lib/api/client.ts`, `server.ts`, `problem.ts` (1A Task 10), `frontend/app/(auth)/layout.tsx` and `lib/app/routes.ts` (1A Task 8), `frontend/BIPI-SITE-NOTES.md` §"Framework" (the `node --test` import convention), and the backend response records this plan mirrors: `identity/adapter/web/MeResponse.java`, `classes/application/ClassViews.java`, `classes/adapter/web/CreateClassRequest.java`, `SignUpRequest.java`, `identity/adapter/web/PasswordResetRequest.java`, `ChangePasswordRequest.java`.
 - `frontend/.env.local` has `APP_ENABLED=true`, `BACKEND_INTERNAL_URL=http://localhost:8080`, `PROXY_SHARED_SECRET=local-dev-proxy-secret` (copy `.env.example`). `backend/.env` has `APP_COOKIE_SECURE=false`, or the browser won't keep the session cookie over plain http.
 
-**Decisions this plan takes** (confirm with Tim before Task 1; each is one line to change):
+**Decisions this plan takes** — **all four confirmed as written by Tim on 16 Sep 2026**:
 
 | # | Decision | Where |
 |---|---|---|
