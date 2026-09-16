@@ -29,4 +29,11 @@ public class SchoolRepository {
                 .query(School.class)
                 .optional();
     }
+
+    public Optional<School> findById(UUID id) {
+        return jdbc.sql("SELECT id, name, roll_number FROM school WHERE id = :id")
+                .param("id", id)
+                .query(School.class)
+                .optional();
+    }
 }
