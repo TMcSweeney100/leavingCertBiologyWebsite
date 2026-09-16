@@ -12,9 +12,11 @@ Two things that share a Next.js app:
 ## Read before planning or building pilot work
 
 1. `docs/PILOT-ROADMAP.md` — status board, decisions, pages, API, gates. Start at its §0.
-2. `docs/HANDOFF.md` — where the last session stopped.
-3. The current milestone plan in `docs/superpowers/plans/`.
-4. `docs/PILOT-DESIGN.md` — the sections the plan cites. It wins over the roadmap; the roadmap wins over the specs in `docs/newDevelopement/`.
+2. `docs/ARCHITECTURE.md` — how the code works as built: request path, auth, patterns, the add-a-feature recipe. Read the section for the layer you're touching instead of rediscovering it from the files. Keep it true in the same commit as any change it describes.
+3. `docs/HANDOFF.md` — where the last session stopped.
+4. The current milestone plan in `docs/superpowers/plans/`.
+5. `docs/PILOT-DESIGN.md` — the sections the plan cites. It wins over the roadmap; the roadmap wins over the specs in `docs/newDevelopement/`.
+6. `docs/design/UI-STANDARDS.md` before any task that touches app UI; `docs/design/UI-CHECKLIST.md` before calling it done. `docs/design/UI-BRIEF.md` is what Claude Design gets.
 
 ## Commands (repo root)
 

@@ -23,7 +23,7 @@ Detailed plans so far:
 1. Read §1 of this file to find the current milestone.
 2. Read `docs/HANDOFF.md` for anything the last session left unfinished.
 3. Open that milestone's plan and find the first unticked step. **If the milestone has no plan yet, write it first** with `superpowers:writing-plans`, from its outline in §8, against the code as it actually is.
-4. Read the sections of `docs/PILOT-DESIGN.md` the plan cites. Don't read the whole thing every time.
+4. Read the sections of `docs/PILOT-DESIGN.md` the plan cites. Don't read the whole thing every time. For how the built code works (auth, the request path, the add-a-feature recipe), read the matching section of `docs/ARCHITECTURE.md` rather than the files.
 5. Work task by task using `superpowers:subagent-driven-development` (or `superpowers:executing-plans` inline). Every task is test-first: `superpowers:test-driven-development`.
 6. Before saying anything passes, run it: `superpowers:verification-before-completion`.
 7. At the end of a session, update the status board below and rewrite `docs/HANDOFF.md`.
@@ -165,10 +165,13 @@ The same rule the BiPi site lives by, now with higher stakes: **never invent, ap
 - `CLAUDE.md` at the repo root (created in 1A) holds conventions that are confirmed and still true. Update it when a task establishes a new one.
 - `docs/HANDOFF.md` is rewritten at the end of every session: where things stand, what's half-done, what's waiting on a human.
 - Tick plan checkboxes as steps complete, in the same commit.
+- `docs/ARCHITECTURE.md` describes the code as built. A change to anything it describes fixes it in the same commit; sessions end by checking it for anything made false.
 
 ---
 
 ## 5. Repository shape after Phase 1
+
+The tree below is the Phase 1 target as planned. `docs/ARCHITECTURE.md` §1 and §6 describe what was built and is kept current; where they differ, the architecture doc is right.
 
 ```
 biologyProject/
@@ -289,10 +292,10 @@ This is what Claude Design needs to design against: every page, who sees it, wha
 ### 6.3 Design handoff protocol
 
 1. **The build task comes first and works without the design.** It uses semantic HTML, shadcn primitives and the existing tokens, and gets a Vitest spec that queries by role and accessible name. The page is plain, but complete: every state in §6.2 renders.
-2. **Tim's design arrives as a folder** in `docs/design/pilot/<route-name>/`: the Claude Design export plus a `NOTES.md` covering anything the design decides that §6.2 doesn't (copy, ordering, what's collapsed).
-3. **A restyle task** follows, using `frontend-design`, `ui-ux-pro-max` and `shadcn` skills as Tim wants. Its rule: **the existing specs must pass unchanged.** If the design renames a button, change the spec in a separate, visible commit first.
+2. **Tim's design arrives as a folder** in `docs/design/pilot/<pack-name>/`: the Claude Design export, a `tokens.css` of `--app-*` additions, and a `NOTES.md` on the template in `docs/design/UI-BRIEF.md` §8. Claude Design is briefed with `UI-BRIEF.md` plus this section's rows for the pages in the pack.
+3. **A restyle task** follows, built to `docs/design/UI-STANDARDS.md` (§15 is the working method) and checked against `docs/design/UI-CHECKLIST.md`. Its rule: **the existing specs must pass unchanged.** If the design renames a button, change the spec in a separate, visible commit first.
 4. **If the design changes behaviour** — adds a state, removes an action, moves something to another page — that's a roadmap change. Update §6.2 before building it.
-5. The app's visual system (tokens, type, components) comes from the first handoff. Until then, app pages borrow the BiPi tokens in `frontend/app/globals.css` as a neutral placeholder.
+5. The app's visual system shares BiPi's type, neutrals and radii and chooses its own accent and status colours (decided 16 Sep 2026, `UI-BRIEF.md` §5); the first handoff fixes the values. Light only. Until then, app pages borrow the BiPi tokens in `frontend/app/globals.css` as a neutral placeholder.
 
 **Design packs to request, and when they're needed:**
 

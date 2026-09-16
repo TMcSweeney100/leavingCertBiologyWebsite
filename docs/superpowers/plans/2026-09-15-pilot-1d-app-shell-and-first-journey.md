@@ -2691,7 +2691,7 @@ Roadmap §6.3. **Do not start this task until `docs/design/pilot/` holds the han
 
 - [ ] **Step 1: Read the packs**
 
-For each of `docs/design/pilot/<route>/`: the Claude Design export and `NOTES.md`. Anything in `NOTES.md` that changes behaviour (a new state, a removed action, something moved to another page) is a roadmap change: update `docs/PILOT-ROADMAP.md` §6.2 first, and stop to ask if it conflicts with a decision in this plan.
+Read `docs/design/UI-STANDARDS.md` first (§15 is this task's method). Then, for each of `docs/design/pilot/<pack>/`: the Claude Design export, `tokens.css` and `NOTES.md`. Anything in `NOTES.md` that changes behaviour (a new state, a removed action, something moved to another page) is a roadmap change: update `docs/PILOT-ROADMAP.md` §6.2 first, and stop to ask if it conflicts with a decision in this plan.
 
 - [ ] **Step 2: Establish the app's visual system**
 
@@ -2699,7 +2699,7 @@ The first pack defines tokens, type and components for the app (roadmap §6.3 po
 
 - [ ] **Step 3: Restyle one page at a time, specs unchanged**
 
-For each page: apply the design with `frontend-design`, `ui-ux-pro-max` and `shadcn` skills as Tim wants; run `npx vitest run components/app` after every page. A red spec means the accessible names changed. If the design genuinely renames a control ("Approve" → "Accept"), change the spec in its own commit first, with the message naming the design pack, then restyle.
+For each page: apply the design to the rules in `docs/design/UI-STANDARDS.md` (the `shadcn` skill for adding primitives), run `docs/design/UI-CHECKLIST.md` on it, then `npx vitest run components/app`. A red spec means the accessible names changed. If the design genuinely renames a control ("Approve" → "Accept"), change the spec in its own commit first, with the message naming the design pack, then restyle.
 
 - [ ] **Step 4: Run everything**
 
