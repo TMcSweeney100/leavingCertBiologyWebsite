@@ -1,14 +1,6 @@
 # BiPi public schedule — site notes
 
-## Purpose of this file
-
-This file is a **starting point**, not a finished or permanent set of instructions.
-
-Claude Code should read this file at the beginning of each session, inspect the repository and current implementation, and then follow the guidance that is still relevant. As the project develops, Claude should **improve and update this file** whenever it discovers better conventions, confirmed decisions, important commands, architectural patterns, recurring pitfalls, or project-specific knowledge.
-
-Do not allow this file to become stale. Keep it concise, accurate, and useful. Remove instructions that are no longer true, and do not add speculative rules as if they were confirmed decisions.
-
----
+Read this before touching `app/[class]/`, `components/bipi/`, `lib/schedule*`, `lib/briefs/` or `lib/classes/`. It covers the live public schedule only; the coursework pilot app follows the root `CLAUDE.md`, `docs/ARCHITECTURE.md` and `docs/PILOT-ROADMAP.md`. Keep it true: record facts, not guesses, and delete what stops being so.
 
 ## Project overview
 
@@ -24,56 +16,13 @@ The website replaces a static schedule poster with a live, responsive page that 
 
 The core experience is the live **“You are here”** state and the timeline beneath it.
 
-Before making substantial changes, read the project source documents if they are present:
-
-- `bipi-schedule-design-brief.md`
-- `bipi-schedule-website-spec.md`
-
-Treat the website specification as the main source for functionality and content structure. Treat the design brief as the source for visual goals and audience needs. If the repository contains a later approved design decision, implementation note, or content file, prefer the most recent confirmed source and document that decision here.
+The source documents are archived in `docs/archive/bipi-site/`: `bipi-schedule-website-spec.md` (functionality and content structure), `bipi-schedule-design-brief.md` (visual goals and audience), and `IMPLEMENTATION_PLAN.md` (the decisions taken while building, which wins over the design handoff README where they disagree). The confirmed conventions below win over all of them.
 
 ---
 
-## Working approach
+## Stack and scope
 
-At the start of a task:
-
-1. Read this file.
-2. Inspect the repository structure and relevant files before changing code.
-3. Check `package.json`, scripts, framework configuration, linting rules, and existing component patterns.
-4. Read the design brief and website specification when the task affects behavior, content, layout, or visual design.
-5. Identify whether the requested behavior already exists before creating a new abstraction.
-6. Make the smallest coherent change that fully solves the task.
-7. Run the relevant validation commands before finishing.
-8. Summarize what changed, what was tested, and any remaining risks or decisions.
-9. Update this file when the work establishes a durable project convention or reveals that an instruction here is outdated.
-
-Do not rewrite working areas of the application without a clear reason. Preserve established patterns unless improving them is part of the task.
-
----
-
-## Current technical direction
-
-The intended stack is:
-
-- React
-- Prefer Next.js with the App Router if that is what the repository uses
-- TypeScript
-- Tailwind CSS
-- shadcn/ui where it adds value
-- Vercel-compatible deployment
-
-A Vite and React implementation is also valid if the repository already uses it. **Inspect the actual project before assuming the framework.** Once the framework choice is confirmed, replace this paragraph with the exact stack and commands.
-
-Prefer:
-
-- Server-rendered or statically rendered core content where supported
-- Small, focused client components only where interactivity is required
-- Typed schedule data stored separately from presentation components
-- Reusable components for repeated visual patterns
-- Native platform and framework features over unnecessary dependencies
-- Simple solutions appropriate to a small read-only website
-
-**This file covers the live public schedule only** (`app/[class]/`, `components/bipi/`, `lib/schedule*`, `lib/briefs/`, `lib/classes/`). That part of the site stays read-only: no accounts, tracking or forms on those pages. The coursework pilot app — which does have a backend, accounts and a database — follows the root `CLAUDE.md` and `docs/PILOT-ROADMAP.md`.
+Next.js 15.3.9 App Router (pinned; Next 16 broke Vercel deploys), React 19, TypeScript, Tailwind v4 (CSS-first, everything in `app/globals.css`), shadcn/ui on Base UI, deployed to Vercel from `main`. Server-rendered content; the one client component is the stage disclosure. Typed schedule data lives apart from presentation. Read-only: no accounts, tracking or forms on these pages. Make the smallest coherent change, run `npm run lint`, `npm run typecheck`, `npm test` and `npm run build` from `frontend/` before finishing.
 
 ---
 
@@ -328,33 +277,7 @@ The public schedule pages remain a read-only view of a class's dates. Student ac
 
 ---
 
-## How Claude should maintain this file
-
-Claude Code is encouraged to update this file when it learns something that will help future work, including:
-
-- Confirmed framework, package manager, and runtime versions
-- Exact local development, test, build, and deployment commands
-- The location of schedule data and date utilities
-- Approved design tokens and typography
-- Component and directory conventions
-- Testing tools and required checks
-- Deployment details that are safe to document
-- Known date-handling traps or recurring implementation mistakes
-- Decisions that have been explicitly approved
-
-When updating this file:
-
-- Keep the statement that this is a living starting point.
-- Record facts, not guesses.
-- Prefer concise instructions over a running project diary.
-- Remove obsolete guidance when replacing it.
-- Avoid duplicating information that is already obvious from configuration files.
-- Do not store secrets, private information, or temporary debugging details.
-- Mention significant changes to this file in the final task summary.
-
----
-
-## Repository-specific details to fill in
+## How it's built (confirmed details)
 
 - **Framework:** Next.js 15.3.9 (pinned: Next 16 broke Vercel deploys, commit 8b077e8), App Router, React 19.2.8, TypeScript, Tailwind v4 (CSS-first — no `tailwind.config.js`, everything lives in `app/globals.css`). shadcn/ui initialized on the **Base UI** primitive library (`components.json` → `"base": "base"`, preset `base-nova`), not Radix — shadcn's CLI default changed after the implementation plan was first written; see `docs/archive/bipi-site/IMPLEMENTATION_PLAN.md` Decision #5 for why. A `shadcn` skill with current CLI/theming/component docs is installed at `.claude/skills/shadcn` (and a `migrate-radix-to-base` skill alongside it) — prefer it over training-data knowledge of shadcn, which is stale against the current CLI.
 - **Package manager:** npm (`package-lock.json`).

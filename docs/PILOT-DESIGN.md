@@ -6,7 +6,7 @@
 - §3 was presented in conversation and is waiting on review.
 - Everything from §4 on is proposed design that hasn't been discussed yet.
 
-**Builds on:** `docs/newDevelopement/FUNCTIONAL-SPEC (1).md`, `TECHNICAL-SPEC.md` and `LC-AAC-PROJECT-CONTEXT.md`. Where this file disagrees with them, this file wins for the pilot.
+**Builds on:** `docs/newDevelopement/FUNCTIONAL-SPEC.md`, `TECHNICAL-SPEC.md` and `LC-AAC-PROJECT-CONTEXT.md`. Where this file disagrees with them, this file wins for the pilot.
 **Sources:** `docs/newDevelopement/subjectDocs/`, plus the final 2027 SEC briefs listed in §4.1.
 **Next step once approved:** one implementation plan per phase in §3, starting with Phase 1.
 
@@ -563,6 +563,8 @@ If the API is down, the proxy returns its own problem response rather than a bla
 | Q9 | Which cohort does the pilot run with — 6th years from autumn 2026, 5th years from spring 2027, or both? See §1.1. | Everything. This sets the start date, which brief content is live, and what the pilot can actually prove. |
 
 ## 12. Housekeeping for Phase 1
+
+*All three done during Phase 1 (the scope rules live in the root `CLAUDE.md`; Phases A and B are merged; the report-rules card was fixed on `main`). Kept for the record.*
 
 - **Rewrite the scope rules in `docs/CLAUDE.md`.** They forbid a backend, accounts and a database. Also correct its Next.js version: it says 16.3.3, but the project is on 15.3.9.
 - **Branch from wherever Phase A and B land.** They're still unmerged on `phase2.0`. This work doesn't depend on them.
