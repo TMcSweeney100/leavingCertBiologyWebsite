@@ -6,13 +6,15 @@ import { type FormEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { api, ApiError } from "@/lib/api/client";
-import { meSchema } from "@/lib/api/schemas";
-import { landingFor } from "@/lib/app/navigation";
+import { enrolmentViewSchema } from "@/lib/api/schemas";
 
 import { ErrorPanel } from "./error-panel";
 
-export function LoginForm({ next }: { next?: string }) {
+/** Design §8.1: first name, surname, username, password. Nothing else is collected. */
+export function SignUpForm({ code }: { code: string }) {
   const router = useRouter();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<ApiError | null>(null);
@@ -23,8 +25,13 @@ export function LoginForm({ next }: { next?: string }) {
     setBusy(true);
     setError(null);
     try {
-      const me = await api.send("POST", "/auth/login", { username, password }, meSchema);
-      router.push(landingFor(me, next));
+      await api.send(
+        "POST",
+        `/join/${encodeURIComponent(code)}/accounts`,
+        { firstName, lastName, username, password },
+        enrolmentViewSchema,
+      );
+      router.push("/home");
     } catch (e) {
       setError(e instanceof ApiError ? e : ApiError.unreachable(e));
       setPassword("");
@@ -34,9 +41,29 @@ export function LoginForm({ next }: { next?: string }) {
   }
 
   return (
-    <form onSubmit={submit} aria-labelledby="login-heading">
-      <h1 id="login-heading">Sign in</h1>
+    <form onSubmit={submit} aria-labelledby="signup-heading">
+      <h2 id="signup-heading">Create your account</h2>
       {error && <ErrorPanel error={error} />}
+      <label>
+        First name
+        <input
+          name="firstName"
+          autoComplete="given-name"
+          required
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+        />
+      </label>
+      <label>
+        Surname
+        <input
+          name="lastName"
+          autoComplete="family-name"
+          required
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+        />
+      </label>
       <label>
         Username
         <input
@@ -49,23 +76,25 @@ export function LoginForm({ next }: { next?: string }) {
           onChange={(e) => setUsername(e.target.value)}
         />
       </label>
+      <p>3 to 32 characters: letters, numbers, dots, dashes and underscores.</p>
       <label>
         Password
         <input
           name="password"
           type="password"
-          autoComplete="current-password"
+          autoComplete="new-password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
       </label>
+      <p>At least 10 characters.</p>
       <Button type="submit" disabled={busy}>
-        Sign in
+        Create account and join
       </Button>
       <p>
-        Joining a class? <Link href="/join">Enter your join code</Link>. Forgotten your password?{" "}
-        <Link href="/reset">Use a reset code</Link>.
+        Already have an account?{" "}
+        <Link href={`/login?next=${encodeURIComponent(`/join/${code}`)}`}>Sign in instead</Link>
       </p>
     </form>
   );
