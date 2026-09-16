@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { z } from "zod";
 
+import { AppMain } from "@/components/app/app-main";
 import { CreateClassForm } from "@/components/app/create-class-form";
 import { ErrorPanel } from "@/components/app/error-panel";
 import { subjectSchema } from "@/lib/api/schemas";
@@ -19,12 +20,12 @@ export default async function NewClassPage() {
   if (!schoolId) notFound();
   const subjects = await attempt(() => serverApi.get("/subjects", z.array(subjectSchema)));
   return (
-    <main>
+    <AppMain width="form">
       {subjects.ok ? (
         <CreateClassForm schoolId={schoolId} subjects={subjects.data} defaultAcademicYear={currentAcademicYear()} />
       ) : (
         <ErrorPanel error={subjects.error} />
       )}
-    </main>
+    </AppMain>
   );
 }

@@ -55,14 +55,28 @@ describe("ClassStudents", () => {
     expect(api.send).toHaveBeenCalledWith("POST", "/classes/c1/enrolments/e1/remove", undefined, expect.anything());
   });
 
-  it("removes an approved student after confirming", async () => {
-    vi.spyOn(window, "confirm").mockReturnValue(true);
+  // Pack D-2 / roadmap R27: the confirmation is in the row, not window.confirm.
+  it("removes an approved student after confirming in the row", async () => {
     vi.mocked(api.send).mockResolvedValue({ enrolmentId: "e2", classId: "c1", className: "6A", subjectName: "Biology", schoolName: "S", status: "REMOVED" });
     render(<ClassStudents detail={detail} />);
 
     await userEvent.click(screen.getByRole("button", { name: "Remove Aoife Byrne" }));
+    expect(api.send).not.toHaveBeenCalled();
+    expect(screen.getByText("Remove Aoife Byrne from 6A Biology?")).toBeInTheDocument();
 
+    await userEvent.click(screen.getByRole("button", { name: "Remove" }));
     expect(api.send).toHaveBeenCalledWith("POST", "/classes/c1/enrolments/e2/remove", undefined, expect.anything());
+  });
+
+  it("keeps the student when the teacher changes their mind", async () => {
+    render(<ClassStudents detail={detail} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Remove Aoife Byrne" }));
+    await userEvent.click(screen.getByRole("button", { name: "Keep" }));
+
+    expect(api.send).not.toHaveBeenCalled();
+    expect(screen.queryByText("Remove Aoife Byrne from 6A Biology?")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Remove Aoife Byrne" })).toBeInTheDocument();
   });
 
   it("issues a reset code and shows it once with its expiry", async () => {
@@ -77,16 +91,53 @@ describe("ClassStudents", () => {
     expect(shown).toHaveTextContent(/24 hours|2 Oct 2026/);
   });
 
-  it("rotates the code and turns joining off", async () => {
+  it("shows the reset code in that student's row, warns it's once only, and hides it", async () => {
+    vi.mocked(api.send).mockResolvedValue({ code: "RSTCDEXY", expiresAt: "2026-10-02T09:00:00.000Z" });
+    render(<ClassStudents detail={detail} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Issue reset code for Aoife Byrne" }));
+
+    const row = screen.getByRole("listitem", { name: "Aoife Byrne" });
+    expect(within(row).getByRole("status")).toHaveTextContent("Hiding it can't be undone.");
+    await userEvent.click(within(row).getByRole("button", { name: "Hide code" }));
+    expect(screen.queryByText("RSTCDEXY")).not.toBeInTheDocument();
+  });
+
+  it("says when each pending student asked", () => {
+    render(<ClassStudents detail={detail} now={new Date("2026-10-03T09:00:00Z")} />);
+    const pending = screen.getByRole("region", { name: "Pending requests" });
+    expect(within(pending).getByText(/asked 2 days ago/)).toBeInTheDocument();
+  });
+
+  it("copies the join code and says so", async () => {
+    const user = userEvent.setup();
+    render(<ClassStudents detail={detail} />);
+
+    await user.click(screen.getByRole("button", { name: "Copy join code" }));
+
+    expect(await navigator.clipboard.readText()).toBe("ABCDEFGH");
+    expect(screen.getByText("Copied")).toBeInTheDocument();
+  });
+
+  it("rotates the code", async () => {
     vi.mocked(api.send).mockResolvedValue({ code: "NEWCODE2", expiresAt: "2026-10-29T09:00:00.000Z" });
-    vi.mocked(api.sendNoContent).mockResolvedValue(undefined);
     render(<ClassStudents detail={detail} />);
 
     await userEvent.click(screen.getByRole("button", { name: "New code" }));
     expect(api.send).toHaveBeenCalledWith("POST", "/classes/c1/join-code", undefined, expect.anything());
     expect(refresh).toHaveBeenCalled();
+  });
+
+  // Roadmap R27: one press would lock the class out, so it confirms in place like Remove.
+  it("turns joining off after confirming", async () => {
+    vi.mocked(api.sendNoContent).mockResolvedValue(undefined);
+    render(<ClassStudents detail={detail} />);
 
     await userEvent.click(screen.getByRole("button", { name: "Turn joining off" }));
+    expect(api.sendNoContent).not.toHaveBeenCalled();
+    expect(screen.getByText("Turn joining off for 6A Biology?")).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "Turn off" }));
     expect(api.sendNoContent).toHaveBeenCalledWith("DELETE", "/classes/c1/join-code");
   });
 
