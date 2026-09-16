@@ -30,4 +30,19 @@ class StudentScopeTest extends AuthzSuite {
         student.post(class1 + "/enrolments/" + world.pendingEnrolment() + "/approve").andExpect(status().isNotFound());
         student.post(class1 + "/students/" + world.pendingStudent() + "/reset-codes").andExpect(status().isNotFound());
     }
+
+    @Test
+    void aStudentCannotSeeAnotherStudentsEnrolmentOrDecideTheirOwn() throws Exception {
+        ApiSession student = as(ClassFixtures.PENDING_STUDENT);
+        String own = "/api/v1/classes/" + world.class1() + "/enrolments/" + world.pendingEnrolment();
+
+        student.post(own + "/approve").andExpect(status().isNotFound());
+        student.post(own + "/remove").andExpect(status().isNotFound());
+        student.delete("/api/v1/classes/" + world.class1() + "/join-code").andExpect(status().isNotFound());
+    }
+
+    @Test
+    void aStudentAtAnotherSchoolSeesOnlyTheirOwnClasses() throws Exception {
+        as(ClassFixtures.OUTSIDER).get("/api/v1/me/classes").andExpect(status().isOk()).andExpect(jsonPath("$").isEmpty());
+    }
 }

@@ -55,4 +55,21 @@ class TeacherScopeTest extends AuthzSuite {
                 """.formatted(world.schoolA()))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void anotherSchoolsTeacherCannotTouchMyEnrolmentsThroughTheirOwnClassId() throws Exception {
+        as(ClassFixtures.TEACHER_B)
+                .post("/api/v1/classes/" + world.classB() + "/enrolments/" + world.pendingEnrolment() + "/approve")
+                .andExpect(status().isNotFound());
+        as(ClassFixtures.TEACHER_B)
+                .post("/api/v1/classes/" + world.classB() + "/students/" + world.approvedStudent() + "/reset-codes")
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void aTeacherCannotJoinPreviewLessThanAnyoneElseButCannotListStudentsClasses() throws Exception {
+        ApiSession teacher = as(ClassFixtures.TEACHER1);
+        teacher.get("/api/v1/join/" + world.class1Code()).andExpect(status().isOk());
+        teacher.get("/api/v1/me/classes").andExpect(status().isOk()).andExpect(jsonPath("$").isEmpty());
+    }
 }
