@@ -1,6 +1,6 @@
 # Design pack prompts
 
-One file per pack (or pair of packs), ready to paste into Claude Design alongside `../UI-BRIEF.md`. Each is assembled from the same sources; when writing the next one, pull from:
+One file per pack (or pair of packs), ready to paste into Claude Design alongside `../UI-BRIEF.md`. Each is assembled from the same sources; when writing the next one, pull from these. From D-3 on, a prompt builds on the chosen Navy direction (roadmap R25) and attaches `docs/design/pilot/D-1-app-shell-auth/tokens.css`. Sample stage names come from the live BiPi site (Biology) or the NCCA guidelines (Business), and are marked as sample content.
 
 | Source | What it gives the prompt |
 |---|---|
@@ -16,9 +16,9 @@ One file per pack (or pair of packs), ready to paste into Claude Design alongsid
 | Pack | Pages | Prompt |
 |---|---|---|
 | D-1, D-2 | App shell, auth pages, teacher class pages | `D-1-D-2-app-shell-auth-teacher-classes.md` |
-| D-3 | Student component page | to write at Phase 2E, from roadmap §6.2 and design §8.3 |
-| D-4 | Timeline (`/home` list, week, month, add item) | Phase 2F, design §3.2 and §6.8 |
-| D-5 | Teacher component setup | Phase 2D, design §8.2 |
+| D-3 | Student component page, and the BiPi-components reuse decision | `D-3-student-component.md` |
+| D-4 | Timeline (`/home` list, week, month, add item) and student navigation | `D-4-timeline.md` |
+| D-5 | Teacher component setup (the Component tab) | `D-5-teacher-component-setup.md` |
 | D-6 | The log | Phase 3, design §8.5 and §6.6 |
 | D-7 | Progress grid | Phase 4, design §8.4 |
 | D-8 | School overview | Phase 5 |
