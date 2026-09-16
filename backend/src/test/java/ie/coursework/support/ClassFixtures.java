@@ -31,6 +31,12 @@ public class ClassFixtures {
     public static final String REMOVED_STUDENT = "removed.student";
     public static final String OUTSIDER = "outsider.student";
 
+    public static final String SCHOOL_A_NAME = "School A";
+    public static final String SCHOOL_B_NAME = "School B";
+    public static final String CLASS1_NAME = "6A Biology";
+    public static final String CLASS2_NAME = "6B Biology";
+    public static final String CLASS_B_NAME = "5th Biology";
+
     private final TestAccounts accounts;
     private final ClassGroupRepository classes;
     private final EnrolmentRepository enrolments;
@@ -47,8 +53,8 @@ public class ClassFixtures {
     }
 
     public World world() {
-        UUID schoolA = accounts.school("School A", "11111A");
-        UUID schoolB = accounts.school("School B", "22222B");
+        UUID schoolA = accounts.school(SCHOOL_A_NAME, "11111A");
+        UUID schoolB = accounts.school(SCHOOL_B_NAME, "22222B");
         UUID biology = subject("BIOLOGY");
 
         UUID teacher1 = accounts.userWithRole(TEACHER1, schoolA, Role.TEACHER);
@@ -63,11 +69,11 @@ public class ClassFixtures {
         // The join-code alphabet excludes 0/O/1/I/L (JoinCode.ALPHABET), so "CLASSONE"/"CLASSTWO"
         // need both their O and their L swapped out to stay in the allowed character class.
         String class1Code = "CLASSONE".replace('O', 'P').replace('L', 'K'); // "CKASSPNE"
-        UUID class1 = classes.insert(schoolA, biology, "6A Biology", 6, "2026/27", Level.HIGHER, teacher1,
+        UUID class1 = classes.insert(schoolA, biology, CLASS1_NAME, 6, "2026/27", Level.HIGHER, teacher1,
                 class1Code, clock.instant().plusSeconds(86_400));
-        UUID class2 = classes.insert(schoolA, biology, "6B Biology", 6, "2026/27", null, teacher2,
+        UUID class2 = classes.insert(schoolA, biology, CLASS2_NAME, 6, "2026/27", null, teacher2,
                 "CKASSTWP", clock.instant().plusSeconds(86_400));
-        UUID classB = classes.insert(schoolB, biology, "5th Biology", 5, "2026/27", Level.MIXED, teacherB,
+        UUID classB = classes.insert(schoolB, biology, CLASS_B_NAME, 5, "2026/27", Level.MIXED, teacherB,
                 null, null);
 
         UUID approvedEnrolment = enrolments.request(class1, approved, clock.instant());

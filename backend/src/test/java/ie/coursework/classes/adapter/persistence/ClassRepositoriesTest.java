@@ -26,7 +26,7 @@ class ClassRepositoriesTest extends PostgresIntegrationTest {
 
         ClassGroup class1 = classes.findById(world.class1()).orElseThrow();
 
-        assertThat(class1.name()).isEqualTo("6A Biology");
+        assertThat(class1.name()).isEqualTo(ClassFixtures.CLASS1_NAME);
         assertThat(class1.level()).isEqualTo(Level.HIGHER);
         assertThat(class1.joinCode()).isEqualTo(world.class1Code());
         assertThat(class1.joinCodeExpiresAt()).isAfter(Instant.now());
@@ -102,9 +102,9 @@ class ClassRepositoriesTest extends PostgresIntegrationTest {
 
         List<EnrolmentRepository.StudentClass> mine = enrolments.classesOf(world.approvedStudent());
         assertThat(mine).hasSize(1);
-        assertThat(mine.getFirst().className()).isEqualTo("6A Biology");
+        assertThat(mine.getFirst().className()).isEqualTo(ClassFixtures.CLASS1_NAME);
         assertThat(mine.getFirst().subjectName()).isEqualTo("Biology");
-        assertThat(mine.getFirst().schoolName()).isEqualTo("School A");
+        assertThat(mine.getFirst().schoolName()).isEqualTo(ClassFixtures.SCHOOL_A_NAME);
         assertThat(mine.getFirst().status()).isEqualTo(EnrolmentStatus.APPROVED);
         assertThat(enrolments.classesOf(world.removedStudent())).isEmpty();
     }

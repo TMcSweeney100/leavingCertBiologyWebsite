@@ -41,6 +41,15 @@ public class EnrolmentRepository {
     /**
      * Creates a PENDING request, or reopens a REMOVED one. A PENDING or APPROVED row is left alone
      * (the caller has already checked the status). Returns the row id either way.
+     *
+     * <p>Mechanism: the {@code WHERE enrolment.status = 'REMOVED'} guard on the {@code DO UPDATE}
+     * means Postgres only performs the update — and only then returns a row from
+     * {@code RETURNING id} — when the conflicting row is REMOVED. When it's PENDING or APPROVED,
+     * the guard blocks the update, the statement touches zero rows, and {@code RETURNING} comes
+     * back empty, which is exactly why the {@code .orElseGet(...)} fallback below re-reads the
+     * existing row by a plain SELECT. The guard and the fallback are one mechanism: don't change
+     * the WHERE condition, or drop the fallback as a "needless" extra query, without the other —
+     * doing either on its own silently breaks this method for the PENDING/APPROVED case.
      */
     public UUID request(UUID classGroupId, UUID studentUserId, Instant now) {
         return jdbc.sql("""
@@ -49,6 +58,8 @@ public class EnrolmentRepository {
                 ON CONFLICT ON CONSTRAINT enrolment_unique DO UPDATE
                     SET status = 'PENDING', requested_at = EXCLUDED.requested_at,
                         decided_at = NULL, decided_by_user_id = NULL
+                    -- Guard: only REMOVED rows get reopened. A PENDING/APPROVED conflict skips the
+                    -- update entirely, so RETURNING yields no row below (see the fallback).
                     WHERE enrolment.status = 'REMOVED'
                 RETURNING id
                 """)
@@ -57,6 +68,8 @@ public class EnrolmentRepository {
                 .param("now", Timestamps.utc(now))
                 .query(UUID.class)
                 .optional()
+                // Empty here means the WHERE guard above blocked the update (row was PENDING or
+                // APPROVED, not REMOVED) — re-read the existing row instead of treating it as absent.
                 .orElseGet(() -> findByStudent(classGroupId, studentUserId).orElseThrow().id());
     }
 
