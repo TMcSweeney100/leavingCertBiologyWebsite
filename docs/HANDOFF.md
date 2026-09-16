@@ -4,67 +4,76 @@ Rewritten at the end of every session. The live BiPi site's final handoff is arc
 
 ## Where things are
 
-- **1C Classes and enrolment is built.** All 11 tasks done on branch `pilot/1c-classes-and-enrolment` (branched from `pilotMain` at `3d9dbcb`, not yet merged — **no PR opened; Tim opens and merges PRs**). `make verify` is green, 151 backend tests pass, Gate 1C's three checkboxes are all ticked. See "Gate 1C" below for what was walked and what's still open before merging.
-- **Current milestone: 1D App shell and first journey.** Plan already written and its decisions already confirmed: `docs/superpowers/plans/2026-09-15-pilot-1d-app-shell-and-first-journey.md`. It mirrors 1C's response records in Zod (`ClassViews`, `SignUpRequest`, `PasswordResetRequest`, `CreateClassRequest`, `EnrolmentView`, etc.) — **no field names or shapes changed during 1C's build** (only two internal bugs were fixed, see "Deviations" below; the wire contract is exactly what 1D's plan assumed), so 1D's Zod schemas should not need adjusting. Start 1D from `pilot/1c-classes-and-enrolment` once it's merged, or from that branch directly if 1D work needs to start before Tim reviews the 1C PR.
-- **Session 2 (16 Sep 2026):** all of 1C in one session, using `superpowers:subagent-driven-development` — a fresh implementer subagent per task, each running its own TDD cycle and committing, with two-stage (spec + code-quality) review for Tasks 1–6. Tim asked partway through to drop the separate reviewer-agent step for speed; Tasks 7–10 and Gate 1C were self-verified directly (reading the actual diff, re-running the tests) instead of via a second review subagent.
-- **1A and 1B are merged and live** on `pilotMain` (PRs #3 and #4), gates walked on the real Render + Vercel hosts on 16 Sep 2026. See "Gate 1A" / "Gate 1B" below, carried over from the previous session — nothing there has changed.
+- **1D App shell and first journey is built** — tasks 1–10 of `docs/superpowers/plans/2026-09-15-pilot-1d-app-shell-and-first-journey.md`, on branch `pilot/1d-app-shell-and-first-journey`, **branched from `pilot/1c-classes-and-enrolment` at `5f11ab6`** (1C was not yet merged when 1D started). `make verify` and `make e2e` are green. **No PR opened; Tim opens and merges PRs.** Because the branch is stacked on 1C, merge 1C's PR into `pilotMain` first, then open 1D's PR against `pilotMain` (it will then show only 1D's commits).
+- **Task 11 (restyle from design packs D-1 and D-2) is not started.** `docs/design/pilot/` doesn't exist; Tim said on 16 Sep 2026 the designs aren't ready and will follow in a few days. Every page is plain, semantic HTML with the shadcn `Button` and no layout styling at all. Every component spec queries by role and accessible name only, so the restyle has a contract to keep (roadmap §6.3). When the packs arrive, follow the plan's Task 11 exactly: read `NOTES.md` first, tokens go beside the `--bipi-*` variables (never changing them), one page per commit, `npx vitest run components/app` after each.
+- **Task 12 (Gate P1) is partly walked** — see "Gate P1" below. What's left needs Tim: the Vercel Preview walk, the keyboard-only walk by hand, and the page review.
+- **Session 3 (16 Sep 2026):** all of 1D tasks 1–10 in one session, using `superpowers:executing-plans` inline (no subagents): each task's tests written and watched fail first, then the implementation, then `npm test`, `typecheck`, `lint` before each commit. Twelve commits on top of `5f11ab6`. One pre-existing bug from 1A was found by the e2e build and fixed (see "Deviations").
+- **1C Classes and enrolment is built but still unmerged**; its Gate 1C notes are carried over below. **1A and 1B are merged and live** on `pilotMain` (PRs #3 and #4).
 
-## Gate 1C — walked locally, 16 Sep 2026
+## Gate P1 — walked locally, 16 Sep 2026
 
-- [x] `make verify` green (151 backend tests; frontend untouched by this milestone, its checks pass as before)
-- [x] Every endpoint in roadmap §7 Phase 1 has a scope test: another teacher's class → 404; a student calling teacher endpoints → 404; an enrolment id from another class → 404 (Tasks 4 and 10 — `classes/authz/{Teacher,Student,Leader,Anonymous}ScopeTest.java`)
-- [x] Audit rows exist for role grants (sign-up and join), enrolment decisions, reset codes and code rotation (asserted in Tasks 6, 7, 8, 9)
+- [x] `make verify` green — 151 backend tests; frontend: 85 `node:test` tests, 75 Vitest specs, lint, types, production build.
+- [x] `make e2e` green — `frontend/e2e/phase1.e2e.ts` passes on both Playwright projects (`laptop` = Desktop Chrome, `phone` = Pixel 7): signed-out redirect with `?next=`, teacher signs in with the temporary password, forced change, creates a class, reads the code; a phone context joins with the code (typed lowercase), creates an account, lands on `/home` as "Pending approval"; teacher approves; phone reloads and sees "Approved"; teacher issues a reset code; phone signs out, resets with the code, signs in with the new password. Plus a keyboard-only sign-in test.
+- [x] **axe scan:** every page the journey visits is scanned with tags `wcag2a`, `wcag2aa`, `wcag22aa` and reports **no violations**, on both projects. (This is the automated half of the gate's third checkbox.)
+- [ ] The same journey by hand on the Vercel Preview against the Render backend (operator commands from Render's Shell — remember the Starter-instance trick in "Gate 1B" below).
+- [ ] Keyboard-only run of the whole journey by hand on a laptop.
+- [ ] Tim has reviewed the pages.
 
-**Manual journey walked against the local stack** (`make db-up`, packaged jar, `127.0.0.1:8080`), following the plan's Task 11 Step 2 script exactly: operator created a school and teacher, teacher logged in and changed password, created a class and got a join code back, a student previewed the code and signed up (PENDING), the teacher approved them (APPROVED, visible on the student's own `/me/classes`), the teacher issued a reset code, the student redeemed it (204), and the old session was confirmed dead (401 on `/auth/me`) — proving the session-invalidation-on-reset behaviour. All nine checkpoints passed first time.
+**Local throwaway data:** none new — `make e2e` uses the `postgres-e2e` container with no volume and removes it on exit. The 1B/1C gate rows in the dev Postgres (`Gate Check School` ×2, `gate.teacher*`, `gate.student.c`) are still there; harmless.
 
-**Not yet done, unlike 1A/1B's gates:** this was walked only against the local stack, not against the Render/Vercel preview. Before or as part of opening the PR, walk it again on the deployed preview the way 1A/1B's final gate walks were done (Render Shell for the operator commands, curl from a local machine against the pilot Vercel URL).
-
-**Local throwaway data now sitting in the dev Postgres** (from `make db-up`, not shared/production — harmless, but accumulating): two "Gate Check School" rows (roll `00009Z` from 1B's gate walk, roll `00010C` from 1C's), and accounts `gate.teacher` / `gate.teacher.c` / `gate.student.c`. Fine to leave for now since local Postgres gets rebuilt from Flyway anyway, but a `make db-down` before the next big local run would clear it.
-
-## Commits on `pilot/1c-classes-and-enrolment` (ahead of `pilotMain`)
+## Commits on `pilot/1d-app-shell-and-first-journey` (ahead of `pilot/1c-classes-and-enrolment`)
 
 Oldest first:
 
-1. `71303b7` Record 1A/1B gate walks and confirm 1C/1D decisions (carried over from session 1, committed at the start of this session)
-2. `e9149eb` Task 1 — `class_group`/`enrolment` schema
-3. `e67edc0` Task 2 — `JoinCode`, `EnrolmentStatus`, `Level`, `ClassGroup`, `Enrolment`, four new `ErrorCode`s
-4. `9639775` Task 3 — `ClassGroupRepository`, `EnrolmentRepository`, `ClassFixtures`
-5. `345e734` Fix: `membersOf` ordering reverted to pending-first (see Deviations)
-6. `d51c284` Task 3 code-quality follow-up: mechanism comment on `EnrolmentRepository.request`, named constants in `ClassFixtures`
-7. `891f26a` Task 4 — the four authorisation-scope suites, written red
-8. `10780d6` Task 4 code-quality follow-up: test naming/comments
-9. `639d778` Task 5 — create and list classes
-10. `3cc56f9` Task 6 — class detail, rotate/disable join code
-11. `485d74c` Fix: tautological audit-log assertion in `ClassDetailTest` (see Deviations)
-12. `9995edf` Task 7 — join preview, sign-up, join with an existing account
-13. `e227312` Task 8 — approve, decline, remove
-14. `9afcf6f` Task 9 — password reset codes
-15. `aea0baa` Task 10 — authorisation suites completed for every role
-16. *(uncommitted at session end)* Task 11 — Gate 1C doc updates (this file, `docs/PILOT-ROADMAP.md`, root `CLAUDE.md`)
+1. `6d08888` Task 1 — `lib/api/schemas.ts`, `lib/app/{navigation,session,attempt}.ts`, `middleware.ts`, `ErrorPanel`
+2. `3b13cc3` Task 2 — `(app)/layout.tsx` session gate, `AppHeader`, `SignOutButton`, `/school` placeholder, `(app)/error.tsx`
+3. `25e81e6` Task 3 — `/login` and `LoginForm`
+4. `91efdad` Task 4 — `/account/password` and `ChangePasswordForm`
+5. `1f5d97d` Task 5 — `/join`, `/join/[code]`, `JoinCodeForm`, `SignUpForm`, `JoinButton`
+6. `dbea46d` Task 6 — `/home` and `MyClasses`
+7. `6bc858d` Task 7 — `/teach`, `/teach/classes/new`, `ClassList`, `CreateClassForm`, `lib/app/academic-year.ts`
+8. `5b9b285` Task 8 — `/teach/classes/[id]` and `ClassStudents`
+9. `32d2105` Task 9 — `/reset` and `ResetForm`
+10. `71318f4` Fix (1A bug) — API client lets Next's dynamic-render bailout through
+11. `827a2b3` Task 10 — Playwright config, `phase1.e2e.ts`, `scripts/e2e.sh`, `test:e2e`
+12. *(this commit)* Task 12 — Gate P1 doc updates (this file, roadmap, root `CLAUDE.md`)
 
-## Deviations from the 1C plan, all caught and fixed during the build
+## Deviations from the 1D plan, all small, all caught by tests or the e2e run
 
-- **Task 3 — the plan's literal fixture join codes were invalid.** `"CLASSPNE"`/`"CLASSTWP"` (the plan's own O→P, I→J substitution for `CLASSONE`/`CLASSTWO`) still contain the letter `L`, which the join-code alphabet and the DB's `class_group_join_code_format` CHECK both exclude. Fixed to `"CKASSPNE"`/`"CKASSTWP"` (L→K) in `ClassFixtures.java`. Any future plan that hand-writes a join-code literal needs to check it against `^[A-HJKMNP-Z2-9]{8}$` — five characters (0, O, 1, I, L) are excluded, not the four the plan's own comment claims.
-- **Task 3 — a genuine contradiction between the plan's Task 3 test and its Task 6 test, both about `EnrolmentRepository.membersOf`'s ordering.** Task 3's test asserted `containsExactly(APPROVED_STUDENT, PENDING_STUDENT)`; Task 6's `ClassDetailTest` asserts `$.enrolments[0].status == "PENDING"`. The repository's own javadoc says "pending first". The first implementer subagent made Task 3 pass by flipping the SQL to approved-first — which would have silently broken Task 6 three tasks later. Caught before Task 6 was built; reverted the SQL to pending-first (matching the javadoc and Task 6) and fixed Task 3's test assertion instead, since that assertion was the actual bug.
-- **Task 6 — a code-quality fix, not a behaviour change.** The rotate test's "the code is never written to the audit log" check extracted the new code from the JSON response with a hand-rolled regex that silently degrades to the whole response body if it ever fails to match, and compared it against an audit `details` payload that's hardcoded to `Map.of()` in `ClassService` — so the assertion could never fail regardless of whether a leak occurred. Split into two tests; the new one extracts the code via `JsonPath.read` (fails loudly if the field is missing) and asserts the audit row's `details` column is genuinely `{}`.
-- **Task 9 — no new migration was needed.** The plan flagged `password_reset_code` as possibly needing a new `V5` migration; it already existed, added ahead of schedule in 1B's `V2__identity.sql`. Confirmed before writing `ResetCodeRepository` rather than assumed.
-- Every other file in the plan was implemented essentially verbatim — no other field renames, signature changes, or endpoint-shape deviations. Every "check the actual signature first" caveat the plan raised (for `SchoolRepository`, `RoleRepository`, `UserAccountRepository`, `StoredCredential`, `LoginThrottle`, `OtherSessions`, `AuditEventType`, `AuthController`'s client-address helper) came back matching the plan's assumptions exactly, so nothing else needed adapting.
+- **Pre-existing 1A bug, found by `next build` inside `make e2e`:** `createApiClient` wrapped `await transport.extraHeaders()` inside the same `try/catch` as `fetch`. On the server that helper calls Next's `headers()`, which during a static build throws a bailout signal meaning "this route is dynamic". The catch turned that signal into `BACKEND_UNREACHABLE`, so prerendering `/school` (a static page under the `(app)` layout, which calls `getSession()`) failed the build. Fixed by reading the transport headers before the `try`, with a `client.spec.ts` test that a throwing `extraHeaders` propagates untouched. Nothing in 1A–1C had a static page under a session-reading layout, which is why it never showed.
+- **`ErrorPanel`'s "Try again" is `<a href="?">`, not the plan's `<Link href="">`.** `next/link` with an empty href rendered nothing in jsdom (the spec found no link at all), and a plain `<a href="">` isn't exposed as a link role either. `href="?"` reloads the current path (dropping the query), which is what "try again" wants on a server page.
+- **`ErrorPanel` lists `fieldErrors` itself.** The plan had `CreateClassForm` wrap the panel in a second `role="alert"` to add the field list, and noted the nesting as acceptable; `getByRole("alert")` refuses multiple matches, so the spec failed. Moving the list into the panel (with its own spec case) is simpler and every form gets it.
+- **`LoginForm` links with `next/link`**, not `<a>`: Next's `no-html-link-for-pages` lint rule fires once `/join` and `/reset` exist as pages.
+- **Straight apostrophes in copy** (`isn&apos;t`, not `&rsquo;`): the specs assert straight ones.
+- **`export const dynamic = "force-dynamic"`** also on `/join/[code]` and `/teach/classes/new` (the plan only had it on the list pages). Harmless either way since `headers()` makes them dynamic; explicit is clearer.
+- **The e2e journey tolerates an already-changed teacher password.** Both Playwright projects run the file against one seeded teacher, so the second project finds the temporary password already replaced. The test now waits for either the "Change password" heading or an alert containing "Wrong username or password" and branches. The alert locator is filtered by text because Next's route announcer is an empty `role="alert"` on every page, which otherwise matches first.
+- **`scripts/e2e.sh` passes the database to the operator commands as `DATABASE_*` environment variables**, the same ones `application.yaml` reads, instead of the plan's `--spring.datasource.url=` arguments.
+- **ESLint ignores `playwright-report/**` and `test-results/**`** (`eslint.config.mjs`), or `npm run lint` fails on Playwright's generated report after any e2e run.
+- Every other file was implemented essentially as the plan wrote it; every backend field name and endpoint the plan assumed matched (HANDOFF's earlier note that 1C changed no wire contract held).
 
 ## Half-done
 
-Nothing in code — all 11 of 1C's tasks are complete and tested. What's open is process, not implementation:
+Nothing in code. Open items are process:
 
-- The Gate 1C doc updates (this file, roadmap, `CLAUDE.md`) were written this session but were still uncommitted when the session ended — check `git status` on `pilot/1c-classes-and-enrolment` and commit them (message "Record Gate 1C") if they're not already committed by the time this is read.
-- No PR has been opened for `pilot/1c-classes-and-enrolment` → `pilotMain`. Per `CLAUDE.md`, Tim opens and merges PRs — don't open one without being asked.
+- Task 11 restyle — waiting on design packs D-1 and D-2 (see above).
+- Gate P1's three manual checkboxes — waiting on Tim.
+- No PR for 1C or 1D. Per `CLAUDE.md`, Tim opens and merges PRs.
 
 ## Waiting on a human
 
-- **Open the 1C PR** (`pilot/1c-classes-and-enrolment` → `pilotMain`) when Tim's ready, title "Pilot 1C: classes and enrolment", body per the plan's Task 11 Step 5.
-- **Walk Gate 1C's manual journey against the Render/Vercel preview**, not just locally — the way 1A/1B's final gates were walked, ideally before or as part of the PR.
-- **One Gate 1B item still open from last session:** redeploy Render while holding a live session cookie, then `/auth/me` with that cookie.
-- **Confirm Katelyn's site is unaffected:** `main`'s Vercel project should 404 `/login` and `/api/v1/health` while serving `/nwetss-hanlon`.
-- **Tidy up:** delete `gate.teacher`, `gate.teacher.c`, `gate.student.c` and the two "Gate Check School" rows before any real onboarding (local dev data is harmless; don't forget if any of this ever touched a shared host).
-- Roadmap §9 R3, R4, R5 — calendar-bound, start now.
+- **Open the 1C PR** (`pilot/1c-classes-and-enrolment` → `pilotMain`; both branches were pushed to `origin` on 16 Sep 2026, 1C for the first time), title "Pilot 1C: classes and enrolment", then **the 1D PR** (`pilot/1d-app-shell-and-first-journey` → `pilotMain`), title "Pilot 1D: app shell and first journey", body per the 1D plan's Task 12 Step 4 with "Restyle from D-1/D-2 is pending the design packs".
+- **Walk Gate P1 on the Vercel Preview** (and Gate 1C's journey, still only walked locally).
+- **Design packs D-1 and D-2** into `docs/design/pilot/<route>/` with `NOTES.md`, then Task 11.
+- **Phase 2 preconditions (roadmap §8.2), needed before the 2A plan can be written:** the four final 2027 briefs and the Coursework Rules and Procedures in `subjectDocs/`; design packs D-3, D-4, D-5 requested. **The 2A plan doesn't exist yet and can't be written until those documents are in the repo.**
+- Carried over: Gate 1B's "redeploy Render while holding a live session cookie" check; confirm Katelyn's `main` project 404s `/login` and `/api/v1/health`; delete the gate-check accounts and schools before any real onboarding; roadmap §9 R3–R5 are calendar-bound.
+
+## Gate 1C — walked locally, 16 Sep 2026 (carried over; branch still unmerged)
+
+- [x] `make verify` green (151 backend tests)
+- [x] Every endpoint in roadmap §7 Phase 1 has a scope test (`classes/authz/{Teacher,Student,Leader,Anonymous}ScopeTest.java`)
+- [x] Audit rows exist for role grants, enrolment decisions, reset codes and code rotation
+
+The manual journey was walked against the local stack only (`make db-up`, packaged jar), all nine checkpoints first time, including session invalidation on reset. Not yet walked on the Render/Vercel preview. 1C's deviations from its plan (fixture join codes with no `L`, `membersOf` pending-first ordering, the tautological audit assertion, no new migration for `password_reset_code`) are in git history on that branch's commits `345e734`, `485d74c` and the plan itself.
 
 ## Branch strategy — unchanged since 15 Sep 2026
 

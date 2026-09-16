@@ -55,3 +55,6 @@ Two things that share a Next.js app:
 - Tests: `lib/**/*.test.ts` run under `node --test` (existing convention); `**/*.spec.ts(x)` run under Vitest; `e2e/*.e2e.ts` under Playwright.
 - Component specs query by role and accessible name. Restyles from design handoffs must keep them passing (`docs/PILOT-ROADMAP.md` §6.3).
 - Server components call Spring through `lib/api/server.ts`; client components through `lib/api/client.ts`. Mutations happen from client components only.
+- App pages: a server component loads with `serverApi` inside `attempt()` and renders `ErrorPanel` on failure; interactive parts are client components in `components/app/` that call `api` and then `router.refresh()` or `router.push()`. `lib/app/session.ts` is the only place that reads `/auth/me` on the server. `middleware.ts` only checks that the session cookie exists.
+- Zod schemas in `lib/api/schemas.ts` mirror the backend response records field for field. A backend record change means a schema change in the same PR.
+- `make e2e` (`scripts/e2e.sh`) builds the jar, seeds one teacher with the operator CLI on the throwaway `postgres-e2e` database, and runs `e2e/*.e2e.ts` on a laptop and a phone project against a production Next build on :3100. Nothing in `playwright.config.ts` starts servers.

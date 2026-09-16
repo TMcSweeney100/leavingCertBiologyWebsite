@@ -43,7 +43,7 @@ Detailed plans so far:
 | 1 Foundation | 1A Walking skeleton | written | built; gate waiting on Vercel preview (see HANDOFF) | §8.1 Gate 1A |
 | | 1B Accounts and sessions | written | built; gate passed locally, preview walk waiting on Tim | Gate 1B |
 | | 1C Classes and enrolment | written | built; Gate 1C walked locally, all checks green | Gate 1C |
-| | 1D App shell and first journey | written | not started | **Gate P1** |
+| | 1D App shell and first journey | written | built (16 Sep 2026); `make verify` and `make e2e` green, axe clean on every page; preview walk, Tim's review and the D-1/D-2 restyle still open | **Gate P1** |
 | 2 Components | 2A–2F | to write at phase start | — | **Gate P2** |
 | 3 The log | 3A–3C | to write | — | **Gate P3** |
 | 4 Teacher grid | 4A–4B | to write | — | **Gate P4 = pilot can start** |
@@ -79,6 +79,10 @@ The design left these open, or left them to "the Phase 1 plan". Each is what I'd
 | R18 | **A join code lives 30 days** from creation or rotation, not the 14 the 1C plan originally proposed. Rotating replaces it and restarts the clock; turning joining off clears it. Confirmed by Tim, 16 Sep 2026. | `JoinCode.LIFETIME`. Fewer trips back to the teacher to re-share a code mid-term. |
 | R19 | **`POST /classes` names the school by id** (`schoolId` in the request body), and the teacher must hold TEACHER there — not implicitly the caller's "current" school. In the pilot every teacher has one school, so the frontend fills it from `/auth/me`. Confirmed by Tim, 16 Sep 2026. | `CreateClassRequest`. Keeps the scope check explicit and testable rather than inferred. |
 | R20 | **Redeeming a password reset code does not sign the student in.** It sets the password, ends every existing session of that user, and returns 204; the page then sends them to `/login`. Confirmed by Tim, 16 Sep 2026. | `AuthController.passwordReset`. Simpler than 1D's `/reset` page carrying a session across, and §6.2's `/reset` row doesn't require sign-in. |
+| R21 | **Sign-out is a POST from a client button, then `/login`.** There is no GET sign-out link. Confirmed by Tim, 16 Sep 2026 (1D plan P-4). | A GET that changes state is CSRF bait, and Spring's CSRF filter would refuse it anyway. `SignOutButton`. |
+| R22 | **`/reset` sends the student to `/login` after success**, the page-side half of R20. Confirmed by Tim, 16 Sep 2026 (1D plan P-5). | Redeeming doesn't sign in, so the page has nowhere else to go. `ResetForm`. |
+| R23 | **`/school` is a placeholder page until Phase 5** ("Your school overview arrives in Phase 5"). Confirmed by Tim, 16 Sep 2026 (1D plan P-6). | A school leader needs somewhere to land from §6.1's routing before 5A exists. |
+| R24 | **`middleware.ts` checks only that a `SESSION` cookie exists**, to redirect a signed-out visitor to `/login?next=…`; the `(app)` layout validates the session against Spring. Confirmed by Tim, 16 Sep 2026 (1D plan P-7). | Middleware can't reach Spring cheaply on every request. A stale cookie lands on `/login` without `next`, which is acceptable. |
 
 ---
 
@@ -431,12 +435,12 @@ Results in `docs/HANDOFF.md`. 151 backend tests pass (schema through the complet
 7. `/teach/classes/[id]` Students tab
 8. `/reset`
 9. Playwright harness (`scripts/e2e.sh`, `make e2e`) and the Phase 1 journey
-10. Restyle from D-1 and D-2 when they arrive (§6.3)
+10. Restyle from D-1 and D-2 when they arrive (§6.3) — **not started: `docs/design/pilot/` doesn't exist yet (16 Sep 2026).** Pages are plain, semantic HTML with the shadcn `Button`; every spec queries by role and name, so the restyle must keep them green.
 
-**Gate P1 — end of Phase 1**
-- [ ] `make verify` and `make e2e` green
+**Gate P1 — end of Phase 1** (tasks 1–9 built 16 Sep 2026, see `docs/HANDOFF.md`)
+- [x] `make verify` and `make e2e` green — locally, 16 Sep 2026: the journey passes on both Playwright projects (laptop and phone)
 - [ ] On Vercel Preview against the EU backend, by hand: operator creates a school and teacher → teacher signs in, changes password, creates a class → a phone opens `/join`, enters the code, creates an account → teacher approves → phone shows the class as approved → teacher issues a reset code → phone resets its password and signs in
-- [ ] Keyboard-only run of the same journey on a laptop; no WCAG 2.2 AA failures in an axe scan of each page (`@axe-core/playwright` in the e2e)
+- [ ] Keyboard-only run of the same journey on a laptop; no WCAG 2.2 AA failures in an axe scan of each page (`@axe-core/playwright` in the e2e) — *the axe half is done*: every page the journey visits is scanned with `wcag2a`, `wcag2aa`, `wcag22aa` and reports no violations; `phase1.e2e.ts` also signs in keyboard-only. The full keyboard-only walk by hand is still to do.
 - [ ] Tim has reviewed the pages (design restyle can still be pending)
 
 ### 8.2 Phase 2 — Components and the timeline
