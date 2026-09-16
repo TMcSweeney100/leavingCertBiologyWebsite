@@ -1,5 +1,6 @@
 package ie.coursework.classes.authz;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ie.coursework.support.ApiSession;
@@ -17,6 +18,7 @@ class LeaderScopeTest extends AuthzSuite {
         leader.get("/api/v1/classes").andExpect(status().isNotFound());
         leader.get(class1).andExpect(status().isNotFound());
         leader.post(class1 + "/enrolments/" + world.pendingEnrolment() + "/approve").andExpect(status().isNotFound());
-        leader.get("/api/v1/me/classes").andExpect(status().isOk()); // empty list: a leader is nobody's student
+        // A leader is nobody's student: the list is empty, not merely present.
+        leader.get("/api/v1/me/classes").andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(0));
     }
 }

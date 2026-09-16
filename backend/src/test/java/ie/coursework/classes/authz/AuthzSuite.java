@@ -9,7 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 
-/** Every scope test starts from the same world and signs one user in. */
+/**
+ * Every scope test starts from the same world and signs one user in.
+ *
+ * <p>Until every 1C endpoint exists (Tasks 5-9), most {@code isNotFound()} assertions in these
+ * suites pass "by accident": Spring's {@code NoResourceFoundException} 404s an unmapped route
+ * regardless of who's asking. That's why each suite also carries at least one positive
+ * (200-expecting) case — that's the one that actually proves the endpoint enforces scope, and
+ * it's the one that's still red until its task lands.
+ */
 @AutoConfigureMockMvc
 abstract class AuthzSuite extends PostgresIntegrationTest {
 

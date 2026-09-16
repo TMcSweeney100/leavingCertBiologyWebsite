@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class AnonymousScopeTest extends AuthzSuite {
 
     @Test
-    void joinPreviewAndSignUpArePublicButEverythingElseNeedsASession() throws Exception {
+    void joinPreviewIsPublicButJoiningAndEverythingElseNeedsASession() throws Exception {
         ApiSession nobody = anonymous();
 
         nobody.get("/api/v1/join/" + world.class1Code()).andExpect(status().isOk());
