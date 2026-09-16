@@ -112,4 +112,4 @@ One moment per page: the error and status blocks fade and rise 4px on appear, 16
 5. Password error sentences come from the API's `detail`. The frames' invented strings aren't used.
 6. Forced mode with no header is accepted as drawn.
 7. Helper text sits inside the row, wired with `aria-describedby`.
-6/7 in the build: field labels are 12px, not 11px (the brief's type floor).
+Field labels are built at 12px, not 11px, to meet the brief's type floor.
