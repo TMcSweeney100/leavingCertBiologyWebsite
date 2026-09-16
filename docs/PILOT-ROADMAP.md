@@ -42,7 +42,7 @@ Detailed plans so far:
 |---|---|---|---|---|
 | 1 Foundation | 1A Walking skeleton | written | built; gate waiting on Vercel preview (see HANDOFF) | §8.1 Gate 1A |
 | | 1B Accounts and sessions | written | built; gate passed locally, preview walk waiting on Tim | Gate 1B |
-| | 1C Classes and enrolment | written | not started | Gate 1C |
+| | 1C Classes and enrolment | written | built; Gate 1C walked locally, all checks green | Gate 1C |
 | | 1D App shell and first journey | written | not started | **Gate P1** |
 | 2 Components | 2A–2F | to write at phase start | — | **Gate P2** |
 | 3 The log | 3A–3C | to write | — | **Gate P3** |
@@ -76,6 +76,9 @@ The design left these open, or left them to "the Phase 1 plan". Each is what I'd
 | R15 | **Subjects are loaded as content from Phase 1**, through the second Flyway instance and its own history table. | The content-migration mechanism (design §7.1) gets proven, and deployed, on four rows before Phase 2 depends on it for four templates. |
 | R16 | **The Vercel function region is Dublin (`dub1`)**, set in `frontend/vercel.json`. | Design §5.4: functions currently run in Washington DC. |
 | R17 | **JSON field names are camelCase.** Problem codes are `SCREAMING_SNAKE` and are part of the API contract. | Matches contentCreater's `ErrorCode` convention and the Zod schemas on the frontend. |
+| R18 | **A join code lives 30 days** from creation or rotation, not the 14 the 1C plan originally proposed. Rotating replaces it and restarts the clock; turning joining off clears it. Confirmed by Tim, 16 Sep 2026. | `JoinCode.LIFETIME`. Fewer trips back to the teacher to re-share a code mid-term. |
+| R19 | **`POST /classes` names the school by id** (`schoolId` in the request body), and the teacher must hold TEACHER there — not implicitly the caller's "current" school. In the pilot every teacher has one school, so the frontend fills it from `/auth/me`. Confirmed by Tim, 16 Sep 2026. | `CreateClassRequest`. Keeps the scope check explicit and testable rather than inferred. |
+| R20 | **Redeeming a password reset code does not sign the student in.** It sets the password, ends every existing session of that user, and returns 204; the page then sends them to `/login`. Confirmed by Tim, 16 Sep 2026. | `AuthController.passwordReset`. Simpler than 1D's `/reset` page carrying a session across, and §6.2's `/reset` row doesn't require sign-in. |
 
 ---
 
@@ -410,10 +413,12 @@ Each phase lists what it delivers, the outline of its tasks (each becomes TDD st
 9. Password reset codes: issue and redeem
 10. Authorisation suites filled in: teacher, student, leader, anonymous
 
-**Gate 1C**
-- [ ] `make verify` green
-- [ ] Every endpoint in §7 Phase 1 has a scope test: another teacher's class → 404; a student calling teacher endpoints → 404; an enrolment id from another class → 404
-- [ ] Audit rows exist for role grants, enrolment decisions, reset codes and code rotation
+**Gate 1C — walked locally, 16 Sep 2026**
+- [x] `make verify` green
+- [x] Every endpoint in §7 Phase 1 has a scope test: another teacher's class → 404; a student calling teacher endpoints → 404; an enrolment id from another class → 404
+- [x] Audit rows exist for role grants, enrolment decisions, reset codes and code rotation
+
+Results in `docs/HANDOFF.md`. 151 backend tests pass (schema through the completed authorisation suites). The manual journey (create school/teacher/class, student signs up and is approved, teacher issues a reset code, student redeems it and the old session is invalidated) was walked by hand against the local stack; not yet re-walked against the Render/Vercel preview the way 1A/1B were — that's still open before merging to `pilotMain`.
 
 #### 1D App shell and first journey — plan written
 
