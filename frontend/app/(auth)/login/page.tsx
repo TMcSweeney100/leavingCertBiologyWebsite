@@ -14,7 +14,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   if (me) redirect(landingFor(me, next));
 
   return (
-    <main>
+    <main id="main">
       <LoginForm next={next} />
     </main>
   );

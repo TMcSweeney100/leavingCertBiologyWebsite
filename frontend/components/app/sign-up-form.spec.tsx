@@ -47,12 +47,11 @@ describe("SignUpForm", () => {
     expect(screen.getByRole("link", { name: "Sign in instead" })).toHaveAttribute("href", "/login?next=%2Fjoin%2FABCDEFGH");
   });
 
-  it("shows a taken username, a short password, and an expired code", async () => {
+  it("shows a taken username and a short password", async () => {
     render(<SignUpForm code="ABCDEFGH" />);
     for (const [code, detail] of [
       ["USERNAME_TAKEN", "That username is taken."],
       ["PASSWORD_TOO_SHORT", "Passwords need at least 10 characters."],
-      ["JOIN_CODE_INVALID", "That join code isn't right, or it has expired."],
     ] as const) {
       vi.mocked(api.send).mockRejectedValueOnce(new ApiError({ code, status: 400, detail }));
       await fill();
@@ -62,5 +61,27 @@ describe("SignUpForm", () => {
       await userEvent.clear(screen.getByRole("textbox", { name: "Username" }));
     }
     expect(push).not.toHaveBeenCalled();
+  });
+
+  // Design pack D-1: nothing is left to submit, so the form gives way to a way back to /join.
+  it("drops the form for a code that expired between steps", async () => {
+    vi.mocked(api.send).mockRejectedValueOnce(new ApiError({ code: "JOIN_CODE_INVALID", status: 404, detail: "That join code isn't right, or it has expired." }));
+    render(<SignUpForm code="ABCDEFGH" />);
+
+    await fill();
+
+    expect(screen.getByRole("alert")).toHaveTextContent("That join code isn't right, or it has expired.");
+    expect(screen.getByRole("link", { name: "Enter a different join code" })).toHaveAttribute("href", "/join");
+    expect(screen.queryByRole("button", { name: "Create account and join" })).not.toBeInTheDocument();
+    expect(push).not.toHaveBeenCalled();
+  });
+
+  it("marks the username row when the username is taken", async () => {
+    vi.mocked(api.send).mockRejectedValueOnce(new ApiError({ code: "USERNAME_TAKEN", status: 409, detail: "That username is taken." }));
+    render(<SignUpForm code="ABCDEFGH" />);
+
+    await fill();
+
+    expect(screen.getByRole("textbox", { name: "Username" })).toHaveAttribute("aria-invalid", "true");
   });
 });

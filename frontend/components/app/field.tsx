@@ -24,6 +24,7 @@ export function Field({
   label,
   help,
   error,
+  invalid = false,
   controlClassName,
   children,
 }: {
@@ -33,12 +34,15 @@ export function Field({
   help?: string;
   /** Replaces the helper text and marks the row invalid. */
   error?: string;
+  /** Marks the row invalid without a message of its own (the form's alert says why). */
+  invalid?: boolean;
   controlClassName?: string;
   children: (control: FieldControlProps) => ReactNode;
 }) {
+  const bad = invalid || Boolean(error);
   const note = error ?? help;
   const noteId = note ? `${id}-note` : undefined;
-  const row = error
+  const row = bad
     ? "bg-app-error-tint shadow-[inset_2px_0_0_var(--app-error)]"
     : "focus-within:bg-app-accent-tint focus-within:shadow-[inset_2px_0_0_var(--app-accent)]";
   return (
@@ -47,7 +51,7 @@ export function Field({
     >
       <label
         htmlFor={id}
-        className={`font-mono text-app-label font-bold uppercase tracking-[.09em] ${error ? "text-app-error-hover" : "text-app-muted group-focus-within/field:text-app-accent"}`}
+        className={`font-mono text-app-label font-bold uppercase tracking-[.09em] ${bad ? "text-app-error-hover" : "text-app-muted group-focus-within/field:text-app-accent"}`}
       >
         {label}
       </label>
@@ -55,10 +59,10 @@ export function Field({
         id,
         className: controlClassName ? `${controlClass} ${controlClassName}` : controlClass,
         "aria-describedby": noteId,
-        "aria-invalid": error ? true : undefined,
+        "aria-invalid": bad ? true : undefined,
       })}
       {note && (
-        <p id={noteId} className={`mt-1 text-app-help leading-snug ${error ? "text-app-error-hover" : "text-app-muted"}`}>
+        <p id={noteId} className={`mt-1 text-app-help leading-snug ${bad ? "text-app-error-hover" : "text-app-muted"}`}>
           {note}
         </p>
       )}

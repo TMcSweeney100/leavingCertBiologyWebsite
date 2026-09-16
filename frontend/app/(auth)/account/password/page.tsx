@@ -6,7 +6,7 @@ import { requireSession } from "@/lib/app/session";
 export default async function ChangePasswordPage() {
   const me = await requireSession();
   return (
-    <main>
+    <main id="main">
       <ChangePasswordForm forced={me.mustChangePassword} landing={landingFor({ ...me, mustChangePassword: false })} />
     </main>
   );

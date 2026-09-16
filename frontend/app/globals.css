@@ -319,12 +319,14 @@
   }
 }
 
-/* Focus for the app, per D-1: a 2px accent outline at 2px offset on every link and control. Zero
-   specificity, so a component's own focus-visible utilities still win (field inputs hand their
-   focus to the field row). */
-.app-theme :where(a, button, select, input, textarea, [tabindex]):focus-visible {
-  outline: 2px solid var(--app-accent);
-  outline-offset: 2px;
+/* Focus for the app, per D-1: a 2px accent outline at 2px offset on every link and control. In
+   `@layer base` so a component's own utilities win (field inputs hand their focus to the field
+   row); unlayered, it would beat every utility whatever its specificity. */
+@layer base {
+  .app-theme :where(a, button, select, input, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--app-accent);
+    outline-offset: 2px;
+  }
 }
 
 .app-appear {

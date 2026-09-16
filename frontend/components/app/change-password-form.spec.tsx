@@ -73,4 +73,19 @@ describe("ChangePasswordForm", () => {
     await fill("Temporary-Pass-1", "my-own-password-1");
     expect(screen.getByRole("alert")).toHaveTextContent("current password isn't right");
   });
+
+  it("marks the row the API refused", async () => {
+    vi.mocked(api.sendNoContent).mockRejectedValueOnce(new ApiError({ code: "PASSWORD_TOO_SHORT", status: 400, detail: "Passwords need at least 10 characters." }));
+    render(<ChangePasswordForm forced={false} landing="/home" />);
+    await fill("Temporary-Pass-1", "short");
+    expect(screen.getByLabelText("New password")).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByLabelText("Current password")).not.toHaveAttribute("aria-invalid");
+
+    vi.mocked(api.sendNoContent).mockRejectedValueOnce(new ApiError({ code: "INVALID_CREDENTIALS", status: 401, detail: "Your current password isn't right." }));
+    await userEvent.clear(screen.getByLabelText("New password"));
+    await userEvent.clear(screen.getByLabelText("Confirm new password"));
+    await fill("Temporary-Pass-1", "my-own-password-1");
+    expect(screen.getByLabelText("Current password")).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByLabelText("New password")).not.toHaveAttribute("aria-invalid");
+  });
 });

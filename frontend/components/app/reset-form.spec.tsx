@@ -56,4 +56,13 @@ describe("ResetForm", () => {
 
     expect(screen.getByRole("alert")).toHaveTextContent("15 minutes");
   });
+
+  it("marks the reset code row when the code is refused", async () => {
+    vi.mocked(api.sendNoContent).mockRejectedValue(new ApiError({ code: "RESET_CODE_INVALID", status: 400, detail: "That code isn't right, or it has expired. Ask your teacher for a new one." }));
+    render(<ResetForm />);
+
+    await fill();
+
+    expect(screen.getByRole("textbox", { name: "Reset code" })).toHaveAttribute("aria-invalid", "true");
+  });
 });
