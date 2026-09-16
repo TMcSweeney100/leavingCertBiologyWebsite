@@ -18,6 +18,35 @@ The functional spec describes the whole product: around 70 requirements, three r
 
 **The pilot:** one school, with 5th year classes in Biology, Chemistry, Physics and Business. It starts when the SEC publishes the 2028 briefs in Term 2 of 2027.
 
+**Revision in progress — earliest possible start, 6th years possibly included.** The intent is now to get this in front of a school as soon as it can be, rather than waiting for the 2028 briefs, and to include 6th years if that helps. The build is expected to be heavily AI-assisted, which should shorten development. This changes D3 and §7.4, and raises the question in §1.1 below, which has to be answered before the phase order is worth anything.
+
+### 1.1 Which cohort, and when — DECISION NEEDED (Q9)
+
+The two cohorts are on completely different clocks, and it changes what the pilot can prove.
+
+**6th years (exams 2027).** Their briefs are already final and published (§4.1). There is nothing to wait for — a pilot could start within weeks. But their completion dates are close or past:
+
+| Subject | 2027 completion date | Runway from Oct 2026 |
+|---|---|---|
+| Physics | 11 December 2026 | ~10 weeks |
+| Biology | 26 February 2027 | ~5 months |
+| Business | 12 March 2027 | ~5 months |
+| Chemistry | 23 April 2027 | ~7 months |
+
+**5th years (exams 2028).** Full runway, and the log starts the week the brief arrives — but nothing can begin until the SEC publishes in Term 2 of 2027.
+
+**What each cohort can and can't prove, against the three criteria in §1:**
+
+| | 6th years, from autumn 2026 | 5th years, from spring 2027 |
+|---|---|---|
+| School would pay | **Stronger.** The leader view under real deadline pressure is exactly when it matters. | Weaker — nothing is near a deadline for months. |
+| Teachers rely on the grid | **Stronger.** Chasing is a live problem for them now. | Weaker early on. |
+| Students keep logging | **Weaker.** A log started mid-project can't show a full trail, so the proof-of-work claim is untested. | **Stronger.** This is the only way to test it properly. |
+
+They test different things, which is an argument for **both**: 6th years now for the teacher and leader case, 5th years from spring for the log. That costs nothing extra in build — the same phases serve both — but it does mean loading the 2027 briefs as live content, not just reference data (§7.4).
+
+**Caution on the AI-assisted build.** It will speed up the code: scaffolding, CRUD, migrations, tests, the proxy. It will not speed up the things actually on the critical path — authoring four templates and verifying every line against the source documents, getting four teachers to review the checkpoints (Q1), the data processing agreement and privacy notice (Q5), and choosing and standing up EU hosting. Those are calendar-bound, not typing-bound. If the start date moves earlier, it is those items that decide whether it is achievable, not the development time.
+
 **What the pilot has to show:**
 
 1. **The school would pay.** A deputy principal or principal can see where every class stands, and wants that view.
@@ -29,8 +58,8 @@ The functional spec describes the whole product: around 70 requirements, three r
 | # | Question | Decision |
 |---|---|---|
 | D1 | Repository | Same repo: add `backend/` beside `frontend/`, following `contentCreater`'s layout. *Recommended in review, not yet explicitly confirmed (Q8).* |
-| D2 | First release | The coursework core. The weekly loop (cross-subject timeline, pushed deadlines, revision recommendations) comes later. |
-| D3 | Pilot timing | Spring 2027, with 5th years, from the week the 2028 briefs arrive. |
+| D2 | First release | The coursework core, **plus the cross-subject timeline** (§3.2). Pushed deadlines and revision recommendations still come later. |
+| D3 | Pilot timing | ~~Spring 2027, with 5th years, from the week the 2028 briefs arrive.~~ **Under revision** — see §1.1. Earliest possible start now preferred, with 6th years possibly included. |
 | D4 | Subjects | Biology, Chemistry, Physics and Business. |
 | D5 | Success criteria | All three in §1. That puts a school leader view in the pilot. |
 | D6 | Sign-in | Class join codes plus a username and password. No school Google or Microsoft sign-in in the pilot. |
@@ -46,7 +75,7 @@ The pilot is built in six phases, each with its own implementation plan, like Ph
 | Phase | Delivers |
 |---|---|
 | **1. Foundation** | Spring Boot API, Postgres and the Next.js proxy, deployed to EU hosting straight away. The operator sets up the school, teacher accounts and the school-leader role. Teachers create classes with join codes, students sign up and join, and teachers approve them and reset passwords. |
-| **2. Components** | Science and Business templates, with the 2027 briefs as reference content. Teachers create a component for a class, set stage dates and add their own checklist items. Students see stages, report sections, rules, marks and prompts, reusing the BiPi page components. |
+| **2. Components** | Science and Business templates, with the 2027 briefs as reference content. Teachers create a component for a class, set stage dates and add their own checklist items. Students see stages, report sections, rules, marks and prompts, reusing the BiPi page components. **Plus the cross-subject timeline at `/home`**, including the student's own added items (FR-10 to FR-14) — see §3.2. |
 | **3. The log** | Log entries that keep every version, per-entry visibility, and the teacher's reading view. Until Phase 6, students can note AI use as ordinary entries. |
 | **4. Teacher grid** | Students against checkpoints, with sign-offs, furthest behind first. |
 | **5. School leader view** | Where each class stands, stage by stage, across a year group. Counts only. |
@@ -67,9 +96,23 @@ Some of these are MUSTs in the functional spec. Each is deferred, not dropped.
 | Coursework document links (FR-38–40) | Students write little of the report in 5th year. |
 | Supervised session scheduling (FR-61) | Needed at stage 4, in the autumn. |
 | Teachers renaming stages or adding stages of their own (part of FR-48) | Keeps stage names national, which the leader view depends on. Teachers can add dated items inside a stage instead. |
-| Cross-subject timeline, pushed deadlines, recommendations (FR-10–14, FR-55–60) | The weekly loop is the next release (D2). |
+| Pushed class deadlines and revision recommendations (FR-55–60) | The rest of the weekly loop is the next release (D2). |
 | School sign-in, individual subscribers, planner, study log, notifications, Irish-language interface | Later releases. |
 | Engineering, Geography and Construction Technology templates | Their guidelines are already in `subjectDocs/` for when they're needed. |
+
+### 3.2 The cross-subject timeline is in the pilot
+
+Pulled forward out of the weekly loop, and it belongs in for a reason the rest of the loop doesn't share: **it is the product's central claim.** One place where everything a student is assessed on lives, across every subject. A pilot that doesn't test it can't tell us whether the claim holds.
+
+The pilot is also unusually well set up to show it. The four subjects are Biology, Chemistry, Physics and Business, and a science student will typically be doing two or three of them — so a real student in this pilot has several components running at once, on different dates, from different teachers. That is exactly the situation nothing else can display.
+
+**Scope:** `/home` shows a chronological list, week and month views, across every class the student is approved in. Items are the component stage dates, any dated teacher items, **and the student's own added items (FR-13)** — labelled by subject where they have one, with days remaining, and visually distinguished by type (FR-10 to FR-14).
+
+**Student-added items are in the pilot.** Without them the timeline carries stage dates only, and with completion dates months apart (§4.3) it would look sparse for weeks at a time — three items on a screen doesn't feel like "everything in one place". Letting a student add their own test, essay or deadline is what makes it their timeline rather than a read-only view of what teachers have set, and it is the only part of the pilot where the student puts something in that isn't tied to coursework. Data model in §6.8.
+
+**They are private to the student.** Teachers do not see them. They are not coursework, they carry no authentication value, and a student noting "driving test" or "Nana's birthday" should not surface in a teacher's grid. This is a hard rule, not a default — there is no visibility toggle, unlike the log.
+
+**Cost is low.** One small table and a union in the timeline query. The work is the view, not the model.
 
 The existing public schedule pages keep running unchanged beside the app. They live at `/[class]` and are built from the files in `frontend/lib/classes/`.
 
@@ -353,6 +396,19 @@ log_visibility_change (entry_id, visible, changed_at)
 
 The NCCA's example strings become the formatter's test fixtures.
 
+### 6.8 The student's own items
+
+```sql
+personal_item (id, student_user_id, title, due_date,
+               kind TEST|ESSAY|DEADLINE|OTHER,
+               class_group_id NULL, created_at, updated_at)
+```
+
+- **Keyed on the student, not on an enrolment or a component.** A student can note something that belongs to no class at all.
+- **`class_group_id` is optional**, and only used to label the item with a subject on the timeline. It grants nobody any access.
+- **No role but the owner can read this table.** Not teachers, not school leaders, in any view or aggregate. The authorisation tests in §10 get a case for it.
+- **Students can edit and delete these freely.** Unlike the log, there is no audit purpose here, so no revisions and no retention rule.
+
 ---
 
 ## 7. Content — Proposed
@@ -404,8 +460,8 @@ Checkpoints are drawn only from what the guidelines say. The **Basis** column sh
 
 ### 7.4 Briefs
 
-- **The final 2027 briefs are loaded as reference content**, so teachers can explore the app and the tests have real data.
-- **The 2028 briefs are loaded when the SEC publishes them**, in Term 2 of 2027. **The pilot can't start before then**, because completion dates come from the brief.
+- **The final 2027 briefs are loaded as reference content**, so teachers can explore the app and the tests have real data. **If 6th years are in the pilot (§1.1), these become live content rather than reference data** — they are already published, so that cohort has no dependency on the SEC.
+- **The 2028 briefs are loaded when the SEC publishes them**, in Term 2 of 2027. ~~**The pilot can't start before then**, because completion dates come from the brief.~~ That is only true for a 5th year pilot. A 6th year pilot can start as soon as the software is ready.
 
 ---
 
@@ -461,7 +517,7 @@ The existing date logic in `frontend/lib/schedule.ts`, which is safe for the Dub
 - **No file upload endpoint exists.** Links must be `https`. They're stored, rendered with `rel="noopener noreferrer"`, and never fetched by the server.
 - **Authorisation:** every request resolves to roles and scopes, and every service method takes the acting user as an argument. Resources outside the user's scope return 404 rather than 403, so ids can't be probed. *This changes the tech spec, which says 403.*
 - **Audit events** are recorded for role changes, enrolment decisions, password reset codes issued, sign-offs and revocations, and join code rotation.
-- **Personal data is limited** to names, usernames, password hashes, class membership, progress and the log. There's no student email or date of birth.
+- **Personal data is limited** to names, usernames, password hashes, class membership, progress, the log, and the student's own timeline items. There's no student email or date of birth. Personal items are free text a student writes about their own life, so the DPIA treats them as content alongside the log.
 - **EU residency** applies to the database, the API and the Vercel functions.
 - **The log counts as content.** Notes, sources and AI prompts are student-written text about the project. The data protection impact assessment (DPIA) must treat them as content, and the positioning line "if our database leaked tomorrow, nobody's project is in it" needs softening (review issue #8).
 - **Before the pilot:** a data processing agreement with the school (the controller), and a privacy notice for students and parents, drafted by someone qualified. This document is not legal advice.
@@ -484,7 +540,7 @@ If the API is down, the proxy returns its own problem response rather than a bla
 |---|---|
 | Domain (JUnit, no Spring) | The completion-date rule; "behind" and the leader-view counts; citation and AI-appendix formatting against the NCCA's example strings; the log revision rules |
 | Database (Testcontainers, Postgres 18) | Both triggers (completion date, published-version structure); content migrations load; every checkpoint and prompt has a `source_ref`; each version's mark bands add up to `marks_total` |
-| Authorisation | One test class per role, written before the endpoints. Each tries to reach something out of scope: another teacher's class, another student's log, a hidden entry's body, a school the leader doesn't belong to. |
+| Authorisation | One test class per role, written before the endpoints. Each tries to reach something out of scope: another teacher's class, another student's log, a hidden entry's body, a school the leader doesn't belong to, and any student's `personal_item` rows from a teacher or leader session. |
 | Frontend | The existing `node --test` suite for `lib/`; the word checker makes no network request; no class slug collides with an app route |
 | End to end (Playwright) | A student joins with a code, the teacher approves, and the student logs an entry and hides it; the teacher sees that the entry exists but not what it says. A teacher sets dates and signs off, and the leader counts change. |
 
@@ -502,6 +558,7 @@ If the API is down, the proxy returns its own problem response rather than a bla
 | Q6 | Do the AI-use fields in §6.7 match the current Coursework Rules and Procedures? | Phase 6 |
 | Q7 | If the 2028 briefs are late, does the pilot wait? | Pilot start |
 | Q8 | Confirm D1: build in the same repository. | Phase 1 |
+| Q9 | Which cohort does the pilot run with — 6th years from autumn 2026, 5th years from spring 2027, or both? See §1.1. | Everything. This sets the start date, which brief content is live, and what the pilot can actually prove. |
 
 ## 12. Housekeeping for Phase 1
 
