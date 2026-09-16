@@ -43,7 +43,7 @@ Detailed plans so far:
 | 1 Foundation | 1A Walking skeleton | written | built; gate waiting on Vercel preview (see HANDOFF) | §8.1 Gate 1A |
 | | 1B Accounts and sessions | written | built; gate passed locally, preview walk waiting on Tim | Gate 1B |
 | | 1C Classes and enrolment | written | built; Gate 1C walked locally, all checks green | Gate 1C |
-| | 1D App shell and first journey | written | built (16 Sep 2026); `make verify` and `make e2e` green, axe clean on every page; preview walk, Tim's review and the D-1/D-2 restyle still open | **Gate P1** |
+| | 1D App shell and first journey | written | built and restyled from D-1/D-2 (16 Sep 2026); `make verify` and `make e2e` green, axe clean on every page; preview walk and Tim's review still open | **Gate P1** |
 | 2 Components | 2A–2F | to write at phase start | — | **Gate P2** |
 | 3 The log | 3A–3C | to write | — | **Gate P3** |
 | 4 Teacher grid | 4A–4B | to write | — | **Gate P4 = pilot can start** |
@@ -86,7 +86,7 @@ The design left these open, or left them to "the Phase 1 plan". Each is what I'd
 | R25 | **The app has its own visual system, direction 2e "Navy", and no longer shares BiPi's look.** Decided by Tim, 16 Sep 2026, when design packs D-1 and D-2 were chosen. It replaces the earlier rule that the app keeps BiPi's neutrals and radii and only picks its own accent. Only the three typefaces are still shared. Navy `#1F3A6E` accent, amber `#A04806` for pending work only, cool graphite neutrals, 10/8/6px radii, hairline field groups, subject edge bars. Values live in `docs/design/pilot/D-1-app-shell-auth/tokens.css`, built as `--app-*` in `globals.css` and applied through `.app-theme`. BiPi tokens are untouched and are used only by the live schedule and by BiPi components reused in D-3. | The packs showed a sleeker, more distinct look that suits a signed-in tool better than a poster schedule. Keeping the BiPi palette would make the pilot's primary button compete with BiPi's "now" blue. `UI-BRIEF.md` §5 has the full system. |
 | R26 | **A school has an optional short name for the app header** (`school.short_name`, `Me.roles[].schoolShortName`, null when unset; the header then shows the full name). The operator sets it with `create-school --short-name=…` or `set-school-short-name`. Confirmed by Tim, 16 Sep 2026 (D-1 open question 1). | The legal name ("North Wicklow Educate Together Secondary School") doesn't fit a header row. |
 | R27 | **Class page additions from D-2, confirmed by Tim 16 Sep 2026:** "Turn joining off" and "Remove" both confirm inline in place (no `window.confirm`); a copy button on the join code with a short "Copied" status; pending requests show when they asked ("asked 2 days ago", from `requestedAt`); the issued reset code shows inline in that student's row with **Hide code** and warns that hiding it can't be undone. | Destructive actions confirm in place. The relative time needs no API change. |
-| R28 | **Brand placeholders until H4:** the header and auth pages show the North Wicklow ETSS crest (`frontend/public/app/crest.png`) and the name "Leaving Cert Practical" (`APP_NAME` in `frontend/lib/app/brand.ts`). Both are one-file swaps. Confirmed by Tim, 16 Sep 2026. | The frames assume both, and the pilot has a single school. |
+| R28 | **Brand placeholders until H4:** the header and auth pages show the North Wicklow ETSS crest (`frontend/public/app/crest.png`) and the name "Leaving Cert Practical" (`APP_NAME` in `frontend/lib/app/brand.ts`). Auth pages have no session, so their lockup's school name is `PILOT_SCHOOL_SHORT_NAME` in the same file. Both are one-file swaps. Confirmed by Tim, 16 Sep 2026. | The frames assume both, and the pilot has a single school. |
 
 ---
 
@@ -443,7 +443,7 @@ Results in `docs/HANDOFF.md`. 151 backend tests pass (schema through the complet
 7. `/teach/classes/[id]` Students tab
 8. `/reset`
 9. Playwright harness (`scripts/e2e.sh`, `make e2e`) and the Phase 1 journey
-10. Restyle from D-1 and D-2 when they arrive (§6.3) — **not started: `docs/design/pilot/` doesn't exist yet (16 Sep 2026).** Pages are plain, semantic HTML with the shadcn `Button`; every spec queries by role and name, so the restyle must keep them green.
+10. Restyle from D-1 and D-2 (§6.3) — **done 16 Sep 2026.** The app moved to its own Navy system (R25), with the short school name (R26), the class-page additions (R27) and brand placeholders (R28). Specs changed only where a pack changed a control or behaviour, each named in its commit.
 
 **Gate P1 — end of Phase 1** (tasks 1–9 built 16 Sep 2026, see `docs/HANDOFF.md`)
 - [x] `make verify` and `make e2e` green — locally, 16 Sep 2026: the journey passes on both Playwright projects (laptop and phone)

@@ -83,7 +83,7 @@ Environment variables the proxy and server client need: `APP_ENABLED`, `BACKEND_
 
 **In plain words.** Plain SQL through Spring's `JdbcClient`, no ORM. The schema is versioned with Flyway. Content that changes every year (subjects, later templates and briefs) has its own migration history so "what changed for 2028" is answerable.
 
-- Tables so far (`backend/src/main/resources/db/migration/`): `subject`; `school`, `app_user`, `password_credential`, `user_role`, `password_reset_code`, `audit_event`; `spring_session`, `spring_session_attributes`; `class_group`, `enrolment`. Content: `db/content/V1__subjects.sql`.
+- Tables so far (`backend/src/main/resources/db/migration/`): `subject`; `school` (with an optional `short_name` for the app header), `app_user`, `password_credential`, `user_role`, `password_reset_code`, `audit_event`; `spring_session`, `spring_session_attributes`; `class_group`, `enrolment`. Content: `db/content/V1__subjects.sql`.
 - **Never edit an applied migration.** Add `V<n+1>__name.sql`. `validate-on-migrate` will refuse a changed checksum.
 - `shared/config/ContentMigrationsConfig.java` runs schema migrations, then content migrations into `flyway_content_history`.
 - Repositories live in `<feature>/adapter/persistence/`, one class per aggregate, SQL inline as text blocks, row mappers as static methods. Read `EnrolmentRepository.request` before writing an upsert: its `ON CONFLICT … WHERE` guard and the `orElseGet` fallback are one mechanism.
@@ -110,7 +110,7 @@ Environment variables the proxy and server client need: `APP_ENABLED`, `BACKEND_
   `attempt` (`lib/app/attempt.ts`) catches `ApiError` only; anything else reaches `app/(app)/error.tsx`.
 - **Component pattern** (`components/app/class-students.tsx` is the template): `"use client"`, local `busy` and `error` state, `await api.send(…)` then `router.refresh()` (or `router.push` after sign-in), errors shown through `ErrorPanel`. State that must survive the refresh but not navigation, such as a reset code shown once, stays in component state.
 - **`ErrorPanel`** (`components/app/error-panel.tsx`) is the one way any page shows an API failure, with field errors listed and a "Try again" link.
-- **Styling** is currently plain semantic HTML plus the shadcn `Button`; the visual system arrives with design pack D-1. Rules in `docs/design/UI-STANDARDS.md`.
+- **Styling** is the app's own "Navy" system from design packs D-1 and D-2 (roadmap R25; `docs/design/UI-BRIEF.md` §5), not BiPi's. Tokens are `--app-*` in `app/globals.css`. Both layouts wrap their pages in `.app-theme`, which re-points shadcn's semantic variables (`bg-primary` is navy there and BiPi blue on the live schedule). Building blocks in `components/app/`: `AppMain` (the `<main id="main">` of every signed-in page, the skip link's target), `Field`/`FieldGroup` (the hairline field group; a row takes `help`, `error` or `invalid` and wires `aria-describedby`/`aria-invalid`), `Notice` (edge-bar message or status), `ErrorPanel` (compact for a refused request, heading and "Try again" for a service failure, amber for `TOO_MANY_ATTEMPTS`), `styles.ts` (shared class strings), `subject.ts` (subject edge bars). Brand placeholders (app name, crest) are in `lib/app/brand.ts` (R28). Rules in `docs/design/UI-STANDARDS.md`.
 
 ## 7. Adding a feature: the recipe
 
@@ -141,11 +141,11 @@ Frontend:
 | Java web slice | `@WebMvcTest` | `ProblemDetailsAdviceTest` | Must exclude `WebConfig` and `CurrentActorArgumentResolver`. |
 | TS pure logic | `node --test` | `lib/**/*.test.ts` | BiPi convention, kept. |
 | React components | Vitest + Testing Library, jsdom | `**/*.spec.ts(x)` | `test/setup.ts` cleans up between tests. |
-| Journey | Playwright | `e2e/*.e2e.ts` | `laptop` and `phone` projects; axe scan on every page visited. |
+| Journey | Playwright | `e2e/*.e2e.ts` | `laptop` and `phone` projects; axe scan on every page visited, after running animations settle. |
 
 Commands (repo root): `make db-up`, `make backend-run` (:8080), `make frontend-run` (:3000, needs `frontend/.env.local`), `make verify`, `make e2e`.
 
-`make e2e` (`scripts/e2e.sh`): starts `postgres-e2e` on :55433 with no volume, builds the jar, seeds one teacher with the operator CLI, starts Spring on :8081 and a production Next build on :3100, runs Playwright, tears everything down.
+`make e2e` (`scripts/e2e.sh`): starts `postgres-e2e` on :55433 with no volume, builds the jar, seeds one teacher with the operator CLI, starts Spring on :8081 and a production Next build on :3100, runs Playwright, tears everything down. It refuses to start if either port is taken, because a leftover server would answer the readiness check and the journey would test stale code.
 
 **Operator commands** (`identity/adapter/cli/OperatorCommands.java`), the only way a school or teacher comes into existence:
 
@@ -187,4 +187,7 @@ The same jar run with `operator` as its first argument starts without a web serv
 - `createApiClient` reads transport headers outside its `try`: on the server that is Next's `headers()`, which throws a bailout signal during a static build to mark the route dynamic, and that signal must propagate.
 - `ErrorPanel`'s "Try again" is `<a href="?">`: `next/link` with an empty href renders nothing in jsdom.
 - Next's route announcer is an empty `role="alert"` on every page; e2e locators for alerts filter by text.
+- The app's focus-outline rule in `globals.css` sits in `@layer base`. Unlayered CSS beats every Tailwind utility whatever its specificity, so field inputs couldn't hand focus to their row.
+- `.app-theme` exists instead of re-pointing `--primary` and friends at `:root`: the live BiPi schedule uses `bg-card`, `text-muted-foreground` and `Progress`, and must keep its colours.
+- Join and reset code inputs are uppercased with CSS only; the value stays as typed, and `normaliseJoinCode` or the backend uppercases it.
 - `PostgresIntegrationTest` starts its container in a static block, not `@Testcontainers`: the extension stops the container after the first class in a full build.

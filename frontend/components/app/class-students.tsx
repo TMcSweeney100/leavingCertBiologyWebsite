@@ -152,7 +152,7 @@ export function ClassStudents({ detail, now }: { detail: ClassDetail; now?: Date
             </div>
             {confirmingOff ? (
               <div className="app-appear flex flex-wrap items-center gap-x-3 gap-y-2.5 rounded-app-card border border-app-error/40 bg-app-error-tint px-4 py-3">
-                <p className="text-app-meta text-app-error-hover">Turn joining off for {detail.name}?</p>
+                <p className="basis-full text-app-meta text-app-error-hover sm:basis-auto">Turn joining off for {detail.name}?</p>
                 <Button
                   type="button"
                   variant="confirmDestructive"
@@ -288,7 +288,7 @@ export function ClassStudents({ detail, now }: { detail: ClassDetail; now?: Date
                   </div>
                   {confirming ? (
                     <div className="app-appear flex basis-full flex-wrap items-center gap-x-[11px] gap-y-2.5">
-                      <p className="text-app-meta text-app-error-hover">
+                      <p className="basis-full text-app-meta text-app-error-hover sm:basis-auto">
                         Remove {fullName(m)} from {detail.name}?
                       </p>
                       <Button
