@@ -12,8 +12,8 @@ class ActorTest {
     private static final UUID SCHOOL_B = UUID.randomUUID();
 
     private final Actor yearHead = new Actor(UUID.randomUUID(), List.of(
-            new RoleGrant(SCHOOL_A, "School A", Role.TEACHER),
-            new RoleGrant(SCHOOL_A, "School A", Role.SCHOOL_LEADER)));
+            new RoleGrant(SCHOOL_A, "School A", null, Role.TEACHER),
+            new RoleGrant(SCHOOL_A, "School A", null, Role.SCHOOL_LEADER)));
 
     @Test
     void oneActorCanHoldSeveralRoles() {
@@ -33,7 +33,7 @@ class ActorTest {
     void grantsAreCopiedSoTheActorCantChangeUnderneathAService() {
         List<RoleGrant> grants = new java.util.ArrayList<>();
         Actor actor = new Actor(UUID.randomUUID(), grants);
-        grants.add(new RoleGrant(SCHOOL_A, "School A", Role.TEACHER));
+        grants.add(new RoleGrant(SCHOOL_A, "School A", null, Role.TEACHER));
 
         assertThat(actor.holds(Role.TEACHER)).isFalse();
     }

@@ -36,7 +36,7 @@ operator() {
 echo "e2e: seed teacher"
 TEMP_PASSWORD="$(operator create-user --first-name=E2E --last-name=Teacher --username=e2e.teacher 2>/dev/null \
   | sed -n 's/.*Temporary password (shown once): //p')"
-operator create-school --name="E2E School" --roll=99999E >/dev/null 2>&1
+operator create-school --name="E2E Educate Together Secondary School" --short-name="E2E School" --roll=99999E >/dev/null 2>&1
 operator grant-role --username=e2e.teacher --roll=99999E --role=TEACHER >/dev/null 2>&1
 [ -n "$TEMP_PASSWORD" ] || { echo "e2e: no temporary password captured"; exit 1; }
 

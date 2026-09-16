@@ -8,7 +8,10 @@ export const meSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   mustChangePassword: z.boolean(),
-  roles: z.array(z.object({ schoolId: z.string(), schoolName: z.string(), role: roleSchema })),
+  // schoolShortName is what the app header shows; null until the operator sets one.
+  roles: z.array(
+    z.object({ schoolId: z.string(), schoolName: z.string(), schoolShortName: z.string().nullable(), role: roleSchema }),
+  ),
 });
 export type Me = z.infer<typeof meSchema>;
 export type Role = z.infer<typeof roleSchema>;

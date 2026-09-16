@@ -32,7 +32,20 @@ class MeEndpointTest extends PostgresIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.roles.length()").value(2))
                 .andExpect(jsonPath("$.roles[*].role").value(org.hamcrest.Matchers.containsInAnyOrder("TEACHER", "SCHOOL_LEADER")))
-                .andExpect(jsonPath("$.roles[0].schoolName").value("North Wicklow ETSS"));
+                .andExpect(jsonPath("$.roles[0].schoolName").value("North Wicklow ETSS"))
+                .andExpect(jsonPath("$.roles[0].schoolShortName").value(org.hamcrest.Matchers.nullValue()));
+    }
+
+    @Test
+    void eachRoleCarriesTheSchoolsShortNameWhenOneIsSet() throws Exception {
+        UUID school = accounts.school("North Wicklow Educate Together Secondary School", "76543A");
+        jdbcTemplate.update("UPDATE school SET short_name = 'North Wicklow ETSS' WHERE id = ?", school);
+        accounts.userWithRole("k.hanlon", school, Role.TEACHER);
+
+        new ApiSession(mockMvc).login("k.hanlon", TestAccounts.PASSWORD)
+                .get("/api/v1/auth/me")
+                .andExpect(jsonPath("$.roles[0].schoolName").value("North Wicklow Educate Together Secondary School"))
+                .andExpect(jsonPath("$.roles[0].schoolShortName").value("North Wicklow ETSS"));
     }
 
     @Test

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Runs an operator command against the database in DATABASE_URL (default: local compose database).
 #
-#   scripts/operator.sh create-school --name="…" --roll=76543A
+#   scripts/operator.sh create-school --name="…" --short-name="…" --roll=76543A
 #
 # Against a deployed database, run the same image the host runs with `operator …` as its arguments
 # instead, so the command uses the production secrets and never leaves the host's network.

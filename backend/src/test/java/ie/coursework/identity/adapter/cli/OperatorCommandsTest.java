@@ -37,6 +37,31 @@ class OperatorCommandsTest extends PostgresIntegrationTest {
     }
 
     @Test
+    void createsASchoolWithAShortNameForTheAppHeader() {
+        assertThat(run("operator", "create-school", "--name=North Wicklow Educate Together Secondary School",
+                "--short-name=North Wicklow ETSS", "--roll=76543A")).isZero();
+
+        assertThat(jdbcTemplate.queryForObject("SELECT short_name FROM school WHERE roll_number = '76543A'", String.class))
+                .isEqualTo("North Wicklow ETSS");
+    }
+
+    @Test
+    void setsTheShortNameOfASchoolThatAlreadyExists() {
+        run("operator", "create-school", "--name=North Wicklow Educate Together Secondary School", "--roll=76543A");
+
+        assertThat(run("operator", "set-school-short-name", "--roll=76543A", "--short-name=North Wicklow ETSS")).isZero();
+
+        assertThat(jdbcTemplate.queryForObject("SELECT short_name FROM school WHERE roll_number = '76543A'", String.class))
+                .isEqualTo("North Wicklow ETSS");
+    }
+
+    @Test
+    void settingTheShortNameOfAnUnknownSchoolFails() {
+        assertThat(run("operator", "set-school-short-name", "--roll=00000X", "--short-name=Nowhere")).isEqualTo(1);
+        assertThat(printed()).contains("error: No school with that roll number.");
+    }
+
+    @Test
     void createsAUserWhoMustChangeTheirTemporaryPassword() {
         assertThat(run("operator", "create-user", "--first-name=Katelyn", "--last-name=Hanlon", "--username=K.Hanlon")).isZero();
 

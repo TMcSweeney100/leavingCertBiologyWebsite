@@ -9,7 +9,7 @@ import java.util.UUID;
 public record MeResponse(
         UUID userId, String username, String firstName, String lastName, boolean mustChangePassword, List<RoleView> roles) {
 
-    public record RoleView(UUID schoolId, String schoolName, Role role) {}
+    public record RoleView(UUID schoolId, String schoolName, String schoolShortName, Role role) {}
 
     static MeResponse from(AccountView account) {
         return new MeResponse(
@@ -19,7 +19,7 @@ public record MeResponse(
                 account.profile().lastName(),
                 account.profile().mustChange(),
                 account.grants().stream()
-                        .map(grant -> new RoleView(grant.schoolId(), grant.schoolName(), grant.role()))
+                        .map(grant -> new RoleView(grant.schoolId(), grant.schoolName(), grant.schoolShortName(), grant.role()))
                         .toList());
     }
 }

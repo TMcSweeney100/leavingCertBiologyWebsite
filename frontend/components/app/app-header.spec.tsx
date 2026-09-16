@@ -11,7 +11,7 @@ vi.mock("@/lib/api/client", async () => {
 
 import { AppHeader } from "./app-header";
 
-const school = { schoolId: "s1", schoolName: "School A" };
+const school = { schoolId: "s1", schoolName: "School A", schoolShortName: null };
 const base: Me = { userId: "u1", username: "k.hanlon", firstName: "Katelyn", lastName: "Hanlon", mustChangePassword: false, roles: [] };
 
 describe("AppHeader", () => {

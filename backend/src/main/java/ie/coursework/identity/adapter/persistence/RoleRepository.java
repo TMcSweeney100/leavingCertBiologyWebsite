@@ -30,7 +30,7 @@ public class RoleRepository {
 
     public List<RoleGrant> grantsFor(UUID userId) {
         return jdbc.sql("""
-                SELECT r.school_id, s.name AS school_name, r.role
+                SELECT r.school_id, s.name AS school_name, s.short_name AS school_short_name, r.role
                 FROM user_role r JOIN school s ON s.id = r.school_id
                 WHERE r.user_id = :userId
                 ORDER BY s.name, r.role
@@ -39,6 +39,7 @@ public class RoleRepository {
                 .query((rs, row) -> new RoleGrant(
                         rs.getObject("school_id", UUID.class),
                         rs.getString("school_name"),
+                        rs.getString("school_short_name"),
                         Role.valueOf(rs.getString("role"))))
                 .list();
     }

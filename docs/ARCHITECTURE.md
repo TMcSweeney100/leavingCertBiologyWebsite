@@ -150,7 +150,8 @@ Commands (repo root): `make db-up`, `make backend-run` (:8080), `make frontend-r
 **Operator commands** (`identity/adapter/cli/OperatorCommands.java`), the only way a school or teacher comes into existence:
 
 ```
-scripts/operator.sh create-school --name="…" --roll=76543A
+scripts/operator.sh create-school --name="…" --short-name="…" --roll=76543A   # short name is optional; it fits the app header
+scripts/operator.sh set-school-short-name --roll=76543A --short-name="…"
 scripts/operator.sh create-user   --first-name=… --last-name=… --username=…     # prints the temporary password once
 scripts/operator.sh grant-role    --username=… --roll=76543A --role=TEACHER
 ```
