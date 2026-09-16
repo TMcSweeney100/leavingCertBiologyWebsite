@@ -88,7 +88,7 @@ public class EnrolmentRepository {
                 .optional();
     }
 
-    /** APPROVED and PENDING members, approved first, then by surname. */
+    /** PENDING and APPROVED members, pending first, then by surname. */
     public List<Member> membersOf(UUID classGroupId) {
         return jdbc.sql("""
                 SELECT e.id AS enrolment_id, u.id AS student_id, u.first_name, u.last_name, c.username,
@@ -97,7 +97,7 @@ public class EnrolmentRepository {
                 JOIN app_user u ON u.id = e.student_user_id
                 JOIN password_credential c ON c.user_id = u.id
                 WHERE e.class_group_id = :class AND e.status <> 'REMOVED'
-                ORDER BY (e.status = 'PENDING') ASC, u.last_name, u.first_name
+                ORDER BY (e.status = 'PENDING') DESC, u.last_name, u.first_name
                 """)
                 .param("class", classGroupId)
                 .query((rs, row) -> new Member(

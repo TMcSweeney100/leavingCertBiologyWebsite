@@ -97,7 +97,7 @@ class ClassRepositoriesTest extends PostgresIntegrationTest {
 
         List<EnrolmentRepository.Member> members = enrolments.membersOf(world.class1());
         assertThat(members).extracting(EnrolmentRepository.Member::username)
-                .containsExactly(ClassFixtures.APPROVED_STUDENT, ClassFixtures.PENDING_STUDENT);
+                .containsExactly(ClassFixtures.PENDING_STUDENT, ClassFixtures.APPROVED_STUDENT);
         assertThat(enrolments.pendingCount(world.class1())).isEqualTo(1);
 
         List<EnrolmentRepository.StudentClass> mine = enrolments.classesOf(world.approvedStudent());
