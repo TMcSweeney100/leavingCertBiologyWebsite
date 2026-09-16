@@ -31,9 +31,9 @@ Run this on every restyle task, every new page, and in review of a front-end PR.
 
 ## Tokens, colour, type
 
-- [ ] No raw hex, no literal font name, no `--bipi-*` value changed. [§1, §2]
+- [ ] No raw hex, no literal font name, no `--bipi-*` value changed or used in app code. [§1, §2]
 - [ ] Text 4.5:1, controls and meaningful graphics 3:1, measured on the light surfaces. [§5]
-- [ ] BiPi blue only marks "now"; green only marks "done"; the app accent is neither. [§5]
+- [ ] Navy for action, amber only for pending or throttling, subject hues only as edge bars; BiPi blue and green only inside reused BiPi components. [§5]
 - [ ] No `--text-*` size and `text-*` colour through one `cn()`; no two `--text-*` steps on one element. [§2]
 - [ ] `tabular-nums` on aligned numbers; `text-balance` on headings; `…` not `...`. [§4]
 

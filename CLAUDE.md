@@ -16,7 +16,7 @@ Two things that share a Next.js app:
 3. `docs/HANDOFF.md` — where the last session stopped.
 4. The current milestone plan in `docs/superpowers/plans/`.
 5. `docs/PILOT-DESIGN.md` — the sections the plan cites. It wins over the roadmap; the roadmap wins over the specs in `docs/newDevelopement/`.
-6. `docs/design/UI-STANDARDS.md` before any task that touches app UI; `docs/design/UI-CHECKLIST.md` before calling it done. `docs/design/UI-BRIEF.md` is what Claude Design gets.
+6. `docs/design/UI-STANDARDS.md` before any task that touches app UI; `docs/design/UI-CHECKLIST.md` before calling it done. `docs/design/UI-BRIEF.md` is what Claude Design gets. **The app no longer uses the BiPi look** (roadmap R25): its palette is navy/amber `--app-*`, applied through `.app-theme`; `--bipi-*` is only for the live schedule.
 
 ## Commands (repo root)
 

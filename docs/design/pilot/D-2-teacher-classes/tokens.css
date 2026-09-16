@@ -1,0 +1,56 @@
+/* Pack D-1 / D-2 — tokens the app adds. No --bipi-* value is changed.
+   Direction 2e "Navy": BiPi's type kept; neutrals, radii and controls are the app's own.
+   Contrast measured against #FFFFFF unless noted. */
+
+:root {
+  /* ── Accent ─────────────────────────────────────────────────────────────
+     Primary actions, links, focus rings, the selected role. Deliberately not
+     the BiPi "now" blue (#4662B9) — that marks the current stage on the
+     schedule and would compete with the primary button. */
+  --app-accent: #1F3A6E;            /* 11.12:1 — text, fills, focus ring */
+  --app-accent-hover: #16294E;      /* 14.37:1 */
+  --app-accent-tint: #F4F5F8;       /* focused field row ground; accent on it 10.20:1 */
+
+  /* ── Status ─────────────────────────────────────────────────────────────
+     Navy sits at 11:1, so close to ink that it cannot also mean "act on this".
+     Attention amber is the only colour allowed to interrupt, and only for
+     pending work. */
+  --app-attention: #A04806;         /* 6.13:1 — pending count, "waiting" copy */
+  --app-attention-tint: #F6EDE6;    /* amber on this tint 5.31:1 */
+  --app-approved: #0F5C3A;          /* 8.04:1 — "Approved" */
+  --app-error: #B3251E;             /* 6.56:1 — error panel, destructive actions */
+  --app-error-hover: #8E1D17;       /* 8.98:1 */
+  --app-error-tint: #FBF1F0;        /* error message ground */
+
+  /* ── Neutrals (cool graphite; BiPi's are warmer blue-grey) ───────────── */
+  --app-ink: #101419;               /* 18.48:1 — headings */
+  --app-body: #343A42;              /* 11.48:1 — body copy */
+  --app-grey: #4B535C;              /*  7.80:1 — secondary copy, inactive role */
+  --app-muted: #636B75;             /*  5.40:1 — field labels, metadata */
+  --app-line: #E3E6EA;              /* dividers, header rule */
+  --app-field-border: #DDE1E6;      /* field group and button borders */
+  --app-inset: #EFF1F3;             /* switcher track, route strips */
+  --app-ground: #F7F8F9;            /* page ground behind white surfaces */
+
+  /* ── Subject identity ───────────────────────────────────────────────────
+     A 4px bar down the left edge of a class row, never type and never a
+     badge. Chosen to avoid the status trio so a subject can never be read
+     as a state. */
+  --app-subject-biology: #0E6E7A;   /* 5.95:1 */
+  --app-subject-business: #6D3AA8;  /* 7.44:1 */
+  --app-subject-chemistry: #8E2846; /* 8.26:1 */
+  --app-subject-physics: #4B535C;   /* 7.80:1 */
+
+  /* ── Radii ──────────────────────────────────────────────────────────── */
+  --app-radius-card: 10px;
+  --app-radius-control: 8px;
+  --app-radius-inner: 6px;
+
+  /* ── Motion ─────────────────────────────────────────────────────────── */
+  --app-ease: cubic-bezier(.2, .7, .3, 1);
+  --app-duration: 160ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --app-duration: 0ms; }
+}

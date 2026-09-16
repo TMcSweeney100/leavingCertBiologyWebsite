@@ -12,8 +12,8 @@ The live BiPi schedule (`app/[class]/`, `components/bipi/`) has its own notes in
 
 | What | Where | Rule |
 |---|---|---|
-| Design tokens | `frontend/app/globals.css` | `--bipi-*` values are the live schedule's and never change. The app adds `--app-*` beside them and maps shadcn's semantic variables (`--primary`, `--ring`, `--destructive`…) onto them. Until the first pack lands, those semantic variables still point at BiPi values (so `bg-primary` is BiPi blue today); the restyle re-points them and nothing in a component changes. Components use semantic utilities (`bg-primary`, `text-muted-foreground`) or `var(--app-*)`, never a raw hex. |
-| Type scale | `@theme` block in `globals.css` | Named `--text-*` steps. The app's scale is separate from the BiPi one and has about five steps, body first. |
+| Design tokens | `frontend/app/globals.css` | `--bipi-*` values are the live schedule's and never change. The app's own tokens are `--app-*` (from the D-1/D-2 `tokens.css`; `UI-BRIEF.md` §5), exposed as Tailwind colours (`bg-app-accent`, `text-app-muted`…). shadcn's semantic variables (`--primary`, `--ring`, `--destructive`…) are re-pointed at the app tokens **only inside `.app-theme`**, the wrapper the `(app)` and `(auth)` layouts render. `:root` keeps them on BiPi values because the live schedule uses `bg-card`, `text-muted-foreground` and `Progress`. Never raw hex in a component. |
+| Type scale | `@theme` block in `globals.css` | Named `--text-app-*` steps, separate from the BiPi ones. |
 | Fonts | `frontend/app/layout.tsx` via `next/font/google` | Resolve through `--bipi-font-display/-body/-label`. Never write a family name as a string. |
 | Primitives | `frontend/components/ui/` (shadcn on Base UI) | Add with `npx shadcn@latest add <name>`; restyle through tokens and `cva` variants, not by editing markup in call sites. |
 | App components | `frontend/components/app/` | Client components that call `api` then `router.refresh()`. Each has a `*.spec.tsx` that queries by role and accessible name. |
@@ -53,8 +53,9 @@ The live BiPi schedule (`app/[class]/`, `components/bipi/`) has its own notes in
 ## 5. Colour
 
 - Light only. `color-scheme: light` stays on `<html>`; no `.dark` values, no theme toggle.
+- The app's palette is its own (`UI-BRIEF.md` §5, roadmap R25). Navy accent for action, amber only for pending work and throttling, green for approved or done, red for errors and destructive actions, subject hues only as a row's edge bar.
 - Text 4.5:1 against its background (large text 3:1); controls, borders that carry meaning, focus rings and icons 3:1. Measure; don't eyeball. Record ratios in `NOTES.md` when a token is added.
-- BiPi blue means "now" and green means "done", inside the app too. The app's accent is a different hue.
+- BiPi blue and green appear only inside reused BiPi components, where they mean "now" and "done". App code never uses `--bipi-*`.
 - No state carried by colour alone: pair it with a word, and where useful an icon.
 - Disabled: `disabled` attribute plus reduced opacity and no pointer events. Read-only looks different from disabled.
 

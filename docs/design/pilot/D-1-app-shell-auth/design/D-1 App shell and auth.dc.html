@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#E6E8EC;font-family:'Public Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:#1F3A6E}
+  a:hover{color:#16294E}
+  input,button,select{font:inherit}
+  input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #1F3A6E;outline-offset:2px}
+</style>
+</helmet>
+
+<section style="width:max-content;padding:56px 56px 88px;display:flex;flex-direction:column;gap:52px">
+
+  <div style="max-width:840px;display:flex;flex-direction:column;gap:13px">
+    <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.08em;color:#5C6470">Pack D-1 · app shell and auth · direction 2e Navy</p>
+    <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">App shell and auth pages</h1>
+    <p style="margin:0;font-size:16px;line-height:1.55;color:#343A42;text-wrap:pretty">Every page at 1140px and 390px, every state the pack spec lists. Headings, button labels, helper text and error sentences are word for word from the built components. Accent navy <span style="font-family:'Space Mono',monospace;font-size:14px">#1F3A6E</span>; attention amber <span style="font-family:'Space Mono',monospace;font-size:14px">#A04806</span> is reserved for pending work and appears in D-2.</p>
+    <p style="margin:0;font-size:15px;line-height:1.55;color:#4B535C;text-wrap:pretty">Auth pages carry <strong style="font-weight:600">no app header</strong> — they sit in the app's <span style="font-family:'Space Mono',monospace;font-size:14px">(auth)</span> route group, which is what makes forced password change inescapable. They carry a quiet crest lockup instead, so a student arriving from a join code knows whose site this is. School and teacher names are the real pilot ones; student names are placeholder.</p>
+  </div>
+
+  <!-- ══════════════════════════  APP HEADER  ══════════════════════════ -->
+  <div style="display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+      <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:25px;font-weight:700;letter-spacing:-.025em;color:#101419">App header</h2>
+      <p style="margin:0;font-size:15px;color:#4B535C">On every signed-in page. Switcher nav's accessible name is “Switch role”; the current role is marked with <span style="font-family:'Space Mono',monospace;font-size:13px">aria-current="page"</span>.</p>
+    </div>
+
+    <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · three roles — switcher sits right, beside the person</p>
+    <div data-screen-label="Header · three roles · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+      <header style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px;background:#fff;border-bottom:1px solid #E3E6EA">
+        <div style="display:flex;align-items:center;gap:11px;min-width:0">
+          <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+          <a href="#" style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none;white-space:nowrap">Leaving Cert Practical</a>
+          <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+          <span style="font-size:14px;color:#4B535C;white-space:nowrap">North Wicklow ETSS</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;flex:none">
+          <nav aria-label="Switch role" style="display:flex;gap:3px;padding:3px;border-radius:10px;background:#EFF1F3;flex:none">
+            <a href="#" aria-current="page" style="padding:7px 12px;border-radius:7px;background:#fff;border:1px solid #DDE1E6;box-shadow:0 1px 2px rgba(16,20,25,.06);font-size:14px;font-weight:600;color:#1F3A6E;text-decoration:none;white-space:nowrap">Classes</a>
+            <a href="#" style="padding:7px 12px;border-radius:7px;border:1px solid transparent;font-size:14px;font-weight:600;color:#4B535C;text-decoration:none;white-space:nowrap" style-hover="background:rgba(255,255,255,.75)">School overview</a>
+            <a href="#" style="padding:7px 12px;border-radius:7px;border:1px solid transparent;font-size:14px;font-weight:600;color:#4B535C;text-decoration:none;white-space:nowrap" style-hover="background:rgba(255,255,255,.75)">Timeline</a>
+          </nav>
+          <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+          <span style="font-size:14px;color:#343A42;white-space:nowrap">Katelyn Hanlon</span>
+          <a href="#" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+          <button type="button" style="padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap" style-hover="background:#EFF1F3">Sign out</button>
+        </div>
+      </header>
+      <div style="padding:26px 28px 34px;display:flex;flex-direction:column;gap:6px">
+        <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#636B75">page content begins here</p>
+        <div style="height:56px;border-radius:10px;border:1px dashed #DDE1E6;background:#fff"></div>
+      </div>
+    </div>
+
+    <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · one role — no switcher at all</p>
+    <div data-screen-label="Header · one role · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+      <header style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px;background:#fff;border-bottom:1px solid #E3E6EA">
+        <div style="display:flex;align-items:center;gap:11px;min-width:0">
+          <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+          <a href="#" style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none;white-space:nowrap">Leaving Cert Practical</a>
+          <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+          <span style="font-size:14px;color:#4B535C;white-space:nowrap">North Wicklow ETSS</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;flex:none">
+          <span style="font-size:14px;color:#343A42;white-space:nowrap">Cian Murphy</span>
+          <a href="#" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+          <button type="button" style="padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap" style-hover="background:#EFF1F3">Sign out</button>
+        </div>
+      </header>
+      <div style="padding:26px 28px 34px;display:flex;flex-direction:column;gap:6px">
+        <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#636B75">page content begins here</p>
+        <div style="height:56px;border-radius:10px;border:1px dashed #DDE1E6;background:#fff"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · three roles — school name drops, account moves to row 2</p>
+        <div data-screen-label="Header · three roles · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+          <header style="background:#fff;border-bottom:1px solid #E3E6EA">
+            <div style="display:flex;align-items:center;gap:9px;padding:10px 16px">
+              <img src="assets/crest-nwetss.png" alt="" style="width:26px;height:26px;object-fit:contain;flex:none">
+              <a href="#" style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none">Leaving Cert Practical</a>
+            </div>
+            <nav aria-label="Switch role" style="display:flex;gap:3px;margin:0 16px;padding:3px;border-radius:10px;background:#EFF1F3">
+              <a href="#" aria-current="page" style="flex:1;text-align:center;padding:8px 6px;border-radius:7px;background:#fff;border:1px solid #DDE1E6;font-size:13px;font-weight:600;color:#1F3A6E;text-decoration:none">Classes</a>
+              <a href="#" style="flex:1;text-align:center;padding:8px 6px;border-radius:7px;border:1px solid transparent;font-size:13px;font-weight:600;color:#4B535C;text-decoration:none">School</a>
+              <a href="#" style="flex:1;text-align:center;padding:8px 6px;border-radius:7px;border:1px solid transparent;font-size:13px;font-weight:600;color:#4B535C;text-decoration:none">Timeline</a>
+            </nav>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px 11px">
+              <span style="font-size:14px;color:#4B535C;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Katelyn Hanlon</span>
+              <div style="display:flex;align-items:center;gap:10px;flex:none">
+                <a href="#" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+                <button type="button" style="padding:9px 12px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap">Sign out</button>
+              </div>
+            </div>
+          </header>
+          <div style="padding:20px 16px 28px;display:flex;flex-direction:column;gap:6px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#636B75">page content</p>
+            <div style="height:48px;border-radius:10px;border:1px dashed #DDE1E6;background:#fff"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · one role — two rows, no switcher</p>
+        <div data-screen-label="Header · one role · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+          <header style="background:#fff;border-bottom:1px solid #E3E6EA">
+            <div style="display:flex;align-items:center;gap:9px;padding:10px 16px">
+              <img src="assets/crest-nwetss.png" alt="" style="width:26px;height:26px;object-fit:contain;flex:none">
+              <a href="#" style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none">Leaving Cert Practical</a>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 16px 11px">
+              <span style="font-size:14px;color:#4B535C;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Cian Murphy</span>
+              <div style="display:flex;align-items:center;gap:10px;flex:none">
+                <a href="#" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+                <button type="button" style="padding:9px 12px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap">Sign out</button>
+              </div>
+            </div>
+          </header>
+          <div style="padding:20px 16px 28px;display:flex;flex-direction:column;gap:6px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#636B75">page content</p>
+            <div style="height:48px;border-radius:10px;border:1px dashed #DDE1E6;background:#fff"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════  SHARED ERROR PANEL  ══════════════════════ -->
+  <div style="display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+      <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:25px;font-weight:700;letter-spacing:-.025em;color:#101419">Shared error panel</h2>
+      <p style="margin:0;font-size:15px;color:#4B535C">One panel, used in place on every page. <span style="font-family:'Space Mono',monospace;font-size:13px">role="alert"</span>, <span style="font-family:'Space Mono',monospace;font-size:13px">aria-live="polite"</span>.</p>
+    </div>
+    <div style="display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · server unreachable</p>
+        <div style="width:556px;padding:22px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9">
+          <section role="alert" aria-live="polite" style="border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;border-radius:10px;background:#FBF1F0;padding:17px 19px;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:center;gap:9px">
+              <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+              <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;letter-spacing:-.015em;color:#8E1D17">Can't reach the service</h2>
+            </div>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42">Check your connection and try again in a moment.</p>
+            <a href="#" style="align-self:flex-start;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Try again</a>
+          </section>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · validation failure, with field problems</p>
+        <div style="width:556px;padding:22px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9">
+          <section role="alert" aria-live="polite" style="border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;border-radius:10px;background:#FBF1F0;padding:17px 19px;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:center;gap:9px">
+              <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+              <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;letter-spacing:-.015em;color:#8E1D17">That didn't save</h2>
+            </div>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42">Two fields need another look.</p>
+            <ul style="margin:2px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px;font-size:15px;line-height:1.45;color:#343A42">
+              <li><span style="font-family:'Space Mono',monospace;font-size:13px;color:#636B75">username</span> — 3 to 32 characters: letters, numbers, dots, dashes and underscores.</li>
+              <li><span style="font-family:'Space Mono',monospace;font-size:13px;color:#636B75">password</span> — At least 10 characters.</li>
+            </ul>
+            <a href="#" style="align-self:flex-start;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Try again</a>
+          </section>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390</p>
+        <div style="width:390px;padding:16px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9">
+          <section role="alert" aria-live="polite" style="border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;border-radius:10px;background:#FBF1F0;padding:15px 16px;display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:center;gap:9px">
+              <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+              <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.015em;color:#8E1D17">Can't reach the service</h2>
+            </div>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42">Check your connection and try again in a moment.</p>
+            <a href="#" style="align-self:flex-start;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Try again</a>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+
+<section style="width:max-content;padding:0 56px 88px;display:flex;flex-direction:column;gap:18px">
+  <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;max-width:840px">
+    <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:25px;font-weight:700;letter-spacing:-.025em;color:#101419">/login — Sign in</h2>
+    <p style="margin:0;font-size:15px;color:#4B535C">One message covers both wrong username and wrong password, so neither can be probed.</p>
+  </div>
+
+  <div style="display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap">
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · default</p>
+      <div data-screen-label="/login · default · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:440px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Sign in</h1>
+          <form style="margin-top:22px;display:flex;flex-direction:column;gap:18px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA">
+                <label for="li-u" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Username</label>
+                <input id="li-u" type="text" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px">
+                <label for="li-p" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Password</label>
+                <input id="li-p" type="password" autocomplete="current-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Sign in</button>
+          </form>
+          <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px;font-size:16px;line-height:1.5;color:#343A42">
+            <p style="margin:0">Joining a class? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Enter your join code</a>.</p>
+            <p style="margin:0">Forgotten your password? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Use a reset code</a>.</p>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · default</p>
+      <div data-screen-label="/login · default · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px">
+        <main>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.08;color:#101419">Sign in</h1>
+          <form style="margin-top:20px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA">
+                <label for="li-u2" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Username</label>
+                <input id="li-u2" type="text" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px">
+                <label for="li-p2" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Password</label>
+                <input id="li-p2" type="password" autocomplete="current-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer">Sign in</button>
+          </form>
+          <div style="margin-top:18px;display:flex;flex-direction:column;gap:8px;font-size:16px;line-height:1.5;color:#343A42">
+            <p style="margin:0">Joining a class? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Enter your join code</a>.</p>
+            <p style="margin:0">Forgotten your password? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Use a reset code</a>.</p>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · wrong credentials</p>
+      <div data-screen-label="/login · wrong credentials · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:440px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Sign in</h1>
+          <p role="alert" style="margin:18px 0 0;display:flex;gap:9px;align-items:center;padding:12px 14px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>Wrong username or password.</span>
+          </p>
+          <form style="margin-top:18px;display:flex;flex-direction:column;gap:18px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA">
+                <label for="li-u3" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Username</label>
+                <input id="li-u3" type="text" defaultValue="cian.murphy" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;background:#F4F5F8;box-shadow:inset 2px 0 0 #1F3A6E">
+                <label for="li-p3" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#1F3A6E">Password</label>
+                <input id="li-p3" type="password" autocomplete="current-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer">Sign in</button>
+          </form>
+          <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px;font-size:16px;line-height:1.5;color:#343A42">
+            <p style="margin:0">Joining a class? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Enter your join code</a>.</p>
+            <p style="margin:0">Forgotten your password? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Use a reset code</a>.</p>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · wrong credentials</p>
+      <div data-screen-label="/login · wrong credentials · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px">
+        <main>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.08;color:#101419">Sign in</h1>
+          <p role="alert" style="margin:16px 0 0;display:flex;gap:9px;align-items:center;padding:12px 13px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>Wrong username or password.</span>
+          </p>
+          <form style="margin-top:16px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA">
+                <label for="li-u4" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Username</label>
+                <input id="li-u4" type="text" defaultValue="cian.murphy" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px">
+                <label for="li-p4" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Password</label>
+                <input id="li-p4" type="password" autocomplete="current-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer">Sign in</button>
+          </form>
+          <div style="margin-top:18px;display:flex;flex-direction:column;gap:8px;font-size:16px;line-height:1.5;color:#343A42">
+            <p style="margin:0">Joining a class? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Enter your join code</a>.</p>
+            <p style="margin:0">Forgotten your password? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Use a reset code</a>.</p>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · too many attempts — Sign in disabled while locked</p>
+      <div data-screen-label="/login · too many attempts · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:440px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Sign in</h1>
+          <p role="alert" style="margin:18px 0 0;display:flex;gap:9px;align-items:center;padding:12px 14px;border-radius:10px;border:1px solid rgba(160,72,6,.32);border-left:4px solid #A04806;background:#F6EDE6;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#A04806;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>Too many attempts. Try again in 12 minutes.</span>
+          </p>
+          <form style="margin-top:18px;display:flex;flex-direction:column;gap:18px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA">
+                <label for="li-u5" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Username</label>
+                <input id="li-u5" type="text" defaultValue="cian.murphy" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px">
+                <label for="li-p5" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Password</label>
+                <input id="li-p5" type="password" autocomplete="current-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+            </div>
+            <button type="submit" disabled="true" style="height:48px;border:1px solid #DDE1E6;border-radius:8px;background:#EFF1F3;color:#636B75;font-size:16px;font-weight:600;cursor:not-allowed">Sign in</button>
+          </form>
+          <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px;font-size:16px;line-height:1.5;color:#343A42">
+            <p style="margin:0">Joining a class? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Enter your join code</a>.</p>
+            <p style="margin:0">Forgotten your password? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Use a reset code</a>.</p>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · too many attempts</p>
+      <div data-screen-label="/login · too many attempts · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px">
+        <main>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.08;color:#101419">Sign in</h1>
+          <p role="alert" style="margin:16px 0 0;display:flex;gap:9px;align-items:center;padding:12px 13px;border-radius:10px;border:1px solid rgba(160,72,6,.32);border-left:4px solid #A04806;background:#F6EDE6;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#A04806;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>Too many attempts. Try again in 12 minutes.</span>
+          </p>
+          <form style="margin-top:16px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA">
+                <label for="li-u6" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Username</label>
+                <input id="li-u6" type="text" defaultValue="cian.murphy" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px">
+                <label for="li-p6" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Password</label>
+                <input id="li-p6" type="password" autocomplete="current-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+            </div>
+            <button type="submit" disabled="true" style="height:48px;border:1px solid #DDE1E6;border-radius:8px;background:#EFF1F3;color:#636B75;font-size:16px;font-weight:600;cursor:not-allowed">Sign in</button>
+          </form>
+          <div style="margin-top:18px;display:flex;flex-direction:column;gap:8px;font-size:16px;line-height:1.5;color:#343A42">
+            <p style="margin:0">Joining a class? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Enter your join code</a>.</p>
+            <p style="margin:0">Forgotten your password? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Use a reset code</a>.</p>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · server unreachable — error panel in place, form still usable</p>
+      <div data-screen-label="/login · error panel · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:440px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Sign in</h1>
+          <section role="alert" aria-live="polite" style="margin-top:18px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;border-radius:10px;background:#FBF1F0;padding:15px 17px;display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;gap:9px">
+              <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+              <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.015em;color:#8E1D17">Can't reach the service</h2>
+            </div>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42">Check your connection and try again in a moment.</p>
+            <a href="#" style="align-self:flex-start;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Try again</a>
+          </section>
+          <form style="margin-top:18px;display:flex;flex-direction:column;gap:18px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA">
+                <label for="li-u7" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Username</label>
+                <input id="li-u7" type="text" defaultValue="cian.murphy" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px">
+                <label for="li-p7" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Password</label>
+                <input id="li-p7" type="password" autocomplete="current-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer">Sign in</button>
+          </form>
+          <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px;font-size:16px;line-height:1.5;color:#343A42">
+            <p style="margin:0">Joining a class? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Enter your join code</a>.</p>
+            <p style="margin:0">Forgotten your password? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Use a reset code</a>.</p>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · server unreachable</p>
+      <div data-screen-label="/login · error panel · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px">
+        <main>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.08;color:#101419">Sign in</h1>
+          <section role="alert" aria-live="polite" style="margin-top:16px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;border-radius:10px;background:#FBF1F0;padding:14px 15px;display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;gap:9px">
+              <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+              <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.015em;color:#8E1D17">Can't reach the service</h2>
+            </div>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42">Check your connection and try again in a moment.</p>
+            <a href="#" style="align-self:flex-start;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Try again</a>
+          </section>
+          <form style="margin-top:16px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA">
+                <label for="li-u8" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Username</label>
+                <input id="li-u8" type="text" defaultValue="cian.murphy" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px">
+                <label for="li-p8" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Password</label>
+                <input id="li-p8" type="password" autocomplete="current-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer">Sign in</button>
+          </form>
+          <div style="margin-top:18px;display:flex;flex-direction:column;gap:8px;font-size:16px;line-height:1.5;color:#343A42">
+            <p style="margin:0">Joining a class? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Enter your join code</a>.</p>
+            <p style="margin:0">Forgotten your password? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Use a reset code</a>.</p>
+          </div>
+        </main>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section style="width:max-content;padding:0 56px 88px;display:flex;flex-direction:column;gap:18px">
+  <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;max-width:840px">
+    <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:25px;font-weight:700;letter-spacing:-.025em;color:#101419">/account/password — Change password</h2>
+    <p style="margin:0;font-size:15px;color:#4B535C">In the (auth) group, so no header: forced mode genuinely has no way out but Sign out.</p>
+  </div>
+  <div style="display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · forced — temporary password, no way out but Sign out</p>
+      <div data-screen-label="/account/password · forced — temporary password, no way out but Sign out · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:440px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Change password</h1>
+          <p style="margin:12px 0 0;font-size:16px;line-height:1.5;color:#343A42;max-width:40ch">You signed in with a temporary password. Choose your own to continue. It needs at least 10 characters.</p>
+          <form style="margin-top:20px;display:flex;flex-direction:column;gap:18px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="pw1-c" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Current password</label>
+                <input id="pw1-c" type="password" autocomplete="current-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="pw1-n" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">New password</label>
+                <input id="pw1-n" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">At least 10 characters.</p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="pw1-x" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Confirm new password</label>
+                <input id="pw1-x" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Change password</button>
+            <button type="button" style="align-self:flex-start;padding:11px 15px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:16px;font-weight:600;color:#343A42;cursor:pointer">Sign out</button>
+          </form>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · forced — temporary password, no way out but Sign out</p>
+      <div data-screen-label="/account/password · forced — temporary password, no way out but Sign out · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px;">
+        <main style="">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Change password</h1>
+          <p style="margin:12px 0 0;font-size:16px;line-height:1.5;color:#343A42;max-width:40ch">You signed in with a temporary password. Choose your own to continue. It needs at least 10 characters.</p>
+          <form style="margin-top:18px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="pw2-c" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Current password</label>
+                <input id="pw2-c" type="password" autocomplete="current-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="pw2-n" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">New password</label>
+                <input id="pw2-n" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">At least 10 characters.</p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="pw2-x" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Confirm new password</label>
+                <input id="pw2-x" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Change password</button>
+            <button type="button" style="align-self:flex-start;padding:11px 15px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:16px;font-weight:600;color:#343A42;cursor:pointer">Sign out</button>
+          </form>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · normal — reached from the header, Cancel available</p>
+      <div data-screen-label="/account/password · normal — reached from the header, Cancel available · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:440px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Change password</h1>
+          <form style="margin-top:20px;display:flex;flex-direction:column;gap:18px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="pw3-c" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Current password</label>
+                <input id="pw3-c" type="password" autocomplete="current-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="pw3-n" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">New password</label>
+                <input id="pw3-n" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">At least 10 characters.</p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="pw3-x" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Confirm new password</label>
+                <input id="pw3-x" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Change password</button>
+            <a href="#" style="align-self:flex-start;font-size:16px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Cancel</a>
+          </form>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · normal — reached from the header, Cancel available</p>
+      <div data-screen-label="/account/password · normal — reached from the header, Cancel available · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px;">
+        <main style="">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Change password</h1>
+          <form style="margin-top:18px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="pw4-c" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Current password</label>
+                <input id="pw4-c" type="password" autocomplete="current-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="pw4-n" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">New password</label>
+                <input id="pw4-n" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">At least 10 characters.</p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="pw4-x" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Confirm new password</label>
+                <input id="pw4-x" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Change password</button>
+            <a href="#" style="align-self:flex-start;font-size:16px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Cancel</a>
+          </form>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · new password too short</p>
+      <div data-screen-label="/account/password · new password too short · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:440px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Change password</h1>
+          <p role="alert" style="margin:18px 0 0;display:flex;gap:9px;align-items:center;padding:12px 14px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>The new password needs at least 10 characters.</span>
+          </p>
+          <form style="margin-top:20px;display:flex;flex-direction:column;gap:18px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="pw5-c" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Current password</label>
+                <input id="pw5-c" type="password" autocomplete="current-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;background:#FBF1F0;box-shadow:inset 2px 0 0 #B3251E;">
+                <label for="pw5-n" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8E1D17">New password</label>
+                <input id="pw5-n" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#8E1D17">At least 10 characters.</p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="pw5-x" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Confirm new password</label>
+                <input id="pw5-x" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Change password</button>
+            <a href="#" style="align-self:flex-start;font-size:16px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Cancel</a>
+          </form>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · new password too short</p>
+      <div data-screen-label="/account/password · new password too short · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px;">
+        <main style="">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Change password</h1>
+          <p role="alert" style="margin:16px 0 0;display:flex;gap:9px;align-items:center;padding:12px 13px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>The new password needs at least 10 characters.</span>
+          </p>
+          <form style="margin-top:18px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="pw6-c" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Current password</label>
+                <input id="pw6-c" type="password" autocomplete="current-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;background:#FBF1F0;box-shadow:inset 2px 0 0 #B3251E;">
+                <label for="pw6-n" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8E1D17">New password</label>
+                <input id="pw6-n" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#8E1D17">At least 10 characters.</p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="pw6-x" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Confirm new password</label>
+                <input id="pw6-x" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Change password</button>
+            <a href="#" style="align-self:flex-start;font-size:16px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Cancel</a>
+          </form>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · current password wrong</p>
+      <div data-screen-label="/account/password · current password wrong · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:440px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Change password</h1>
+          <p role="alert" style="margin:18px 0 0;display:flex;gap:9px;align-items:center;padding:12px 14px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>Your current password isn't right.</span>
+          </p>
+          <form style="margin-top:20px;display:flex;flex-direction:column;gap:18px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;background:#FBF1F0;box-shadow:inset 2px 0 0 #B3251E;">
+                <label for="pw7-c" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8E1D17">Current password</label>
+                <input id="pw7-c" type="password" autocomplete="current-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#8E1D17">Your current password isn't right.</p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="pw7-n" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">New password</label>
+                <input id="pw7-n" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">At least 10 characters.</p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="pw7-x" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Confirm new password</label>
+                <input id="pw7-x" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Change password</button>
+            <a href="#" style="align-self:flex-start;font-size:16px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Cancel</a>
+          </form>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · current password wrong</p>
+      <div data-screen-label="/account/password · current password wrong · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px;">
+        <main style="">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Change password</h1>
+          <p role="alert" style="margin:16px 0 0;display:flex;gap:9px;align-items:center;padding:12px 13px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>Your current password isn't right.</span>
+          </p>
+          <form style="margin-top:18px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;background:#FBF1F0;box-shadow:inset 2px 0 0 #B3251E;">
+                <label for="pw8-c" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8E1D17">Current password</label>
+                <input id="pw8-c" type="password" autocomplete="current-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#8E1D17">Your current password isn't right.</p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="pw8-n" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">New password</label>
+                <input id="pw8-n" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">At least 10 characters.</p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="pw8-x" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Confirm new password</label>
+                <input id="pw8-x" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Change password</button>
+            <a href="#" style="align-self:flex-start;font-size:16px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Cancel</a>
+          </form>
+        </main>
+      </div>
+    </div>
+  </div>
+</section>
+<section style="width:max-content;padding:0 56px 88px;display:flex;flex-direction:column;gap:18px">
+  <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;max-width:840px">
+    <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:25px;font-weight:700;letter-spacing:-.025em;color:#101419">/join — Enter a join code</h2>
+    <p style="margin:0;font-size:15px;color:#4B535C">Typed lowercase, spaces and dashes are normalised before the lookup, so the field is set in mono and uppercased on screen.</p>
+  </div>
+  <div style="display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · default</p>
+      <div data-screen-label="/join · default · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:440px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Join a class</h1>
+          <p style="margin:12px 0 0;font-size:16px;line-height:1.5;color:#343A42;max-width:40ch">Your teacher reads an 8-character code out in class. Lowercase is fine.</p>
+          <form style="margin-top:20px;display:flex;flex-direction:column;gap:18px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="jc1140" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Join code</label>
+                <input id="jc1140" type="text" autocomplete="off" style="border:0;outline:0;padding:0;background:transparent;font-family:'Space Mono',monospace;font-size:22px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#101419">
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Continue</button>
+          </form>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · default</p>
+      <div data-screen-label="/join · default · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px;">
+        <main style="">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Join a class</h1>
+          <p style="margin:12px 0 0;font-size:16px;line-height:1.5;color:#343A42;max-width:40ch">Your teacher reads an 8-character code out in class. Lowercase is fine.</p>
+          <form style="margin-top:18px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="jc390" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Join code</label>
+                <input id="jc390" type="text" autocomplete="off" style="border:0;outline:0;padding:0;background:transparent;font-family:'Space Mono',monospace;font-size:22px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#101419">
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Continue</button>
+          </form>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · code unknown or expired</p>
+      <div data-screen-label="/join · code unknown or expired · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:440px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Join a class</h1>
+          <p style="margin:12px 0 0;font-size:16px;line-height:1.5;color:#343A42;max-width:40ch">Your teacher reads an 8-character code out in class. Lowercase is fine.</p>
+          <p role="alert" style="margin:18px 0 0;display:flex;gap:9px;align-items:center;padding:12px 14px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>That join code isn't right, or it has expired. Ask your teacher for a new one.</span>
+          </p>
+          <form style="margin-top:20px;display:flex;flex-direction:column;gap:18px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;background:#FBF1F0;box-shadow:inset 2px 0 0 #B3251E;">
+                <label for="jcx1140" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8E1D17">Join code</label>
+                <input id="jcx1140" type="text" defaultValue="k7mq2rxp" autocomplete="off" style="border:0;outline:0;padding:0;background:transparent;font-family:'Space Mono',monospace;font-size:22px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#101419">
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Continue</button>
+          </form>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · code unknown or expired</p>
+      <div data-screen-label="/join · code unknown or expired · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px;">
+        <main style="">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Join a class</h1>
+          <p style="margin:12px 0 0;font-size:16px;line-height:1.5;color:#343A42;max-width:40ch">Your teacher reads an 8-character code out in class. Lowercase is fine.</p>
+          <p role="alert" style="margin:16px 0 0;display:flex;gap:9px;align-items:center;padding:12px 13px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>That join code isn't right, or it has expired. Ask your teacher for a new one.</span>
+          </p>
+          <form style="margin-top:18px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;background:#FBF1F0;box-shadow:inset 2px 0 0 #B3251E;">
+                <label for="jcx390" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8E1D17">Join code</label>
+                <input id="jcx390" type="text" defaultValue="k7mq2rxp" autocomplete="off" style="border:0;outline:0;padding:0;background:transparent;font-family:'Space Mono',monospace;font-size:22px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#101419">
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Continue</button>
+          </form>
+        </main>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="width:max-content;padding:0 56px 88px;display:flex;flex-direction:column;gap:18px">
+  <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;max-width:860px">
+    <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:25px;font-weight:700;letter-spacing:-.025em;color:#101419">/join/[code] — The class behind the code</h2>
+    <p style="margin:0;font-size:15px;color:#4B535C">The class is shown before anything is asked, so a student can see what they are joining. Signed out gets a form; signed in gets one button.</p>
+  </div>
+  <div style="display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · signed out — create your account</p>
+      <div data-screen-label="/join/[code] · signed out — create your account · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:460px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Join a class</h1>
+          <div style="margin-top:4px;border:1px solid #DDE1E6;border-left:4px solid #0E6E7A;border-radius:10px;background:#fff;padding:16px 18px;display:flex;flex-direction:column;gap:3px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">You're joining</p>
+            <p style="margin:2px 0 0;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;color:#101419">6A Biology</p>
+            <p style="margin:0;font-size:15px;line-height:1.45;color:#343A42">Biology · North Wicklow Educate Together Secondary School</p>
+          </div>
+          <h2 style="margin:22px 0 0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">Create your account</h2>
+          <form style="margin-top:14px;display:flex;flex-direction:column;gap:18px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="su1-f" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">First name</label>
+                <input id="su1-f" type="text" autocomplete="given-name" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="su1-s" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Surname</label>
+                <input id="su1-s" type="text" autocomplete="family-name" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="su1-u" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Username</label>
+                <input id="su1-u" type="text" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">3 to 32 characters: letters, numbers, dots, dashes and underscores.</p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="su1-p" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Password</label>
+                <input id="su1-p" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">At least 10 characters.</p>
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Create account and join</button>
+          </form>
+          <p style="margin:18px 0 0;font-size:16px;line-height:1.5;color:#343A42">Already have an account? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Sign in instead</a>.</p>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · signed out — create your account</p>
+      <div data-screen-label="/join/[code] · signed out — create your account · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px;">
+        <main style="">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Join a class</h1>
+          <div style="margin-top:2px;border:1px solid #DDE1E6;border-left:4px solid #0E6E7A;border-radius:10px;background:#fff;padding:14px 15px;display:flex;flex-direction:column;gap:3px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">You're joining</p>
+            <p style="margin:2px 0 0;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em;color:#101419">6A Biology</p>
+            <p style="margin:0;font-size:15px;line-height:1.45;color:#343A42">Biology · North Wicklow Educate Together Secondary School</p>
+          </div>
+          <h2 style="margin:22px 0 0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">Create your account</h2>
+          <form style="margin-top:14px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="su2-f" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">First name</label>
+                <input id="su2-f" type="text" autocomplete="given-name" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="su2-s" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Surname</label>
+                <input id="su2-s" type="text" autocomplete="family-name" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="su2-u" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Username</label>
+                <input id="su2-u" type="text" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">3 to 32 characters: letters, numbers, dots, dashes and underscores.</p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="su2-p" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Password</label>
+                <input id="su2-p" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">At least 10 characters.</p>
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Create account and join</button>
+          </form>
+          <p style="margin:18px 0 0;font-size:16px;line-height:1.5;color:#343A42">Already have an account? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Sign in instead</a>.</p>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · username taken</p>
+      <div data-screen-label="/join/[code] · username taken · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:460px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Join a class</h1>
+          <div style="margin-top:4px;border:1px solid #DDE1E6;border-left:4px solid #0E6E7A;border-radius:10px;background:#fff;padding:16px 18px;display:flex;flex-direction:column;gap:3px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">You're joining</p>
+            <p style="margin:2px 0 0;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;color:#101419">6A Biology</p>
+            <p style="margin:0;font-size:15px;line-height:1.45;color:#343A42">Biology · North Wicklow Educate Together Secondary School</p>
+          </div>
+          <h2 style="margin:22px 0 0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">Create your account</h2>
+          <p role="alert" style="margin:14px 0 0;display:flex;gap:9px;align-items:center;padding:12px 14px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>That username is taken.</span>
+          </p>
+          <form style="margin-top:14px;display:flex;flex-direction:column;gap:18px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="su3-f" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">First name</label>
+                <input id="su3-f" type="text" defaultValue="Cian" autocomplete="given-name" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="su3-s" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Surname</label>
+                <input id="su3-s" type="text" defaultValue="Murphy" autocomplete="family-name" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;background:#FBF1F0;box-shadow:inset 2px 0 0 #B3251E;">
+                <label for="su3-u" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8E1D17">Username</label>
+                <input id="su3-u" type="text" defaultValue="cian.murphy" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#8E1D17">That username is taken.</p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="su3-p" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Password</label>
+                <input id="su3-p" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">At least 10 characters.</p>
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Create account and join</button>
+          </form>
+          <p style="margin:18px 0 0;font-size:16px;line-height:1.5;color:#343A42">Already have an account? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Sign in instead</a>.</p>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · username taken</p>
+      <div data-screen-label="/join/[code] · username taken · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px;">
+        <main style="">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Join a class</h1>
+          <div style="margin-top:2px;border:1px solid #DDE1E6;border-left:4px solid #0E6E7A;border-radius:10px;background:#fff;padding:14px 15px;display:flex;flex-direction:column;gap:3px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">You're joining</p>
+            <p style="margin:2px 0 0;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em;color:#101419">6A Biology</p>
+            <p style="margin:0;font-size:15px;line-height:1.45;color:#343A42">Biology · North Wicklow Educate Together Secondary School</p>
+          </div>
+          <h2 style="margin:22px 0 0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">Create your account</h2>
+          <p role="alert" style="margin:14px 0 0;display:flex;gap:9px;align-items:center;padding:12px 13px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>That username is taken.</span>
+          </p>
+          <form style="margin-top:14px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="su4-f" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">First name</label>
+                <input id="su4-f" type="text" defaultValue="Cian" autocomplete="given-name" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="su4-s" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Surname</label>
+                <input id="su4-s" type="text" defaultValue="Murphy" autocomplete="family-name" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;background:#FBF1F0;box-shadow:inset 2px 0 0 #B3251E;">
+                <label for="su4-u" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8E1D17">Username</label>
+                <input id="su4-u" type="text" defaultValue="cian.murphy" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#8E1D17">That username is taken.</p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="su4-p" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Password</label>
+                <input id="su4-p" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">At least 10 characters.</p>
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Create account and join</button>
+          </form>
+          <p style="margin:18px 0 0;font-size:16px;line-height:1.5;color:#343A42">Already have an account? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Sign in instead</a>.</p>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · password too short</p>
+      <div data-screen-label="/join/[code] · password too short · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:460px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Join a class</h1>
+          <div style="margin-top:4px;border:1px solid #DDE1E6;border-left:4px solid #0E6E7A;border-radius:10px;background:#fff;padding:16px 18px;display:flex;flex-direction:column;gap:3px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">You're joining</p>
+            <p style="margin:2px 0 0;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;color:#101419">6A Biology</p>
+            <p style="margin:0;font-size:15px;line-height:1.45;color:#343A42">Biology · North Wicklow Educate Together Secondary School</p>
+          </div>
+          <h2 style="margin:22px 0 0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">Create your account</h2>
+          <p role="alert" style="margin:14px 0 0;display:flex;gap:9px;align-items:center;padding:12px 14px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>That password is too short. Use at least 10 characters.</span>
+          </p>
+          <form style="margin-top:14px;display:flex;flex-direction:column;gap:18px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="su5-f" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">First name</label>
+                <input id="su5-f" type="text" defaultValue="Cian" autocomplete="given-name" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="su5-s" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Surname</label>
+                <input id="su5-s" type="text" defaultValue="Murphy" autocomplete="family-name" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="su5-u" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Username</label>
+                <input id="su5-u" type="text" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">3 to 32 characters: letters, numbers, dots, dashes and underscores.</p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;background:#FBF1F0;box-shadow:inset 2px 0 0 #B3251E;">
+                <label for="su5-p" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8E1D17">Password</label>
+                <input id="su5-p" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#8E1D17">At least 10 characters.</p>
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Create account and join</button>
+          </form>
+          <p style="margin:18px 0 0;font-size:16px;line-height:1.5;color:#343A42">Already have an account? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Sign in instead</a>.</p>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · password too short</p>
+      <div data-screen-label="/join/[code] · password too short · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px;">
+        <main style="">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Join a class</h1>
+          <div style="margin-top:2px;border:1px solid #DDE1E6;border-left:4px solid #0E6E7A;border-radius:10px;background:#fff;padding:14px 15px;display:flex;flex-direction:column;gap:3px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">You're joining</p>
+            <p style="margin:2px 0 0;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em;color:#101419">6A Biology</p>
+            <p style="margin:0;font-size:15px;line-height:1.45;color:#343A42">Biology · North Wicklow Educate Together Secondary School</p>
+          </div>
+          <h2 style="margin:22px 0 0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">Create your account</h2>
+          <p role="alert" style="margin:14px 0 0;display:flex;gap:9px;align-items:center;padding:12px 13px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>That password is too short. Use at least 10 characters.</span>
+          </p>
+          <form style="margin-top:14px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="su6-f" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">First name</label>
+                <input id="su6-f" type="text" defaultValue="Cian" autocomplete="given-name" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="su6-s" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Surname</label>
+                <input id="su6-s" type="text" defaultValue="Murphy" autocomplete="family-name" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="su6-u" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Username</label>
+                <input id="su6-u" type="text" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">3 to 32 characters: letters, numbers, dots, dashes and underscores.</p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;background:#FBF1F0;box-shadow:inset 2px 0 0 #B3251E;">
+                <label for="su6-p" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8E1D17">Password</label>
+                <input id="su6-p" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#8E1D17">At least 10 characters.</p>
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Create account and join</button>
+          </form>
+          <p style="margin:18px 0 0;font-size:16px;line-height:1.5;color:#343A42">Already have an account? <a href="#" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Sign in instead</a>.</p>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · signed in — one button</p>
+      <div data-screen-label="/join/[code] · signed in — one button · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:460px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Join a class</h1>
+          <div style="margin-top:4px;border:1px solid #DDE1E6;border-left:4px solid #0E6E7A;border-radius:10px;background:#fff;padding:16px 18px;display:flex;flex-direction:column;gap:3px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">You're joining</p>
+            <p style="margin:2px 0 0;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;color:#101419">6A Biology</p>
+            <p style="margin:0;font-size:15px;line-height:1.45;color:#343A42">Biology · North Wicklow Educate Together Secondary School</p>
+          </div>
+          <div style="margin-top:20px;display:flex;flex-direction:column;gap:14px">
+            <button type="button" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Join this class</button>
+            <p style="margin:0;font-size:15px;line-height:1.5;color:#4B535C">Signed in as Cian Murphy.</p>
+          </div>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · signed in — one button</p>
+      <div data-screen-label="/join/[code] · signed in — one button · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px;">
+        <main style="">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Join a class</h1>
+          <div style="margin-top:2px;border:1px solid #DDE1E6;border-left:4px solid #0E6E7A;border-radius:10px;background:#fff;padding:14px 15px;display:flex;flex-direction:column;gap:3px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">You're joining</p>
+            <p style="margin:2px 0 0;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em;color:#101419">6A Biology</p>
+            <p style="margin:0;font-size:15px;line-height:1.45;color:#343A42">Biology · North Wicklow Educate Together Secondary School</p>
+          </div>
+          <div style="margin-top:20px;display:flex;flex-direction:column;gap:14px">
+            <button type="button" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Join this class</button>
+            <p style="margin:0;font-size:15px;line-height:1.5;color:#4B535C">Signed in as Cian Murphy.</p>
+          </div>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · already in this class — pending approval</p>
+      <div data-screen-label="/join/[code] · already in this class — pending approval · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:460px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Join a class</h1>
+          <div style="margin-top:4px;border:1px solid #DDE1E6;border-left:4px solid #0E6E7A;border-radius:10px;background:#fff;padding:16px 18px;display:flex;flex-direction:column;gap:3px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">You're joining</p>
+            <p style="margin:2px 0 0;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;color:#101419">6A Biology</p>
+            <p style="margin:0;font-size:15px;line-height:1.45;color:#343A42">Biology · North Wicklow Educate Together Secondary School</p>
+          </div>
+          <div style="margin-top:20px;border:1px solid rgba(160,72,6,.32);border-left:4px solid #A04806;border-radius:10px;background:#F6EDE6;padding:16px 17px;display:flex;flex-direction:column;gap:5px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#A04806">Pending approval</p>
+            <p role="status" style="margin:0;font-size:16px;line-height:1.5;color:#343A42">Request sent. Waiting for your teacher to approve it.</p>
+          </div>
+          <a href="#" style="display:inline-block;margin-top:16px;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Go to your classes</a>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · already in this class — pending approval</p>
+      <div data-screen-label="/join/[code] · already in this class — pending approval · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px;">
+        <main style="">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Join a class</h1>
+          <div style="margin-top:2px;border:1px solid #DDE1E6;border-left:4px solid #0E6E7A;border-radius:10px;background:#fff;padding:14px 15px;display:flex;flex-direction:column;gap:3px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">You're joining</p>
+            <p style="margin:2px 0 0;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em;color:#101419">6A Biology</p>
+            <p style="margin:0;font-size:15px;line-height:1.45;color:#343A42">Biology · North Wicklow Educate Together Secondary School</p>
+          </div>
+          <div style="margin-top:20px;border:1px solid rgba(160,72,6,.32);border-left:4px solid #A04806;border-radius:10px;background:#F6EDE6;padding:16px 17px;display:flex;flex-direction:column;gap:5px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#A04806">Pending approval</p>
+            <p role="status" style="margin:0;font-size:16px;line-height:1.5;color:#343A42">Request sent. Waiting for your teacher to approve it.</p>
+          </div>
+          <a href="#" style="display:inline-block;margin-top:16px;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Go to your classes</a>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · already in this class — approved</p>
+      <div data-screen-label="/join/[code] · already in this class — approved · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:460px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Join a class</h1>
+          <div style="margin-top:4px;border:1px solid #DDE1E6;border-left:4px solid #0E6E7A;border-radius:10px;background:#fff;padding:16px 18px;display:flex;flex-direction:column;gap:3px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">You're joining</p>
+            <p style="margin:2px 0 0;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;color:#101419">6A Biology</p>
+            <p style="margin:0;font-size:15px;line-height:1.45;color:#343A42">Biology · North Wicklow Educate Together Secondary School</p>
+          </div>
+          <div style="margin-top:20px;border:1px solid rgba(15,92,58,.3);border-left:4px solid #0F5C3A;border-radius:10px;background:#F1F6F4;padding:16px 17px;display:flex;flex-direction:column;gap:5px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#0F5C3A">Approved</p>
+            <p role="status" style="margin:0;font-size:16px;line-height:1.5;color:#343A42">You're already in this class.</p>
+          </div>
+          <a href="#" style="display:inline-block;margin-top:16px;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Go to your classes</a>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · already in this class — approved</p>
+      <div data-screen-label="/join/[code] · already in this class — approved · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px;">
+        <main style="">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Join a class</h1>
+          <div style="margin-top:2px;border:1px solid #DDE1E6;border-left:4px solid #0E6E7A;border-radius:10px;background:#fff;padding:14px 15px;display:flex;flex-direction:column;gap:3px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">You're joining</p>
+            <p style="margin:2px 0 0;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em;color:#101419">6A Biology</p>
+            <p style="margin:0;font-size:15px;line-height:1.45;color:#343A42">Biology · North Wicklow Educate Together Secondary School</p>
+          </div>
+          <div style="margin-top:20px;border:1px solid rgba(15,92,58,.3);border-left:4px solid #0F5C3A;border-radius:10px;background:#F1F6F4;padding:16px 17px;display:flex;flex-direction:column;gap:5px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#0F5C3A">Approved</p>
+            <p role="status" style="margin:0;font-size:16px;line-height:1.5;color:#343A42">You're already in this class.</p>
+          </div>
+          <a href="#" style="display:inline-block;margin-top:16px;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Go to your classes</a>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · code expired between steps</p>
+      <div data-screen-label="/join/[code] · code expired between steps · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:460px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Join a class</h1>
+          <div style="margin-top:4px;border:1px solid #DDE1E6;border-left:4px solid #DDE1E6;border-radius:10px;background:#fff;padding:16px 18px;display:flex;flex-direction:column;gap:3px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">You're joining</p>
+            <p style="margin:2px 0 0;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;color:#101419">6A Biology</p>
+            <p style="margin:0;font-size:15px;line-height:1.45;color:#343A42">Biology · North Wicklow Educate Together Secondary School</p>
+          </div>
+          <p role="alert" style="margin:16px 0 0;display:flex;gap:9px;align-items:center;padding:12px 14px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>That join code isn't right, or it has expired. Ask your teacher for a new one.</span>
+          </p>
+          <a href="#" style="display:inline-block;margin-top:16px;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Enter a different join code</a>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · code expired between steps</p>
+      <div data-screen-label="/join/[code] · code expired between steps · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px;">
+        <main style="">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Join a class</h1>
+          <div style="margin-top:2px;border:1px solid #DDE1E6;border-left:4px solid #DDE1E6;border-radius:10px;background:#fff;padding:14px 15px;display:flex;flex-direction:column;gap:3px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">You're joining</p>
+            <p style="margin:2px 0 0;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em;color:#101419">6A Biology</p>
+            <p style="margin:0;font-size:15px;line-height:1.45;color:#343A42">Biology · North Wicklow Educate Together Secondary School</p>
+          </div>
+          <p role="alert" style="margin:16px 0 0;display:flex;gap:9px;align-items:center;padding:12px 13px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>That join code isn't right, or it has expired. Ask your teacher for a new one.</span>
+          </p>
+          <a href="#" style="display:inline-block;margin-top:16px;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Enter a different join code</a>
+        </main>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="width:max-content;padding:0 56px 88px;display:flex;flex-direction:column;gap:18px">
+  <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;max-width:860px">
+    <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:25px;font-weight:700;letter-spacing:-.025em;color:#101419">/reset — Reset your password</h2>
+    <p style="margin:0;font-size:15px;color:#4B535C">Redeeming a code does not sign anyone in, so the success state ends in a Sign in button rather than a redirect.</p>
+  </div>
+  <div style="display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · default</p>
+      <div data-screen-label="/reset · default · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:440px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Reset your password</h1>
+          <p style="margin:12px 0 0;font-size:16px;line-height:1.5;color:#343A42;max-width:42ch">Your teacher can give you a reset code. It works once and lasts 24 hours.</p>
+          <form style="margin-top:20px;display:flex;flex-direction:column;gap:18px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="rs1-u" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Username</label>
+                <input id="rs1-u" type="text" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="rs1-c" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Reset code</label>
+                <input id="rs1-c" type="text" autocomplete="one-time-code" style="border:0;outline:0;padding:0;background:transparent;font-family:'Space Mono',monospace;font-size:22px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="rs1-p" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">New password</label>
+                <input id="rs1-p" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">At least 10 characters.</p>
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Set new password</button>
+          </form>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · default</p>
+      <div data-screen-label="/reset · default · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px;">
+        <main style="">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Reset your password</h1>
+          <p style="margin:12px 0 0;font-size:16px;line-height:1.5;color:#343A42;max-width:42ch">Your teacher can give you a reset code. It works once and lasts 24 hours.</p>
+          <form style="margin-top:18px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="rs2-u" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Username</label>
+                <input id="rs2-u" type="text" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="rs2-c" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Reset code</label>
+                <input id="rs2-c" type="text" autocomplete="one-time-code" style="border:0;outline:0;padding:0;background:transparent;font-family:'Space Mono',monospace;font-size:22px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="rs2-p" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">New password</label>
+                <input id="rs2-p" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">At least 10 characters.</p>
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Set new password</button>
+          </form>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · code wrong or expired</p>
+      <div data-screen-label="/reset · code wrong or expired · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:440px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Reset your password</h1>
+          <p style="margin:12px 0 0;font-size:16px;line-height:1.5;color:#343A42;max-width:42ch">Your teacher can give you a reset code. It works once and lasts 24 hours.</p>
+          <p role="alert" style="margin:18px 0 0;display:flex;gap:9px;align-items:center;padding:12px 14px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>That code isn't right, or it has expired. Ask your teacher for a new one.</span>
+          </p>
+          <form style="margin-top:18px;display:flex;flex-direction:column;gap:18px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="rs3-u" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Username</label>
+                <input id="rs3-u" type="text" defaultValue="cian.murphy" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;background:#FBF1F0;box-shadow:inset 2px 0 0 #B3251E;">
+                <label for="rs3-c" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8E1D17">Reset code</label>
+                <input id="rs3-c" type="text" defaultValue="4KQ9WTZ2" autocomplete="one-time-code" style="border:0;outline:0;padding:0;background:transparent;font-family:'Space Mono',monospace;font-size:22px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="rs3-p" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">New password</label>
+                <input id="rs3-p" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">At least 10 characters.</p>
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Set new password</button>
+          </form>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · code wrong or expired</p>
+      <div data-screen-label="/reset · code wrong or expired · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px;">
+        <main style="">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Reset your password</h1>
+          <p style="margin:12px 0 0;font-size:16px;line-height:1.5;color:#343A42;max-width:42ch">Your teacher can give you a reset code. It works once and lasts 24 hours.</p>
+          <p role="alert" style="margin:16px 0 0;display:flex;gap:9px;align-items:center;padding:12px 13px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>That code isn't right, or it has expired. Ask your teacher for a new one.</span>
+          </p>
+          <form style="margin-top:16px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="rs4-u" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Username</label>
+                <input id="rs4-u" type="text" defaultValue="cian.murphy" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;background:#FBF1F0;box-shadow:inset 2px 0 0 #B3251E;">
+                <label for="rs4-c" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8E1D17">Reset code</label>
+                <input id="rs4-c" type="text" defaultValue="4KQ9WTZ2" autocomplete="one-time-code" style="border:0;outline:0;padding:0;background:transparent;font-family:'Space Mono',monospace;font-size:22px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="rs4-p" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">New password</label>
+                <input id="rs4-p" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">At least 10 characters.</p>
+              </div>
+            </div>
+            <button type="submit" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Set new password</button>
+          </form>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · too many attempts</p>
+      <div data-screen-label="/reset · too many attempts · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:440px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Reset your password</h1>
+          <p style="margin:12px 0 0;font-size:16px;line-height:1.5;color:#343A42;max-width:42ch">Your teacher can give you a reset code. It works once and lasts 24 hours.</p>
+          <p role="alert" style="margin:18px 0 0;display:flex;gap:9px;align-items:center;padding:12px 14px;border-radius:10px;border:1px solid rgba(160,72,6,.32);border-left:4px solid #A04806;background:#F6EDE6;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#A04806;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>Too many attempts. Try again in 12 minutes.</span>
+          </p>
+          <form style="margin-top:18px;display:flex;flex-direction:column;gap:18px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="rs5-u" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Username</label>
+                <input id="rs5-u" type="text" defaultValue="cian.murphy" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="rs5-c" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Reset code</label>
+                <input id="rs5-c" type="text" autocomplete="one-time-code" style="border:0;outline:0;padding:0;background:transparent;font-family:'Space Mono',monospace;font-size:22px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="rs5-p" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">New password</label>
+                <input id="rs5-p" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">At least 10 characters.</p>
+              </div>
+            </div>
+            <button type="submit" disabled="true" style="height:48px;border:1px solid #DDE1E6;border-radius:8px;background:#EFF1F3;color:#636B75;font-size:16px;font-weight:600;cursor:not-allowed">Set new password</button>
+          </form>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · too many attempts</p>
+      <div data-screen-label="/reset · too many attempts · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px;">
+        <main style="">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Reset your password</h1>
+          <p style="margin:12px 0 0;font-size:16px;line-height:1.5;color:#343A42;max-width:42ch">Your teacher can give you a reset code. It works once and lasts 24 hours.</p>
+          <p role="alert" style="margin:16px 0 0;display:flex;gap:9px;align-items:center;padding:12px 13px;border-radius:10px;border:1px solid rgba(160,72,6,.32);border-left:4px solid #A04806;background:#F6EDE6;font-size:16px;line-height:1.45;color:#343A42">
+            <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#A04806;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+            <span>Too many attempts. Try again in 12 minutes.</span>
+          </p>
+          <form style="margin-top:16px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="rs6-u" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Username</label>
+                <input id="rs6-u" type="text" defaultValue="cian.murphy" autocomplete="username" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;border-bottom:1px solid #E3E6EA;">
+                <label for="rs6-c" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Reset code</label>
+                <input id="rs6-c" type="text" autocomplete="one-time-code" style="border:0;outline:0;padding:0;background:transparent;font-family:'Space Mono',monospace;font-size:22px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#101419">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 12px;">
+                <label for="rs6-p" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">New password</label>
+                <input id="rs6-p" type="password" autocomplete="new-password" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419">
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.4;color:#636B75">At least 10 characters.</p>
+              </div>
+            </div>
+            <button type="submit" disabled="true" style="height:48px;border:1px solid #DDE1E6;border-radius:8px;background:#EFF1F3;color:#636B75;font-size:16px;font-weight:600;cursor:not-allowed">Set new password</button>
+          </form>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1140 · done — not signed in, sent to sign in</p>
+      <div data-screen-label="/reset · done — not signed in, sent to sign in · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:52px 28px 72px;display:flex;justify-content:center">
+        <main style="width:440px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:26px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:34px;height:34px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Reset your password</h1>
+          <div role="status" style="margin-top:20px;border:1px solid rgba(15,92,58,.3);border-left:4px solid #0F5C3A;border-radius:10px;background:#F1F6F4;padding:17px 18px;display:flex;flex-direction:column;gap:5px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#0F5C3A">Password set</p>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42">Password set. Sign in with your new password.</p>
+          </div>
+          <a href="#" style="display:inline-block;margin-top:18px;padding:13px 20px;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;text-decoration:none" style-hover="background:#16294E">Sign in</a>
+        </main>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 · done — not signed in, sent to sign in</p>
+      <div data-screen-label="/reset · done — not signed in, sent to sign in · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;background:#F7F8F9;padding:28px 20px 40px;">
+        <main style="">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <div style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.025em;color:#101419">Leaving Cert Practical</span>
+              <span style="font-size:13px;color:#636B75">North Wicklow ETSS</span>
+            </div>
+          </div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Reset your password</h1>
+          <div role="status" style="margin-top:18px;border:1px solid rgba(15,92,58,.3);border-left:4px solid #0F5C3A;border-radius:10px;background:#F1F6F4;padding:17px 18px;display:flex;flex-direction:column;gap:5px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#0F5C3A">Password set</p>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42">Password set. Sign in with your new password.</p>
+          </div>
+          <a href="#" style="display:inline-block;margin-top:18px;padding:13px 20px;border-radius:8px;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;text-decoration:none" style-hover="background:#16294E">Sign in</a>
+        </main>
+      </div>
+    </div>
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1300,&quot;height&quot;:900}}"></script>
+</body>
+</html>

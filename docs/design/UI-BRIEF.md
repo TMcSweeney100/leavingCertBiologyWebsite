@@ -1,6 +1,6 @@
 # UI brief — the coursework pilot app
 
-**Who this is for:** Claude Design (or any designer) producing a design pack for one or more app pages. Give it this file, the rows of `docs/PILOT-ROADMAP.md` §6.2 for the pages in the pack, and the BiPi tokens in `frontend/app/globals.css`. Ask for two or three directions, pick one, and only bring the decided one into the build.
+**Who this is for:** Claude Design (or any designer) producing a design pack for one or more app pages. Give it this file, the rows of `docs/PILOT-ROADMAP.md` §6.2 for the pages in the pack, and the app's tokens (`docs/design/pilot/D-1-app-shell-auth/tokens.css`, built into `frontend/app/globals.css` as `--app-*`). Ask for two or three directions, pick one, and only bring the decided one into the build.
 
 **Companion files:** `UI-STANDARDS.md` is the build-side rulebook; `UI-CHECKLIST.md` is the review pass. This file says what the design must achieve and how it should feel. It does not prescribe layouts.
 
@@ -43,26 +43,33 @@ Four qualities, in priority order, each made concrete:
 - **Motion answers the user.** A panel opening, a row confirming, a code appearing. One deliberate moment per page at most, never decoration on every card, and everything works with motion off.
 - **Mobile first, laptop with equal care.** Design each screen at 390px first, then at 1140px as its own layout rather than a stretched phone. Teacher pages are used mostly on laptops and may use the width (tables, two columns); student pages are used mostly on phones.
 
-## 5. Visual system: shared bones, the app's own accent
+## 5. Visual system: the app's own, "Navy"
 
-The app and the public BiPi schedule are one family, not one product. Keep the bones, choose the accent.
+**Decided 16 Sep 2026 (roadmap R25), superseding the earlier "shared bones" rule.** The first two design packs (D-1, D-2) moved the app away from the BiPi schedule's look. The app is now its own visual system, direction **2e "Navy"**. Only the three typefaces are still shared with BiPi. The source of truth for every value is `docs/design/pilot/D-1-app-shell-auth/tokens.css` (identical in D-2), built into `frontend/app/globals.css` as `--app-*`. Later packs extend that file; they don't restart it.
 
-**Keep from BiPi** (all in `frontend/app/globals.css`, `--bipi-*`):
+**What the app uses** (contrast measured on white unless noted):
 
-- Type: Space Grotesk for display and headings, Public Sans for body, Space Mono for small labels and codes. One display family, one body family; the mono only for codes, dates and labels, never for body text.
-- Neutrals: page ground `#F4F6FA`, surface white, inset `#EEF0F4`, ink `#141A23`, body `#333842`, muted `#656B74`, hairline `#DDE0E5`.
-- Radii: 12px cards, 8px insets, 7px badges, pill 99px.
-- The meaning of two colours. **BiPi blue `#4662B9` means "now": the current stage, and nothing else.** **Green `#1A7F51` means "done".** When a BiPi component is reused inside the app (pack D-3 reuses the stage cards and crosswalk), those two keep their jobs.
+- **Type.** Space Grotesk (600–700) for headings, Public Sans for body, Space Mono for codes, usernames and the small uppercase field labels. These are the same families as BiPi, nothing more.
+- **Neutrals, cool graphite.** Ground `#F7F8F9`, surface white, inset `#EFF1F3`, ink `#101419`, body `#343A42`, grey `#4B535C`, muted `#636B75`, hairline `#E3E6EA`, field border `#DDE1E6`.
+- **Radii.** Cards 10px, controls 8px, inner pills 6px.
+- **Accent: navy `#1F3A6E`** (11.12:1). Primary buttons, links, focus rings, the selected role and tab. Hover `#16294E`, tint `#F4F5F8` for the focused field row.
+- **Attention: amber `#A04806`** (6.13:1). Reserved for pending work: the pending-request count and rate-limit messages. Nothing else is allowed to interrupt.
+- **Status.** Approved green `#0F5C3A` (8.04:1); error red `#B3251E` (6.56:1) with hover and heading `#8E1D17` and tint `#FBF1F0`.
+- **Subject identity.** A 4px bar down the left edge of a class row, never type or a badge. Biology `#0E6E7A`, Business `#6D3AA8`, Chemistry `#8E2846`, Physics `#4B535C`. These hues avoid the status trio, so a subject can't read as a state. The subject is always also written out.
+- **Motion.** One token pair: 160ms on `cubic-bezier(.2,.7,.3,1)`, dropping to 0ms under reduced motion.
 
-**The app chooses for itself:**
+**Component language** (from D-1 and D-2):
 
-- **An accent** for primary actions, links, focus rings and the active nav item. It must not be the BiPi "now" blue, or the current-stage marker and the primary button will compete. It must measure at least 4.5:1 as text on white and on the page ground, and 3:1 as a filled control against both. State the hex and the measured ratios in the pack.
-- **Status colours** the BiPi site never needed: error (with an icon and a word), warning, and "pending". Same contrast rule.
-- **Component language**: how a form field, a card, a table row, a status badge, the header and the role switcher look. Restyle the shadcn primitives (Button, Input, Card, Badge, Table, Collapsible, Tabs) rather than inventing new ones; where a primitive would need every one of its classes overridden, say so in `NOTES.md` and use a plain element.
+- **Field group.** One white card per form, rows split by hairlines, each row a mono uppercase label above a borderless 16px input. The row being typed in is tinted with a 2px navy inner edge. An invalid row is tinted red with a red edge and shows its message under the input.
+- **Buttons.** Primary is a navy fill. Secondary is white with a field-border hairline. Destructive at rest is red text on white with a red hairline; confirming is a solid red fill. Form primaries are 48px tall, row actions 40px.
+- **Messages.** A compact alert (4px left edge, tinted ground, circled "!" and the sentence) for a failed request. The full error panel (heading, sentence, field list, "Try again") for an unreachable service. Amber for throttling, green for success.
+- **Cards and lists.** White cards with a hairline and no shadow. Lists of classes and students are `<ul>`s of cards, not tables.
 
-**Type floor for the app.** The BiPi poster page runs small (12.5px body, 9px chips) because it is a dense read-only schedule. The app is a tool people type into and read on phones, so: body 16px, form inputs 16px (smaller triggers zoom on iOS), nothing below 12px anywhere, line-height 1.5 for body. Headings from a scale of about five steps, not fifteen.
+**BiPi is a separate product surface.** The `--bipi-*` tokens stay exactly as they are for the live schedule, and the app never uses them. Inside the app, BiPi blue `#4662B9` and green `#1A7F51` appear only in reused BiPi components (pack D-3's stage cards and crosswalk), where they keep their "now" and "done" meanings. The app accent must never be BiPi blue.
 
-**Light only.** No dark mode. Every contrast ratio is measured on the light surfaces above.
+**Type floor.** Body 16px, form inputs 16px (smaller zooms on iOS), nothing below 12px anywhere, line-height 1.5 for body. The D-1/D-2 exports draw field labels at 11px, so the build sets them at 12px. Headings come from a scale of about five steps.
+
+**Light only.** No dark mode.
 
 ## 6. Avoid
 
@@ -70,10 +77,10 @@ These are the defaults a generator reaches for when nothing better is decided. E
 
 - Cream backgrounds with a serif display and a terracotta accent; near-black pages with one acid accent; broadsheet hairline grids.
 - Every block as an identical rounded card with the same soft grey shadow; gradient washes as decoration; glassmorphism.
-- Tracked-out ALL-CAPS eyebrow labels above every heading; meta strings joined with middle dots; "WORD — fragment" labels; an arrow glued to every link and button.
+- Tracked-out ALL-CAPS eyebrow labels above every heading (the app's uppercase mono labels are for form fields and one-word status eyebrows only); meta strings joined with middle dots; "WORD — fragment" labels; an arrow glued to every link and button.
 - One word of a headline in a different colour or italic.
 - Fade-and-slide-up on every section; hover lift on every card; skeletons and spinners for work that takes 100ms.
-- Icon-only buttons, emoji as icons, a second icon set.
+- Icon-only buttons (the one agreed exception is the copy-join-code button, with its accessible name), emoji as icons, a second icon set.
 - Stock photos, hero illustrations, mascots.
 - Colour as the only carrier of a state.
 - Anything that needs a tooltip to be understood.
