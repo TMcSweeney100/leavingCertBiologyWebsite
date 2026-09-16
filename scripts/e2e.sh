@@ -11,10 +11,24 @@ PROXY_SECRET="e2e-proxy-secret"
 LOG_DIR="frontend/test-results"
 mkdir -p "$LOG_DIR"
 
+# A server left on either port would answer the readiness checks below and the journey would run
+# against stale code, so refuse to start rather than test the wrong build.
+for port in $BACKEND_PORT $FRONTEND_PORT; do
+  if lsof -ti "tcp:$port" -sTCP:LISTEN >/dev/null 2>&1; then
+    echo "e2e: port $port is already in use (a server left from an earlier run?); stop it and retry"
+    exit 1
+  fi
+done
+
 cleanup() {
   echo "e2e: tearing down"
   [ -n "${NEXT_PID:-}" ] && kill "$NEXT_PID" 2>/dev/null || true
   [ -n "${BACKEND_PID:-}" ] && kill "$BACKEND_PID" 2>/dev/null || true
+  # The PIDs above are subshells; `npx next start` leaves next-server running without this. The
+  # ports were free at start, so whatever listens on them now is ours.
+  for port in $BACKEND_PORT $FRONTEND_PORT; do
+    lsof -ti "tcp:$port" -sTCP:LISTEN 2>/dev/null | xargs kill 2>/dev/null || true
+  done
   docker compose --profile e2e down postgres-e2e -v >/dev/null 2>&1 || true
 }
 trap cleanup EXIT
