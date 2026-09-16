@@ -19,11 +19,27 @@ spring:
     # Applied migrations are never edited. Changes get a new migration.
     validate-on-migrate: true
 
+  session:
+    # Stored in Postgres so a deploy doesn't sign everyone out (design §5.2).
+    timeout: 7d
+    jdbc:
+      # Flyway owns the schema (V3__spring_session.sql).
+      initialize-schema: never
+
 server:
   # Loopback locally. The container image sets SERVER_ADDRESS=0.0.0.0.
   address: ${SERVER_ADDRESS:127.0.0.1}
   port: ${SERVER_PORT:8080}
   shutdown: graceful
+  servlet:
+    session:
+      timeout: 7d
+      cookie:
+        http-only: true
+        # true everywhere except a local backend served over plain http (backend/.env).
+        secure: ${APP_COOKIE_SECURE:true}
+        same-site: lax
+        path: /
 
 management:
   endpoints:
@@ -34,9 +50,23 @@ management:
     health:
       show-details: never
 
+app:
+  proxy-secret: ${PROXY_SHARED_SECRET:}
+  login-limits:
+    per-username: 5
+    per-address: 100
+    window: 15m
+
 ---
 spring:
   config:
     activate:
       on-profile: test
 # Testcontainers supplies the datasource through @ServiceConnection.
+
+server:
+  servlet:
+    session:
+      cookie:
+        # Pinned so a developer's backend/.env can't change what the cookie tests assert.
+        secure: true

@@ -13,8 +13,8 @@ Detailed plans so far:
 |---|---|
 | 1A Walking skeleton | `docs/superpowers/plans/2026-09-15-pilot-1a-walking-skeleton.md` |
 | 1B Accounts and sessions | `docs/superpowers/plans/2026-09-15-pilot-1b-accounts-and-sessions.md` |
-| 1C Classes and enrolment | Not written yet. Write it once 1B is built. |
-| 1D App shell and first journey | Not written yet. Write it once 1C is built. |
+| 1C Classes and enrolment | `docs/superpowers/plans/2026-09-15-pilot-1c-classes-and-enrolment.md` |
+| 1D App shell and first journey | `docs/superpowers/plans/2026-09-15-pilot-1d-app-shell-and-first-journey.md` |
 
 ---
 
@@ -40,10 +40,10 @@ Detailed plans so far:
 
 | Phase | Milestone | Plan | Status | Gate |
 |---|---|---|---|---|
-| 1 Foundation | 1A Walking skeleton | written | in progress — Tasks 1–10 done, 11 waiting on H1 | §8.1 Gate 1A |
-| | 1B Accounts and sessions | written | not started | Gate 1B |
-| | 1C Classes and enrolment | to write after 1B | not started | Gate 1C |
-| | 1D App shell and first journey | to write after 1C | not started | **Gate P1** |
+| 1 Foundation | 1A Walking skeleton | written | built; gate waiting on Vercel preview (see HANDOFF) | §8.1 Gate 1A |
+| | 1B Accounts and sessions | written | built; gate passed locally, preview walk waiting on Tim | Gate 1B |
+| | 1C Classes and enrolment | written | not started | Gate 1C |
+| | 1D App shell and first journey | written | not started | **Gate P1** |
 | 2 Components | 2A–2F | to write at phase start | — | **Gate P2** |
 | 3 The log | 3A–3C | to write | — | **Gate P3** |
 | 4 Teacher grid | 4A–4B | to write | — | **Gate P4 = pilot can start** |
@@ -59,7 +59,7 @@ The design left these open, or left them to "the Phase 1 plan". Each is what I'd
 
 | # | Decision | Why |
 |---|---|---|
-| R1 | **Build on `main`, behind a flag.** App routes render only when `APP_ENABLED=true`. It's set in local dev and Vercel Preview, and left unset in Vercel Production until go-live. Each milestone is a branch (`pilot/1a-walking-skeleton`, …) merged by PR. | Katelyn's live site deploys from `main`. A long-lived pilot branch would drift from it; the flag keeps half-built app pages off the live site. |
+| R1 | **Amended 15 Sep 2026: the pilot lives on `pilotMain`, its own Vercel project, still behind the flag.** `main` stays Katelyn's live BiPi site (its Vercel project, `APP_ENABLED` unset). `pilotMain` is the pilot's production branch: a second Vercel project on the same repo with Production Branch `pilotMain` and `APP_ENABLED=true`, `BACKEND_INTERNAL_URL`, `PROXY_SHARED_SECRET` in both Production and Preview; the Render web service tracks it too. Each milestone is a branch (`pilot/1a-walking-skeleton`, …) merged by PR **into `pilotMain`**. Whenever `main` changes, merge `main` → `pilotMain` promptly; never the other way until the go-live decision. The original wording (build on `main` behind the flag) was replaced because a separate production branch and project let the pilot deploy for real without touching the live site; the flag stays as the safety net. | Katelyn's live site deploys from `main` and must never change by accident. Two Vercel projects give the pilot its own URL, secrets and region. Drift is the risk of a long-lived branch, so `main` → `pilotMain` merges are routine. |
 | R2 | **Spring `JdbcClient` with SQL, not JPA.** Repositories live in `adapter.persistence` as contentCreater does, but use plain SQL mapped to records. | The design leans on Postgres features — triggers, `jsonb`, one teacher-view projection, union queries for the timeline, count queries for the leader view. JPA adds lazy loading, dirty checking and `open-in-view` traps to all of that, and gives nothing back. |
 | R3 | **Operator setup is a command-line runner, not an admin screen or endpoint.** `java -jar app.jar operator create-school …` (or `scripts/operator.sh create-school …`) starts without a web server, runs one command against the database, and exits. | Design §3: "The operator sets up the school, teacher accounts and the school-leader role", with no admin screen in the pilot. A CLI has no network-exposed surface to secure. |
 | R4 | **Java base package `ie.coursework`.** | The product has no name yet (positioning doc). Renaming later is a mechanical IDE refactor. |
@@ -144,7 +144,7 @@ make e2e            # Playwright journey against a throwaway database
 
 ### 4.3 Branches, commits, reviews
 
-- One branch per milestone off `main`: `pilot/1a-walking-skeleton`. One PR per milestone, merged when its gate passes.
+- One branch per milestone off `pilotMain` (or off the previous unmerged milestone branch): `pilot/1a-walking-skeleton`. One PR per milestone, base `pilotMain`, merged when its gate passes. `main` is Katelyn's site: only BiPi fixes go there, and `main` is merged into `pilotMain` afterwards (R1).
 - Commit per task. Message: imperative, and it says the behaviour ("Reject stage dates after the completion date"), not the file.
 - After each task: a spec-compliance review against the plan, then a code-quality review (`superpowers:requesting-code-review`). After each milestone: `/code-review` on the branch.
 - Never commit secrets. `.env*` is already ignored in `frontend/`. 1A adds `backend/.env` to the ignore list.
@@ -373,9 +373,9 @@ Each phase lists what it delivers, the outline of its tasks (each becomes TDD st
 
 **Gate 1A**
 - [ ] `make verify` green
-- [ ] Vercel Preview `GET /api/v1/health` returns `{"status":"UP"}` through the proxy from the EU backend
+- [ ] The pilot Vercel project's deployment of `pilotMain` returns `{"status":"UP"}` from `GET /api/v1/health` through the proxy from the EU backend
 - [ ] Response headers show the function ran in `dub1`
-- [ ] Production `/login` returns 404 (flag off) and the live class pages are unchanged
+- [ ] Katelyn's Vercel project (`main`) still returns 404 for `/login` and 200 for the live class pages; the pilot project (`pilotMain`) serves `/login`
 - [ ] ~~The database has a point-in-time-recovery setting turned on~~ Deferred to the go-live gate by Tim, 15 Sep 2026 (free Render Postgres during the build; no real data until onboarding). Must be on, with a restore tested, before go-live (§9 R1).
 
 #### 1B Accounts and sessions — plan written
@@ -415,7 +415,7 @@ Each phase lists what it delivers, the outline of its tasks (each becomes TDD st
 - [ ] Every endpoint in §7 Phase 1 has a scope test: another teacher's class → 404; a student calling teacher endpoints → 404; an enrolment id from another class → 404
 - [ ] Audit rows exist for role grants, enrolment decisions, reset codes and code rotation
 
-#### 1D App shell and first journey — plan to write after 1C
+#### 1D App shell and first journey — plan written
 
 1. Server session helper and `(app)` layout with the nav from §6.1
 2. `/login` and post-sign-in routing

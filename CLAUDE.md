@@ -33,13 +33,21 @@ Two things that share a Next.js app:
 - **No file or blob columns, no upload endpoints, no server-side fetching of student links.**
 - **Next.js stays on 15.3.9** until Vercel supports Next 16's Adapter API.
 - **App routes stay behind `APP_ENABLED`** until the go-live gate.
+- **Branches (roadmap R1, amended 15 Sep 2026):** `main` is Katelyn's live BiPi site; `pilotMain` is the pilot's production branch with its own Vercel project and the Render backend. Milestone branches (`pilot/1x-…`) branch from `pilotMain` and merge into `pilotMain` by PR. Merge `main` into `pilotMain` after any BiPi change; never merge `pilotMain` into `main` without Tim's go-live decision. Tim opens and merges PRs.
 
 ## Backend conventions
 
 - Base package `ie.coursework`. Feature packages: `domain` (no Spring), `application` (services), `adapter.persistence` (`JdbcClient` + SQL), `adapter.web` (controllers, request/response records).
 - Errors: throw `DomainException(ErrorCode, detail)`. `ErrorCode` names are API contract.
 - Schema migrations in `db/migration`; content in `db/content` (own history table). Never edit an applied migration.
-- Tests needing Postgres extend `PostgresIntegrationTest`. It truncates every table except migration history and content tables before each test.
+- Tests needing Postgres extend `PostgresIntegrationTest`. It truncates every table except migration history and content tables before each test, and clears every `InMemoryState` bean.
+- Controllers take an `Actor` parameter (resolved fresh per request: roles and disabled state); nothing else reads the security context.
+- Bind timestamps with `Timestamps.utc(instant)`; the Postgres driver won't bind `Instant`. Don't map `timestamptz` to `Instant` record components either: read `OffsetDateTime`, or select a boolean.
+- In-memory state (the login throttle) implements `InMemoryState`. **It assumes one API instance.** Move it to Postgres before scaling out.
+- HTTP tests use `ApiSession` (real filter chain, cookie jar, CSRF header), never MockMvc's `csrf()` / `user()` shortcuts. Create data with `TestAccounts`.
+- `@WebMvcTest` slices must exclude `WebConfig` and `CurrentActorArgumentResolver`, which need the identity services (see `ProblemDetailsAdviceTest`).
+- Beans a controller needs must not live in the web-only `SecurityConfig`: an operator process (`operator …` as first argument, no web server) still scans the controllers. `AuthenticationConfig` exists for that reason.
+- Operator commands: `scripts/operator.sh create-school|create-user|grant-role …` locally; on the host, run the same image with `operator …` as its arguments.
 
 ## Frontend conventions (pilot app)
 

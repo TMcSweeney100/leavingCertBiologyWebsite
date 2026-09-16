@@ -7,12 +7,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import ie.coursework.security.CurrentActorArgumentResolver;
+import ie.coursework.shared.web.WebConfig;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,9 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Pins the response shape the frontend's ApiError parses. Filters are off so this stays a test of
- * the advice alone once Spring Security is on the classpath (Task 6).
+ * the advice alone once Spring Security is on the classpath (Task 6), and the actor argument
+ * resolver is excluded because it needs the identity services this slice doesn't load.
  */
-@WebMvcTest(controllers = ProblemDetailsAdviceTest.TestController.class)
+@WebMvcTest(
+        controllers = ProblemDetailsAdviceTest.TestController.class,
+        excludeFilters = @ComponentScan.Filter(
+                type = FilterType.ASSIGNABLE_TYPE,
+                classes = {WebConfig.class, CurrentActorArgumentResolver.class}))
 @AutoConfigureMockMvc(addFilters = false)
 @Import({ProblemDetailsAdvice.class, ProblemDetailsAdviceTest.TestController.class})
 class ProblemDetailsAdviceTest {

@@ -58,7 +58,7 @@ Design §6.1. Nothing about students beyond a name: no email, no date of birth.
 - Create: `db/migration/V2__identity.sql`, `db/migration/V3__spring_session.sql`
 - Test: `identity/adapter/persistence/IdentitySchemaTest.java`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```java
 package ie.coursework.identity.adapter.persistence;
@@ -134,12 +134,12 @@ class IdentitySchemaTest extends PostgresIntegrationTest {
 }
 ```
 
-- [ ] **Step 2: Run it and watch it fail**
+- [x] **Step 2: Run it and watch it fail**
 
 Run: `cd backend && ./mvnw test -Dtest=IdentitySchemaTest`
 Expected: FAIL — `relation "app_user" does not exist`.
 
-- [ ] **Step 3: Write the migrations**
+- [x] **Step 3: Write the migrations**
 
 `db/migration/V2__identity.sql`:
 
@@ -243,12 +243,12 @@ cd backend && ./mvnw -q dependency:copy -Dartifact=org.springframework.session:s
 unzip -p target/tmp/spring-session-jdbc-4.1.1.jar org/springframework/session/jdbc/schema-postgresql.sql
 ```
 
-- [ ] **Step 4: Run the test and watch it pass**
+- [x] **Step 4: Run the test and watch it pass**
 
 Run: `./mvnw test -Dtest=IdentitySchemaTest`
 Expected: 5 tests, 0 failures.
 
-- [ ] **Step 5: Run the whole suite, then commit**
+- [x] **Step 5: Run the whole suite, then commit**
 
 ```bash
 ./mvnw test && cd ..
@@ -269,7 +269,7 @@ Pure JUnit, no Spring. Roadmap R6 and R12.
 - Create: `identity/domain/Username.java`, `PasswordPolicy.java`, `Role.java`, `RoleGrant.java`, `Actor.java`, `School.java`, `UserProfile.java`
 - Test: `identity/domain/UsernameTest.java`, `PasswordPolicyTest.java`, `ActorTest.java`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `UsernameTest.java`:
 
@@ -404,12 +404,12 @@ class ActorTest {
 
 `@ParameterizedTest` needs `junit-jupiter-params`, which `spring-boot-starter-test` already brings in.
 
-- [ ] **Step 2: Run them and watch them fail**
+- [x] **Step 2: Run them and watch them fail**
 
 Run: `cd backend && ./mvnw test -Dtest='UsernameTest,PasswordPolicyTest,ActorTest'`
 Expected: FAIL — compilation errors.
 
-- [ ] **Step 3: Add the error codes**
+- [x] **Step 3: Add the error codes**
 
 In `ErrorCode.java`, after `VALIDATION_FAILED`:
 
@@ -419,7 +419,7 @@ In `ErrorCode.java`, after `VALIDATION_FAILED`:
     PASSWORD_TOO_LONG(HttpStatus.BAD_REQUEST, "Password too long"),
 ```
 
-- [ ] **Step 4: Write the domain types**
+- [x] **Step 4: Write the domain types**
 
 `Username.java`:
 
@@ -572,12 +572,12 @@ public record UserProfile(
         UUID userId, String username, String firstName, String lastName, boolean mustChange, boolean disabled) {}
 ```
 
-- [ ] **Step 5: Run the tests and watch them pass**
+- [x] **Step 5: Run the tests and watch them pass**
 
 Run: `./mvnw test -Dtest='UsernameTest,PasswordPolicyTest,ActorTest'`
 Expected: all pass (18 including parameterised cases).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 cd .. && git add backend
@@ -595,7 +595,7 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 - Create: `identity/adapter/persistence/UserAccountRepository.java`, `StoredCredential.java`, `SchoolRepository.java`, `RoleRepository.java`
 - Test: `identity/adapter/persistence/IdentityRepositoriesTest.java`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```java
 package ie.coursework.identity.adapter.persistence;
@@ -686,12 +686,12 @@ class IdentityRepositoriesTest extends PostgresIntegrationTest {
 }
 ```
 
-- [ ] **Step 2: Run it and watch it fail**
+- [x] **Step 2: Run it and watch it fail**
 
 Run: `cd backend && ./mvnw test -Dtest=IdentityRepositoriesTest`
 Expected: FAIL — compilation errors.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 `shared/config/TimeConfig.java`:
 
@@ -921,14 +921,14 @@ public class RoleRepository {
 }
 ```
 
-- [ ] **Step 4: Run the test and watch it pass**
+- [x] **Step 4: Run the test and watch it pass**
 
 Run: `./mvnw test -Dtest=IdentityRepositoriesTest`
 Expected: 6 tests, 0 failures.
 
 If `query(UUID.class)` fails with "no suitable constructor", this Spring version isn't treating `UUID` as a simple type. Replace those calls with `.query((rs, row) -> rs.getObject(1, UUID.class)).single()`.
 
-- [ ] **Step 5: Run the whole suite, then commit**
+- [x] **Step 5: Run the whole suite, then commit**
 
 ```bash
 ./mvnw test && cd ..
@@ -948,7 +948,7 @@ Design §9. Written before anything that needs auditing.
 - Create: `audit/AuditEventType.java`, `audit/AuditLog.java`
 - Test: `audit/AuditLogTest.java`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```java
 package ie.coursework.audit;
@@ -994,12 +994,12 @@ class AuditLogTest extends PostgresIntegrationTest {
 }
 ```
 
-- [ ] **Step 2: Run it and watch it fail**
+- [x] **Step 2: Run it and watch it fail**
 
 Run: `cd backend && ./mvnw test -Dtest=AuditLogTest`
 Expected: FAIL — compilation errors.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 `audit/AuditEventType.java`:
 
@@ -1072,12 +1072,12 @@ public class AuditLog {
 
 If binding a `null` `actor` fails with "could not determine data type", pass it with an explicit SQL type: `.param("actor", actorUserId, java.sql.Types.OTHER)`.
 
-- [ ] **Step 4: Run the test and watch it pass**
+- [x] **Step 4: Run the test and watch it pass**
 
 Run: `./mvnw test -Dtest=AuditLogTest`
 Expected: 2 tests, 0 failures.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 cd .. && git add backend
@@ -1103,7 +1103,7 @@ scripts/operator.sh grant-role --username=k.hanlon --roll=76543A --role=TEACHER
 - Create: `identity/domain/TemporaryPasswordGenerator.java`, `identity/application/OperatorService.java`, `identity/application/CreatedAccount.java`, `identity/adapter/cli/OperatorCommands.java`, `identity/adapter/cli/OperatorCommandRunner.java`, `scripts/operator.sh`
 - Test: `identity/domain/TemporaryPasswordGeneratorTest.java`, `identity/adapter/cli/OperatorCommandsTest.java`, `identity/adapter/cli/OperatorProcessTest.java`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `TemporaryPasswordGeneratorTest.java`:
 
@@ -1257,12 +1257,12 @@ class OperatorProcessTest extends PostgresIntegrationTest {
 
 In `PostgresIntegrationTest`, change `static final PostgreSQLContainer POSTGRES` to `protected static final PostgreSQLContainer POSTGRES` so this test can read it.
 
-- [ ] **Step 2: Run them and watch them fail**
+- [x] **Step 2: Run them and watch them fail**
 
 Run: `cd backend && ./mvnw test -Dtest='TemporaryPasswordGeneratorTest,OperatorCommandsTest,OperatorProcessTest'`
 Expected: FAIL — compilation errors.
 
-- [ ] **Step 3: Add error codes and a password encoder**
+- [x] **Step 3: Add error codes and a password encoder**
 
 In `ErrorCode.java`, in a new block after `METHOD_NOT_ALLOWED`:
 
@@ -1302,7 +1302,7 @@ public class PasswordConfig {
 
 Import for the annotation: `org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication`.
 
-- [ ] **Step 4: Write the generator and service**
+- [x] **Step 4: Write the generator and service**
 
 `identity/domain/TemporaryPasswordGenerator.java`:
 
@@ -1445,7 +1445,7 @@ public class OperatorService {
 
 `DuplicateKeyException` inside a `@Transactional` method: the insert failed, so Postgres has marked the transaction aborted. Throwing the `DomainException` rolls it back, which is what's wanted — nothing (not even the orphan `app_user` row) is committed.
 
-- [ ] **Step 5: Write the command adapter and runner**
+- [x] **Step 5: Write the command adapter and runner**
 
 `identity/adapter/cli/OperatorCommands.java`:
 
@@ -1624,7 +1624,7 @@ public class CourseworkApplication {
 }
 ```
 
-- [ ] **Step 6: Write the wrapper script and Makefile target**
+- [x] **Step 6: Write the wrapper script and Makefile target**
 
 `scripts/operator.sh`:
 
@@ -1653,12 +1653,12 @@ exec java -jar "$jar" operator "$@"
 chmod +x scripts/operator.sh
 ```
 
-- [ ] **Step 7: Run the tests and watch them pass**
+- [x] **Step 7: Run the tests and watch them pass**
 
 Run: `./mvnw test -Dtest='TemporaryPasswordGeneratorTest,OperatorCommandsTest,OperatorProcessTest'`
 Expected: 9 tests, 0 failures.
 
-- [ ] **Step 8: Try it for real**
+- [x] **Step 8: Try it for real**
 
 ```bash
 make db-up
@@ -1668,7 +1668,7 @@ scripts/operator.sh grant-role --username=demo.teacher --roll=00001A --role=TEAC
 scripts/operator.sh create-school --name="Demo School" --roll=00001A; echo "exit $?"   # error…, exit 1
 ```
 
-- [ ] **Step 9: Run the whole suite, then commit**
+- [x] **Step 9: Run the whole suite, then commit**
 
 ```bash
 ./mvnw test && cd ..
@@ -1692,7 +1692,7 @@ Design §5.2. Login is an ordinary JSON endpoint that authenticates through Spri
 - Create (test support): `src/test/java/ie/coursework/support/ApiSession.java`, `src/test/java/ie/coursework/support/TestAccounts.java`
 - Test: `identity/adapter/web/LoginTest.java`
 
-- [ ] **Step 1: Add Spring Session JDBC**
+- [x] **Step 1: Add Spring Session JDBC**
 
 `pom.xml`, with the main dependencies:
 
@@ -1754,7 +1754,7 @@ Append to `backend/.env.example`:
 APP_COOKIE_SECURE=false
 ```
 
-- [ ] **Step 2: Write the test support**
+- [x] **Step 2: Write the test support**
 
 `src/test/java/ie/coursework/support/TestAccounts.java`:
 
@@ -1918,7 +1918,7 @@ public final class ApiSession {
 }
 ```
 
-- [ ] **Step 3: Write the failing test**
+- [x] **Step 3: Write the failing test**
 
 `identity/adapter/web/LoginTest.java`:
 
@@ -2047,12 +2047,12 @@ class LoginTest extends PostgresIntegrationTest {
 }
 ```
 
-- [ ] **Step 4: Run it and watch it fail**
+- [x] **Step 4: Run it and watch it fail**
 
 Run: `cd backend && ./mvnw test -Dtest=LoginTest`
 Expected: FAIL — compilation errors (no `AuthController`, no `INVALID_CREDENTIALS`).
 
-- [ ] **Step 5: Write the security pieces**
+- [x] **Step 5: Write the security pieces**
 
 In `ErrorCode.java`, after `UNAUTHENTICATED`:
 
@@ -2203,7 +2203,7 @@ And open the login endpoint in `authorizeHttpRequests`, after the existing `GET`
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
 ```
 
-- [ ] **Step 6: Write the application and web pieces**
+- [x] **Step 6: Write the application and web pieces**
 
 `identity/application/AccountView.java`:
 
@@ -2369,7 +2369,7 @@ public class AuthController {
 }
 ```
 
-- [ ] **Step 7: Run the test and watch it pass**
+- [x] **Step 7: Run the test and watch it pass**
 
 Run: `./mvnw test -Dtest=LoginTest`
 Expected: 8 tests, 0 failures.
@@ -2378,11 +2378,11 @@ If `signingInAgainRotatesTheSessionId` fails because the value is equal, the ses
 
 If every authenticated request after login returns 401, the security context was saved somewhere the filter chain doesn't read. The default chain reads `HttpSessionSecurityContextRepository`'s attribute; check nothing in `SecurityConfig` replaced `securityContext(...)`.
 
-- [ ] **Step 8: Verify the session schema matches the jar**
+- [x] **Step 8: Verify the session schema matches the jar**
 
 Run the comparison from Task 1 Step 3. If the jar's file differs from `V3__spring_session.sql` in anything but case and whitespace, stop and report the difference.
 
-- [ ] **Step 9: Run the whole suite, then commit**
+- [x] **Step 9: Run the whole suite, then commit**
 
 ```bash
 ./mvnw test && cd ..
@@ -2401,7 +2401,7 @@ MockMvc parses cookies but isn't a browser. This test runs the servlet container
 **Files:**
 - Test: `security/SessionFlowTest.java`
 
-- [ ] **Step 1: Write the test**
+- [x] **Step 1: Write the test**
 
 ```java
 package ie.coursework.security;
@@ -2492,14 +2492,14 @@ class SessionFlowTest extends PostgresIntegrationTest {
 }
 ```
 
-- [ ] **Step 2: Run it**
+- [x] **Step 2: Run it**
 
 Run: `cd backend && ./mvnw test -Dtest=SessionFlowTest`
 Expected: PASS. Task 6 already built the behaviour, so this test is a check on it rather than a driver, and it may pass first time. **Prove it can fail:** temporarily change `same-site: lax` to `strict` in `application.yaml`, run it, watch the `SameSite=Lax` assertion fail, and put `lax` back.
 
 If the JDK client refuses to send a `cookie` header ("restricted header name"), set the system property in the test class: `static { System.setProperty("jdk.httpclient.allowRestrictedHeaders", "cookie"); }`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 cd .. && git add backend
@@ -2520,7 +2520,7 @@ Roadmap R7 and R8; design §5.2. In memory, which is right for a single API inst
 - Create (test support): `src/test/java/ie/coursework/support/MutableClock.java`
 - Test: `security/AttemptLimiterTest.java`, `security/ClientAddressResolverTest.java`, `security/LoginThrottleTest.java`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `support/MutableClock.java`:
 
@@ -2725,12 +2725,12 @@ class LoginThrottleTest extends PostgresIntegrationTest {
 }
 ```
 
-- [ ] **Step 2: Run them and watch them fail**
+- [x] **Step 2: Run them and watch them fail**
 
 Run: `cd backend && ./mvnw test -Dtest='AttemptLimiterTest,ClientAddressResolverTest,LoginThrottleTest'`
 Expected: FAIL — compilation errors.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 In `ErrorCode.java`, after `METHOD_NOT_ALLOWED`:
 
@@ -2969,12 +2969,12 @@ Wire the throttle into `AuthController`. Add constructor parameters `LoginThrott
 
 (import `ie.coursework.identity.domain.Username`)
 
-- [ ] **Step 4: Run the tests and watch them pass**
+- [x] **Step 4: Run the tests and watch them pass**
 
 Run: `./mvnw test -Dtest='AttemptLimiterTest,ClientAddressResolverTest,LoginThrottleTest'`
 Expected: 10 tests, 0 failures.
 
-- [ ] **Step 5: Run the whole suite, then commit**
+- [x] **Step 5: Run the whole suite, then commit**
 
 ```bash
 ./mvnw test && cd ..
@@ -2995,7 +2995,7 @@ Design §9: every request resolves to roles and scopes, and every service method
 - Modify: `identity/adapter/web/AuthController.java`
 - Test: `identity/adapter/web/MeEndpointTest.java`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```java
 package ie.coursework.identity.adapter.web;
@@ -3061,12 +3061,12 @@ class MeEndpointTest extends PostgresIntegrationTest {
 }
 ```
 
-- [ ] **Step 2: Run it and watch it fail**
+- [x] **Step 2: Run it and watch it fail**
 
 Run: `cd backend && ./mvnw test -Dtest=MeEndpointTest`
 Expected: FAIL on `aUserDisabledMidSessionIsSignedOutOnTheNextRequest` — Task 6's `/me` still returns 200 for a disabled user. (The first two may already pass; that's fine.)
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 `identity/application/ActorResolver.java`:
 
@@ -3186,12 +3186,12 @@ In `AuthController.java`, replace the `me` method (and drop the now-unused `Auth
 
 (import `ie.coursework.identity.domain.Actor`)
 
-- [ ] **Step 4: Run the test and watch it pass**
+- [x] **Step 4: Run the test and watch it pass**
 
 Run: `./mvnw test -Dtest=MeEndpointTest`
 Expected: 3 tests, 0 failures.
 
-- [ ] **Step 5: Run the whole suite, then commit**
+- [x] **Step 5: Run the whole suite, then commit**
 
 ```bash
 ./mvnw test && cd ..
@@ -3213,7 +3213,7 @@ Design §8.1 step 1 (teachers change their temporary password at first sign-in);
 - Create: `classes/adapter/persistence/SubjectRepository.java`, `classes/domain/Subject.java`, `classes/adapter/web/SubjectController.java`
 - Test: `identity/adapter/web/PasswordChangeTest.java`, `classes/adapter/web/SubjectControllerTest.java`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `identity/adapter/web/PasswordChangeTest.java`:
 
@@ -3345,12 +3345,12 @@ class SubjectControllerTest extends PostgresIntegrationTest {
 }
 ```
 
-- [ ] **Step 2: Run them and watch them fail**
+- [x] **Step 2: Run them and watch them fail**
 
 Run: `cd backend && ./mvnw test -Dtest='PasswordChangeTest,SubjectControllerTest'`
 Expected: FAIL — `/api/v1/subjects` and `/api/v1/auth/password` don't exist (404 problems), and no `PASSWORD_CHANGE_REQUIRED`.
 
-- [ ] **Step 3: Write subjects**
+- [x] **Step 3: Write subjects**
 
 `classes/domain/Subject.java`:
 
@@ -3425,7 +3425,7 @@ public class SubjectController {
 }
 ```
 
-- [ ] **Step 4: Write the password change**
+- [x] **Step 4: Write the password change**
 
 In `ErrorCode.java`, after `CSRF_TOKEN_INVALID`:
 
@@ -3609,12 +3609,12 @@ In `SecurityConfig.java`, give `apiFilterChain` a `UserAccountRepository users` 
 
 (import `org.springframework.security.web.access.intercept.AuthorizationFilter`)
 
-- [ ] **Step 5: Run the tests and watch them pass**
+- [x] **Step 5: Run the tests and watch them pass**
 
 Run: `./mvnw test -Dtest='PasswordChangeTest,SubjectControllerTest'`
 Expected: 7 tests, 0 failures.
 
-- [ ] **Step 6: Run the whole suite, then commit**
+- [x] **Step 6: Run the whole suite, then commit**
 
 ```bash
 ./mvnw test && cd ..
@@ -3628,7 +3628,7 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 
 ## Task 11: Gate 1B
 
-- [ ] **Step 1: Run every check**
+- [x] **Step 1: Run every check**
 
 ```bash
 make verify
@@ -3691,12 +3691,12 @@ done
 
 - [ ] **Step 3: Walk the gate** (roadmap §8.1)
 
-- [ ] `make verify` green
+- [x] `make verify` green
 - [ ] Operator created a school and teacher on the deployed backend; the teacher signed in through the preview proxy, was forced to change password, then reached `/auth/me` and `/subjects`
 - [ ] Redeploying the backend didn't sign that session out
 - [ ] The sixth wrong password for one username returned `TOO_MANY_ATTEMPTS`
 
-- [ ] **Step 4: Update the docs**
+- [x] **Step 4: Update the docs**
 
 - Root `CLAUDE.md`, under backend conventions, add:
   - Controllers take an `Actor` parameter; nothing else reads the security context.
