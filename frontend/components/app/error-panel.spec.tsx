@@ -16,4 +16,13 @@ describe("ErrorPanel", () => {
     render(<ErrorPanel error={new ApiError({ code: "NOT_FOUND", status: 404, detail: "No such class." })} />);
     expect(screen.getByRole("alert")).toHaveTextContent("No such class.");
   });
+
+  it("lists field errors under the message", () => {
+    render(
+      <ErrorPanel
+        error={new ApiError({ code: "VALIDATION_FAILED", status: 400, detail: "One or more fields are invalid.", fieldErrors: [{ field: "academicYear", message: "must look like 2026/27" }] })}
+      />,
+    );
+    expect(screen.getByRole("alert")).toHaveTextContent("academicYear: must look like 2026/27");
+  });
 });
