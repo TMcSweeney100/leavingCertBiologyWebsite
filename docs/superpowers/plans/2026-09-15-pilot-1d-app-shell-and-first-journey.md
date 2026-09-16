@@ -19,7 +19,7 @@
 - Read from earlier milestones: `frontend/lib/api/client.ts`, `server.ts`, `problem.ts` (1A Task 10), `frontend/app/(auth)/layout.tsx` and `lib/app/routes.ts` (1A Task 8), `frontend/BIPI-SITE-NOTES.md` §"Framework" (the `node --test` import convention), and the backend response records this plan mirrors: `identity/adapter/web/MeResponse.java`, `classes/application/ClassViews.java`, `classes/adapter/web/CreateClassRequest.java`, `SignUpRequest.java`, `identity/adapter/web/PasswordResetRequest.java`, `ChangePasswordRequest.java`.
 - `frontend/.env.local` has `APP_ENABLED=true`, `BACKEND_INTERNAL_URL=http://localhost:8080`, `PROXY_SHARED_SECRET=local-dev-proxy-secret` (copy `.env.example`). `backend/.env` has `APP_COOKIE_SECURE=false`, or the browser won't keep the session cookie over plain http.
 
-**Decisions this plan takes** (confirm with Tim before Task 1; each is one line to change):
+**Decisions this plan takes** — **all four confirmed as written by Tim on 16 Sep 2026**:
 
 | # | Decision | Where |
 |---|---|---|
@@ -2691,7 +2691,7 @@ Roadmap §6.3. **Do not start this task until `docs/design/pilot/` holds the han
 
 - [ ] **Step 1: Read the packs**
 
-For each of `docs/design/pilot/<route>/`: the Claude Design export and `NOTES.md`. Anything in `NOTES.md` that changes behaviour (a new state, a removed action, something moved to another page) is a roadmap change: update `docs/PILOT-ROADMAP.md` §6.2 first, and stop to ask if it conflicts with a decision in this plan.
+Read `docs/design/UI-STANDARDS.md` first (§15 is this task's method). Then, for each of `docs/design/pilot/<pack>/`: the Claude Design export, `tokens.css` and `NOTES.md`. Anything in `NOTES.md` that changes behaviour (a new state, a removed action, something moved to another page) is a roadmap change: update `docs/PILOT-ROADMAP.md` §6.2 first, and stop to ask if it conflicts with a decision in this plan.
 
 - [ ] **Step 2: Establish the app's visual system**
 
@@ -2699,7 +2699,7 @@ The first pack defines tokens, type and components for the app (roadmap §6.3 po
 
 - [ ] **Step 3: Restyle one page at a time, specs unchanged**
 
-For each page: apply the design with `frontend-design`, `ui-ux-pro-max` and `shadcn` skills as Tim wants; run `npx vitest run components/app` after every page. A red spec means the accessible names changed. If the design genuinely renames a control ("Approve" → "Accept"), change the spec in its own commit first, with the message naming the design pack, then restyle.
+For each page: apply the design to the rules in `docs/design/UI-STANDARDS.md` (the `shadcn` skill for adding primitives), run `docs/design/UI-CHECKLIST.md` on it, then `npx vitest run components/app`. A red spec means the accessible names changed. If the design genuinely renames a control ("Approve" → "Accept"), change the spec in its own commit first, with the message naming the design pack, then restyle.
 
 - [ ] **Step 4: Run everything**
 

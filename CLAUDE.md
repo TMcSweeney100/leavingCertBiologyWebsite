@@ -12,9 +12,11 @@ Two things that share a Next.js app:
 ## Read before planning or building pilot work
 
 1. `docs/PILOT-ROADMAP.md` — status board, decisions, pages, API, gates. Start at its §0.
-2. `docs/HANDOFF.md` — where the last session stopped.
-3. The current milestone plan in `docs/superpowers/plans/`.
-4. `docs/PILOT-DESIGN.md` — the sections the plan cites. It wins over the roadmap; the roadmap wins over the specs in `docs/newDevelopement/`.
+2. `docs/ARCHITECTURE.md` — how the code works as built: request path, auth, patterns, the add-a-feature recipe. Read the section for the layer you're touching instead of rediscovering it from the files. Keep it true in the same commit as any change it describes.
+3. `docs/HANDOFF.md` — where the last session stopped.
+4. The current milestone plan in `docs/superpowers/plans/`.
+5. `docs/PILOT-DESIGN.md` — the sections the plan cites. It wins over the roadmap; the roadmap wins over the specs in `docs/newDevelopement/`.
+6. `docs/design/UI-STANDARDS.md` before any task that touches app UI; `docs/design/UI-CHECKLIST.md` before calling it done. `docs/design/UI-BRIEF.md` is what Claude Design gets.
 
 ## Commands (repo root)
 
@@ -48,9 +50,13 @@ Two things that share a Next.js app:
 - `@WebMvcTest` slices must exclude `WebConfig` and `CurrentActorArgumentResolver`, which need the identity services (see `ProblemDetailsAdviceTest`).
 - Beans a controller needs must not live in the web-only `SecurityConfig`: an operator process (`operator …` as first argument, no web server) still scans the controllers. `AuthenticationConfig` exists for that reason.
 - Operator commands: `scripts/operator.sh create-school|create-user|grant-role …` locally; on the host, run the same image with `operator …` as its arguments.
+- Class-scoped endpoints go through `ClassService.owned(actor, classId)` first; an enrolment id is looked up with `EnrolmentRepository.findInClass`, never by id alone.
 
 ## Frontend conventions (pilot app)
 
 - Tests: `lib/**/*.test.ts` run under `node --test` (existing convention); `**/*.spec.ts(x)` run under Vitest; `e2e/*.e2e.ts` under Playwright.
 - Component specs query by role and accessible name. Restyles from design handoffs must keep them passing (`docs/PILOT-ROADMAP.md` §6.3).
 - Server components call Spring through `lib/api/server.ts`; client components through `lib/api/client.ts`. Mutations happen from client components only.
+- App pages: a server component loads with `serverApi` inside `attempt()` and renders `ErrorPanel` on failure; interactive parts are client components in `components/app/` that call `api` and then `router.refresh()` or `router.push()`. `lib/app/session.ts` is the only place that reads `/auth/me` on the server. `middleware.ts` only checks that the session cookie exists.
+- Zod schemas in `lib/api/schemas.ts` mirror the backend response records field for field. A backend record change means a schema change in the same PR.
+- `make e2e` (`scripts/e2e.sh`) builds the jar, seeds one teacher with the operator CLI on the throwaway `postgres-e2e` database, and runs `e2e/*.e2e.ts` on a laptop and a phone project against a production Next build on :3100. Nothing in `playwright.config.ts` starts servers.

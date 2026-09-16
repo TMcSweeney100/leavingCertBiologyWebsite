@@ -195,6 +195,8 @@ Also from the guidelines:
 
 ## 5. Architecture — Proposed
 
+*Phase 1 built this. `docs/ARCHITECTURE.md` describes the result; this section stays as the rationale.*
+
 ### 5.1 Shape
 
 ```

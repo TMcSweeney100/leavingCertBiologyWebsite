@@ -1,71 +1,34 @@
 # Handoff — coursework pilot
 
-Rewritten at the end of every session. The live BiPi site's final handoff is archived at `docs/archive/bipi-site/HANDOFF.md`; its open items (Katelyn's copy sign-offs, print page count) still stand.
+Rewritten at the end of every session: where things stand, what's half-done, what's waiting on a human. Anything permanent goes elsewhere (`docs/ARCHITECTURE.md` for how the code and hosts work, `docs/PILOT-ROADMAP.md` §2–§3 for decisions, the plans for per-task deviations). The live BiPi site's final handoff is archived at `docs/archive/bipi-site/HANDOFF.md`; its open items (Katelyn's copy sign-offs, print page count) still stand.
 
-## Where things are
+**Standing rule (16 Sep 2026):** `docs/ARCHITECTURE.md` describes the code as built. When a session changes anything it describes (a filter, a pattern, an env var, a file's job), it fixes that section in the same commit, and at the end of the session checks it for anything else the session made false. A wrong map is worse than none.
 
-- **Current milestone:** 1C Classes and enrolment. Its plan is `docs/superpowers/plans/2026-09-15-pilot-1c-classes-and-enrolment.md` (nothing built yet). It takes three product decisions (P-1 to P-3) listed at its top for Tim to confirm before Task 1.
-- **Next plan also written:** 1D, `docs/superpowers/plans/2026-09-15-pilot-1d-app-shell-and-first-journey.md`, with four more decisions (P-4 to P-7) at its top. It mirrors the 1C response records in Zod, so if 1C changes a field name during the build, update `lib/api/schemas.ts` in the 1D plan to match.
-- **Branches, stacked and unmerged:** `pilot/1a-walking-skeleton` (Tasks 1–10 plus the Render half of Task 11) and `pilot/1b-accounts-and-sessions` on top of it (all ten tasks). Both pushed. Merge 1A into `pilotMain` first, then 1B.
-- **Session 1 (15 Sep 2026):** 1A Tasks 1–11 (local half) and all of 1B in one session, roughly four hours of wall-clock time including first-time downloads and the Render setup. Roadmap §10 wants this number for estimating later phases: about two hours per milestone of this size once tooling is warm.
+## Where things are (16 Sep 2026)
 
-## Branch strategy — changed 15 Sep 2026
+- **Phase 1 is built.** 1A and 1B are merged and live on `pilotMain` (PRs #3, #4). **1C and 1D are built but unmerged:** `pilot/1c-classes-and-enrolment` (branched from `pilotMain` at `3d9dbcb`) and `pilot/1d-app-shell-and-first-journey` (stacked on 1C at `5f11ab6`). Both pushed to `origin`. `make verify` and `make e2e` are green on 1D; axe reports no WCAG 2.2 AA violations on any page of the journey.
+- **Docs written 16 Sep 2026:** `docs/ARCHITECTURE.md` (the code as built) and `docs/design/UI-BRIEF.md`, `UI-STANDARDS.md`, `UI-CHECKLIST.md` (the front-end source of truth, merged from the `frontend-design`, `ui-ux-pro-max` and Vercel web-interface-guidelines skills). Decisions taken there: the app shares BiPi's type, neutrals and radii but has its own accent; light only; 16px body. Root `CLAUDE.md`, roadmap §0, §4.5, §6.3 and the 1D plan's Task 11 point at them.
+- **1D Task 11 (restyle from design packs D-1 and D-2) is not started.** `docs/design/pilot/` doesn't exist; the packs follow in a few days. Every app page is plain semantic HTML with the shadcn `Button`; every component spec queries by role and name, so the restyle has a contract to keep.
+- **1D's deviations from its plan** are in `docs/ARCHITECTURE.md` §10 and the commit messages on the branch (`git log 5f11ab6..pilot/1d-app-shell-and-first-journey`).
 
-`pilotMain` (created by Tim from `main`) is now the pilot's production branch; `main` stays Katelyn's live site. Roadmap R1 is amended. What follows from it:
+## Gate P1 — walked locally, 16 Sep 2026
 
-- The 1A PR base is `pilotMain`; the 1B PR base is `pilotMain` after 1A merges (or `pilot/1a-walking-skeleton` before). Future milestone branches start from `pilotMain`.
-- A second Vercel project on the same repo, Root Directory `frontend`, Production Branch `pilotMain`, with `APP_ENABLED=true`, `BACKEND_INTERNAL_URL=https://leavingcertpractical.onrender.com` and `PROXY_SHARED_SECRET` in **both** Production and Preview. Katelyn's project keeps `main` and no app variables. Optional, in her project: Settings → Git → Ignored Build Step `[ "$VERCEL_GIT_COMMIT_REF" != "main" ]` so pilot branches don't build there.
-- The Render web service should track `pilotMain` once 1A is merged.
-- After any change to `main`, merge `main` → `pilotMain`.
+- [x] `make verify` green — 151 backend tests; 85 `node:test`, 75 Vitest specs, lint, types, build.
+- [x] `make e2e` green on `laptop` and `phone`: the whole roadmap §8.1 journey plus a keyboard-only sign-in; axe clean on every page visited.
+- [ ] The same journey by hand on the Vercel Preview against Render (operator commands from Render's Shell; see `ARCHITECTURE.md` §9.1 for the Starter-instance trick).
+- [ ] Keyboard-only run of the whole journey by hand on a laptop.
+- [ ] Tim has reviewed the pages.
 
-## Gate 1A — waiting on Vercel
-
-Render side done and verified from outside: `https://leavingcertpractical.onrender.com` (Frankfurt, free web service and free Postgres 18.6, Docker from `backend/`, health check `/actuator/health`). Still needs Tim, because this machine has no Vercel or GitHub CLI:
-
-1. In the **pilot** Vercel project (see branch strategy above): `APP_ENABLED=true`, `BACKEND_INTERNAL_URL=https://leavingcertpractical.onrender.com`, `PROXY_SHARED_SECRET=<same value as in Render>`, Production and Preview. Redeploy after saving.
-2. Check `curl -si https://<preview-url>/api/v1/health` returns `{"status":"UP"}` and an `x-vercel-id` whose second segment is `dub1` (H3). If Deployment Protection is on, use a Protection Bypass for Automation secret.
-3. Open the 1A PR from `https://github.com/TMcSweeney100/leavingCertBiologyWebsite/compare/pilotMain...pilot/1a-walking-skeleton`, body in the 1A plan Task 12 Step 4. Don't merge until step 2 passes.
-4. After merge: Katelyn's project still returns 404 for `/login` and `/api/v1/health` and 200 for `/nwetss-hanlon`; the pilot project serves `/login`.
-
-PITR is deferred to the go-live gate (hosting decision below).
-
-## Gate 1B — passed locally, preview walk waiting on Tim
-
-`make verify` green: 88 backend tests, 78 node tests, 32 Vitest specs, frontend build. The gate behaviours were walked on 15 Sep 2026 against the local Compose database with the packaged jar, exactly as the plan's Task 11 Step 2 script describes but on `127.0.0.1:8080`:
-
-- Operator created school `00009Z` and `gate.teacher`, granted TEACHER.
-- Login with the temporary password returned `mustChangePassword: true`; `/subjects` returned `PASSWORD_CHANGE_REQUIRED`; `/auth/password` returned 204; `/subjects` then listed Biology, Business, Chemistry, Physics.
-- The backend process was stopped and restarted; the same cookie still returned 200 from `/auth/me` (Spring Session JDBC).
-- Six wrong passwords: five `INVALID_CREDENTIALS`, then `TOO_MANY_ATTEMPTS`.
-
-**To finish the gate on the preview:** the Render web service tracks `pilot/1a-walking-skeleton`. Switch it to `pilot/1b-accounts-and-sessions` (or merge 1A and 1B and point it at `main`), redeploy, then run the operator commands from Render's shell (same image, `operator …` arguments) and the curl script in the 1B plan Task 11 Step 2 against the preview URL. Then open the 1B PR from `compare/pilot/1a-walking-skeleton...pilot/1b-accounts-and-sessions` (or against `pilotMain` once 1A is merged).
-
-## Deviations from the 1B plan, all small
-
-- `AuthenticationManager` lives in a new `security/AuthenticationConfig`, not in `SecurityConfig`: the plan's `@ConditionalOnWebApplication` on `SecurityConfig` removed the bean from operator processes, which still component-scan `AuthController` and so failed to start (`OperatorProcessTest` caught it).
-- `ProblemDetailsAdviceTest` (a `@WebMvcTest` slice from 1A) now excludes `WebConfig` and `CurrentActorArgumentResolver`; the slice was otherwise pulling in the actor resolver, whose services aren't in the slice.
-- Everything else compiled and passed as written, including the Spring Session schema in `V3__spring_session.sql`, which matches the jar's `schema-postgresql.sql` after whitespace and case.
-
-## Half-done
-
-Nothing in code. Both gates' preview steps are Tim's (above).
+Gates 1A and 1B passed on the real host on 16 Sep 2026; Gate 1C passed locally the same day (all nine checkpoints, not yet walked on the preview). The records are in the roadmap's status board; what's still open from them is listed below.
 
 ## Waiting on a human
 
-- Vercel Preview variables, preview URL, H3, Deployment Protection bypass. Then the 1A PR, then the 1B PR.
-- Render: switch the web service's branch for the 1B gate walk (or merge first).
-- The 1C decisions P-1 to P-3 and the 1D decisions P-4 to P-7. Defaults are in the plans; say if any should change.
-- Roadmap §9 R3, R4, R5 — calendar-bound, start now.
+- **Open the 1C PR** (`pilot/1c-classes-and-enrolment` → `pilotMain`, "Pilot 1C: classes and enrolment"), then **the 1D PR** (`pilot/1d-app-shell-and-first-journey` → `pilotMain`, "Pilot 1D: app shell and first journey", body per the 1D plan's Task 12 Step 4, noting the restyle is pending).
+- **Walk Gate P1 on the Vercel Preview**, which also covers Gate 1C's journey on the real host.
+- **Design packs D-1 and D-2** into `docs/design/pilot/<pack>/` on the `UI-BRIEF.md` §8 template, then Task 11.
+- **Phase 2 preconditions (roadmap §8.2):** the four final 2027 briefs and the Coursework Rules and Procedures in `docs/newDevelopement/subjectDocs/`; design packs D-3, D-4, D-5 requested. **The 2A plan can't be written until those documents are in the repo.**
+- **Carried over from earlier gates:** redeploy Render while holding a live session cookie and confirm `/auth/me` still answers (passed locally, not yet on Render); confirm Katelyn's `main` project 404s `/login` and `/api/v1/health`; **delete the gate-check data before any real onboarding** (`Gate Check School` ×2, roll `00009Z`, users `gate.teacher*`, `gate.student.c`; `gate.teacher`'s password is `gate-check-password`); upgrade the Render database before the first real account; roadmap §9 R3–R5 are calendar-bound.
 
-## Hosting decision (H1) — 15 Sep 2026
+## Half-done
 
-**Render, Frankfurt, for both the API and the database.** Chosen over Railway (PITR needs extra pgBackRest machinery, usage-priced), Scaleway (managed Postgres 18 not offered yet) and Fly.io (Postgres 16 only, and dearer). Render can't move a resource between regions later, so both are created in Frankfurt from the start.
-
-**Free tiers during the build.** The free web service sleeps when idle, so the first request after a pause can fail at the proxy while the JVM wakes; hit the backend URL directly before testing. The free database has no point-in-time recovery, so that Gate 1A item is deferred to the go-live gate (roadmap §9 R1). Until onboarding there is no data worth keeping: Flyway rebuilds everything. **Upgrade the database to a paid instance before the first real account is created**, and check Render's current free-Postgres expiry rule.
-
-## Things this session confirmed
-
-- Roadmap §2 decisions R1–R17 were taken as written; none changed.
-- Every API name in both plans compiled against Spring Boot 4.1.1 as given. The one 1A code change was an explicit return type on `extraHeaders` in `frontend/lib/api/server.ts`.
-- Vitest without a config picks up the `node:test` files too; the `include: ["**/*.spec.{ts,tsx}"]` line is what keeps the runners apart.
-- The login throttle is in memory and assumes one API instance (root `CLAUDE.md`). Render free runs one.
+Nothing in code.

@@ -23,7 +23,7 @@ Detailed plans so far:
 1. Read §1 of this file to find the current milestone.
 2. Read `docs/HANDOFF.md` for anything the last session left unfinished.
 3. Open that milestone's plan and find the first unticked step. **If the milestone has no plan yet, write it first** with `superpowers:writing-plans`, from its outline in §8, against the code as it actually is.
-4. Read the sections of `docs/PILOT-DESIGN.md` the plan cites. Don't read the whole thing every time.
+4. Read the sections of `docs/PILOT-DESIGN.md` the plan cites. Don't read the whole thing every time. For how the built code works (auth, the request path, the add-a-feature recipe), read the matching section of `docs/ARCHITECTURE.md` rather than the files.
 5. Work task by task using `superpowers:subagent-driven-development` (or `superpowers:executing-plans` inline). Every task is test-first: `superpowers:test-driven-development`.
 6. Before saying anything passes, run it: `superpowers:verification-before-completion`.
 7. At the end of a session, update the status board below and rewrite `docs/HANDOFF.md`.
@@ -42,8 +42,8 @@ Detailed plans so far:
 |---|---|---|---|---|
 | 1 Foundation | 1A Walking skeleton | written | built; gate waiting on Vercel preview (see HANDOFF) | §8.1 Gate 1A |
 | | 1B Accounts and sessions | written | built; gate passed locally, preview walk waiting on Tim | Gate 1B |
-| | 1C Classes and enrolment | written | not started | Gate 1C |
-| | 1D App shell and first journey | written | not started | **Gate P1** |
+| | 1C Classes and enrolment | written | built; Gate 1C walked locally, all checks green | Gate 1C |
+| | 1D App shell and first journey | written | built (16 Sep 2026); `make verify` and `make e2e` green, axe clean on every page; preview walk, Tim's review and the D-1/D-2 restyle still open | **Gate P1** |
 | 2 Components | 2A–2F | to write at phase start | — | **Gate P2** |
 | 3 The log | 3A–3C | to write | — | **Gate P3** |
 | 4 Teacher grid | 4A–4B | to write | — | **Gate P4 = pilot can start** |
@@ -76,6 +76,13 @@ The design left these open, or left them to "the Phase 1 plan". Each is what I'd
 | R15 | **Subjects are loaded as content from Phase 1**, through the second Flyway instance and its own history table. | The content-migration mechanism (design §7.1) gets proven, and deployed, on four rows before Phase 2 depends on it for four templates. |
 | R16 | **The Vercel function region is Dublin (`dub1`)**, set in `frontend/vercel.json`. | Design §5.4: functions currently run in Washington DC. |
 | R17 | **JSON field names are camelCase.** Problem codes are `SCREAMING_SNAKE` and are part of the API contract. | Matches contentCreater's `ErrorCode` convention and the Zod schemas on the frontend. |
+| R18 | **A join code lives 30 days** from creation or rotation, not the 14 the 1C plan originally proposed. Rotating replaces it and restarts the clock; turning joining off clears it. Confirmed by Tim, 16 Sep 2026. | `JoinCode.LIFETIME`. Fewer trips back to the teacher to re-share a code mid-term. |
+| R19 | **`POST /classes` names the school by id** (`schoolId` in the request body), and the teacher must hold TEACHER there — not implicitly the caller's "current" school. In the pilot every teacher has one school, so the frontend fills it from `/auth/me`. Confirmed by Tim, 16 Sep 2026. | `CreateClassRequest`. Keeps the scope check explicit and testable rather than inferred. |
+| R20 | **Redeeming a password reset code does not sign the student in.** It sets the password, ends every existing session of that user, and returns 204; the page then sends them to `/login`. Confirmed by Tim, 16 Sep 2026. | `AuthController.passwordReset`. Simpler than 1D's `/reset` page carrying a session across, and §6.2's `/reset` row doesn't require sign-in. |
+| R21 | **Sign-out is a POST from a client button, then `/login`.** There is no GET sign-out link. Confirmed by Tim, 16 Sep 2026 (1D plan P-4). | A GET that changes state is CSRF bait, and Spring's CSRF filter would refuse it anyway. `SignOutButton`. |
+| R22 | **`/reset` sends the student to `/login` after success**, the page-side half of R20. Confirmed by Tim, 16 Sep 2026 (1D plan P-5). | Redeeming doesn't sign in, so the page has nowhere else to go. `ResetForm`. |
+| R23 | **`/school` is a placeholder page until Phase 5** ("Your school overview arrives in Phase 5"). Confirmed by Tim, 16 Sep 2026 (1D plan P-6). | A school leader needs somewhere to land from §6.1's routing before 5A exists. |
+| R24 | **`middleware.ts` checks only that a `SESSION` cookie exists**, to redirect a signed-out visitor to `/login?next=…`; the `(app)` layout validates the session against Spring. Confirmed by Tim, 16 Sep 2026 (1D plan P-7). | Middleware can't reach Spring cheaply on every request. A stale cookie lands on `/login` without `next`, which is acceptable. |
 
 ---
 
@@ -158,10 +165,13 @@ The same rule the BiPi site lives by, now with higher stakes: **never invent, ap
 - `CLAUDE.md` at the repo root (created in 1A) holds conventions that are confirmed and still true. Update it when a task establishes a new one.
 - `docs/HANDOFF.md` is rewritten at the end of every session: where things stand, what's half-done, what's waiting on a human.
 - Tick plan checkboxes as steps complete, in the same commit.
+- `docs/ARCHITECTURE.md` describes the code as built. A change to anything it describes fixes it in the same commit; sessions end by checking it for anything made false.
 
 ---
 
 ## 5. Repository shape after Phase 1
+
+The tree below is the Phase 1 target as planned. `docs/ARCHITECTURE.md` §1 and §6 describe what was built and is kept current; where they differ, the architecture doc is right.
 
 ```
 biologyProject/
@@ -282,10 +292,10 @@ This is what Claude Design needs to design against: every page, who sees it, wha
 ### 6.3 Design handoff protocol
 
 1. **The build task comes first and works without the design.** It uses semantic HTML, shadcn primitives and the existing tokens, and gets a Vitest spec that queries by role and accessible name. The page is plain, but complete: every state in §6.2 renders.
-2. **Tim's design arrives as a folder** in `docs/design/pilot/<route-name>/`: the Claude Design export plus a `NOTES.md` covering anything the design decides that §6.2 doesn't (copy, ordering, what's collapsed).
-3. **A restyle task** follows, using `frontend-design`, `ui-ux-pro-max` and `shadcn` skills as Tim wants. Its rule: **the existing specs must pass unchanged.** If the design renames a button, change the spec in a separate, visible commit first.
+2. **Tim's design arrives as a folder** in `docs/design/pilot/<pack-name>/`: the Claude Design export, a `tokens.css` of `--app-*` additions, and a `NOTES.md` on the template in `docs/design/UI-BRIEF.md` §8. Claude Design is briefed with `UI-BRIEF.md` plus this section's rows for the pages in the pack.
+3. **A restyle task** follows, built to `docs/design/UI-STANDARDS.md` (§15 is the working method) and checked against `docs/design/UI-CHECKLIST.md`. Its rule: **the existing specs must pass unchanged.** If the design renames a button, change the spec in a separate, visible commit first.
 4. **If the design changes behaviour** — adds a state, removes an action, moves something to another page — that's a roadmap change. Update §6.2 before building it.
-5. The app's visual system (tokens, type, components) comes from the first handoff. Until then, app pages borrow the BiPi tokens in `frontend/app/globals.css` as a neutral placeholder.
+5. The app's visual system shares BiPi's type, neutrals and radii and chooses its own accent and status colours (decided 16 Sep 2026, `UI-BRIEF.md` §5); the first handoff fixes the values. Light only. Until then, app pages borrow the BiPi tokens in `frontend/app/globals.css` as a neutral placeholder.
 
 **Design packs to request, and when they're needed:**
 
@@ -410,10 +420,12 @@ Each phase lists what it delivers, the outline of its tasks (each becomes TDD st
 9. Password reset codes: issue and redeem
 10. Authorisation suites filled in: teacher, student, leader, anonymous
 
-**Gate 1C**
-- [ ] `make verify` green
-- [ ] Every endpoint in §7 Phase 1 has a scope test: another teacher's class → 404; a student calling teacher endpoints → 404; an enrolment id from another class → 404
-- [ ] Audit rows exist for role grants, enrolment decisions, reset codes and code rotation
+**Gate 1C — walked locally, 16 Sep 2026**
+- [x] `make verify` green
+- [x] Every endpoint in §7 Phase 1 has a scope test: another teacher's class → 404; a student calling teacher endpoints → 404; an enrolment id from another class → 404
+- [x] Audit rows exist for role grants, enrolment decisions, reset codes and code rotation
+
+Results in `docs/HANDOFF.md`. 151 backend tests pass (schema through the completed authorisation suites). The manual journey (create school/teacher/class, student signs up and is approved, teacher issues a reset code, student redeems it and the old session is invalidated) was walked by hand against the local stack; not yet re-walked against the Render/Vercel preview the way 1A/1B were — that's still open before merging to `pilotMain`.
 
 #### 1D App shell and first journey — plan written
 
@@ -426,12 +438,12 @@ Each phase lists what it delivers, the outline of its tasks (each becomes TDD st
 7. `/teach/classes/[id]` Students tab
 8. `/reset`
 9. Playwright harness (`scripts/e2e.sh`, `make e2e`) and the Phase 1 journey
-10. Restyle from D-1 and D-2 when they arrive (§6.3)
+10. Restyle from D-1 and D-2 when they arrive (§6.3) — **not started: `docs/design/pilot/` doesn't exist yet (16 Sep 2026).** Pages are plain, semantic HTML with the shadcn `Button`; every spec queries by role and name, so the restyle must keep them green.
 
-**Gate P1 — end of Phase 1**
-- [ ] `make verify` and `make e2e` green
+**Gate P1 — end of Phase 1** (tasks 1–9 built 16 Sep 2026, see `docs/HANDOFF.md`)
+- [x] `make verify` and `make e2e` green — locally, 16 Sep 2026: the journey passes on both Playwright projects (laptop and phone)
 - [ ] On Vercel Preview against the EU backend, by hand: operator creates a school and teacher → teacher signs in, changes password, creates a class → a phone opens `/join`, enters the code, creates an account → teacher approves → phone shows the class as approved → teacher issues a reset code → phone resets its password and signs in
-- [ ] Keyboard-only run of the same journey on a laptop; no WCAG 2.2 AA failures in an axe scan of each page (`@axe-core/playwright` in the e2e)
+- [ ] Keyboard-only run of the same journey on a laptop; no WCAG 2.2 AA failures in an axe scan of each page (`@axe-core/playwright` in the e2e) — *the axe half is done*: every page the journey visits is scanned with `wcag2a`, `wcag2aa`, `wcag22aa` and reports no violations; `phase1.e2e.ts` also signs in keyboard-only. The full keyboard-only walk by hand is still to do.
 - [ ] Tim has reviewed the pages (design restyle can still be pending)
 
 ### 8.2 Phase 2 — Components and the timeline
