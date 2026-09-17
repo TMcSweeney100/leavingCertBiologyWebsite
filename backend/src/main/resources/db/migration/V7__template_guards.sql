@@ -87,3 +87,71 @@ $$;
 
 CREATE TRIGGER template_version_lifecycle BEFORE UPDATE OR DELETE ON template_version
     FOR EACH ROW EXECUTE FUNCTION guard_template_version_lifecycle();
+-- Design §6.3 and plan 2A P2-8: a published brief keeps its template, version, exam year and SEC code, and
+-- its rule rows; its completion date, limits and wording stay correctable because the SEC can move a date.
+CREATE FUNCTION guard_annual_brief() RETURNS trigger
+    LANGUAGE plpgsql AS $$
+BEGIN
+    IF TG_OP = 'DELETE' THEN
+        IF OLD.status <> 'DRAFT' THEN
+            RAISE EXCEPTION 'brief % is published: it can''t be deleted', OLD.sec_code USING ERRCODE = 'check_violation';
+        END IF;
+        RETURN OLD;
+    END IF;
+
+    IF NEW.status = 'PUBLISHED' AND template_version_status(NEW.template_version_id) <> 'PUBLISHED' THEN
+        RAISE EXCEPTION 'brief % can''t be published on a template version that isn''t published', NEW.sec_code
+            USING ERRCODE = 'check_violation';
+    END IF;
+
+    IF TG_OP = 'UPDATE' AND OLD.status = 'PUBLISHED'
+       AND (NEW.status <> 'PUBLISHED'
+            OR NEW.template_id <> OLD.template_id
+            OR NEW.template_version_id <> OLD.template_version_id
+            OR NEW.exam_year <> OLD.exam_year
+            OR NEW.sec_code <> OLD.sec_code) THEN
+        RAISE EXCEPTION 'brief % is published: its template, version, year, code and status are fixed', OLD.sec_code
+            USING ERRCODE = 'check_violation';
+    END IF;
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER annual_brief_guard BEFORE INSERT OR UPDATE OR DELETE ON annual_brief
+    FOR EACH ROW EXECUTE FUNCTION guard_annual_brief();
+
+CREATE FUNCTION brief_status(p_brief_id uuid) RETURNS text
+    LANGUAGE sql STABLE AS $$ SELECT status FROM annual_brief WHERE id = p_brief_id $$;
+
+CREATE FUNCTION refuse_frozen_brief_rules() RETURNS trigger
+    LANGUAGE plpgsql AS $$
+DECLARE
+    v_old_status text;
+    v_new_status text;
+BEGIN
+    IF TG_OP IN ('UPDATE', 'DELETE') THEN
+        v_old_status := brief_status(OLD.brief_id);
+    END IF;
+    IF TG_OP IN ('UPDATE', 'INSERT') THEN
+        v_new_status := brief_status(NEW.brief_id);
+    END IF;
+
+    IF TG_OP = 'UPDATE' AND v_old_status = 'PUBLISHED' AND OLD.brief_id = NEW.brief_id
+       AND (to_jsonb(NEW) - TG_ARGV) = (to_jsonb(OLD) - TG_ARGV) THEN
+        RETURN NEW;
+    END IF;
+
+    IF coalesce(v_old_status, 'DRAFT') <> 'DRAFT' OR coalesce(v_new_status, 'DRAFT') <> 'DRAFT' THEN
+        RAISE EXCEPTION '% on brief_rule: the brief is published, so only rule wording can change', TG_OP
+            USING ERRCODE = 'check_violation';
+    END IF;
+
+    IF TG_OP = 'DELETE' THEN
+        RETURN OLD;
+    END IF;
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER brief_rule_frozen BEFORE INSERT OR UPDATE OR DELETE ON brief_rule
+    FOR EACH ROW EXECUTE FUNCTION refuse_frozen_brief_rules('key', 'value', 'source_ref', 'created_at');
