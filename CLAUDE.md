@@ -42,6 +42,7 @@ Two things that share a Next.js app:
 - Base package `ie.coursework`. Feature packages: `domain` (no Spring), `application` (services), `adapter.persistence` (`JdbcClient` + SQL), `adapter.web` (controllers, request/response records).
 - Errors: throw `DomainException(ErrorCode, detail)`. `ErrorCode` names are API contract.
 - Schema migrations in `db/migration`; content in `db/content` (own history table). Never edit an applied migration.
+- Content tables (`template_*`, `component_template`, `annual_brief`, `brief_rule`) survive the test reset. A test that inserts into them is `@Transactional` so it rolls back. Correct published content with UPDATEs of text columns; structure changes need a new template version (the V7 triggers refuse anything else).
 - Tests needing Postgres extend `PostgresIntegrationTest`. It truncates every table except migration history and content tables before each test, and clears every `InMemoryState` bean.
 - Controllers take an `Actor` parameter (resolved fresh per request: roles and disabled state); nothing else reads the security context.
 - Bind timestamps with `Timestamps.utc(instant)`; the Postgres driver won't bind `Instant`. Don't map `timestamptz` to `Instant` record components either: read `OffsetDateTime`, or select a boolean.
