@@ -97,6 +97,13 @@
             <artifactId>testcontainers-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Reads the SEC and NCCA PDFs so content tests can check every quote (plan 2B). Tests only. -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.7</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

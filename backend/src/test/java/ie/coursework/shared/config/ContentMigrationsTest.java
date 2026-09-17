@@ -38,6 +38,15 @@ class ContentMigrationsTest extends PostgresIntegrationTest {
     }
 
     @Test
+    void theScienceTemplatesMigrationApplied() {
+        Integer applied = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM flyway_content_history WHERE success AND description = 'science templates'",
+                Integer.class);
+
+        assertThat(applied).isEqualTo(1);
+    }
+
+    @Test
     void noMigrationInEitherHistoryFailed() {
         Integer failed = jdbcTemplate.queryForObject(
                 "SELECT (SELECT count(*) FROM flyway_schema_history WHERE NOT success)"

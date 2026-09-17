@@ -51,7 +51,8 @@ Detailed plans so far:
 | | 1C Classes and enrolment | written | built; Gate 1C walked locally, all checks green | Gate 1C |
 | | 1D App shell and first journey | written | built and restyled from D-1/D-2 (16 Sep 2026); `make verify` and `make e2e` green, axe clean on every page; preview walk and Tim's review still open | **Gate P1** |
 | 2 Components | 2A Template schema | written 16 Sep 2026 | **built 17 Sep 2026**; `make verify` green (201 backend tests) | Gate 2A |
-| | 2B–2F | written 16 Sep 2026 | not started; plan decisions P2-1 to P2-52 proposed (P2-13, P2-23, P2-33 confirmed), three questions open (§3 "Phase 2 questions") | **Gate P2** |
+| | 2B Science content | written 16 Sep 2026 | **built 17 Sep 2026**; `make verify` green (242 backend tests); `SourceTextTest` checks every quoted string against its PDF page | Gate 2B |
+| | 2C–2F | written 16 Sep 2026 | not started; plan decisions P2-1 to P2-52 proposed (P2-13, P2-23, P2-33 confirmed), three questions open (§3 "Phase 2 questions") | **Gate P2** |
 | 3 The log | 3A–3C | to write | — | **Gate P3** |
 | 4 Teacher grid | 4A–4B | to write | — | **Gate P4 = pilot can start** |
 | 5 School leader view | 5A | to write | — | Gate P5 |
@@ -482,7 +483,7 @@ Results in `docs/HANDOFF.md`. 151 backend tests pass (schema through the complet
 | Milestone | Tasks (outline) |
 |---|---|
 | **2A Template schema** | Tables in design §6.2 and §6.3. Trigger rejecting insert, delete and ordinal changes on a published version's rows (test each). Text updates on published rows allowed (test). **Built 17 Sep 2026.** Plan: `docs/superpowers/plans/2026-09-16-pilot-2a-template-schema.md`. |
-| **2B Science content** | One content source generates Biology, Chemistry and Physics template SQL. Content tests: every checkpoint and prompt has `source_ref`; mark bands sum to `marks_total`; stage count and labels match design §7.2; the §7.3 checkpoints are present with their basis. **Tim reads the diff against the PDFs.** |
+| **2B Science content** | One content source generates Biology, Chemistry and Physics template SQL. Content tests: every checkpoint and prompt has `source_ref`; mark bands sum to `marks_total`; stage count and labels match design §7.2; the §7.3 checkpoints are present with their basis. **Built 17 Sep 2026.** Plan: `docs/superpowers/plans/2026-09-16-pilot-2b-science-content.md`. **Tim's content review against the PDFs is still open** (Gate P2). |
 | **2C Business content and 2027 briefs** | Business template (6 stages plus Compilation, `hours_group` for 4–5). Four `annual_brief` rows with rules, word/image limits and completion dates from the **final** briefs, never the `EN-EX` samples. Test: each brief's completion date equals the §4.3 table. |
 | **2D Teacher component setup** | `component_instance`, `instance_stage_date`, `teacher_item`. Completion-date rule as a pure domain rule, a service check with `COMPLETION_DATE_EXCEEDED`, and a trigger (tests for all three). Out-of-order warning. Page `/teach/classes/[id]/component`. |
 | **2E Student component page** | `GET /components/{id}` shaped by role. `item_tick`. App components for the page (not the BiPi components' props, which need teacher-written text the template doesn't hold; Q-P2-C, 16 Sep 2026) — the stage state comes from the class's own dates, reusing `lib/schedule.ts`'s countdown and Dublin-safe date logic. D-3 decides the look. Page `/components/[id]`. |
