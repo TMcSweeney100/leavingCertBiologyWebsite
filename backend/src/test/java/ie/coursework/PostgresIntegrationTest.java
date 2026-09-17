@@ -36,9 +36,15 @@ public abstract class PostgresIntegrationTest {
         POSTGRES.start();
     }
 
-    /** Migration history and content tables. Phase 2 adds the template and brief tables here. */
-    private static final Set<String> PRESERVED_TABLES =
-            Set.of("flyway_schema_history", "flyway_content_history", "subject");
+    /**
+     * Migration history and content tables. Package-visible so {@code ContentResetPolicyTest} can check
+     * it. A test that writes to one of these must roll back ({@code @Transactional}).
+     */
+    static final Set<String> PRESERVED_TABLES = Set.of(
+            "flyway_schema_history", "flyway_content_history", "subject",
+            "component_template", "template_version", "template_stage", "template_section",
+            "template_section_stage", "template_mark_band", "template_mark_band_section",
+            "template_checkpoint", "template_prompt", "annual_brief", "brief_rule");
 
     @Autowired protected JdbcTemplate jdbcTemplate;
     @Autowired private ApplicationContext applicationContext;
