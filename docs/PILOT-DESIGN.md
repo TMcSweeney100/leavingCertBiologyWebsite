@@ -128,14 +128,14 @@ These findings come from reading the SEC briefs and NCCA guidelines, and they sh
 |---|---|
 | NCCA guidelines for Biology, Chemistry and Physics (Nov 2024) and Business (Nov 2024) | `subjectDocs/AAC_Guidelines_*` |
 | SEC **sample** briefs for the four subjects | `subjectDocs/EN-EX-*.pdf` |
-| SEC **final** 2027 briefs: Physics `2027L021C2EL`, Chemistry `2027L022C2EL`, Biology `2027L025C2EL`, Business `2027L033C2EL` | examinations.ie. Biology is also at `docs/Biology in Practice Investigation Brief 2027.pdf`. |
+| SEC **final** 2027 briefs: Physics `2027L021C2EL`, Chemistry `2027L022C2EL`, Biology `2027L025C2EL`, Business `2027L033C2EL` | `subjectDocs/SEC-<code>-<Subject>-brief.pdf` |
 | SEC Coursework Rules and Procedures | **Not held yet.** It's the source for the AI-use fields (§6.7). |
 
 **The `EN-EX` files are sample briefs, not final ones.** Their codes end `C2ES`, they carry no exam year, and their dates are placeholders (the Biology one says "by 2080"). Real dates must come from the final briefs.
 
 **The context doc has two filenames swapped.** `EN-EX-61324862` is Business and `EN-EX-16382013` is Chemistry. The `(1)` file is an identical copy.
 
-**Action:** add the four final 2027 briefs and the current Coursework Rules and Procedures to `subjectDocs/`.
+**Action:** the four final 2027 briefs are in `subjectDocs/` (added 16 Sep 2026). The Coursework Rules and Procedures is still to add; Phase 6 needs it (Q6).
 
 ### 4.2 One science template covers three subjects
 
