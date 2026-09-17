@@ -64,6 +64,17 @@ class BriefGuardTest extends PostgresIntegrationTest {
     }
 
     @Test
+    void aPublishedBriefsCompletionDateStaysCorrectableAfterItsTemplateVersionIsRetired() {
+        UUID brief = published(2027);
+        rows.retire(version);
+
+        jdbcTemplate.update("UPDATE annual_brief SET completion_date = DATE '2027-02-19' WHERE id = ?", brief);
+
+        assertThat(jdbcTemplate.queryForObject("SELECT completion_date FROM annual_brief WHERE id = ?", LocalDate.class, brief))
+                .isEqualTo(LocalDate.of(2027, 2, 19));
+    }
+
+    @Test
     void aPublishedBriefKeepsItsExamYearAndCode() {
         UUID brief = published(2027);
 

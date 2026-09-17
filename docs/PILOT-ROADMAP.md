@@ -50,7 +50,7 @@ Detailed plans so far:
 | | 1B Accounts and sessions | written | built; gate passed locally, preview walk waiting on Tim | Gate 1B |
 | | 1C Classes and enrolment | written | built; Gate 1C walked locally, all checks green | Gate 1C |
 | | 1D App shell and first journey | written | built and restyled from D-1/D-2 (16 Sep 2026); `make verify` and `make e2e` green, axe clean on every page; preview walk and Tim's review still open | **Gate P1** |
-| 2 Components | 2A Template schema | written 16 Sep 2026 | **built 17 Sep 2026**; `make verify` green (168 backend tests) | Gate 2A |
+| 2 Components | 2A Template schema | written 16 Sep 2026 | **built 17 Sep 2026**; `make verify` green (201 backend tests) | Gate 2A |
 | | 2B–2F | written 16 Sep 2026 | not started; plan decisions P2-1 to P2-52 proposed (P2-13, P2-23, P2-33 confirmed), three questions open (§3 "Phase 2 questions") | **Gate P2** |
 | 3 The log | 3A–3C | to write | — | **Gate P3** |
 | 4 Teacher grid | 4A–4B | to write | — | **Gate P4 = pilot can start** |

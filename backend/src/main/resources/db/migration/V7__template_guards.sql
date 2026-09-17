@@ -99,7 +99,11 @@ BEGIN
         RETURN OLD;
     END IF;
 
-    IF NEW.status = 'PUBLISHED' AND template_version_status(NEW.template_version_id) <> 'PUBLISHED' THEN
+    -- Only checked on the transition into PUBLISHED: once published, the block below keeps the brief's
+    -- template_version_id fixed, so a later retirement of that version must not re-fail this check on an
+    -- unrelated update (a completion-date move, say).
+    IF NEW.status = 'PUBLISHED' AND (TG_OP = 'INSERT' OR OLD.status <> 'PUBLISHED')
+       AND template_version_status(NEW.template_version_id) <> 'PUBLISHED' THEN
         RAISE EXCEPTION 'brief % can''t be published on a template version that isn''t published', NEW.sec_code
             USING ERRCODE = 'check_violation';
     END IF;
