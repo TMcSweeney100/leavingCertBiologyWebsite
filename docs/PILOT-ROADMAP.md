@@ -15,6 +15,12 @@ Detailed plans so far:
 | 1B Accounts and sessions | `docs/superpowers/plans/2026-09-15-pilot-1b-accounts-and-sessions.md` |
 | 1C Classes and enrolment | `docs/superpowers/plans/2026-09-15-pilot-1c-classes-and-enrolment.md` |
 | 1D App shell and first journey | `docs/superpowers/plans/2026-09-15-pilot-1d-app-shell-and-first-journey.md` |
+| 2A Template schema | `docs/superpowers/plans/2026-09-16-pilot-2a-template-schema.md` |
+| 2B Science content | `docs/superpowers/plans/2026-09-16-pilot-2b-science-content.md` |
+| 2C Business content and 2027 briefs | `docs/superpowers/plans/2026-09-16-pilot-2c-business-content-and-briefs.md` |
+| 2D Teacher component setup | `docs/superpowers/plans/2026-09-16-pilot-2d-teacher-component-setup.md` |
+| 2E Student component page | `docs/superpowers/plans/2026-09-16-pilot-2e-student-component-page.md` |
+| 2F Personal items and timeline | `docs/superpowers/plans/2026-09-16-pilot-2f-personal-items-and-timeline.md` |
 
 ---
 
@@ -44,7 +50,8 @@ Detailed plans so far:
 | | 1B Accounts and sessions | written | built; gate passed locally, preview walk waiting on Tim | Gate 1B |
 | | 1C Classes and enrolment | written | built; Gate 1C walked locally, all checks green | Gate 1C |
 | | 1D App shell and first journey | written | built and restyled from D-1/D-2 (16 Sep 2026); `make verify` and `make e2e` green, axe clean on every page; preview walk and Tim's review still open | **Gate P1** |
-| 2 Components | 2A–2F | to write at phase start | — | **Gate P2** |
+| 2 Components | 2A Template schema | written 16 Sep 2026 | **built 17 Sep 2026**; `make verify` green (201 backend tests) | Gate 2A |
+| | 2B–2F | written 16 Sep 2026 | not started; plan decisions P2-1 to P2-52 proposed (P2-13, P2-23, P2-33 confirmed), three questions open (§3 "Phase 2 questions") | **Gate P2** |
 | 3 The log | 3A–3C | to write | — | **Gate P3** |
 | 4 Teacher grid | 4A–4B | to write | — | **Gate P4 = pilot can start** |
 | 5 School leader view | 5A | to write | — | Gate P5 |
@@ -109,6 +116,19 @@ From design §11, plus the ones this roadmap adds (H1–H4).
 | Q4 | How long is pilot data kept? | Go-live |
 | Q5 | Who drafts the data processing agreement and privacy notice? | Go-live. **Start this now.** It's calendar-bound, not code-bound (design §1.1). |
 | Q7 | If the 2028 briefs are late, does a 5th-year pilot wait? | 5th-year go-live |
+
+### Phase 2 questions (from the 2A–2F plans, 16 Sep 2026)
+
+The plans are written to the default in the third column, so building can start; each answer changes only the task named. Plan decisions P2-1 to P2-52 are in each plan's "Decisions this plan takes" table and are **proposed until Tim confirms them**, like 1D's P-4 to P-7.
+
+| # | Question | Default the plans use | Changes |
+|---|---|---|---|
+| **Q-P2-A** | Stage descriptions: is one sentence quoted from each stage's guideline section right (including Stage 6's, which also states the hours: "During this final stage, which, is envisaged should take up to 4 hours to complete, …")? Or the whole stage text, or no description? | One verbatim sentence per stage, as listed in plan 2B/2C | 2B, 2C content only |
+| ~~Q-P2-B~~ | **Answered 16 Sep 2026: no mapping for now.** Report sections ↔ stages. Neither the SEC nor the NCCA says which stage a section is written during (the BiPi crosswalk was Katelyn's). Load a mapping (whose?), or show sections without it? | No mapping; `template_section_stage` stays empty; the student page lists sections without a live status | A content migration adding links needs a **new template version** once v1 is published, so answer before 2B merges if possible |
+| ~~Q-P2-C~~ | **Answered 16 Sep 2026: new app components.** The student page is built from new app components, not by feeding the BiPi components, because their props need teacher-written text (`whatsDue`, `whatGoodLooksLike`, `tasks`) the national template doesn't have. OK to reword §8.2 2E accordingly? (D-3 still decides the look.) | App components; reuse `countdownText` and the date logic only | 2E Task 7, §8.2 2E row |
+| ~~Q-P2-D~~ | **Answered 16 Sep 2026: one per class.** One component per class (stricter than design §6.4's one per class per brief)? | One per class | 2D migration V8 |
+| **Q-P2-E** | Should the SEC completion date appear on the student timeline as its own item? Design §3.2 lists stage dates, teacher items and own items only. | Not shown | 2F: one more branch in the timeline query |
+| **Q-P2-F** | The examinations.ie URL for each 2027 brief, if Tim wants `source_url` filled. | NULL | A later content migration |
 
 ---
 
@@ -356,7 +376,7 @@ All under `/api/v1`. JSON, camelCase. Errors are RFC 9457 problem details with a
 
 | Phase | Endpoints |
 |---|---|
-| 2 | `GET /briefs?subjectCode=&examYear=` · `POST /classes/{id}/components` · `GET /components/{id}` (role-shaped view) · `PUT /components/{id}/stage-dates` · `POST/PATCH/DELETE /components/{id}/teacher-items[/{itemId}]` · `PUT /components/{id}/teacher-items/{itemId}/tick` · `GET /me/components` · `GET /me/timeline?from=&to=` · `GET/POST/PATCH/DELETE /me/personal-items[/{id}]` |
+| 2 | `GET /briefs?subjectCode=&examYear=` · `POST /classes/{id}/components` · `GET /components/{id}` (role-shaped view) · `PUT /components/{id}/stage-dates` · `POST/PATCH/DELETE /components/{id}/teacher-items[/{itemId}]` · `PUT /components/{id}/teacher-items/{itemId}/tick` · `GET /me/components` · `GET /me/timeline?from=&to=` · `GET/POST/PATCH/DELETE /me/personal-items[/{id}]`. Planned in detail in 2D–2F: `GET /classes/{id}` gains `componentId`; `GET /components/{id}` carries `view: "TEACHER"` or `"STUDENT"`; new codes `COMPLETION_DATE_EXCEEDED` and `COMPONENT_ALREADY_EXISTS`. |
 | 3 | `GET/POST /components/{id}/log` · `POST /log/{entryId}/revisions` · `GET /log/{entryId}/revisions` · `PUT /log/{entryId}/visibility` · `GET /components/{id}/students/{studentId}/log` (teacher projection) |
 | 4 | `GET /components/{id}/progress` · `POST /components/{id}/students/{studentId}/signoffs` · `POST /signoffs/{id}/revoke` |
 | 5 | `GET /schools/{schoolId}/overview?yearGroup=&academicYear=` |
@@ -457,13 +477,15 @@ Results in `docs/HANDOFF.md`. 151 backend tests pass (schema through the complet
 
 **Before the plan is written:** the four final 2027 briefs and the Coursework Rules and Procedures are in `subjectDocs/` (design §4.1 action). Design pack D-3, D-4 and D-5 requested.
 
+**Status, 16 Sep 2026:** the four final 2027 briefs are in `subjectDocs/` (2B Task 1 renames them to their SEC codes). The Coursework Rules and Procedures is still missing; Phase 2 doesn't need it, Phase 6 does (Q6). The D-3, D-4 and D-5 prompts are written, the packs haven't arrived; each page plan builds working-first and ends with a restyle task that waits for its pack. **All six plans are written** (table at the top). Every content string in 2B and 2C, and the SQL for V6–V10 and the timeline query, was run on Postgres 18 and checked against the PDFs before the plans were saved.
+
 | Milestone | Tasks (outline) |
 |---|---|
-| **2A Template schema** | Tables in design §6.2 and §6.3. Trigger rejecting insert, delete and ordinal changes on a published version's rows (test each). Text updates on published rows allowed (test). |
+| **2A Template schema** | Tables in design §6.2 and §6.3. Trigger rejecting insert, delete and ordinal changes on a published version's rows (test each). Text updates on published rows allowed (test). **Built 17 Sep 2026.** Plan: `docs/superpowers/plans/2026-09-16-pilot-2a-template-schema.md`. |
 | **2B Science content** | One content source generates Biology, Chemistry and Physics template SQL. Content tests: every checkpoint and prompt has `source_ref`; mark bands sum to `marks_total`; stage count and labels match design §7.2; the §7.3 checkpoints are present with their basis. **Tim reads the diff against the PDFs.** |
 | **2C Business content and 2027 briefs** | Business template (6 stages plus Compilation, `hours_group` for 4–5). Four `annual_brief` rows with rules, word/image limits and completion dates from the **final** briefs, never the `EN-EX` samples. Test: each brief's completion date equals the §4.3 table. |
 | **2D Teacher component setup** | `component_instance`, `instance_stage_date`, `teacher_item`. Completion-date rule as a pure domain rule, a service check with `COMPLETION_DATE_EXCEEDED`, and a trigger (tests for all three). Out-of-order warning. Page `/teach/classes/[id]/component`. |
-| **2E Student component page** | `GET /components/{id}` shaped by role. `item_tick`. Adapter from the API response to the BiPi components' props (`StageCard`, `ReportCrosswalk`, `ReportRules`, `MarksCard`) — the stage state comes from the class's own dates, reusing `lib/schedule.ts`'s Dublin-safe logic. Page `/components/[id]`. |
+| **2E Student component page** | `GET /components/{id}` shaped by role. `item_tick`. App components for the page (not the BiPi components' props, which need teacher-written text the template doesn't hold; Q-P2-C, 16 Sep 2026) — the stage state comes from the class's own dates, reusing `lib/schedule.ts`'s countdown and Dublin-safe date logic. D-3 decides the look. Page `/components/[id]`. |
 | **2F Personal items and timeline** | `personal_item` (owner-only; authz test that teacher and leader sessions can't reach any row). Timeline query as a union with `from`/`to`. `/home` list, week and month views, add/edit/delete. |
 
 **Gate P2**
