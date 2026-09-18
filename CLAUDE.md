@@ -53,6 +53,7 @@ Two things that share a Next.js app:
 - Operator commands: `scripts/operator.sh create-school|create-user|grant-role …` locally; on the host, run the same image with `operator …` as its arguments.
 - Class-scoped endpoints go through `ClassService.owned(actor, classId)` first; an enrolment id is looked up with `EnrolmentRepository.findInClass`, never by id alone.
 - Component-scoped endpoints go through `ComponentService.owned(actor, componentId)` first; a teacher item id is looked up with `TeacherItemRepository.findActive(itemId, componentId)`, never by id alone.
+- A student's component access goes through `ComponentRepository.findForApprovedStudent(componentId, studentId)`.
 
 ## Frontend conventions (pilot app)
 
