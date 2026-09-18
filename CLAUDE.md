@@ -31,6 +31,7 @@ Two things that share a Next.js app:
 - **Test first.** Watch the test fail, then make it pass. No production code without a failing test.
 - **Never invent SEC or NCCA content.** Every checkpoint and prompt carries a `source_ref`. If a source is missing, stop and ask. `SourceTextTest` checks each quoted string against its PDF page; never reword content to make it pass.
 - **All authorisation happens in Spring.** Every service method takes the acting user. Anything outside the actor's scope is a 404, never a 403.
+- **A student's own items are private.** `personal_item` is only read through `PersonalItemRepository` with the owner, and never joined from another feature.
 - **The browser only talks to `/api/v1/*` on its own origin.** `BACKEND_INTERNAL_URL` is never exposed to client code.
 - **No file or blob columns, no upload endpoints, no server-side fetching of student links.**
 - **Next.js stays on 15.3.9** until Vercel supports Next 16's Adapter API.
