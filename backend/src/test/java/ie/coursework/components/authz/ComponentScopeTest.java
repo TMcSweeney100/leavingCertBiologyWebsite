@@ -62,8 +62,15 @@ class ComponentScopeTest extends PostgresIntegrationTest {
 
     @Test
     void studentsGetNotFound() throws Exception {
-        // 2E: the approved student's GET becomes their own view; change that one line then.
-        everyEndpoint(as(ClassFixtures.APPROVED_STUDENT), status().isNotFound());
+        // 2E: the approved student's GET becomes their own view; every other endpoint stays 404 for them.
+        ApiSession approved = as(ClassFixtures.APPROVED_STUDENT);
+        approved.get(component).andExpect(status().isOk());
+        approved.put(component + "/stage-dates", "{\"dates\":[]}").andExpect(status().isNotFound());
+        approved.post(component + "/teacher-items", "{\"stageId\":\"%s\",\"text\":\"x\",\"dueDate\":null}".formatted(stage(6)))
+                .andExpect(status().isNotFound());
+        approved.patch(item, "{\"text\":\"x\",\"dueDate\":null}").andExpect(status().isNotFound());
+        approved.delete(item).andExpect(status().isNotFound());
+
         everyEndpoint(as(ClassFixtures.PENDING_STUDENT), status().isNotFound());
         everyEndpoint(as(ClassFixtures.OUTSIDER), status().isNotFound());
     }

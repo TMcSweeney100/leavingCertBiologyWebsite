@@ -17,7 +17,7 @@ public class BriefRepository {
 
     private static final String PUBLISHED = """
             SELECT b.id, b.template_id, b.template_version_id, t.subject_id, s.code AS subject_code, b.exam_year,
-                   b.sec_code, b.title, b.topic_title, b.completion_date
+                   b.sec_code, b.title, b.topic_title, b.completion_date, t.weighting_percent, t.marks_total
             FROM annual_brief b
             JOIN component_template t ON t.id = b.template_id
             JOIN subject s ON s.id = t.subject_id
@@ -69,6 +69,8 @@ public class BriefRepository {
                 rs.getString("sec_code"),
                 rs.getString("title"),
                 rs.getString("topic_title"),
-                rs.getObject("completion_date", LocalDate.class));
+                rs.getObject("completion_date", LocalDate.class),
+                rs.getInt("weighting_percent"),
+                rs.getInt("marks_total"));
     }
 }
