@@ -195,3 +195,35 @@ export const myComponentSchema = z.object({
   completionDate: z.string(),
 });
 export type MyComponent = z.infer<typeof myComponentSchema>;
+
+// Mirrors timeline/application/TimelineViews.java (plan 2F).
+export const personalKindSchema = z.enum(["TEST", "ESSAY", "DEADLINE", "OTHER"]);
+export type PersonalKind = z.infer<typeof personalKindSchema>;
+
+export const timelineItemSchema = z.object({
+  kind: z.enum(["STAGE", "TEACHER_ITEM", "PERSONAL"]),
+  date: z.string(),
+  title: z.string(),
+  stageLabel: z.string().nullable(),
+  subjectCode: z.string().nullable(),
+  subjectName: z.string().nullable(),
+  classId: z.string().nullable(),
+  className: z.string().nullable(),
+  componentId: z.string().nullable(),
+  personalItemId: z.string().nullable(),
+  personalKind: personalKindSchema.nullable(),
+});
+export type TimelineItem = z.infer<typeof timelineItemSchema>;
+
+export const timelineSchema = z.object({ from: z.string(), to: z.string(), items: z.array(timelineItemSchema) });
+export type Timeline = z.infer<typeof timelineSchema>;
+
+export const personalItemSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  dueDate: z.string(),
+  kind: personalKindSchema,
+  classId: z.string().nullable(),
+  subjectName: z.string().nullable(),
+});
+export type PersonalItem = z.infer<typeof personalItemSchema>;
