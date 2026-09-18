@@ -96,3 +96,40 @@ test("a student sees the component and ticks a teacher item", async ({ page: tea
   await expect(student.getByRole("checkbox", { name: /Full draft in for feedback/ })).toBeChecked();
   await expectAccessible(student);
 });
+
+test("the timeline shows the stage date, the teacher's item and the student's own item, in order", async ({ browser }) => {
+  test.skip(!TEACHER.temporary, "E2E_TEACHER_PASSWORD not set");
+  const student = await phone(browser);
+  await student.goto("/login");
+  await student.getByRole("textbox", { name: "Username" }).fill(STUDENT.username);
+  await student.getByLabel("Password").fill(STUDENT.password);
+  await student.getByRole("button", { name: "Sign in" }).click();
+  await expect(student).toHaveURL(/\/home/);
+  await expectAccessible(student);
+
+  await student.getByRole("button", { name: "Add my own item" }).click();
+  await expect(student.getByText("Only you can see this. Your teachers can't.")).toBeVisible();
+  await student.getByRole("textbox", { name: "Title" }).fill("Biology class test");
+  await student.getByLabel("Date").fill("2026-12-02");
+  await student.getByRole("combobox", { name: "Kind" }).selectOption("TEST");
+  await student.getByRole("combobox", { name: "Class (optional)" }).selectOption({ label: `Biology · ${P2.className}` });
+  await student.getByRole("button", { name: "Save item" }).click();
+
+  await student.goto("/home?view=list&from=2026-12-01");
+  const rows = student.getByRole("list", { name: "Timeline items" }).getByRole("listitem");
+  await expect(rows).toHaveCount(3);
+  await expect(rows.nth(0)).toContainText("Biology class test");
+  await expect(rows.nth(0)).toContainText("Test");
+  await expect(rows.nth(1)).toContainText("Full draft in for feedback");
+  await expect(rows.nth(1)).toContainText("From your teacher");
+  await expect(rows.nth(2)).toContainText("Data Analysis and Conclusions");
+  await expect(rows.nth(2)).toContainText("Stage date");
+  for (const i of [0, 1, 2]) await expect(rows.nth(i)).toContainText("Biology");
+  await expectAccessible(student);
+
+  await student.getByRole("link", { name: "Month" }).click();
+  await expect(student.getByRole("table", { name: "December 2026" })).toBeVisible();
+  await expectAccessible(student);
+
+  expect(componentUrl).toMatch(/\/components\//);
+});

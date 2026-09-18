@@ -3,7 +3,7 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import type { EnrolmentView } from "@/lib/api/schemas";
 
-import { card, eyebrow, pageTitle } from "./styles";
+import { card, eyebrow, sectionTitle } from "./styles";
 import { subjectEdge } from "./subject";
 
 const STATUS = {
@@ -21,9 +21,9 @@ export function MyClasses({ classes }: { classes: EnrolmentView[] }) {
   return (
     <section aria-labelledby="classes-heading">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <h1 id="classes-heading" className={pageTitle}>
+        <h2 id="classes-heading" className={sectionTitle}>
           My classes
-        </h1>
+        </h2>
         <Link href="/join" className={buttonVariants({ size: "form" })}>
           Join a class
         </Link>
