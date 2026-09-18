@@ -126,6 +126,47 @@ public class ComponentService {
         return teacherView(owned);
     }
 
+    @Transactional
+    public TeacherItemView addItem(Actor actor, UUID componentId, UUID stageId, String text, LocalDate dueDate) {
+        Owned owned = owned(actor, componentId);
+        boolean inVersion = templates.stages(owned.brief().versionId()).stream().anyMatch(s -> s.id().equals(stageId));
+        if (!inVersion) {
+            throw new DomainException(ErrorCode.VALIDATION_FAILED, "That stage isn't part of this component.",
+                    List.of(new FieldError("stageId", "not a stage of this component")));
+        }
+        checkItemDate(dueDate, owned.brief().completionDate());
+        TeacherItem item = items.add(componentId, stageId, text, dueDate, clock.instant());
+        return new TeacherItemView(item.id(), item.text(), item.dueDate());
+    }
+
+    @Transactional
+    public TeacherItemView editItem(Actor actor, UUID componentId, UUID itemId, String text, LocalDate dueDate) {
+        Owned owned = owned(actor, componentId);
+        items.findActive(itemId, componentId).orElseThrow(ComponentService::itemNotFound);
+        checkItemDate(dueDate, owned.brief().completionDate());
+        items.update(itemId, text, dueDate, clock.instant());
+        return new TeacherItemView(itemId, text.strip(), dueDate);
+    }
+
+    /** Retired items disappear for students; the row stays (design §6.4). */
+    @Transactional
+    public void retireItem(Actor actor, UUID componentId, UUID itemId) {
+        owned(actor, componentId);
+        items.findActive(itemId, componentId).orElseThrow(ComponentService::itemNotFound);
+        items.retire(itemId, clock.instant());
+    }
+
+    private static void checkItemDate(LocalDate dueDate, LocalDate completion) {
+        if (dueDate != null && !CompletionDates.allows(dueDate, completion)) {
+            String message = CompletionDates.refusal("That date", completion);
+            throw new DomainException(ErrorCode.COMPLETION_DATE_EXCEEDED, message, List.of(new FieldError("dueDate", message)));
+        }
+    }
+
+    private static DomainException itemNotFound() {
+        return new DomainException(ErrorCode.NOT_FOUND, "No such item.");
+    }
+
     Owned owned(Actor actor, UUID componentId) {
         if (!actor.holds(Role.TEACHER)) {
             throw notFound();
