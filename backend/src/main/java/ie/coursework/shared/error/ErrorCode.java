@@ -23,6 +23,8 @@ public enum ErrorCode {
     JOIN_CODE_INVALID(HttpStatus.NOT_FOUND, "Join code unknown or expired"),
     ENROLMENT_NOT_PENDING(HttpStatus.CONFLICT, "That request has already been decided"),
     ENROLMENT_ALREADY_REMOVED(HttpStatus.CONFLICT, "That student has already been removed"),
+    COMPLETION_DATE_EXCEEDED(HttpStatus.BAD_REQUEST, "Date after the completion date"),
+    COMPONENT_ALREADY_EXISTS(HttpStatus.CONFLICT, "This class already has a component"),
     RESET_CODE_INVALID(HttpStatus.BAD_REQUEST, "Reset code wrong or expired"),
     NOT_FOUND(HttpStatus.NOT_FOUND, "Not found"),
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "Method not allowed"),

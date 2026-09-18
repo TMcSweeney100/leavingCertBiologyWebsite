@@ -55,6 +55,7 @@ export const classDetailSchema = z.object({
   level: levelSchema.nullable(),
   joinCode: joinCodeSchema.nullable(),
   enrolments: z.array(memberSchema),
+  componentId: z.string().nullable(),
 });
 export type ClassDetail = z.infer<typeof classDetailSchema>;
 
@@ -76,3 +77,53 @@ export const resetCodeIssuedSchema = z.object({ code: z.string(), expiresAt: z.s
 // Mirrors subjects' SubjectController response.
 export const subjectSchema = z.object({ code: z.string(), name: z.string() });
 export type Subject = z.infer<typeof subjectSchema>;
+
+// Mirrors components/application/ComponentViews.java.
+export const briefSummarySchema = z.object({
+  id: z.string(),
+  subjectCode: z.string(),
+  examYear: z.number(),
+  secCode: z.string(),
+  title: z.string(),
+  topicTitle: z.string().nullable(),
+  completionDate: z.string(),
+});
+export type BriefSummary = z.infer<typeof briefSummarySchema>;
+
+export const teacherItemSchema = z.object({ id: z.string(), text: z.string(), dueDate: z.string().nullable() });
+export type TeacherItem = z.infer<typeof teacherItemSchema>;
+
+export const setupStageSchema = z.object({
+  id: z.string(),
+  ordinal: z.number(),
+  label: z.string().nullable(),
+  name: z.string(),
+  hoursMin: z.number().nullable(),
+  hoursMax: z.number().nullable(),
+  hoursGroup: z.string().nullable(),
+  supervised: z.boolean(),
+  checkpoint: z.string().nullable(),
+  dueDate: z.string().nullable(),
+  items: z.array(teacherItemSchema),
+});
+export type SetupStage = z.infer<typeof setupStageSchema>;
+
+export const dateWarningSchema = z.object({
+  code: z.enum(["OUT_OF_ORDER", "AFTER_COMPLETION_DATE"]),
+  stageIds: z.array(z.string()),
+  itemIds: z.array(z.string()),
+});
+export type DateWarning = z.infer<typeof dateWarningSchema>;
+
+export const teacherComponentSchema = z.object({
+  view: z.literal("TEACHER"),
+  id: z.string(),
+  classId: z.string(),
+  className: z.string(),
+  subjectCode: z.string(),
+  subjectName: z.string(),
+  brief: briefSummarySchema,
+  stages: z.array(setupStageSchema),
+  warnings: z.array(dateWarningSchema),
+});
+export type TeacherComponent = z.infer<typeof teacherComponentSchema>;
