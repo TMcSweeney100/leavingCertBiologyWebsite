@@ -15,6 +15,7 @@ import ie.coursework.components.application.ComponentViews.CheckpointView;
 import ie.coursework.components.application.ComponentViews.ComponentView;
 import ie.coursework.components.application.ComponentViews.DateWarning;
 import ie.coursework.components.application.ComponentViews.MarkBandView;
+import ie.coursework.components.application.ComponentViews.MyComponent;
 import ie.coursework.components.application.ComponentViews.PromptView;
 import ie.coursework.components.application.ComponentViews.RuleView;
 import ie.coursework.components.application.ComponentViews.SectionView;
@@ -222,6 +223,22 @@ public class ComponentService {
         owned(actor, componentId);
         items.findActive(itemId, componentId).orElseThrow(ComponentService::itemNotFound);
         items.retire(itemId, clock.instant());
+    }
+
+    /** Self-reported (plan 2E P2-37). Only an approved student of the class, only on an active item. */
+    @Transactional
+    public StudentItem tick(Actor actor, UUID componentId, UUID itemId, boolean done) {
+        ComponentInstance component = components.findForApprovedStudent(componentId, actor.userId())
+                .orElseThrow(ComponentService::notFound);
+        TeacherItem item = items.findActive(itemId, component.id()).orElseThrow(ComponentService::itemNotFound);
+        ticks.set(component.id(), actor.userId(), item.id(), done, clock.instant());
+        return new StudentItem(item.id(), item.text(), item.dueDate(), done);
+    }
+
+    public List<MyComponent> myComponents(Actor actor) {
+        return components.forStudent(actor.userId()).stream()
+                .map(c -> new MyComponent(c.componentId(), c.className(), c.subjectCode(), c.subjectName(), c.briefTitle(), c.completionDate()))
+                .toList();
     }
 
     private static void checkItemDate(LocalDate dueDate, LocalDate completion) {
