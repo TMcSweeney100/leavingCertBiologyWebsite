@@ -1,11 +1,13 @@
 package ie.coursework.components.adapter.persistence;
 
 import ie.coursework.components.domain.ComponentInstance;
+import ie.coursework.components.domain.StudentComponentRef;
 import ie.coursework.shared.persistence.Timestamps;
 import java.sql.Types;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -44,6 +46,32 @@ public class ComponentRepository {
                 .query((rs, row) -> new ComponentInstance(rs.getObject("id", UUID.class),
                         rs.getObject("class_group_id", UUID.class), rs.getObject("annual_brief_id", UUID.class)))
                 .optional();
+    }
+
+    /** The scope check for a student: approved (not pending, not removed) in the component's class. */
+    public Optional<ComponentInstance> findForApprovedStudent(UUID componentId, UUID studentId) {
+        return jdbc.sql("""
+                SELECT i.id, i.class_group_id, i.annual_brief_id FROM component_instance i
+                JOIN enrolment e ON e.class_group_id = i.class_group_id
+                WHERE i.id = :id AND e.student_user_id = :student AND e.status = 'APPROVED'
+                """).param("id", componentId).param("student", studentId)
+                .query((rs, row) -> new ComponentInstance(rs.getObject("id", UUID.class),
+                        rs.getObject("class_group_id", UUID.class), rs.getObject("annual_brief_id", UUID.class)))
+                .optional();
+    }
+
+    public List<StudentComponentRef> forStudent(UUID studentId) {
+        return jdbc.sql("""
+                SELECT i.id AS component_id, g.id AS class_id, g.name AS class_name, s.code AS subject_code,
+                       s.name AS subject_name, b.title AS brief_title, b.completion_date
+                FROM enrolment e
+                JOIN class_group g ON g.id = e.class_group_id
+                JOIN subject s ON s.id = g.subject_id
+                JOIN component_instance i ON i.class_group_id = g.id
+                JOIN annual_brief b ON b.id = i.annual_brief_id
+                WHERE e.student_user_id = :student AND e.status = 'APPROVED'
+                ORDER BY s.name, g.name
+                """).param("student", studentId).query(StudentComponentRef.class).list();
     }
 
     public Map<UUID, LocalDate> stageDates(UUID componentId) {

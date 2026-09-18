@@ -1,6 +1,8 @@
 package ie.coursework.components.adapter.persistence;
 
 import ie.coursework.components.domain.Brief;
+import ie.coursework.components.domain.BriefDetails;
+import ie.coursework.components.domain.BriefRule;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -40,6 +42,20 @@ public class BriefRepository {
 
     public Optional<Brief> findPublished(UUID id) {
         return jdbc.sql(PUBLISHED + " AND b.id = :id").param("id", id).query(BriefRepository::map).optional();
+    }
+
+    public BriefDetails details(UUID briefId) {
+        return jdbc.sql("""
+                SELECT topic_body, word_limit, words_not_counted, image_limit, image_note FROM annual_brief WHERE id = :id
+                """).param("id", briefId)
+                .query((rs, i) -> new BriefDetails(rs.getString("topic_body"), rs.getInt("word_limit"),
+                        rs.getString("words_not_counted"), rs.getInt("image_limit"), rs.getString("image_note")))
+                .single();
+    }
+
+    public List<BriefRule> rules(UUID briefId) {
+        return jdbc.sql("SELECT key, value FROM brief_rule WHERE brief_id = :id ORDER BY ordinal")
+                .param("id", briefId).query(BriefRule.class).list();
     }
 
     private static Brief map(ResultSet rs, int row) throws SQLException {
