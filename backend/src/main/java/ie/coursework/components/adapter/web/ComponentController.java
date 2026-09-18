@@ -2,6 +2,7 @@ package ie.coursework.components.adapter.web;
 
 import ie.coursework.components.application.ComponentService;
 import ie.coursework.components.application.ComponentViews.BriefSummary;
+import ie.coursework.components.application.ComponentViews.StudentItem;
 import ie.coursework.components.application.ComponentViews.TeacherComponent;
 import ie.coursework.components.application.ComponentViews.TeacherItemView;
 import ie.coursework.identity.domain.Actor;
@@ -73,5 +74,10 @@ public class ComponentController {
     ResponseEntity<Void> retireItem(Actor actor, @PathVariable UUID componentId, @PathVariable UUID itemId) {
         components.retireItem(actor, componentId, itemId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/components/{componentId}/teacher-items/{itemId}/tick")
+    StudentItem tick(Actor actor, @PathVariable UUID componentId, @PathVariable UUID itemId, @Valid @RequestBody TickRequest body) {
+        return components.tick(actor, componentId, itemId, body.done());
     }
 }

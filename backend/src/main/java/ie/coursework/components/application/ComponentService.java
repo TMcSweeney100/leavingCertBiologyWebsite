@@ -1,25 +1,42 @@
 package ie.coursework.components.application;
 
+import ie.coursework.classes.adapter.persistence.ClassGroupRepository;
 import ie.coursework.classes.adapter.persistence.SubjectRepository;
 import ie.coursework.classes.application.ClassService;
 import ie.coursework.classes.domain.ClassGroup;
 import ie.coursework.components.adapter.persistence.BriefRepository;
 import ie.coursework.components.adapter.persistence.ComponentRepository;
+import ie.coursework.components.adapter.persistence.ItemTickRepository;
 import ie.coursework.components.adapter.persistence.TeacherItemRepository;
 import ie.coursework.components.adapter.persistence.TemplateRepository;
+import ie.coursework.components.application.ComponentViews.BriefDetail;
 import ie.coursework.components.application.ComponentViews.BriefSummary;
+import ie.coursework.components.application.ComponentViews.CheckpointView;
 import ie.coursework.components.application.ComponentViews.ComponentView;
 import ie.coursework.components.application.ComponentViews.DateWarning;
+import ie.coursework.components.application.ComponentViews.MarkBandView;
+import ie.coursework.components.application.ComponentViews.MyComponent;
+import ie.coursework.components.application.ComponentViews.PromptView;
+import ie.coursework.components.application.ComponentViews.RuleView;
+import ie.coursework.components.application.ComponentViews.SectionView;
 import ie.coursework.components.application.ComponentViews.SetupStage;
+import ie.coursework.components.application.ComponentViews.StudentComponent;
+import ie.coursework.components.application.ComponentViews.StudentItem;
+import ie.coursework.components.application.ComponentViews.StudentStage;
 import ie.coursework.components.application.ComponentViews.TeacherComponent;
 import ie.coursework.components.application.ComponentViews.TeacherItemView;
 import ie.coursework.components.application.ComponentViews.WarningCode;
 import ie.coursework.components.domain.Brief;
+import ie.coursework.components.domain.BriefDetails;
 import ie.coursework.components.domain.CompletionDates;
 import ie.coursework.components.domain.ComponentInstance;
 import ie.coursework.components.domain.DatedStage;
+import ie.coursework.components.domain.CheckpointState;
+import ie.coursework.components.domain.DublinDate;
 import ie.coursework.components.domain.StageOrder;
 import ie.coursework.components.domain.TeacherItem;
+import ie.coursework.components.domain.TemplateCheckpoint;
+import ie.coursework.components.domain.TemplatePrompt;
 import ie.coursework.components.domain.TemplateStage;
 import ie.coursework.identity.domain.Actor;
 import ie.coursework.identity.domain.Role;
@@ -32,6 +49,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -48,21 +66,26 @@ public class ComponentService {
     record Owned(ComponentInstance component, ClassGroup group, Brief brief) {}
 
     private final ClassService classes;
+    private final ClassGroupRepository classGroups;
     private final SubjectRepository subjects;
     private final BriefRepository briefs;
     private final TemplateRepository templates;
     private final ComponentRepository components;
     private final TeacherItemRepository items;
+    private final ItemTickRepository ticks;
     private final Clock clock;
 
-    public ComponentService(ClassService classes, SubjectRepository subjects, BriefRepository briefs,
-            TemplateRepository templates, ComponentRepository components, TeacherItemRepository items, Clock clock) {
+    public ComponentService(ClassService classes, ClassGroupRepository classGroups, SubjectRepository subjects,
+            BriefRepository briefs, TemplateRepository templates, ComponentRepository components,
+            TeacherItemRepository items, ItemTickRepository ticks, Clock clock) {
         this.classes = classes;
+        this.classGroups = classGroups;
         this.subjects = subjects;
         this.briefs = briefs;
         this.templates = templates;
         this.components = components;
         this.items = items;
+        this.ticks = ticks;
         this.clock = clock;
     }
 
@@ -89,9 +112,55 @@ public class ComponentService {
         return teacherView(owned(actor, id));
     }
 
-    /** Role-shaped (plan 2D P2-28). 2E adds the approved student's view. */
+    /** Role-shaped (plan 2D P2-28): the class's teacher gets setup, an approved student their page, anyone else 404. */
     public ComponentView view(Actor actor, UUID componentId) {
-        return teacherView(owned(actor, componentId));
+        if (actor.holds(Role.TEACHER) && components.findOwned(componentId, actor.userId()).isPresent()) {
+            return teacherView(owned(actor, componentId));
+        }
+        ComponentInstance component = components.findForApprovedStudent(componentId, actor.userId())
+                .orElseThrow(ComponentService::notFound);
+        return studentView(actor, component);
+    }
+
+    /** A student's actor holds no TEACHER role at the class's school, so {@code classes.owned} can't be used here;
+     *  reading the class by id directly is safe only because {@code findForApprovedStudent} already scoped it. */
+    StudentComponent studentView(Actor actor, ComponentInstance component) {
+        Brief brief = briefs.findPublished(component.briefId()).orElseThrow(() -> new IllegalStateException("brief missing"));
+        ClassGroup group = classGroups.findById(component.classId()).orElseThrow();
+        LocalDate today = DublinDate.today(clock);
+        Map<UUID, LocalDate> dates = components.stageDates(component.id());
+        Map<UUID, String> checkpoints = templates.checkpoints(brief.versionId()).stream()
+                .collect(Collectors.toMap(TemplateCheckpoint::stageId, TemplateCheckpoint::text, (first, later) -> first));
+        Map<UUID, List<PromptView>> prompts = templates.prompts(brief.versionId()).stream()
+                .collect(Collectors.groupingBy(TemplatePrompt::stageId, LinkedHashMap::new,
+                        Collectors.mapping(p -> new PromptView(p.heading(), p.text()), Collectors.toList())));
+        Set<UUID> done = ticks.doneItems(component.id(), actor.userId());
+        Map<UUID, List<StudentItem>> items = this.items.active(component.id()).stream()
+                .collect(Collectors.groupingBy(TeacherItem::stageId,
+                        Collectors.mapping(i -> new StudentItem(i.id(), i.text(), i.dueDate(), done.contains(i.id())), Collectors.toList())));
+
+        List<StudentStage> stages = templates.stages(brief.versionId()).stream().map(s -> {
+            LocalDate due = dates.get(s.id());
+            String checkpoint = checkpoints.get(s.id());
+            return new StudentStage(s.id(), s.ordinal(), s.label(), s.name(), s.description(), s.hoursMin(), s.hoursMax(),
+                    s.hoursGroup(), s.supervised(), due,
+                    checkpoint == null ? null : new CheckpointView(checkpoint, CheckpointState.at(due, today)),
+                    items.getOrDefault(s.id(), List.of()), prompts.getOrDefault(s.id(), List.of()));
+        }).toList();
+
+        BriefDetails details = briefs.details(brief.id());
+        BriefDetail detail = new BriefDetail(brief.examYear(), brief.secCode(), brief.title(), brief.topicTitle(),
+                details.topicBody(), brief.completionDate(), details.wordLimit(), details.wordsNotCounted(),
+                details.imageLimit(), details.imageNote(),
+                briefs.rules(brief.id()).stream().map(r -> new RuleView(r.key(), r.value())).toList());
+
+        return new StudentComponent("STUDENT", component.id(), group.name(), brief.subjectCode(),
+                subjects.findById(group.subjectId()).orElseThrow().name(), brief.weightingPercent(), brief.marksTotal(),
+                detail, templates.processNote(brief.versionId()), today, stages,
+                templates.sections(brief.versionId()).stream()
+                        .map(x -> new SectionView(x.label(), x.name(), x.suggestedWords(), x.indicativeContent(), x.stageIds())).toList(),
+                templates.bands(brief.versionId()).stream()
+                        .map(b -> new MarkBandView(b.label(), b.name(), b.marks(), b.wholeReport(), b.criteria(), b.sectionLabels())).toList());
     }
 
     /** Replaces the class's stage dates (plan 2D P2-24, P2-25). */
@@ -154,6 +223,22 @@ public class ComponentService {
         owned(actor, componentId);
         items.findActive(itemId, componentId).orElseThrow(ComponentService::itemNotFound);
         items.retire(itemId, clock.instant());
+    }
+
+    /** Self-reported (plan 2E P2-37). Only an approved student of the class, only on an active item. */
+    @Transactional
+    public StudentItem tick(Actor actor, UUID componentId, UUID itemId, boolean done) {
+        ComponentInstance component = components.findForApprovedStudent(componentId, actor.userId())
+                .orElseThrow(ComponentService::notFound);
+        TeacherItem item = items.findActive(itemId, component.id()).orElseThrow(ComponentService::itemNotFound);
+        ticks.set(component.id(), actor.userId(), item.id(), done, clock.instant());
+        return new StudentItem(item.id(), item.text(), item.dueDate(), done);
+    }
+
+    public List<MyComponent> myComponents(Actor actor) {
+        return components.forStudent(actor.userId()).stream()
+                .map(c -> new MyComponent(c.componentId(), c.className(), c.subjectCode(), c.subjectName(), c.briefTitle(), c.completionDate()))
+                .toList();
     }
 
     private static void checkItemDate(LocalDate dueDate, LocalDate completion) {

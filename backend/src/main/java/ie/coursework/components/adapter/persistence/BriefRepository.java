@@ -1,6 +1,8 @@
 package ie.coursework.components.adapter.persistence;
 
 import ie.coursework.components.domain.Brief;
+import ie.coursework.components.domain.BriefDetails;
+import ie.coursework.components.domain.BriefRule;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -15,7 +17,7 @@ public class BriefRepository {
 
     private static final String PUBLISHED = """
             SELECT b.id, b.template_id, b.template_version_id, t.subject_id, s.code AS subject_code, b.exam_year,
-                   b.sec_code, b.title, b.topic_title, b.completion_date
+                   b.sec_code, b.title, b.topic_title, b.completion_date, t.weighting_percent, t.marks_total
             FROM annual_brief b
             JOIN component_template t ON t.id = b.template_id
             JOIN subject s ON s.id = t.subject_id
@@ -42,6 +44,20 @@ public class BriefRepository {
         return jdbc.sql(PUBLISHED + " AND b.id = :id").param("id", id).query(BriefRepository::map).optional();
     }
 
+    public BriefDetails details(UUID briefId) {
+        return jdbc.sql("""
+                SELECT topic_body, word_limit, words_not_counted, image_limit, image_note FROM annual_brief WHERE id = :id
+                """).param("id", briefId)
+                .query((rs, i) -> new BriefDetails(rs.getString("topic_body"), rs.getInt("word_limit"),
+                        rs.getString("words_not_counted"), rs.getInt("image_limit"), rs.getString("image_note")))
+                .single();
+    }
+
+    public List<BriefRule> rules(UUID briefId) {
+        return jdbc.sql("SELECT key, value FROM brief_rule WHERE brief_id = :id ORDER BY ordinal")
+                .param("id", briefId).query(BriefRule.class).list();
+    }
+
     private static Brief map(ResultSet rs, int row) throws SQLException {
         return new Brief(
                 rs.getObject("id", UUID.class),
@@ -53,6 +69,8 @@ public class BriefRepository {
                 rs.getString("sec_code"),
                 rs.getString("title"),
                 rs.getString("topic_title"),
-                rs.getObject("completion_date", LocalDate.class));
+                rs.getObject("completion_date", LocalDate.class),
+                rs.getInt("weighting_percent"),
+                rs.getInt("marks_total"));
     }
 }

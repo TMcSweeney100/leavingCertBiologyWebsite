@@ -1,5 +1,6 @@
 package ie.coursework.components.authz;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ie.coursework.PostgresIntegrationTest;
@@ -61,11 +62,31 @@ class ComponentScopeTest extends PostgresIntegrationTest {
     }
 
     @Test
-    void studentsGetNotFound() throws Exception {
-        // 2E: the approved student's GET becomes their own view; change that one line then.
-        everyEndpoint(as(ClassFixtures.APPROVED_STUDENT), status().isNotFound());
+    void anApprovedStudentReadsTheirViewButNoTeacherEndpoint() throws Exception {
+        ApiSession student = as(ClassFixtures.APPROVED_STUDENT);
+        student.get(component).andExpect(status().isOk()).andExpect(jsonPath("$.view").value("STUDENT"));
+        student.put(component + "/stage-dates", "{\"dates\":[]}").andExpect(status().isNotFound());
+        student.post(component + "/teacher-items", "{\"stageId\":\"%s\",\"text\":\"x\",\"dueDate\":null}".formatted(stage(6)))
+                .andExpect(status().isNotFound());
+        student.patch(item, "{\"text\":\"x\",\"dueDate\":null}").andExpect(status().isNotFound());
+        student.delete(item).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void pendingRemovedAndOutsideStudentsGetNotFound() throws Exception {
         everyEndpoint(as(ClassFixtures.PENDING_STUDENT), status().isNotFound());
+        everyEndpoint(as(ClassFixtures.REMOVED_STUDENT), status().isNotFound());
         everyEndpoint(as(ClassFixtures.OUTSIDER), status().isNotFound());
+    }
+
+    @Test
+    void onlyApprovedStudentsOfTheClassCanTick() throws Exception {
+        String tick = item + "/tick";
+        as(ClassFixtures.APPROVED_STUDENT).put(tick, "{\"done\":true}").andExpect(status().isOk());
+        for (String who : new String[] {ClassFixtures.PENDING_STUDENT, ClassFixtures.REMOVED_STUDENT, ClassFixtures.OUTSIDER,
+                ClassFixtures.TEACHER1, ClassFixtures.TEACHER2, ClassFixtures.LEADER_A}) {
+            as(who).put(tick, "{\"done\":true}").andExpect(status().isNotFound());
+        }
     }
 
     @Test
