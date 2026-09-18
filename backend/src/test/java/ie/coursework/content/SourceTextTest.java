@@ -36,7 +36,7 @@ class SourceTextTest extends PostgresIntegrationTest {
     }
 
     private List<Quoted> quotedContent() {
-        return jdbcTemplate.query("""
+        List<Quoted> quoted = new ArrayList<>(jdbcTemplate.query("""
                 SELECT 'stage description' AS what, source_ref, description AS text FROM template_stage
                 UNION ALL SELECT 'process note', process_note_source_ref, process_note FROM template_version
                 UNION ALL SELECT 'checkpoint quote', source_ref, source_quote FROM template_checkpoint
@@ -47,15 +47,21 @@ class SourceTextTest extends PostgresIntegrationTest {
                 UNION ALL SELECT 'band name', source_ref, name FROM template_mark_band WHERE name IS NOT NULL
                 UNION ALL SELECT 'band criterion', source_ref, unnest(criteria) FROM template_mark_band
                 UNION ALL
-                SELECT 'stage name', brief_doc.key || ' p. 5', s.name
-                FROM template_stage s
-                JOIN template_version v ON v.id = s.version_id
-                JOIN component_template t ON t.id = v.template_id
-                JOIN (VALUES ('biology-in-practice-investigation', 'SEC-2027L025C2EL'),
-                             ('chemistry-in-practice-investigation', 'SEC-2027L022C2EL'),
-                             ('physics-in-practice-investigation', 'SEC-2027L021C2EL'),
-                             ('business-alive-investigative-study', 'SEC-2027L033C2EL')) AS brief_doc (slug, key)
-                  ON brief_doc.slug = t.slug
-                """, (rs, i) -> new Quoted(rs.getString("what"), rs.getString("source_ref"), rs.getString("text")));
+                SELECT 'stage name', 'SEC-' || b.sec_code || ' p. 5', s.name
+                FROM template_stage s JOIN annual_brief b ON b.template_version_id = s.version_id
+                UNION ALL SELECT 'brief topic title', 'SEC-' || sec_code || ' p. 6', topic_title FROM annual_brief WHERE topic_title IS NOT NULL
+                UNION ALL SELECT 'brief topic line', 'SEC-' || sec_code || ' p. 6', line
+                          FROM annual_brief, unnest(string_to_array(topic_body, E'\\n')) AS line WHERE btrim(line) <> ''
+                UNION ALL SELECT 'brief words not counted', 'SEC-' || sec_code || ' p. ' || CASE WHEN sec_code = '2027L033C2EL' THEN 5 ELSE 7 END, words_not_counted FROM annual_brief
+                UNION ALL SELECT 'brief image note', 'SEC-' || sec_code || ' p. ' || CASE WHEN sec_code = '2027L033C2EL' THEN 5 ELSE 7 END, image_note FROM annual_brief WHERE image_note IS NOT NULL
+                UNION ALL SELECT 'brief rule key', source_ref, key FROM brief_rule
+                """, (rs, i) -> new Quoted(rs.getString("what"), rs.getString("source_ref"), rs.getString("text"))));
+        // A rule's value can join table cells ("Left margin 20 mm. Right margin 20 mm."), so each sentence is
+        // checked on its own, without its closing full stop.
+        quoted.addAll(jdbcTemplate.query("""
+                SELECT 'brief rule value' AS what, r.source_ref, rtrim(part, '.') AS text
+                FROM brief_rule r, unnest(regexp_split_to_array(r.value, '(?<=\\.) ')) AS part
+                """, (rs, i) -> new Quoted(rs.getString("what"), rs.getString("source_ref"), rs.getString("text"))));
+        return quoted;
     }
 }
