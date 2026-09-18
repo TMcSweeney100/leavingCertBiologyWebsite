@@ -28,13 +28,27 @@ export function ItemTick({ componentId, item }: { componentId: string; item: { i
     }
   }
 
+  const dueId = item.dueDate ? `${id}-due` : undefined;
+
   return (
     <div className="flex flex-col gap-1">
       <div className="flex min-h-11 items-start gap-3">
-        <input id={id} type="checkbox" checked={done} onChange={(e) => toggle(e.target.checked)} className="mt-1 size-5 flex-none" />
+        <input
+          id={id}
+          type="checkbox"
+          checked={done}
+          onChange={(e) => toggle(e.target.checked)}
+          aria-label={item.text}
+          aria-describedby={dueId}
+          className="mt-1 size-5 flex-none"
+        />
         <label htmlFor={id} className="flex flex-col text-app-base text-app-ink">
           <span>{item.text}</span>
-          {item.dueDate && <span className="text-app-small text-app-grey">{formatCalendarDate(item.dueDate)}</span>}
+          {item.dueDate && (
+            <span id={dueId} className="text-app-small text-app-grey">
+              {formatCalendarDate(item.dueDate)}
+            </span>
+          )}
         </label>
         {done && <span className="ml-auto text-app-small text-app-grey">Ticked by you</span>}
       </div>
