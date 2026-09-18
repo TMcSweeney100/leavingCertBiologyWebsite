@@ -20,7 +20,7 @@ public final class ClassViews {
             EnrolmentStatus status, Instant requestedAt) {}
 
     public record ClassDetail(UUID id, String name, String subjectCode, String subjectName, int yearGroup,
-            String academicYear, Level level, JoinCodeView joinCode, List<MemberView> enrolments) {}
+            String academicYear, Level level, JoinCodeView joinCode, List<MemberView> enrolments, UUID componentId) {}
 
     public record JoinPreview(String className, String subjectName, String schoolName) {}
 

@@ -13,6 +13,7 @@ import ie.coursework.classes.domain.ClassGroup;
 import ie.coursework.classes.domain.JoinCode;
 import ie.coursework.classes.domain.Level;
 import ie.coursework.classes.domain.Subject;
+import ie.coursework.components.adapter.persistence.ComponentRepository;
 import ie.coursework.identity.domain.Actor;
 import ie.coursework.identity.domain.Role;
 import ie.coursework.shared.error.DomainException;
@@ -35,15 +36,17 @@ public class ClassService {
     private final SubjectRepository subjects;
     private final AuditLog auditLog;
     private final Clock clock;
+    private final ComponentRepository components;
     private final SecureRandom random = new SecureRandom();
 
     public ClassService(ClassGroupRepository classes, EnrolmentRepository enrolments, SubjectRepository subjects,
-            AuditLog auditLog, Clock clock) {
+            AuditLog auditLog, Clock clock, ComponentRepository components) {
         this.classes = classes;
         this.enrolments = enrolments;
         this.subjects = subjects;
         this.auditLog = auditLog;
         this.clock = clock;
+        this.components = components;
     }
 
     @Transactional
@@ -79,7 +82,7 @@ public class ClassService {
                         m.status(), m.requestedAt()))
                 .toList();
         return new ClassDetail(group.id(), group.name(), subject.code(), subject.name(), group.yearGroup(),
-                group.academicYear(), group.level(), code, members);
+                group.academicYear(), group.level(), code, members, components.idForClass(classId).orElse(null));
     }
 
     @Transactional
