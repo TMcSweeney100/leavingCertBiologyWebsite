@@ -83,8 +83,8 @@ class ComponentScopeTest extends PostgresIntegrationTest {
     void onlyApprovedStudentsOfTheClassCanTick() throws Exception {
         String tick = item + "/tick";
         as(ClassFixtures.APPROVED_STUDENT).put(tick, "{\"done\":true}").andExpect(status().isOk());
-        for (String who : new String[] {ClassFixtures.PENDING_STUDENT, ClassFixtures.OUTSIDER, ClassFixtures.TEACHER1,
-                ClassFixtures.TEACHER2, ClassFixtures.LEADER_A}) {
+        for (String who : new String[] {ClassFixtures.PENDING_STUDENT, ClassFixtures.REMOVED_STUDENT, ClassFixtures.OUTSIDER,
+                ClassFixtures.TEACHER1, ClassFixtures.TEACHER2, ClassFixtures.LEADER_A}) {
             as(who).put(tick, "{\"done\":true}").andExpect(status().isNotFound());
         }
     }
