@@ -10,8 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /** Turns exceptions into RFC 9457 problem details, each with a stable {@code code}. */
@@ -48,6 +51,22 @@ public class ProblemDetailsAdvice {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     ResponseEntity<ProblemDetail> methodNotAllowed(HttpServletRequest request) {
         return respond(ErrorCode.METHOD_NOT_ALLOWED, "That method isn't supported here.", request, List.of());
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    ResponseEntity<ProblemDetail> missingParameter(MissingServletRequestParameterException exception, HttpServletRequest request) {
+        return respond(ErrorCode.VALIDATION_FAILED, "One or more fields are invalid.", request,
+                List.of(new FieldError(exception.getParameterName(), "is required")));
+    }
+
+    /** A malformed path id is "not found" (design §9); a malformed query parameter is a validation error. */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    ResponseEntity<ProblemDetail> typeMismatch(MethodArgumentTypeMismatchException exception, HttpServletRequest request) {
+        if (exception.getParameter().hasParameterAnnotation(PathVariable.class)) {
+            return respond(ErrorCode.NOT_FOUND, "No such resource.", request, List.of());
+        }
+        return respond(ErrorCode.VALIDATION_FAILED, "One or more fields are invalid.", request,
+                List.of(new FieldError(exception.getName(), "is not in the right format")));
     }
 
     @ExceptionHandler(Exception.class)
