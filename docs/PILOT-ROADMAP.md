@@ -53,7 +53,8 @@ Detailed plans so far:
 | 2 Components | 2A Template schema | written 16 Sep 2026 | **built 17 Sep 2026**; `make verify` green (201 backend tests) | Gate 2A |
 | | 2B Science content | written 16 Sep 2026 | **built 17 Sep 2026**; `make verify` green (242 backend tests); `SourceTextTest` checks every quoted string against its PDF page | Gate 2B |
 | | 2C Business content and 2027 briefs | written 16 Sep 2026 | **built 18 Sep 2026**; `make verify` green (262 backend tests); `SourceTextTest` checks 434 strings including the briefs' topics, limits and formatting rules | Gate 2C |
-| | 2D–2F | written 16 Sep 2026 | not started; plan decisions P2-1 to P2-52 proposed (P2-13, P2-23, P2-33 confirmed), three questions open (§3 "Phase 2 questions") | **Gate P2** |
+| | 2D Teacher component setup | written 16 Sep 2026 | **built 18 Sep 2026**; `make verify` green (311 backend tests; 96 `node:test`, 106 Vitest specs); `ComponentScopeTest` proves every component endpoint 404s outside the owning teacher; Task 10 restyle skipped — `docs/design/pilot/D-5-teacher-component-setup/` doesn't exist yet (see HANDOFF) | Gate 2D |
+| | 2E–2F | written 16 Sep 2026 | not started; plan decisions P2-1 to P2-52 proposed (P2-13, P2-23, P2-33 confirmed), three questions open (§3 "Phase 2 questions") | **Gate P2** |
 | 3 The log | 3A–3C | to write | — | **Gate P3** |
 | 4 Teacher grid | 4A–4B | to write | — | **Gate P4 = pilot can start** |
 | 5 School leader view | 5A | to write | — | Gate P5 |
@@ -378,7 +379,7 @@ All under `/api/v1`. JSON, camelCase. Errors are RFC 9457 problem details with a
 
 | Phase | Endpoints |
 |---|---|
-| 2 | `GET /briefs?subjectCode=&examYear=` · `POST /classes/{id}/components` · `GET /components/{id}` (role-shaped view) · `PUT /components/{id}/stage-dates` · `POST/PATCH/DELETE /components/{id}/teacher-items[/{itemId}]` · `PUT /components/{id}/teacher-items/{itemId}/tick` · `GET /me/components` · `GET /me/timeline?from=&to=` · `GET/POST/PATCH/DELETE /me/personal-items[/{id}]`. Planned in detail in 2D–2F: `GET /classes/{id}` gains `componentId`; `GET /components/{id}` carries `view: "TEACHER"` or `"STUDENT"`; new codes `COMPLETION_DATE_EXCEEDED` and `COMPONENT_ALREADY_EXISTS`. |
+| 2 | **Built (2D):** `GET /briefs?subjectCode=&examYear=` (published briefs for a subject, exam year optional) · `POST /classes/{id}/components` (create from a brief; `COMPONENT_ALREADY_EXISTS` if the class already has one) · `GET /components/{id}` (role-shaped; `view: "TEACHER"` today, controller returns `Object`, §10) · `PUT /components/{id}/stage-dates` (batch save; `COMPLETION_DATE_EXCEEDED` on any date after the brief's completion date, named by stage) · `POST /components/{id}/teacher-items` · `PATCH /components/{id}/teacher-items/{itemId}` · `DELETE /components/{id}/teacher-items/{itemId}` (retires, never deletes). **Planned, not yet built (2E–2F):** `PUT /components/{id}/teacher-items/{itemId}/tick` · `GET /me/components` · `GET /me/timeline?from=&to=` · `GET/POST/PATCH/DELETE /me/personal-items[/{id}]`; `GET /classes/{id}` gains `componentId`; `GET /components/{id}` gains the `"STUDENT"` shape. |
 | 3 | `GET/POST /components/{id}/log` · `POST /log/{entryId}/revisions` · `GET /log/{entryId}/revisions` · `PUT /log/{entryId}/visibility` · `GET /components/{id}/students/{studentId}/log` (teacher projection) |
 | 4 | `GET /components/{id}/progress` · `POST /components/{id}/students/{studentId}/signoffs` · `POST /signoffs/{id}/revoke` |
 | 5 | `GET /schools/{schoolId}/overview?yearGroup=&academicYear=` |
