@@ -25,11 +25,15 @@ import ie.coursework.identity.domain.Actor;
 import ie.coursework.identity.domain.Role;
 import ie.coursework.shared.error.DomainException;
 import ie.coursework.shared.error.ErrorCode;
+import ie.coursework.shared.error.FieldError;
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.dao.DuplicateKeyException;
@@ -88,6 +92,38 @@ public class ComponentService {
     /** Role-shaped (plan 2D P2-28). 2E adds the approved student's view. */
     public ComponentView view(Actor actor, UUID componentId) {
         return teacherView(owned(actor, componentId));
+    }
+
+    /** Replaces the class's stage dates (plan 2D P2-24, P2-25). */
+    @Transactional
+    public TeacherComponent setStageDates(Actor actor, UUID componentId, List<StageDateInput> input) {
+        Owned owned = owned(actor, componentId);
+        LocalDate completion = owned.brief().completionDate();
+        Map<UUID, TemplateStage> stages = templates.stages(owned.brief().versionId()).stream()
+                .collect(Collectors.toMap(TemplateStage::id, Function.identity()));
+
+        Map<UUID, LocalDate> dates = new LinkedHashMap<>();
+        List<FieldError> late = new ArrayList<>();
+        for (StageDateInput in : input) {
+            TemplateStage stage = stages.get(in.stageId());
+            if (stage == null) {
+                throw new DomainException(ErrorCode.VALIDATION_FAILED, "That stage isn't part of this component.",
+                        List.of(new FieldError(String.valueOf(in.stageId()), "not a stage of this component")));
+            }
+            if (in.dueDate() == null) {
+                continue;
+            }
+            if (!CompletionDates.allows(in.dueDate(), completion)) {
+                late.add(new FieldError(stage.id().toString(), CompletionDates.refusal(stage.displayLabel(), completion)));
+            }
+            dates.put(stage.id(), in.dueDate());
+        }
+        if (!late.isEmpty()) {
+            String detail = late.size() == 1 ? late.getFirst().message() : CompletionDates.refusals(late.size(), completion);
+            throw new DomainException(ErrorCode.COMPLETION_DATE_EXCEEDED, detail, late);
+        }
+        components.replaceStageDates(componentId, dates, clock.instant());
+        return teacherView(owned);
     }
 
     Owned owned(Actor actor, UUID componentId) {
