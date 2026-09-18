@@ -113,7 +113,13 @@ test("the timeline shows the stage date, the teacher's item and the student's ow
   await student.getByLabel("Date").fill("2026-12-02");
   await student.getByRole("combobox", { name: "Kind" }).selectOption("TEST");
   await student.getByRole("combobox", { name: "Class (optional)" }).selectOption({ label: `Biology · ${P2.className}` });
-  await student.getByRole("button", { name: "Save item" }).click();
+  // Wait for the POST itself to settle before navigating away: a goto while it's still in flight can
+  // race the read on /home and land on a page rendered before the item was committed (flaky: the
+  // laptop project sometimes reached the next line before the request finished).
+  await Promise.all([
+    student.waitForResponse((r) => r.url().includes("/me/personal-items") && r.request().method() === "POST"),
+    student.getByRole("button", { name: "Save item" }).click(),
+  ]);
 
   await student.goto("/home?view=list&from=2026-12-01");
   const rows = student.getByRole("list", { name: "Timeline items" }).getByRole("listitem");
