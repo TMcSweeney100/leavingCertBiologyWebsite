@@ -1,7 +1,6 @@
 "use client";
 
 import { Copy } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -16,8 +15,9 @@ import {
 } from "@/lib/api/schemas";
 import { askedAgo } from "@/lib/app/asked-ago";
 
+import { ClassHeader } from "./class-header";
 import { ErrorPanel } from "./error-panel";
-import { backLink, card, eyebrow, lead, pageTitle, sectionTitle } from "./styles";
+import { card, eyebrow, lead, sectionTitle } from "./styles";
 
 function formatDate(iso: string): string {
   return new Intl.DateTimeFormat("en-IE", {
@@ -84,33 +84,7 @@ export function ClassStudents({ detail, now }: { detail: ClassDetail; now?: Date
 
   return (
     <div>
-      <Link href="/teach" className={backLink}>
-        My classes
-      </Link>
-      <h1 className={`mt-2.5 break-words ${pageTitle}`}>{detail.name}</h1>
-      <p className="mt-1.5 text-app-base text-app-grey">
-        {detail.subjectName}, year {detail.yearGroup}, {detail.academicYear}
-      </p>
-
-      {/* Tabs arrive with Phase 2 (Component) and Phase 4 (Progress); until then they're shown, not usable. */}
-      <nav aria-label="Class sections" className="mt-5 flex gap-6 border-b border-app-line">
-        <Link
-          href={`/teach/classes/${detail.id}`}
-          aria-current="page"
-          className="-mb-px border-b-2 border-app-accent px-0.5 py-2.5 text-app-base font-semibold text-app-accent"
-        >
-          Students
-        </Link>
-        {["Component", "Progress"].map((tab) => (
-          <span
-            key={tab}
-            aria-disabled="true"
-            className="-mb-px cursor-not-allowed border-b-2 border-transparent px-0.5 py-2.5 text-app-base font-semibold text-app-disabled"
-          >
-            {tab}
-          </span>
-        ))}
-      </nav>
+      <ClassHeader detail={detail} current="students" />
 
       {error && (
         <div className="mt-6">

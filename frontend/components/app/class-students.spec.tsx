@@ -18,6 +18,7 @@ import { ClassStudents } from "./class-students";
 const detail: ClassDetail = {
   id: "c1", name: "6A Biology", subjectCode: "BIOLOGY", subjectName: "Biology", yearGroup: 6, academicYear: "2026/27", level: "HIGHER",
   joinCode: { code: "ABCDEFGH", expiresAt: "2026-10-15T09:00:00.000Z" },
+  componentId: null,
   enrolments: [
     { enrolmentId: "e1", studentId: "s1", firstName: "Cian", lastName: "Murphy", username: "cian.m", status: "PENDING", requestedAt: "2026-10-01T09:00:00Z" },
     { enrolmentId: "e2", studentId: "s2", firstName: "Aoife", lastName: "Byrne", username: "aoife.b", status: "APPROVED", requestedAt: "2026-09-30T09:00:00Z" },
