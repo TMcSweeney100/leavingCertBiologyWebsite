@@ -5,6 +5,7 @@ import { type FormEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { api, ApiError } from "@/lib/api/client";
+import { KINDS } from "@/lib/app/personal-kind";
 import { type PersonalKind, personalItemSchema } from "@/lib/api/schemas";
 
 import { ErrorPanel } from "./error-panel";
@@ -12,15 +13,6 @@ import { Field, FieldGroup } from "./field";
 
 export type ClassOption = { classId: string; className: string; subjectName: string };
 type Draft = { title: string; dueDate: string; kind: PersonalKind; classId: string | null };
-
-const KINDS: ReadonlyArray<{ value: PersonalKind; label: string }> = [
-  { value: "TEST", label: "Test" },
-  { value: "ESSAY", label: "Essay" },
-  { value: "DEADLINE", label: "Deadline" },
-  { value: "OTHER", label: "Other" },
-];
-
-export const KIND_LABEL: Record<PersonalKind, string> = { TEST: "Test", ESSAY: "Essay", DEADLINE: "Deadline", OTHER: "Other" };
 
 /** Add or edit one of the student's own items (plan 2F P2-50). Private by design, and it says so. */
 export function PersonalItemForm({

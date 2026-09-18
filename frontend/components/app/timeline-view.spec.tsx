@@ -57,4 +57,17 @@ describe("TimelineView", () => {
     expect(within(table).getAllByRole("columnheader").map((h) => h.textContent)).toEqual(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]);
     expect(within(table).getByText("Full draft in for feedback")).toBeInTheDocument();
   });
+
+  it("marks the leading days from the previous month as disabled, so their low-contrast colour is exempt (plan 2F P2-49)", () => {
+    // December 2026 starts on a Tuesday, so the week grid's Monday (30 Nov) is outside the month.
+    render(<TimelineView range={{ view: "month", from: "2026-12-01", to: "2026-12-31" }} today="2026-12-01" items={items} classes={[]} />);
+    const table = screen.getByRole("table", { name: "December 2026" });
+    const cells = within(table).getAllByRole("cell", { hidden: true });
+    const outOfRangeCells = cells.filter((c) => c.className.includes("text-app-disabled"));
+    expect(outOfRangeCells.length).toBeGreaterThan(0);
+    for (const cell of outOfRangeCells) expect(cell).toHaveAttribute("aria-disabled", "true");
+
+    const inRangeCell = cells.find((c) => c.textContent?.startsWith("1") && !c.className.includes("text-app-disabled"));
+    expect(inRangeCell).not.toHaveAttribute("aria-disabled");
+  });
 });

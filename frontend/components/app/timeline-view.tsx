@@ -1,10 +1,11 @@
 import Link from "next/link";
 
 import type { TimelineItem } from "@/lib/api/schemas";
+import { KIND_LABEL } from "@/lib/app/personal-kind";
 import { monthWeeks, type Range, rangeLabel, relativeDay, stepFrom, type View, weekday } from "@/lib/app/timeline";
 
 import { PersonalItemActions } from "./personal-item-actions";
-import { type ClassOption, KIND_LABEL } from "./personal-item-form";
+import { type ClassOption } from "./personal-item-form";
 import { textLink } from "./styles";
 
 const VIEWS: ReadonlyArray<{ view: View; label: string }> = [
@@ -65,14 +66,17 @@ export function TimelineView({ range, today, items, classes }: { range: Range; t
           <tbody>
             {monthWeeks(range).map((week) => (
               <tr key={week[0]}>
-                {week.map((date) => (
-                  <td key={date} className={`h-20 border border-app-line p-1 align-top ${date < range.from || date > range.to ? "text-app-disabled" : ""}`}>
+                {week.map((date) => {
+                  const outOfRange = date < range.from || date > range.to;
+                  return (
+                  <td key={date} aria-disabled={outOfRange || undefined} className={`h-20 border border-app-line p-1 align-top ${outOfRange ? "text-app-disabled" : ""}`}>
                     <span className={date === today ? "font-bold text-app-accent" : ""}>{Number(date.slice(8))}</span>
                     {items.filter((i) => i.date === date).map((i) => (
                       <span key={`${i.kind}-${i.title}`} className="block truncate">{i.title}</span>
                     ))}
                   </td>
-                ))}
+                  );
+                })}
               </tr>
             ))}
           </tbody>
