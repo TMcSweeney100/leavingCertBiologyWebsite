@@ -127,3 +127,71 @@ export const teacherComponentSchema = z.object({
   warnings: z.array(dateWarningSchema),
 });
 export type TeacherComponent = z.infer<typeof teacherComponentSchema>;
+
+// Mirrors ComponentViews.StudentComponent (plan 2E).
+export const checkpointStateSchema = z.enum(["NOT_DUE", "DUE"]);
+export const studentStageSchema = z.object({
+  id: z.string(),
+  ordinal: z.number(),
+  label: z.string().nullable(),
+  name: z.string(),
+  description: z.string(),
+  hoursMin: z.number().nullable(),
+  hoursMax: z.number().nullable(),
+  hoursGroup: z.string().nullable(),
+  supervised: z.boolean(),
+  dueDate: z.string().nullable(),
+  checkpoint: z.object({ text: z.string(), state: checkpointStateSchema }).nullable(),
+  items: z.array(z.object({ id: z.string(), text: z.string(), dueDate: z.string().nullable(), done: z.boolean() })),
+  prompts: z.array(z.object({ heading: z.string().nullable(), text: z.string() })),
+});
+export type StudentStage = z.infer<typeof studentStageSchema>;
+
+export const studentComponentSchema = z.object({
+  view: z.literal("STUDENT"),
+  id: z.string(),
+  className: z.string(),
+  subjectCode: z.string(),
+  subjectName: z.string(),
+  weightingPercent: z.number(),
+  marksTotal: z.number(),
+  brief: z.object({
+    examYear: z.number(),
+    secCode: z.string(),
+    title: z.string(),
+    topicTitle: z.string().nullable(),
+    topicBody: z.string(),
+    completionDate: z.string(),
+    wordLimit: z.number(),
+    wordsNotCounted: z.string(),
+    imageLimit: z.number(),
+    imageNote: z.string().nullable(),
+    rules: z.array(z.object({ key: z.string(), value: z.string() })),
+  }),
+  processNote: z.string(),
+  today: z.string(),
+  stages: z.array(studentStageSchema),
+  sections: z.array(z.object({
+    label: z.string(), name: z.string(), suggestedWords: z.number().nullable(),
+    indicativeContent: z.array(z.string()), stageIds: z.array(z.string()),
+  })),
+  markBands: z.array(z.object({
+    label: z.string().nullable(), name: z.string().nullable(), marks: z.number(), wholeReport: z.boolean(),
+    criteria: z.array(z.string()), sectionLabels: z.array(z.string()),
+  })),
+});
+export type StudentComponent = z.infer<typeof studentComponentSchema>;
+
+export const componentViewSchema = z.discriminatedUnion("view", [teacherComponentSchema, studentComponentSchema]);
+
+export const studentItemSchema = z.object({ id: z.string(), text: z.string(), dueDate: z.string().nullable(), done: z.boolean() });
+
+export const myComponentSchema = z.object({
+  componentId: z.string(),
+  className: z.string(),
+  subjectCode: z.string(),
+  subjectName: z.string(),
+  briefTitle: z.string(),
+  completionDate: z.string(),
+});
+export type MyComponent = z.infer<typeof myComponentSchema>;
