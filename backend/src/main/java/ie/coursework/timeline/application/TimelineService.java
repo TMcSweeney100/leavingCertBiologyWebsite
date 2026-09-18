@@ -17,6 +17,7 @@ import ie.coursework.timeline.domain.TimelineRange;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,9 +59,16 @@ public class TimelineService {
         return view(personal.find(id, actor.userId()).orElseThrow());
     }
 
+    /**
+     * checkClass only re-runs when classId actually changes: an item labelled before the student left that
+     * class (P2-43) must stay editable, not be re-gated by enrolment status on every unrelated edit.
+     */
     @Transactional
     public PersonalItemView edit(Actor actor, UUID itemId, String title, LocalDate dueDate, PersonalItemKind kind, UUID classId) {
-        checkClass(actor, classId);
+        PersonalItem existing = personal.find(itemId, actor.userId()).orElseThrow(TimelineService::notFound);
+        if (!Objects.equals(existing.classId(), classId)) {
+            checkClass(actor, classId);
+        }
         if (!personal.update(itemId, actor.userId(), title, dueDate, kind, classId, clock.instant())) {
             throw notFound();
         }

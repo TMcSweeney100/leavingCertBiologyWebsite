@@ -9,6 +9,11 @@ import ie.coursework.PostgresIntegrationTest;
 import ie.coursework.support.ApiSession;
 import ie.coursework.support.ClassFixtures;
 import ie.coursework.support.TestAccounts;
+import ie.coursework.timeline.adapter.persistence.PersonalItemRepository;
+import ie.coursework.timeline.domain.PersonalItemKind;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +25,7 @@ class PersonalItemsTest extends PostgresIntegrationTest {
 
     @Autowired private MockMvc mockMvc;
     @Autowired private ClassFixtures fixtures;
+    @Autowired private PersonalItemRepository items;
 
     private ClassFixtures.World world;
     private ApiSession student;
@@ -67,6 +73,20 @@ class PersonalItemsTest extends PostgresIntegrationTest {
                 .andExpect(jsonPath("$.dueDate").value("2026-11-02"));
         student.delete("/api/v1/me/personal-items/" + id).andExpect(status().isNoContent());
         student.delete("/api/v1/me/personal-items/" + id).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void editingAFieldOtherThanClassStillWorksAfterTheStudentLeavesThatClass() throws Exception {
+        // Simulates an item labelled while still enrolled, then the enrolment ending (plan 2F P2-43:
+        // "a class the student is later removed from keeps labelling their own item").
+        ApiSession removed = new ApiSession(mockMvc).login(ClassFixtures.REMOVED_STUDENT, TestAccounts.PASSWORD);
+        UUID id = items.insert(world.removedStudent(), "Biology class test", LocalDate.of(2026, 10, 23),
+                PersonalItemKind.TEST, world.class1(), Instant.now());
+
+        removed.patch("/api/v1/me/personal-items/" + id, item("Biology class test (retake)", "2026-10-23", "TEST", world.class1().toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Biology class test (retake)"))
+                .andExpect(jsonPath("$.classId").value(world.class1().toString()));
     }
 
     @Test
