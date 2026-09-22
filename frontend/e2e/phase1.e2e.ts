@@ -74,7 +74,7 @@ test("the Phase 1 journey", async ({ page: teacher, browser }) => {
   await student.getByLabel("Password").fill(STUDENT.password);
   await student.getByRole("button", { name: "Create account and join" }).click();
   await expect(student).toHaveURL(/\/home$/);
-  await expect(student.getByRole("listitem")).toContainText("Pending approval");
+  await expect(student.getByRole("navigation", { name: "Main" })).toContainText("Pending approval");
   await expectAccessible(student);
 
   // The teacher approves.
@@ -82,9 +82,11 @@ test("the Phase 1 journey", async ({ page: teacher, browser }) => {
   await teacher.getByRole("button", { name: "Approve Aoife Byrne" }).click();
   await expect(teacher.getByRole("region", { name: "Students" })).toContainText("Aoife Byrne");
 
-  // The phone sees it.
+  // The phone sees it: approved, the subject moves from "Pending approval" to its own place in the nav
+  // (pack D-4 — no separate word for "approved", the subject itself is the signal).
   await student.reload();
-  await expect(student.getByRole("listitem")).toContainText("Approved");
+  await expect(student.getByRole("navigation", { name: "Main" })).toContainText("Biology");
+  await expect(student.getByRole("navigation", { name: "Main" })).not.toContainText("Pending approval");
 
   // The teacher issues a reset code.
   await teacher.getByRole("button", { name: "Issue reset code for Aoife Byrne" }).click();
@@ -106,7 +108,7 @@ test("the Phase 1 journey", async ({ page: teacher, browser }) => {
   await student.getByLabel("Password").fill(STUDENT.reset);
   await student.getByRole("button", { name: "Sign in" }).click();
   await expect(student).toHaveURL(/\/home$/);
-  await expect(student.getByRole("listitem")).toContainText("Approved");
+  await expect(student.getByRole("navigation", { name: "Main" })).toContainText("Biology");
 });
 
 test("keyboard-only sign in", async ({ page }) => {
