@@ -49,7 +49,7 @@ describe("CreateComponentForm", () => {
     await userEvent.selectOptions(screen.getByRole("combobox", { name: "Brief" }), "b2");
     const summary = screen.getByRole("group", { name: "What you're setting up" });
     expect(summary).toHaveTextContent("2028L025C2EL");
-    expect(summary).toHaveTextContent("Thu 25 Feb 2028");
+    expect(summary).toHaveTextContent("Fri 25 Feb 2028");
     // A brief with no topic drops the row rather than printing an empty value.
     expect(summary).not.toHaveTextContent("Topic");
   });

@@ -9,6 +9,8 @@ import { StageDatesForm } from "@/components/app/stage-dates-form";
 import { briefSummarySchema, classDetailSchema, teacherComponentSchema } from "@/lib/api/schemas";
 import { serverApi } from "@/lib/api/server";
 import { attempt } from "@/lib/app/attempt";
+import { dublinToday } from "@/lib/schedule";
+import { toIsoDate } from "@/lib/app/timeline";
 
 export const dynamic = "force-dynamic";
 
@@ -40,7 +42,9 @@ export default async function ClassComponentPage({ params }: { params: Promise<{
       ) : Array.isArray(body.data) ? (
         <CreateComponentForm classId={cls.id} briefs={body.data} />
       ) : (
-        <StageDatesForm component={body.data} />
+        // The year view needs today's Dublin date; deriving it on the server keeps it off the
+        // client's clock, the same rule the student pages follow.
+        <StageDatesForm component={body.data} today={toIsoDate(dublinToday())} />
       )}
     </AppMain>
   );
