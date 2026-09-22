@@ -75,6 +75,11 @@ export function weekday(iso: string): string {
   return `${WEEKDAY.format(epoch(iso))} ${DAY_MONTH.format(epoch(iso))}`;
 }
 
+/** "October 2026", for a date's own month — the timeline aside's heading (pack D-4). */
+export function monthYearLabel(iso: string): string {
+  return MONTH_YEAR.format(epoch(iso));
+}
+
 export function rangeLabel(range: Range): string {
   if (range.view === 'month') return MONTH_YEAR.format(epoch(range.from));
   const year = range.to.slice(0, 4);

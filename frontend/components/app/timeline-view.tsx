@@ -4,7 +4,7 @@ import { Fragment } from "react";
 import type { MyComponent, TimelineItem } from "@/lib/api/schemas";
 import { formatCalendarDate } from "@/lib/app/component-setup";
 import { KIND_LABEL } from "@/lib/app/personal-kind";
-import { monthWeeks, rangeFor, type Range, rangeLabel, relativeDay, stepFrom, type View, weekday } from "@/lib/app/timeline";
+import { monthWeeks, monthYearLabel, rangeFor, type Range, rangeLabel, relativeDay, stepFrom, type View, weekday } from "@/lib/app/timeline";
 
 import { PersonalItemActions } from "./personal-item-actions";
 import { type ClassOption } from "./personal-item-form";
@@ -63,9 +63,10 @@ export function TimelineView({
 }) {
   const href = (view: View, from: string, calendar = calendarOpen) => `?view=${view}&from=${from}&calendar=${calendar ? "on" : "off"}`;
   const label = rangeLabel(range);
-  const next = items.find((i) => i.date >= today);
+  const nextIndex = items.findIndex((i) => i.date >= today);
+  const next = nextIndex === -1 ? undefined : items[nextIndex];
 
-  const row = (item: TimelineItem) => (
+  const row = (item: TimelineItem, isNext: boolean) => (
     <li
       key={`${item.kind}-${item.personalItemId ?? item.componentId}-${item.date}-${item.title}`}
       className={`flex items-center gap-3 border-t border-app-line py-[17px] lg:gap-6 ${item.kind === "STAGE" && item.subjectName ? `border-l-4 pl-3.5 lg:pl-[14px] ${subjectEdge(item.subjectName)}` : ""}`}
@@ -77,7 +78,9 @@ export function TimelineView({
           <Title item={item} />
         </p>
         <p className="text-app-help text-app-grey lg:text-app-small">{metaLine(item)}</p>
-        {item.kind === "PERSONAL" && item.personalItemId && item.personalKind && item !== next && (
+        {/* The item shown in the "Next up" band above already has its own actions; isNext (by index,
+            not object identity) keeps this correct even if items is ever filtered or rebuilt. */}
+        {item.kind === "PERSONAL" && item.personalItemId && item.personalKind && !isNext && (
           <PersonalItemActions item={{ id: item.personalItemId, title: item.title, dueDate: item.date, kind: item.personalKind, classId: item.classId }} classes={classes} />
         )}
       </div>
@@ -85,16 +88,12 @@ export function TimelineView({
     </li>
   );
 
-  const grouped: Array<{ month: string | null; item: TimelineItem }> = [];
-  let seenMonth = "";
-  for (const item of items) {
-    const month = item.date.slice(0, 7);
-    grouped.push({ month: range.view === "list" && month !== seenMonth ? MONTH_NAME.format(Date.parse(`${item.date}T00:00:00Z`)) : null, item });
-    seenMonth = month;
-  }
-
-  const asideMonth = rangeFor({ view: "month", from: range.from }, range.from);
-  const dueDates = new Set(items.map((i) => i.date));
+  // The month containing range.from — the same month as range itself when range.view is already
+  // "month", so monthGrid below serves both the main table and the aside without computing it twice.
+  const asideMonth = range.view === "month" ? range : rangeFor({ view: "month", from: range.from }, range.from);
+  const monthGrid = calendarOpen || range.view === "month" ? monthWeeks(asideMonth) : [];
+  const itemsByDate = new Map<string, TimelineItem[]>();
+  for (const item of items) itemsByDate.set(item.date, [...(itemsByDate.get(item.date) ?? []), item]);
   const completionDates = components.filter((c, i, all) => all.findIndex((k) => k.subjectName === c.subjectName) === i);
 
   return (
@@ -153,14 +152,14 @@ export function TimelineView({
                 <tr>{WEEKDAY_COLS.map((d) => <th key={d} scope="col" className="py-1 text-left">{d}</th>)}</tr>
               </thead>
               <tbody>
-                {monthWeeks(range).map((week) => (
+                {monthGrid.map((week) => (
                   <tr key={week[0]}>
                     {week.map((date) => {
                       const outOfRange = date < range.from || date > range.to;
                       return (
                         <td key={date} aria-disabled={outOfRange || undefined} className={`h-20 border border-app-line p-1 align-top ${outOfRange ? "text-app-disabled" : ""}`}>
                           <span className={date === today ? "font-bold text-app-accent" : ""}>{Number(date.slice(8))}</span>
-                          {items.filter((i) => i.date === date).map((i) => (
+                          {(itemsByDate.get(date) ?? []).map((i) => (
                             <span key={`${i.kind}-${i.title}`} className="block truncate">{i.title}</span>
                           ))}
                         </td>
@@ -174,14 +173,19 @@ export function TimelineView({
             <p className="text-app-base text-app-copy">{`Nothing due ${label}.`}</p>
           ) : (
             <ul aria-label="Timeline items" className="flex flex-col">
-              {grouped.map(({ month, item }, i) => (
-                <Fragment key={`f-${item.kind}-${item.personalItemId ?? item.componentId}-${item.date}-${item.title}`}>
-                  {month && (
-                    <li aria-hidden="true" className={`font-mono text-app-label font-bold tracking-[.1em] text-app-muted uppercase ${i === 0 ? "pb-2.5" : "pt-6 pb-2.5"}`}>{month}</li>
-                  )}
-                  {row(item)}
-                </Fragment>
-              ))}
+              {items.map((item, i) => {
+                const newMonth = range.view === "list" && item.date.slice(0, 7) !== items[i - 1]?.date.slice(0, 7);
+                return (
+                  <Fragment key={`f-${item.kind}-${item.personalItemId ?? item.componentId}-${item.date}-${item.title}`}>
+                    {newMonth && (
+                      <li aria-hidden="true" className={`font-mono text-app-label font-bold tracking-[.1em] text-app-muted uppercase ${i === 0 ? "pb-2.5" : "pt-6 pb-2.5"}`}>
+                        {MONTH_NAME.format(Date.parse(`${item.date}T00:00:00Z`))}
+                      </li>
+                    )}
+                    {row(item, i === nextIndex)}
+                  </Fragment>
+                );
+              })}
             </ul>
           )}
         </div>
@@ -189,12 +193,12 @@ export function TimelineView({
         {calendarOpen && (
           <aside className="hidden w-[344px] flex-none flex-col gap-3.5 lg:flex">
             <div className="flex flex-col gap-3 rounded-app-card border border-app-field-border bg-app-surface p-[18px]">
-              <h2 className="font-heading text-app-lead font-bold tracking-[-.02em] text-app-ink">{new Intl.DateTimeFormat("en-IE", { month: "long", year: "numeric", timeZone: "UTC" }).format(Date.parse(`${asideMonth.from}T00:00:00Z`))}</h2>
+              <h2 className="font-heading text-app-lead font-bold tracking-[-.02em] text-app-ink">{monthYearLabel(asideMonth.from)}</h2>
               <div className="grid grid-cols-7 gap-0.5 text-center">
                 {WEEKDAY_COLS.map((d) => <span key={d} className="font-mono text-app-label text-app-muted">{d[0]}</span>)}
-                {monthWeeks(asideMonth).flat().map((date) => {
+                {monthGrid.flat().map((date) => {
                   const outOfRange = date < asideMonth.from || date > asideMonth.to;
-                  const due = dueDates.has(date);
+                  const due = itemsByDate.has(date);
                   return (
                     <span
                       key={date}

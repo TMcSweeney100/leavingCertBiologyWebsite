@@ -109,6 +109,7 @@ test("the Phase 1 journey", async ({ page: teacher, browser }) => {
   await student.getByRole("button", { name: "Sign in" }).click();
   await expect(student).toHaveURL(/\/home$/);
   await expect(student.getByRole("navigation", { name: "Main" })).toContainText("Biology");
+  await expect(student.getByRole("navigation", { name: "Main" })).not.toContainText("Pending approval");
 });
 
 test("keyboard-only sign in", async ({ page }) => {
