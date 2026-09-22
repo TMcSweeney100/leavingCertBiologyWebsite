@@ -198,6 +198,7 @@ export function TimelineView({
                   return (
                     <span
                       key={date}
+                      aria-disabled={outOfRange || undefined}
                       className={`flex h-[var(--app-calendar-cell)] flex-col items-center justify-center gap-0.5 rounded-[6px] text-app-base ${
                         date === today ? "bg-app-accent font-bold text-app-on-accent" : outOfRange ? "text-app-disabled" : due ? "font-bold text-app-ink" : "text-app-copy"
                       }`}
