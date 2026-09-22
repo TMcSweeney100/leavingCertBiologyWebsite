@@ -14,7 +14,7 @@ import { subjectAccent } from "./subject";
 export function StudentNav({ classes, components }: { classes: EnrolmentView[]; components: MyComponent[] }) {
   const approved = classes.filter((c) => c.status === "APPROVED");
   const pending = classes.filter((c) => c.status === "PENDING");
-  const componentFor = (className: string) => components.find((k) => k.className === className);
+  const componentFor = (classId: string) => components.find((k) => k.classId === classId);
 
   return (
     <nav aria-label="Main" className="flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -22,7 +22,7 @@ export function StudentNav({ classes, components }: { classes: EnrolmentView[]; 
         Timeline
       </Link>
       {approved.map((c) => {
-        const built = componentFor(c.className);
+        const built = componentFor(c.classId);
         return built ? (
           <Link key={c.classId} href={`/components/${built.componentId}`} className="flex items-center gap-[9px] font-semibold text-app-copy hover:text-app-accent">
             <span aria-hidden="true" className={`h-[17px] w-1 flex-none ${subjectAccent(c.subjectName)}`} />

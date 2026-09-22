@@ -18,7 +18,7 @@ const items: TimelineItem[] = [
   { ...base, kind: "STAGE", date: "2026-12-09", title: "Data Analysis and Conclusions", stageLabel: "Stage 5" },
   { ...base, kind: "PERSONAL", date: "2026-12-10", title: "Driving test", subjectCode: null, subjectName: null, classId: null, className: null, componentId: null, personalItemId: "p2", personalKind: "OTHER" },
 ];
-const components: MyComponent[] = [{ componentId: "k1", className: "6A Biology", subjectCode: "BIOLOGY", subjectName: "Biology", briefTitle: "Brief", completionDate: "2027-02-26" }];
+const components: MyComponent[] = [{ componentId: "k1", classId: "c1", className: "6A Biology", subjectCode: "BIOLOGY", subjectName: "Biology", briefTitle: "Brief", completionDate: "2027-02-26" }];
 
 const view = (over: Partial<Parameters<typeof TimelineView>[0]> = {}) =>
   render(<TimelineView range={{ view: "list", from: "2026-12-01", to: "2026-12-28" }} today="2026-12-01" items={items} classes={[]} components={components} calendarOpen={true} {...over} />);

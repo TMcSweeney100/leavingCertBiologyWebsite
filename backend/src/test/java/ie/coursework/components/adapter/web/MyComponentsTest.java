@@ -27,6 +27,7 @@ class MyComponentsTest extends PostgresIntegrationTest {
         new ApiSession(mockMvc).login(ClassFixtures.APPROVED_STUDENT, TestAccounts.PASSWORD).get("/api/v1/me/components")
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].componentId").value(id.toString()))
+                .andExpect(jsonPath("$[0].classId").value(world.class1().toString()))
                 .andExpect(jsonPath("$[0].subjectName").value("Biology"))
                 .andExpect(jsonPath("$[0].completionDate").value("2027-02-26"));
         new ApiSession(mockMvc).login(ClassFixtures.PENDING_STUDENT, TestAccounts.PASSWORD).get("/api/v1/me/components")
