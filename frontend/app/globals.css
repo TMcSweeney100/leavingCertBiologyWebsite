@@ -107,6 +107,8 @@
   --text-app-code-sm:   30px;   /* issued reset code */
   --text-app-code:      38px;   /* join code on the navy card, phone */
   --text-app-code-lg:   68px;   /* join code on the navy card, laptop: read from the back row */
+  --text-app-countdown:    48px; /* pack D-4 — /home countdown band, laptop */
+  --text-app-countdown-sm: 34px; /* pack D-4 — /home countdown band, phone */
 
   /* BiPi type scale — named font-size steps, added per docs/IMPLEMENTATION_PLAN.md §4.4.
      One entry per distinct pixel value the design uses: reuse an existing step (extending
@@ -260,6 +262,16 @@
   --app-done: var(--app-approved);                         /* 8.04:1; on --app-done-ground 7.36:1 */
   --app-done-ground: var(--app-approved-tint);
   --app-done-ink: #2C5C4A;                                  /* 7.19:1; on --app-done-ground 6.58:1 */
+
+  /* Pack D-4 — /home (timeline) and student navigation. No new hue: item-kind markers reuse
+     --app-accent (completion/stage dates, the component's own dates) and --app-grey (teacher
+     and own items, "somebody typed this"); shape and the row's own kind word carry the
+     difference, never colour alone. */
+  --app-marker: 11px;            /* item-kind marker, laptop */
+  --app-marker-sm: 9px;          /* item-kind marker, phone */
+  --app-marker-stroke: 2px;      /* the two hollow markers */
+  --app-calendar-dot: 5px;       /* "something is due" dot, aside month grid */
+  --app-calendar-cell: 34px;     /* aside month cell */
 
   /* shadcn semantic variables — mapped onto the BiPi tokens above so every primitive
      (Card, Badge, Progress, Collapsible, Table, Button) inherits the BiPi palette. */

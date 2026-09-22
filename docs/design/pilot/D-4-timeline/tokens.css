@@ -1,0 +1,55 @@
+/* Pack D-4 — /home (the student timeline) and student navigation.
+   Additions only. Every value in D-1/D-2's tokens.css is unchanged, no --bipi-* value is
+   touched, and D-4 introduces NO NEW HUE: the item-kind markers are built from the accent
+   and the existing neutrals, because a fourth, fifth and sixth colour on a page that already
+   carries four subject colours plus three status colours would make the palette unreadable.
+   Kinds are told apart by SHAPE and by a WORD; colour never carries the difference.
+
+   Contrast measured against #FFFFFF, and against --app-ground #F7F8F9 where the token sits
+   on the page ground. Graphic tokens are measured to WCAG 1.4.11 (3:1), text to 1.4.3 (4.5:1). */
+
+:root {
+  /* ── Item-kind markers ──────────────────────────────────────────────────
+     One 11px marker in a fixed column before every timeline row (9px at 390).
+     Shape carries the kind; the kind is also written in the row's meta line
+     ("Stage date", "From your teacher", "Test"), so the marker is reinforcement,
+     never the only signal — and the rows print in black and white unchanged.
+
+       completion date  filled square, 2px accent ring around it   ■ in a box
+       stage date       filled square                              ■
+       teacher item     hollow circle, 2px stroke                  ○
+       own item         hollow diamond, 2px stroke                 ◇
+
+     Completion date and stage date share the accent because both are the
+     component's own dates; the two hollow shapes share grey because both are
+     "somebody typed this", and neither outranks a stage. */
+  --app-marker: 11px;               /* laptop */
+  --app-marker-sm: 9px;             /* phone */
+  --app-marker-stroke: 2px;
+  --app-marker-fixed: var(--app-accent);   /* 11.12:1 on white, 10.46:1 on --app-ground */
+  --app-marker-added: var(--app-grey);     /*  7.80:1 on white,  7.34:1 on --app-ground */
+
+  /* ── The countdown ──────────────────────────────────────────────────────
+     The page's one bold element (UI-BRIEF §9): white Space Grotesk 700 on a
+     solid accent band, the only saturated surface on /home. Sized to be read
+     at arm's length on a phone held on a bus, and from across a desk at 1140. */
+  --text-app-countdown: 48px;       /* 1140 — white on --app-accent, 11.12:1 */
+  --text-app-countdown-sm: 34px;    /*  390 */
+
+  /* ── The calendar aside (1140 only) ─────────────────────────────────────
+     A dot under a date means "something is due"; the list beside it says what,
+     so the dot is a pointer into the list, not a state. Today is a filled
+     accent cell with white numerals. */
+  --app-calendar-dot: 5px;          /* accent, 10.46:1 on --app-ground */
+  --app-calendar-cell: 34px;        /* min hit area is the whole 44px row at 390 */
+  --app-aside: 344px;               /* aside column; main column takes the rest */
+  --app-aside-gap: 40px;
+
+  /* ── Row rhythm ─────────────────────────────────────────────────────────
+     The flat row (calendar hidden) is a four-column grid: date, marker, item,
+     days remaining. The two outer columns are fixed so the dates and the
+     "in 4 days" column align down the page. */
+  --app-row-date: 96px;             /* mono date column, 1140 */
+  --app-row-date-sm: 58px;          /* 390 */
+  --app-row-remaining: 96px;        /* right-aligned days-remaining column, 1140 */
+}
