@@ -50,7 +50,7 @@ export function ItemTick({ componentId, item }: { componentId: string; item: { i
             </span>
           )}
         </label>
-        {done && <span className="ml-auto text-app-small text-app-grey">Ticked by you</span>}
+        {done && <span aria-live="polite" className="app-appear ml-auto text-app-small text-app-grey">You ticked this</span>}
       </div>
       {error && <ErrorPanel error={error} />}
     </div>

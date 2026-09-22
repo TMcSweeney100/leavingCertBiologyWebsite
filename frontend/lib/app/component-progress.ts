@@ -41,3 +41,32 @@ export function progress<S extends Dated>(stages: ReadonlyArray<S>, today: strin
     countdown: daysLeft === null ? null : countdownText(daysLeft, daysLeft === 0),
   };
 }
+
+const LEGEND_WORD: Record<StageState, string> = { done: 'done', current: 'now', upcoming: 'upcoming', undated: 'no date yet' };
+
+/**
+ * Pack D-3: at 390 the stage strip's cells drop to numerals only, so this sentence is the
+ * only place the state word survives at that width ("colour is never the only carrier",
+ * design §5). Groups consecutive same-state ordinals: "Stages 1 to 3 done", "Stages 5 and 6
+ * upcoming", "Stage 4 now".
+ */
+export function stageLegend<S extends { id: string; ordinal: number }>(stages: ReadonlyArray<S>, states: Record<string, StageState>): string {
+  const ordered = [...stages].sort((a, b) => a.ordinal - b.ordinal);
+  const groups: { ordinals: number[]; state: StageState }[] = [];
+  for (const s of ordered) {
+    const state = states[s.id];
+    const last = groups[groups.length - 1];
+    if (last && last.state === state) last.ordinals.push(s.ordinal);
+    else groups.push({ ordinals: [s.ordinal], state });
+  }
+  return groups
+    .map(({ ordinals, state }) => {
+      const first = ordinals[0];
+      const last = ordinals[ordinals.length - 1];
+      const range = ordinals.length === 1 ? `Stage ${first}`
+        : ordinals.length === 2 ? `Stages ${first} and ${last}`
+        : `Stages ${first} to ${last}`;
+      return `${range} ${LEGEND_WORD[state]}`;
+    })
+    .join(' · ');
+}

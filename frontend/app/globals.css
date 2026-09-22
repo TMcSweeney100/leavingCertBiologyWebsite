@@ -80,6 +80,14 @@
   --radius-app-control: var(--app-radius-control);
   --radius-app-inner: var(--app-radius-inner);
   --ease-app: var(--app-ease);
+
+  /* Pack D-3 (docs/design/pilot/D-3-student-component/tokens.css) — stage state on the
+     student component page. Additions only; no --bipi-* value touched. */
+  --color-app-now: var(--app-now);
+  --color-app-done: var(--app-done);
+  --color-app-done-ground: var(--app-done-ground);
+  --color-app-done-ink: var(--app-done-ink);
+  --shadow-app-now-lift: var(--app-now-lift);
 }
 
 @theme {
@@ -241,6 +249,17 @@
   --app-radius-inner: 6px;
   --app-ease: cubic-bezier(.2, .7, .3, 1);
   --app-duration: 160ms;
+
+  /* Pack D-3 — stage state on the student component page (direction 1c, the stage strip).
+     Both "Now" tokens are aliases: navy is the primary-action colour and amber is reserved
+     for pending work, so neither can mark the current stage, and ink is the darkest thing on
+     a light page. "Done" reuses --app-approved: a done stage and a signed-off checkpoint are
+     the same kind of fact, and the page uses green for nothing else. */
+  --app-now: var(--app-ink);                              /* 18.48:1; white on it 18.48:1 */
+  --app-now-lift: 0 6px 20px rgba(16, 20, 25, .08);        /* the one shadow in the app */
+  --app-done: var(--app-approved);                         /* 8.04:1; on --app-done-ground 7.36:1 */
+  --app-done-ground: var(--app-approved-tint);
+  --app-done-ink: #2C5C4A;                                  /* 7.19:1; on --app-done-ground 6.58:1 */
 
   /* shadcn semantic variables — mapped onto the BiPi tokens above so every primitive
      (Card, Badge, Progress, Collapsible, Table, Button) inherits the BiPi palette. */

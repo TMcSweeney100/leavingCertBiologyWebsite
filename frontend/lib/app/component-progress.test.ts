@@ -1,6 +1,6 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
-import { progress } from './component-progress.ts';
+import { progress, stageLegend } from './component-progress.ts';
 
 const stage = (ordinal: number, dueDate: string | null) => ({ id: `s${ordinal}`, ordinal, dueDate });
 const COMPLETION = '2027-02-26';
@@ -41,5 +41,35 @@ describe('progress', () => {
     const closed = progress(stages, '2027-02-27', COMPLETION);
     assert.equal(closed.phase, 'closed');
     assert.equal(closed.countdown, null);
+  });
+});
+
+describe('stageLegend', () => {
+  // Pack D-3: at 390 the strip cells drop their state word, so this sentence carries it
+  // instead — colour is never the only carrier (design §5).
+  const stage = (ordinal: number) => ({ id: `s${ordinal}`, ordinal });
+
+  test('groups a run of three or more into "Stages N to M"', () => {
+    const stages = [1, 2, 3, 4, 5, 6].map(stage);
+    const states = { s1: 'done', s2: 'done', s3: 'done', s4: 'current', s5: 'upcoming', s6: 'upcoming' } as const;
+    assert.equal(stageLegend(stages, states), 'Stages 1 to 3 done · Stage 4 now · Stages 5 and 6 upcoming');
+  });
+
+  test('a run of exactly two says "and", not "to"', () => {
+    const stages = [1, 2, 3].map(stage);
+    const states = { s1: 'done', s2: 'done', s3: 'current' } as const;
+    assert.equal(stageLegend(stages, states), 'Stages 1 and 2 done · Stage 3 now');
+  });
+
+  test('a single stage in a group is named on its own', () => {
+    const stages = [1, 2].map(stage);
+    const states = { s1: 'current', s2: 'upcoming' } as const;
+    assert.equal(stageLegend(stages, states), 'Stage 1 now · Stage 2 upcoming');
+  });
+
+  test('undated stages read "no date yet"', () => {
+    const stages = [1, 2].map(stage);
+    const states = { s1: 'current', s2: 'undated' } as const;
+    assert.equal(stageLegend(stages, states), 'Stage 1 now · Stage 2 no date yet');
   });
 });

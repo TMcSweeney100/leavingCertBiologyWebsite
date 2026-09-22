@@ -55,10 +55,10 @@ describe("ComponentOverview", () => {
 
   it("names each stage's state in words, and opens only the current stage", () => {
     render(<ComponentOverview component={component()} />);
-    const stages = screen.getByRole("region", { name: "Stages" });
-    expect(within(stages).getByText("Done")).toBeInTheDocument();
-    expect(within(stages).getByText("Now")).toBeInTheDocument();
-    expect(within(stages).getByText("No date yet")).toBeInTheDocument();
+    const stages = within(screen.getByTestId("stage-list"));
+    expect(stages.getByText("Done")).toBeInTheDocument();
+    expect(stages.getByText("Now")).toBeInTheDocument();
+    expect(stages.getByText("No date yet")).toBeInTheDocument();
     expect(screen.getByText("What stage 4 is.")).toBeVisible();
   });
 
@@ -69,7 +69,12 @@ describe("ComponentOverview", () => {
 
   it("says ticks are the student's own record", () => {
     render(<ComponentOverview component={component()} />);
-    expect(screen.getByText(/ticks are your own record, not your teacher's sign-off/i)).toBeInTheDocument();
+    expect(screen.getByText(/ticking is your own record\. it isn't your teacher's sign-off/i)).toBeInTheDocument();
+  });
+
+  it("says the stage order is a guide, not a lock", () => {
+    render(<ComponentOverview component={component()} />);
+    expect(screen.getByText(/you can move back and forth between stages/i)).toBeInTheDocument();
   });
 
   it("says the stages aren't a fixed order", () => {
@@ -83,13 +88,24 @@ describe("ComponentOverview", () => {
     expect(screen.getByRole("region", { name: "How it's marked" })).toHaveTextContent("200 marks");
   });
 
-  it("says dates are coming when the teacher hasn't set any", () => {
+  it("says dates are coming when the teacher hasn't set any, deliberately not amber", () => {
     render(<ComponentOverview component={component({ stages: [stage(1, null), stage(2, null)] })} />);
-    expect(screen.getByRole("region", { name: "Where you are" })).toHaveTextContent(/dates are coming from your teacher/i);
+    const where = screen.getByRole("region", { name: "Where you are" });
+    expect(where).toHaveTextContent(/teacher hasn't set stage dates yet/i);
   });
 
   it("is a record after the completion date", () => {
     render(<ComponentOverview component={component({ today: "2027-03-01" })} />);
-    expect(screen.getByRole("region", { name: "Where you are" })).toHaveTextContent(/completion date has passed/i);
+    expect(screen.getByRole("region", { name: "Where you are" })).toHaveTextContent(/your coursework period is over/i);
+  });
+
+  it("says nothing is due yet before the first stage", () => {
+    render(<ComponentOverview component={component({ today: "2026-01-01" })} />);
+    expect(screen.getByRole("region", { name: "Where you are" })).toHaveTextContent(/nothing is due yet/i);
+  });
+
+  it("is a navigator: the strip and stage list share the same state words", () => {
+    render(<ComponentOverview component={component()} />);
+    expect(screen.getByRole("group", { name: "Stages" })).toBeInTheDocument();
   });
 });

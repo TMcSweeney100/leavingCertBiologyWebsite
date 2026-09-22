@@ -1810,10 +1810,10 @@ git commit -m "Give students a component page with their stage, countdown, check
 
 **Precondition:** `docs/design/pilot/D-3-student-component/` exists. Otherwise leave unticked and note it in `docs/HANDOFF.md`.
 
-- [ ] Read `NOTES.md`: its A/B answer on the BiPi components and its label proposals. If Tim chose **A (reuse BiPi as they are)**, the reuse is of their *styling*: port the class strings and `--bipi-*` usage into the app components here. Don't feed the BiPi components invented props (P2-33). If a behaviour or label changes, update roadmap §6.2 and the spec first, in their own commit.
-- [ ] Add the pack's `tokens.css` additions (e.g. "current" and "done" colours) as `--app-*`.
-- [ ] Restyle `ComponentOverview`, `ItemTick`, `ComponentTabs`, `MyComponents` to UI-STANDARDS §15; specs pass unchanged.
-- [ ] `docs/design/UI-CHECKLIST.md` at 390px and 1140px; `make e2e`.
+- [x] Read `NOTES.md`. D-3 is a new app-native direction (1c, the stage strip), not the BiPi A/B reuse this task text anticipated — that question belonged to an earlier draft; the pack instead recolours BiPi's *card and table* conventions onto app tokens (P2-33 stands: no BiPi component is fed props).
+- [x] Add the pack's `tokens.css` additions (`--app-now`, `--app-now-lift`, `--app-done`, `--app-done-ground`, `--app-done-ink`) as `--app-*` in `globals.css`, mapped into the Tailwind theme (`bg-app-now`, `shadow-app-now-lift`, …).
+- [x] Restyle `ComponentOverview` and `ItemTick` to UI-STANDARDS §15; specs pass, with the copy and structure changes named in their own diff (the top panel's phase copy, the checkpoint block, "Ticking is your own record…"). New components: `StageStrip` (the navigator), `StageCard` and `StagesSection` (single-stage-open state, lifted out of `ComponentOverview` because it's now interactive). `ComponentTabs` already matched the pack's "Copy verbatim" tab row (greyed, `aria-disabled`, `overflow-x-auto`) — no change needed. `MyComponents` is `/home`'s student nav, which is D-4's pack, not D-3's — left as is.
+- [x] `docs/design/UI-CHECKLIST.md` reviewed against the code at 390px and 1140px (see the restyle commit and `docs/HANDOFF.md` for the pass and its two open follow-ups). `make e2e` **could not be run in this session** — no Docker in the environment, so Testcontainers/Postgres can't start; `make verify`'s frontend half (lint, typecheck, 146 Vitest + 118 node:test, build) is green, `backend-verify` untouched by this task. Needs a run on a machine with Docker before the branch is treated as fully gated.
 - [ ] Commit: `git commit -m "Restyle the student component page from design pack D-3"`
 
 ---
