@@ -90,7 +90,7 @@ test("a student sees the component and ticks a teacher item", async ({ page: tea
 
   await student.getByTestId("stage-list").getByText("Finalising the Biology in Practice Investigation Report").click();
   await student.getByRole("checkbox", { name: /Full draft in for feedback/ }).check();
-  await expect(student.getByText("Ticked by you")).toBeVisible();
+  await expect(student.getByText("You ticked this")).toBeVisible();
   await student.reload();
   await student.getByTestId("stage-list").getByText("Finalising the Biology in Practice Investigation Report").click();
   await expect(student.getByRole("checkbox", { name: /Full draft in for feedback/ })).toBeChecked();
