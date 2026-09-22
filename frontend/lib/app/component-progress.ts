@@ -42,6 +42,19 @@ export function progress<S extends Dated>(stages: ReadonlyArray<S>, today: strin
   };
 }
 
+/** Pack D-3: the word and colour a stage state gets everywhere it's shown (the strip, a
+ * stage card's pill). One source so the strip and the card list can't disagree. */
+export const STAGE_STATE_WORD: Record<StageState, string> = { done: 'Done', current: 'Now', upcoming: 'Upcoming', undated: 'No date yet' };
+export const STAGE_STATE_STYLE: Record<StageState, string> = {
+  done: 'bg-app-done-ground text-app-done',
+  current: 'bg-app-now text-white',
+  upcoming: 'border border-app-field-border bg-app-surface text-app-grey',
+  undated: 'border border-app-field-border bg-app-surface text-app-grey',
+};
+
+// Deliberately not STAGE_STATE_WORD lowercased at the call site: the pill's capital "Done"
+// is always shown through an `uppercase` CSS class, but the legend is a plain sentence
+// ("Stage 4 now"), so its words need their own natural case.
 const LEGEND_WORD: Record<StageState, string> = { done: 'done', current: 'now', upcoming: 'upcoming', undated: 'no date yet' };
 
 /**

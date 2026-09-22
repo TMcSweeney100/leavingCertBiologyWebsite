@@ -31,6 +31,9 @@ export function StagesSection({
 
   function selectFromStrip(id: string) {
     setOpenId(id);
+    // `stage-${id}` matches the id StageCard sets on its own root element — kept as one
+    // string convention between the two files rather than a ref map, since a card list is
+    // keyed by id already and there's nothing else scrollIntoView needs to know about it.
     document.getElementById(`stage-${id}`)?.scrollIntoView?.({ behavior: "smooth", block: "start" });
   }
 

@@ -1,17 +1,10 @@
 import type { StudentComponent } from "@/lib/api/schemas";
-import type { StageState } from "@/lib/app/component-progress";
+import { STAGE_STATE_STYLE, STAGE_STATE_WORD, type StageState } from "@/lib/app/component-progress";
 import { formatCalendarDate, hoursLabel } from "@/lib/app/component-setup";
 
 import { ItemTick } from "./item-tick";
 import { card, eyebrow, lead } from "./styles";
 
-const STATE_WORD: Record<StageState, string> = { done: "Done", current: "Now", upcoming: "Upcoming", undated: "No date yet" };
-const STATE_PILL: Record<StageState, string> = {
-  done: "bg-app-done-ground text-app-done",
-  current: "bg-app-now text-white",
-  upcoming: "border border-app-field-border bg-app-surface text-app-grey",
-  undated: "border border-app-field-border bg-app-surface text-app-grey",
-};
 const CHECKPOINT_WORD = { NOT_DUE: "Not due yet", DUE: "Not signed off yet" } as const;
 
 type Stage = StudentComponent["stages"][number];
@@ -54,12 +47,13 @@ export function StageCard({
         className="flex w-full min-h-11 flex-wrap items-baseline gap-x-3 gap-y-1 p-4 text-left"
       >
         <span className="font-semibold text-app-ink">{s.label ? `${s.label} · ${s.name}` : s.name}</span>
-        <span className={`${eyebrow} rounded-full px-2.5 py-1 ${STATE_PILL[state]}`}>{STATE_WORD[state]}</span>
+        <span className={`${eyebrow} rounded-full px-2.5 py-1 ${STAGE_STATE_STYLE[state]}`}>{STAGE_STATE_WORD[state]}</span>
         {s.dueDate && <span className="font-mono text-app-label text-app-grey">{formatCalendarDate(s.dueDate)}</span>}
       </button>
       <div
         id={`stage-${s.id}-panel`}
         aria-hidden={!open}
+        inert={!open}
         className={`grid transition-[grid-template-rows] duration-(--app-duration) ease-app motion-reduce:transition-none ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
       >
         <div className="min-h-0 overflow-hidden">

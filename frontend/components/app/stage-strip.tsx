@@ -1,16 +1,7 @@
 "use client";
 
-import { stageLegend, type StageState } from "@/lib/app/component-progress";
+import { STAGE_STATE_STYLE, STAGE_STATE_WORD, stageLegend, type StageState } from "@/lib/app/component-progress";
 import { formatCalendarDate } from "@/lib/app/component-setup";
-
-const CELL_WORD: Record<StageState, string> = { done: "Done", current: "Now", upcoming: "Upcoming", undated: "No date yet" };
-
-const CELL_STYLE: Record<StageState, string> = {
-  done: "bg-app-done-ground text-app-done",
-  current: "bg-app-now text-white",
-  upcoming: "border border-app-field-border bg-app-surface text-app-grey",
-  undated: "border border-app-field-border bg-app-surface text-app-grey",
-};
 
 // The stage name and date read quieter than the numeral and state word (NOTES: "the stage
 // name inside a done strip cell, quieter than the numeral but still over the AA floor").
@@ -35,17 +26,16 @@ export function StageStrip({
   activeId,
   onSelect,
 }: {
+  /** Already in stage order — the caller (`StagesSection`) sorts once for both the strip and the card list. */
   stages: ReadonlyArray<StripStage>;
   states: Record<string, StageState>;
   activeId?: string;
   onSelect: (id: string) => void;
 }) {
-  const ordered = [...stages].sort((a, b) => a.ordinal - b.ordinal);
-
   return (
     <div className="flex flex-col gap-2.5">
       <div role="group" aria-label="Stages" className="flex gap-1.5 overflow-x-auto lg:gap-2">
-        {ordered.map((s) => {
+        {stages.map((s) => {
           const state = states[s.id];
           const name = s.label ? `${s.label} · ${s.name}` : s.name;
           return (
@@ -54,11 +44,11 @@ export function StageStrip({
               type="button"
               onClick={() => onSelect(s.id)}
               aria-current={s.id === activeId ? "true" : undefined}
-              aria-label={`Stage ${s.ordinal}, ${CELL_WORD[state]}, ${name}`}
-              className={`flex h-13 min-w-13 flex-1 flex-col justify-center gap-0.5 rounded-app-inner px-2.5 py-1.5 text-left lg:h-auto lg:min-h-11 lg:items-stretch lg:py-2.5 ${CELL_STYLE[state]}`}
+              aria-label={`Stage ${s.ordinal}, ${STAGE_STATE_WORD[state]}, ${name}`}
+              className={`flex h-13 min-w-13 flex-1 flex-col justify-center gap-0.5 rounded-app-inner px-2.5 py-1.5 text-left lg:h-auto lg:min-h-11 lg:items-stretch lg:py-2.5 ${STAGE_STATE_STYLE[state]}`}
             >
               <span aria-hidden="true" className="font-heading text-app-lead font-bold">{s.ordinal}</span>
-              <span aria-hidden="true" className="hidden font-mono text-app-label font-bold tracking-[.08em] uppercase lg:inline">{CELL_WORD[state]}</span>
+              <span aria-hidden="true" className="hidden font-mono text-app-label font-bold tracking-[.08em] uppercase lg:inline">{STAGE_STATE_WORD[state]}</span>
               <span aria-hidden="true" className={`hidden truncate text-app-small font-semibold lg:block ${CELL_NAME_STYLE[state]}`}>{name}</span>
               {s.dueDate && (
                 <span aria-hidden="true" className={`hidden font-mono text-app-label lg:block ${CELL_NAME_STYLE[state]}`}>{formatCalendarDate(s.dueDate)}</span>
@@ -67,7 +57,7 @@ export function StageStrip({
           );
         })}
       </div>
-      <p className="text-app-small text-app-grey lg:hidden">{stageLegend(ordered, states)}</p>
+      <p className="text-app-small text-app-grey lg:hidden">{stageLegend(stages, states)}</p>
     </div>
   );
 }

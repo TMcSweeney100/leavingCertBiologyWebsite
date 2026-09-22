@@ -54,7 +54,10 @@ export function ComponentOverview({ component }: { component: StudentComponent }
         <h2 id="stages-heading" className={sectionTitle}>Stages</h2>
         <p className="text-app-small text-app-grey">{"You can move back and forth between stages — the order is a guide, not a lock."}</p>
         <p className="text-app-small text-app-grey">{"Ticking is your own record. It isn't your teacher's sign-off."}</p>
-        <StagesSection componentId={component.id} stages={component.stages} states={p.states} initialOpenId={p.current?.id ?? null} />
+        {/* Keyed on the server's current stage: if it moves on (a date rolls past, a
+            teacher edits dates) between loads, `router.refresh()` should snap the open
+            stage to the new "now" rather than preserve whatever a stale re-render kept. */}
+        <StagesSection key={p.current?.id ?? "none"} componentId={component.id} stages={component.stages} states={p.states} initialOpenId={p.current?.id ?? null} />
       </section>
 
       <div className="flex flex-col gap-10 lg:grid lg:grid-cols-2 lg:gap-x-10 lg:gap-y-10">
