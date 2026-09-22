@@ -10,6 +10,7 @@ import { type PersonalKind, personalItemSchema } from "@/lib/api/schemas";
 
 import { ErrorPanel } from "./error-panel";
 import { Field, FieldGroup } from "./field";
+import { sectionTitle } from "./styles";
 
 export type ClassOption = { classId: string; className: string; subjectName: string };
 type Draft = { title: string; dueDate: string; kind: PersonalKind; classId: string | null };
@@ -50,6 +51,7 @@ export function PersonalItemForm({
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-3">
+      <h2 className={sectionTitle}>{itemId ? "Edit my own item" : "Add my own item"}</h2>
       <p className="text-app-small text-app-grey">{"Only you can see this. Your teachers can't."}</p>
       {error && <ErrorPanel error={error} />}
       <FieldGroup>
@@ -89,7 +91,7 @@ export function AddPersonalItem({ classes }: { classes: ClassOption[] }) {
     <PersonalItemForm classes={classes} onDone={() => setOpen(false)} />
   ) : (
     <div>
-      <Button type="button" variant="outline" onClick={() => setOpen(true)}>Add my own item</Button>
+      <Button type="button" onClick={() => setOpen(true)}>Add my own item</Button>
     </div>
   );
 }

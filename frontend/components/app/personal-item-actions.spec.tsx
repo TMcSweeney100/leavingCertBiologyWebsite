@@ -26,6 +26,7 @@ describe("PersonalItemActions", () => {
     vi.mocked(api.send).mockResolvedValue({ ...item, title: "Driving test (retake)", subjectName: null });
     render(<PersonalItemActions item={item} classes={[]} />);
     await userEvent.click(screen.getByRole("button", { name: "Edit Driving test" }));
+    expect(screen.getByRole("heading", { name: "Edit my own item" })).toBeInTheDocument();
     const title = screen.getByRole("textbox", { name: "Title" });
     expect(title).toHaveValue("Driving test");
     await userEvent.type(title, " (retake)");

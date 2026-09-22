@@ -26,6 +26,7 @@ describe("AddPersonalItem", () => {
     render(<AddPersonalItem classes={classes} />);
     await userEvent.click(screen.getByRole("button", { name: "Add my own item" }));
 
+    expect(screen.getByRole("heading", { name: "Add my own item" })).toBeInTheDocument();
     expect(screen.getByText("Only you can see this. Your teachers can't.")).toBeInTheDocument();
     await userEvent.type(screen.getByRole("textbox", { name: "Title" }), "Irish oral mock");
     await userEvent.type(screen.getByLabelText("Date"), "2026-10-14");
