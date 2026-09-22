@@ -26,7 +26,7 @@ describe("ItemTick", () => {
 
     await userEvent.click(box);
     expect(box).toBeChecked();
-    expect(screen.getByText("Ticked by you")).toBeInTheDocument();
+    expect(screen.getByText("You ticked this")).toBeInTheDocument();
     expect(api.send).toHaveBeenCalledWith("PUT", "/components/k1/teacher-items/i1/tick", { done: true }, expect.anything());
   });
 

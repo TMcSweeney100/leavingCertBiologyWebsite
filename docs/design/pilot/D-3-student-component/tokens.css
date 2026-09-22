@@ -1,0 +1,33 @@
+/* Pack D-3 — tokens the app adds for the student component page.
+   Additions only: everything in D-1/D-2's tokens.css still applies unchanged, and no
+   --bipi-* value is touched. Direction 2e "Navy".
+   Contrast measured against #FFFFFF unless noted. */
+
+:root {
+  /* ── Stage state: "Now" ─────────────────────────────────────────────────
+     Navy is the primary-action colour and amber is reserved for pending work,
+     so neither can mark the current stage. Ink can: it is the darkest thing on
+     a light page, so the eye lands on it first, it cannot be mistaken for a
+     control, it survives a black-and-white print, and it adds no fifth hue to
+     a palette that already carries four subject colours and three statuses.
+     Both tokens are aliases of existing values, named so the build has one
+     place to change if "Now" ever needs its own colour. */
+  --app-now: #101419;               /* 18.48:1; white on it 18.48:1 — 1.5px card border,
+                                       "Now" pill fill, strip cell fill, countdown block */
+  --app-now-lift: 0 6px 20px rgba(16, 20, 25, .08);
+                                    /* The one shadow in the app. D-1/D-2 are hairline-only;
+                                       the current-stage card is the single exception, standing
+                                       in for BiPi's blue-tinted drop shadow with no colour in it. */
+
+  /* ── Stage state: "Done" ────────────────────────────────────────────────
+     The same green D-1 gives "Approved", because a done stage and a signed-off
+     checkpoint are the same kind of fact — something settled — and the page
+     never uses green for anything else. Always paired with the word "Done" or
+     "Checkpoint signed off". */
+  --app-done: #0F5C3A;              /* 8.04:1; on --app-done-ground 7.36:1 — pill text,
+                                       strip numeral, signed-off line */
+  --app-done-ground: #F1F6F4;       /* = --app-approved-tint; pill and strip cell ground */
+  --app-done-ink: #2C5C4A;          /* 7.19:1; on --app-done-ground 6.58:1 — the stage name
+                                       inside a done strip cell, quieter than the numeral
+                                       but still over the AA floor at 14px */
+}
