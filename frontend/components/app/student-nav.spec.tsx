@@ -14,7 +14,7 @@ describe("StudentNav", () => {
   it("links Timeline and an approved subject with a built component, and offers Join a class", () => {
     render(<StudentNav classes={[cls("APPROVED", "Biology")]} components={[component("Biology")]} />);
     const nav = screen.getByRole("navigation", { name: "Main" });
-    expect(nav).toHaveTextContent(/Timeline.*Biology.*Join a class/s);
+    expect(nav).toHaveTextContent(/Timeline[\s\S]*Biology[\s\S]*Join a class/);
     expect(screen.getByRole("link", { name: "Timeline" })).toHaveAttribute("aria-current", "page");
     expect(screen.getByRole("link", { name: "Biology" })).toHaveAttribute("href", "/components/k-Biology");
     expect(screen.getByRole("link", { name: "Join a class" })).toHaveAttribute("href", "/join");
