@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#E6E8EC;font-family:'Public Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:#1F3A6E}
+  a:hover{color:#16294E}
+  input,button,select{font:inherit}
+  input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #1F3A6E;outline-offset:2px}
+</style>
+</helmet>
+
+<section style="width:max-content;padding:56px 56px 96px;display:flex;flex-direction:column;gap:22px">
+  <div style="max-width:900px;display:flex;flex-direction:column;gap:13px">
+    <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.08em;color:#5C6470">Turn 3 · refining <a href="#2b">2b</a> · lettered items</p>
+    <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">Numbers are the SEC's. Letters are yours.</h1>
+    <p style="margin:0;font-size:16px;line-height:1.55;color:#343A42;text-wrap:pretty">The letter key you asked for, made into a rule for the whole page: <strong style="font-weight:600">a number means a national stage, a letter means something you added</strong>. The letter sits under its hollow mark on the line, in the key beneath it, on the calendar pill, and on the item row — so a teacher can point at "B" on a projected line and everyone finds it.</p>
+    <p style="margin:0;font-size:15px;line-height:1.55;color:#4B535C;text-wrap:pretty">Letters run in <strong style="font-weight:600">date order</strong>, not the order items were added, so they read left to right along the line. Undated items get a letter too and are named in the key as not shown — otherwise an item would silently vanish from the view. The calendar from <a href="#2b">2b</a> is kept, with the letter carried onto its pills.</p>
+  </div>
+
+  <div style="display:flex;gap:36px;align-items:flex-start;flex-wrap:wrap">
+    <div id="3a" style="display:flex;flex-direction:column;gap:11px">
+      <div style="display:flex;align-items:center;gap:11px">
+        <span style="display:inline-flex;align-items:center;padding:4px 9px;border-radius:6px;background:#1F3A6E;color:#fff;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em">3a</span>
+        <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.025em;color:#101419">The year line with a key, calendar kept</h2>
+      </div>
+      <p style="margin:0;max-width:1140px;font-size:15px;line-height:1.5;color:#4B535C;text-wrap:pretty">One card holds the whole planning view: line, key, calendar. The key is the one new element — three short rows that make the hollow marks readable without hover, which the brief requires anyway. Everything below is unchanged from <a href="#2b">2b</a>: the rows set the dates, one batch Save, items listed with their letters.</p>
+      <div data-screen-label="3a · lettered items, calendar open · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+        <header style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px;background:#fff;border-bottom:1px solid #E3E6EA">
+          <div style="display:flex;align-items:center;gap:11px;min-width:0">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <a href="#" style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none;white-space:nowrap">Leaving Cert Practical</a>
+            <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+            <span style="font-size:14px;color:#4B535C;white-space:nowrap">North Wicklow ETSS</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex:none">
+            <span style="font-size:14px;color:#343A42;white-space:nowrap">Katelyn Hanlon</span>
+            <a href="#" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+            <button type="button" style="padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap">Sign out</button>
+          </div>
+        </header>
+        <main style="padding:32px 28px 56px;max-width:880px;margin:0 auto">
+          <a href="#" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">My classes</a>
+          <h1 style="margin:10px 0 0;font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">6A Biology</h1>
+          <p style="margin:6px 0 0;font-size:16px;color:#4B535C">Biology, year 6, 2026/27</p>
+          <nav aria-label="Class sections" style="display:flex;gap:24px;margin-top:20px;border-bottom:1px solid #E3E6EA">
+            <a href="#" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#343A42;text-decoration:none">Students</a>
+            <a href="#" aria-current="page" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid #1F3A6E;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:none">Component</a>
+            <span aria-disabled="true" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#9AA2AC;cursor:not-allowed">Progress</span>
+          </nav>
+
+          <div style="margin-top:28px;display:flex;flex-direction:column;gap:7px">
+            <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">Biology in Practice Investigation, 2027</h2>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42;max-width:620px">Membranes, Osmosis &amp; Food Preservation · <span style="font-family:'Space Mono',monospace;font-size:14px;color:#636B75">2027L025C2EL</span></p>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42;max-width:620px">These are your class's own dates, not SEC deadlines. The SEC's only date is the completion date, <strong style="font-weight:600">26 Feb 2027</strong>.</p>
+          </div>
+
+          <div style="margin-top:20px;border:1px solid #DDE1E6;border-radius:10px;background:#fff;padding:18px 20px 16px">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:14px">
+              <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Your dates across the year</span>
+              <button type="button" style="padding:0;border:0;background:transparent;font-size:15px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Hide the year view</button>
+            </div>
+            <div style="position:relative;height:148px">
+              <div style="position:absolute;left:57.1%;width:11%;top:0;bottom:0;background:#F4F5F8;border-radius:6px"></div>
+              <div style="position:absolute;left:0;right:0;bottom:58px;height:1px;background:#DDE1E6"></div>
+              <div style="position:absolute;left:41.8%;top:4px;bottom:58px;width:0;border-left:1px dashed #9AA2AC"></div>
+              <span style="position:absolute;left:41.8%;top:0;transform:translateX(-100%);padding-right:7px;font-size:12px;color:#636B75;white-space:nowrap">Today</span>
+
+              <div style="position:absolute;left:0;bottom:58px;display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">1</span>
+                <span style="width:1px;height:26px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:2.6%;bottom:58px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">2</span>
+                <span style="width:1px;height:50px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:43.6%;bottom:58px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">3</span>
+                <span style="width:1px;height:26px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:51.3%;bottom:58px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">4</span>
+                <span style="width:1px;height:50px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:64.1%;bottom:58px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">5</span>
+                <span style="width:1px;height:26px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:87.2%;bottom:58px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">6</span>
+                <span style="width:1px;height:50px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;right:0;bottom:58px;width:3px;height:34px;background:#1F3A6E"></div>
+
+              <span style="position:absolute;left:23.1%;bottom:52px;transform:translateX(-50%);padding:0 7px;background:#fff;font-size:12px;color:#636B75;white-space:nowrap">16 weeks</span>
+              <span style="position:absolute;left:57.7%;bottom:52px;transform:translateX(-50%);padding:0 6px;background:#fff;font-size:12px;color:#636B75;white-space:nowrap">5 weeks</span>
+              <span style="position:absolute;left:75.7%;bottom:52px;transform:translateX(-50%);padding:0 6px;background:#fff;font-size:12px;color:#636B75;white-space:nowrap">9 weeks</span>
+              <span style="position:absolute;left:93.6%;bottom:52px;transform:translateX(-50%);padding:0 6px;background:#fff;font-size:12px;color:#636B75;white-space:nowrap">5 weeks</span>
+
+              <span style="position:absolute;left:61.5%;bottom:40px;transform:translateX(-50%);width:10px;height:10px;border-radius:99px;border:2px solid #1F3A6E;background:#fff"></span>
+              <span style="position:absolute;left:61.5%;bottom:22px;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#1F3A6E">A</span>
+              <span style="position:absolute;left:69.2%;bottom:40px;transform:translateX(-50%);width:10px;height:10px;border-radius:99px;border:2px solid #1F3A6E;background:#fff"></span>
+              <span style="position:absolute;left:69.2%;bottom:22px;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#1F3A6E">B</span>
+
+              <div style="position:absolute;left:0;right:0;bottom:0;height:20px">
+                <span style="position:absolute;left:1.1%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Jun</span>
+                <span style="position:absolute;left:12.1%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Jul</span>
+                <span style="position:absolute;left:23.4%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Aug</span>
+                <span style="position:absolute;left:34.8%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Sep</span>
+                <span style="position:absolute;left:45.8%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Oct</span>
+                <span style="position:absolute;left:57.1%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#1F3A6E">Nov</span>
+                <span style="position:absolute;left:68.1%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Dec</span>
+                <span style="position:absolute;left:79.5%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Jan</span>
+                <span style="position:absolute;left:90.8%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Feb</span>
+              </div>
+            </div>
+
+            <div style="margin-top:8px;padding-top:14px;border-top:1px solid #E3E6EA;display:flex;flex-direction:column;gap:9px">
+              <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+                <span style="display:inline-flex;align-items:center;gap:8px;font-size:14px;color:#4B535C"><span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;flex:none"></span>Stage date, numbered by the SEC</span>
+                <span style="display:inline-flex;align-items:center;gap:8px;font-size:14px;color:#4B535C"><span style="width:10px;height:10px;border-radius:99px;border:2px solid #1F3A6E;background:#fff;flex:none"></span>Your item, lettered by date</span>
+                <span style="display:inline-flex;align-items:center;gap:8px;font-size:14px;color:#4B535C"><span style="width:3px;height:14px;background:#1F3A6E;flex:none"></span>Completion date, 26 Feb 2027</span>
+              </div>
+              <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px">
+                <li style="display:flex;align-items:center;gap:11px;flex-wrap:wrap">
+                  <span style="flex:none;width:22px;height:22px;border-radius:99px;border:2px solid #1F3A6E;background:#fff;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#1F3A6E">A</span>
+                  <span style="font-size:15px;color:#101419">Catch-up window closes</span>
+                  <span style="font-size:14px;color:#636B75">13 Nov 2026 · stage 6</span>
+                </li>
+                <li style="display:flex;align-items:center;gap:11px;flex-wrap:wrap">
+                  <span style="flex:none;width:22px;height:22px;border-radius:99px;border:2px solid #1F3A6E;background:#fff;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#1F3A6E">B</span>
+                  <span style="font-size:15px;color:#101419">Full draft in for feedback</span>
+                  <span style="font-size:14px;color:#636B75">4 Dec 2026 · stage 6</span>
+                </li>
+                <li style="display:flex;align-items:center;gap:11px;flex-wrap:wrap">
+                  <span style="flex:none;width:22px;height:22px;border-radius:99px;border:2px dashed #9AA2AC;background:#fff;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#636B75">C</span>
+                  <span style="font-size:15px;color:#101419">Book a re-run slot if your data needs it</span>
+                  <span style="font-size:14px;color:#636B75">No date · stage 4 · not shown on the line</span>
+                </li>
+              </ul>
+            </div>
+
+            <div style="margin-top:14px;padding-top:16px;border-top:1px solid #E3E6EA">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px;flex-wrap:wrap">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <button type="button" aria-label="October 2026" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:18px;color:#343A42;cursor:pointer" style-hover="background:#EFF1F3">‹</button>
+                  <h3 style="margin:0;min-width:180px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;letter-spacing:-.02em;color:#101419">November 2026</h3>
+                  <button type="button" aria-label="December 2026" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:18px;color:#343A42;cursor:pointer" style-hover="background:#EFF1F3">›</button>
+                </div>
+                <button type="button" style="padding:0;border:0;background:transparent;font-size:15px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Hide calendar</button>
+              </div>
+
+              <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px;margin-bottom:1px">
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#636B75;padding:0 0 6px 8px">Mon</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#636B75;padding:0 0 6px 8px">Tue</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#636B75;padding:0 0 6px 8px">Wed</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#636B75;padding:0 0 6px 8px">Thu</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#636B75;padding:0 0 6px 8px">Fri</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#636B75;padding:0 0 6px 8px">Sat</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#636B75;padding:0 0 6px 8px">Sun</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:#E3E6EA;border:1px solid #E3E6EA;border-radius:8px;overflow:hidden">
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#FBFCFC;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#636B75">1</span></div>
+
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">2</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">3</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">4</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">5</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">6</span></div>
+                <div style="background:#FBFCFC;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#636B75">7</span></div>
+                <div style="background:#FBFCFC;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#636B75">8</span></div>
+
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">9</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">10</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">11</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">12</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px;display:flex;flex-direction:column;gap:4px">
+                  <span style="font-size:16px;color:#101419">13</span>
+                  <span style="display:flex;align-items:center;gap:5px;padding:3px 7px;border-radius:6px;border:1px solid #1F3A6E;background:#fff;font-size:12px;font-weight:600;color:#1F3A6E;overflow:hidden"><span style="font-family:'Space Mono',monospace;font-weight:700;flex:none">A</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Catch-up window closes</span></span>
+                </div>
+                <div style="background:#FBFCFC;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#636B75">14</span></div>
+                <div style="background:#FBFCFC;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#636B75">15</span></div>
+
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">16</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">17</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">18</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">19</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px;display:flex;flex-direction:column;gap:4px">
+                  <span style="font-size:16px;font-weight:700;color:#101419">20</span>
+                  <span style="display:block;padding:3px 7px;border-radius:6px;background:#1F3A6E;font-size:12px;font-weight:600;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Stage 5</span>
+                </div>
+                <div style="background:#FBFCFC;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#636B75">21</span></div>
+                <div style="background:#FBFCFC;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#636B75">22</span></div>
+
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">23</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">24</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">25</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">26</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">27</span></div>
+                <div style="background:#FBFCFC;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#636B75">28</span></div>
+                <div style="background:#FBFCFC;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#636B75">29</span></div>
+
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">30</span></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+              </div>
+              <p style="margin:12px 0 0;font-size:14px;color:#4B535C">Read-only. Dates are set in the rows below; nothing may be set after 26 Feb 2027.</p>
+            </div>
+          </div>
+
+          <form style="margin-top:14px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px;border-bottom:1px solid #E3E6EA">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">1</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Initial Response to the Brief</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">1–2 hours</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;color:#636B75">Checkpoint: Initial ideas discussed with the teacher</p></sc-if>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="g-s1" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 1 date</label>
+                  <input id="g-s1" type="date" defaultValue="2026-05-29" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 29 May 2026</span></sc-if>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px;border-bottom:1px solid #E3E6EA">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">2</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Background Research</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">2–3 hours</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;color:#636B75">Checkpoint: Investigative log shared with the teacher</p></sc-if>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="g-s2" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 2 date</label>
+                  <input id="g-s2" type="date" defaultValue="2026-06-05" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 5 Jun 2026</span></sc-if>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px;border-bottom:1px solid #E3E6EA">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">3</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Designing &amp; Planning the Experiment</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">2–3 hours</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;color:#636B75">Checkpoint: Plan discussed with the teacher (feasibility and safety)</p></sc-if>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="g-s3" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 3 date</label>
+                  <input id="g-s3" type="date" defaultValue="2026-09-25" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 25 Sep 2026</span></sc-if>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px;border-bottom:1px solid #E3E6EA">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">4</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Conducting the Experiment</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">About 1–2 hours per lab session · Supervised in class</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;color:#636B75">Checkpoint: Experiment carried out under supervision, in line with the research and planning already shared</p></sc-if>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="g-s4" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 4 date</label>
+                  <input id="g-s4" type="date" defaultValue="2026-10-16" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 16 Oct 2026</span></sc-if>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px;border-bottom:1px solid #E3E6EA">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">5</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Data Analysis &amp; Conclusions</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">1–2 hours</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;color:#636B75">Checkpoint: Data analysis shared with the teacher</p></sc-if>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="g-s5" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 5 date</label>
+                  <input id="g-s5" type="date" defaultValue="2026-11-20" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 20 Nov 2026</span></sc-if>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">6</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Finalising the Report</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">Up to 4 hours</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;color:#636B75">Checkpoint: Final report submitted to the teacher</p></sc-if>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="g-s6" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 6 date</label>
+                  <input id="g-s6" type="date" defaultValue="2027-01-22" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 22 Jan 2027</span></sc-if>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+              <button type="submit" style="height:48px;padding:0 20px;border-radius:8px;border:0;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Save dates</button>
+              <span style="font-size:15px;color:#4B535C">All 6 dates saved</span>
+            </div>
+          </form>
+
+          <section aria-labelledby="g-items" style="margin-top:32px;display:flex;flex-direction:column;gap:12px">
+            <h2 id="g-items" style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">Your items</h2>
+            <p style="margin:0;font-size:15px;line-height:1.5;color:#4B535C;max-width:620px">Your own to-dos, attached to a stage. Students see them on their component page and their timeline. Letters follow the date, so they may change when a date does.</p>
+            <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px">
+              <li style="display:flex;align-items:center;gap:14px;border:1px solid #DDE1E6;border-radius:10px;background:#fff;padding:13px 16px">
+                <span style="flex:none;width:26px;height:26px;border-radius:99px;border:2px solid #1F3A6E;background:#fff;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">A</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+                  <p style="margin:0;font-size:16px;color:#101419">Catch-up window closes</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">Stage 6 · 13 Nov 2026</p>
+                </div>
+                <div style="display:flex;gap:9px;flex:none">
+                  <button type="button" style="padding:10px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer">Edit</button>
+                  <button type="button" style="padding:10px 14px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#fff;font-size:15px;font-weight:600;color:#8E1D17;cursor:pointer">Retire</button>
+                </div>
+              </li>
+              <li style="display:flex;align-items:center;gap:14px;border:1px solid #DDE1E6;border-radius:10px;background:#fff;padding:13px 16px">
+                <span style="flex:none;width:26px;height:26px;border-radius:99px;border:2px solid #1F3A6E;background:#fff;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">B</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+                  <p style="margin:0;font-size:16px;color:#101419">Full draft in for feedback</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">Stage 6 · 4 Dec 2026</p>
+                </div>
+                <div style="display:flex;gap:9px;flex:none">
+                  <button type="button" style="padding:10px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer">Edit</button>
+                  <button type="button" style="padding:10px 14px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#fff;font-size:15px;font-weight:600;color:#8E1D17;cursor:pointer">Retire</button>
+                </div>
+              </li>
+              <li style="display:flex;align-items:center;gap:14px;border:1px solid #DDE1E6;border-radius:10px;background:#fff;padding:13px 16px">
+                <span style="flex:none;width:26px;height:26px;border-radius:99px;border:2px dashed #9AA2AC;background:#fff;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#636B75">C</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+                  <p style="margin:0;font-size:16px;color:#101419">Book a re-run slot if your data needs it</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">Stage 4 · no date, so not on the line or the calendar</p>
+                </div>
+                <div style="display:flex;gap:9px;flex:none">
+                  <button type="button" style="padding:10px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer">Edit</button>
+                  <button type="button" style="padding:10px 14px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#fff;font-size:15px;font-weight:600;color:#8E1D17;cursor:pointer">Retire</button>
+                </div>
+              </li>
+            </ul>
+            <div>
+              <button type="button" style="padding:11px 15px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer" style-hover="background:#EFF1F3">Add item</button>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="width:max-content;padding:56px 56px 96px;display:flex;flex-direction:column;gap:22px">
+  <div style="max-width:900px;display:flex;flex-direction:column;gap:13px">
+    <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.08em;color:#5C6470">Turn 2 · expanding <a href="#1c">1c</a>, the year on one line</p>
+    <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">The year line, worked harder</h1>
+    <p style="margin:0;font-size:16px;line-height:1.55;color:#343A42;text-wrap:pretty">Two ways to take it further. <a href="#2a">2a</a> keeps it one line and loads it with everything it can honestly carry: the intervals between stages, your own items as hollow marks, today, and the completion end-stop. <a href="#2b">2b</a> adds the calendar you asked about — a real month grid under the line, collapsible, marking every date you've set.</p>
+    <p style="margin:0;font-size:15px;line-height:1.55;color:#4B535C;text-wrap:pretty">Both mark <strong style="font-weight:600">every date the teacher has set</strong>: stage dates as filled navy, teacher items as hollow, the SEC completion date as the navy end-stop. Both collapse to a single line of text if the teacher never wants to see them, and the date inputs below are unaffected — the view is read-only, never the only way to set a date.</p>
+  </div>
+
+  <div style="display:flex;gap:36px;align-items:flex-start;flex-wrap:wrap">
+
+    <div id="2a" style="display:flex;flex-direction:column;gap:11px">
+      <div style="display:flex;align-items:center;gap:11px">
+        <span style="display:inline-flex;align-items:center;padding:4px 9px;border-radius:6px;background:#1F3A6E;color:#fff;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em">2a</span>
+        <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.025em;color:#101419">One line, everything on it</h2>
+      </div>
+      <p style="margin:0;max-width:1140px;font-size:15px;line-height:1.5;color:#4B535C;text-wrap:pretty">The gap that <a href="#1b">1b</a> put in a column is written on the line itself, where it means something: sixteen weeks of summer, then five stages crammed into the autumn. Items sit under the line as hollow marks, today is a dashed hairline, and the completion date closes it. 128px, no scrolling, and it reads at a glance from across a desk.</p>
+      <div data-screen-label="2a · year line, dates set · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+        <header style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px;background:#fff;border-bottom:1px solid #E3E6EA">
+          <div style="display:flex;align-items:center;gap:11px;min-width:0">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <a href="#" style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none;white-space:nowrap">Leaving Cert Practical</a>
+            <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+            <span style="font-size:14px;color:#4B535C;white-space:nowrap">North Wicklow ETSS</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex:none">
+            <span style="font-size:14px;color:#343A42;white-space:nowrap">Katelyn Hanlon</span>
+            <a href="#" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+            <button type="button" style="padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap">Sign out</button>
+          </div>
+        </header>
+        <main style="padding:32px 28px 56px;max-width:880px;margin:0 auto">
+          <a href="#" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">My classes</a>
+          <h1 style="margin:10px 0 0;font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">6A Biology</h1>
+          <p style="margin:6px 0 0;font-size:16px;color:#4B535C">Biology, year 6, 2026/27</p>
+          <nav aria-label="Class sections" style="display:flex;gap:24px;margin-top:20px;border-bottom:1px solid #E3E6EA">
+            <a href="#" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#343A42;text-decoration:none">Students</a>
+            <a href="#" aria-current="page" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid #1F3A6E;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:none">Component</a>
+            <span aria-disabled="true" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#9AA2AC;cursor:not-allowed">Progress</span>
+          </nav>
+
+          <div style="margin-top:28px;display:flex;flex-direction:column;gap:7px">
+            <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">Biology in Practice Investigation, 2027</h2>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42;max-width:620px">Membranes, Osmosis &amp; Food Preservation · <span style="font-family:'Space Mono',monospace;font-size:14px;color:#636B75">2027L025C2EL</span></p>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42;max-width:620px">These are your class's own dates, not SEC deadlines. The SEC's only date is the completion date, <strong style="font-weight:600">26 Feb 2027</strong>.</p>
+          </div>
+
+          <div style="margin-top:20px;border:1px solid #DDE1E6;border-radius:10px;background:#fff;padding:18px 20px 14px">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:14px">
+              <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Your dates across the year</span>
+              <button type="button" style="padding:0;border:0;background:transparent;font-size:15px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Hide the year view</button>
+            </div>
+            <div style="position:relative;height:128px">
+              <div style="position:absolute;left:0;right:0;bottom:44px;height:1px;background:#DDE1E6"></div>
+              <div style="position:absolute;left:41.8%;top:4px;bottom:44px;width:0;border-left:1px dashed #9AA2AC"></div>
+              <span style="position:absolute;left:41.8%;top:0;transform:translateX(-100%);padding-right:7px;font-size:12px;color:#636B75;white-space:nowrap">Today</span>
+
+              <div style="position:absolute;left:0;bottom:44px;display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">1</span>
+                <span style="width:1px;height:26px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:2.6%;bottom:44px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">2</span>
+                <span style="width:1px;height:50px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:43.6%;bottom:44px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">3</span>
+                <span style="width:1px;height:26px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:51.3%;bottom:44px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">4</span>
+                <span style="width:1px;height:50px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:64.1%;bottom:44px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">5</span>
+                <span style="width:1px;height:26px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:87.2%;bottom:44px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">6</span>
+                <span style="width:1px;height:50px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;right:0;bottom:44px;width:3px;height:34px;background:#1F3A6E"></div>
+
+              <span style="position:absolute;left:23.1%;bottom:38px;transform:translateX(-50%);padding:0 7px;background:#fff;font-size:12px;color:#636B75;white-space:nowrap">16 weeks</span>
+              <span style="position:absolute;left:57.7%;bottom:38px;transform:translateX(-50%);padding:0 6px;background:#fff;font-size:12px;color:#636B75;white-space:nowrap">5 weeks</span>
+              <span style="position:absolute;left:75.7%;bottom:38px;transform:translateX(-50%);padding:0 6px;background:#fff;font-size:12px;color:#636B75;white-space:nowrap">9 weeks</span>
+              <span style="position:absolute;left:93.6%;bottom:38px;transform:translateX(-50%);padding:0 6px;background:#fff;font-size:12px;color:#636B75;white-space:nowrap">5 weeks</span>
+
+              <span style="position:absolute;left:61.5%;bottom:32px;transform:translateX(-50%);width:10px;height:10px;border-radius:99px;border:2px solid #1F3A6E;background:#fff"></span>
+              <span style="position:absolute;left:69.2%;bottom:32px;transform:translateX(-50%);width:10px;height:10px;border-radius:99px;border:2px solid #1F3A6E;background:#fff"></span>
+
+              <div style="position:absolute;left:0;right:0;bottom:0;height:20px">
+                <span style="position:absolute;left:1.1%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Jun</span>
+                <span style="position:absolute;left:12.1%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Jul</span>
+                <span style="position:absolute;left:23.4%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Aug</span>
+                <span style="position:absolute;left:34.8%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Sep</span>
+                <span style="position:absolute;left:45.8%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Oct</span>
+                <span style="position:absolute;left:57.1%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Nov</span>
+                <span style="position:absolute;left:68.1%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Dec</span>
+                <span style="position:absolute;left:79.5%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Jan</span>
+                <span style="position:absolute;left:90.8%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Feb</span>
+              </div>
+            </div>
+            <div style="margin-top:6px;padding-top:12px;border-top:1px solid #E3E6EA;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+              <span style="display:inline-flex;align-items:center;gap:8px;font-size:14px;color:#4B535C"><span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;flex:none"></span>Stage date</span>
+              <span style="display:inline-flex;align-items:center;gap:8px;font-size:14px;color:#4B535C"><span style="width:10px;height:10px;border-radius:99px;border:2px solid #1F3A6E;background:#fff;flex:none"></span>Your item</span>
+              <span style="display:inline-flex;align-items:center;gap:8px;font-size:14px;color:#4B535C"><span style="width:3px;height:14px;background:#1F3A6E;flex:none"></span>Completion date, 26 Feb 2027</span>
+            </div>
+          </div>
+
+          <form style="margin-top:14px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px;border-bottom:1px solid #E3E6EA">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">1</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Initial Response to the Brief</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">1–2 hours</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;color:#636B75">Checkpoint: Initial ideas discussed with the teacher</p></sc-if>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="d-s1" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 1 date</label>
+                  <input id="d-s1" type="date" defaultValue="2026-05-29" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 29 May 2026</span></sc-if>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px;border-bottom:1px solid #E3E6EA">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">2</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Background Research</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">2–3 hours</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;color:#636B75">Checkpoint: Investigative log shared with the teacher</p></sc-if>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="d-s2" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 2 date</label>
+                  <input id="d-s2" type="date" defaultValue="2026-06-05" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 5 Jun 2026</span></sc-if>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px;border-bottom:1px solid #E3E6EA">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">3</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Designing &amp; Planning the Experiment</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">2–3 hours</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;color:#636B75">Checkpoint: Plan discussed with the teacher (feasibility and safety)</p></sc-if>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="d-s3" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 3 date</label>
+                  <input id="d-s3" type="date" defaultValue="2026-09-25" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 25 Sep 2026</span></sc-if>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px;border-bottom:1px solid #E3E6EA">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">4</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Conducting the Experiment</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">About 1–2 hours per lab session · Supervised in class</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;color:#636B75">Checkpoint: Experiment carried out under supervision, in line with the research and planning already shared</p></sc-if>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="d-s4" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 4 date</label>
+                  <input id="d-s4" type="date" defaultValue="2026-10-16" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 16 Oct 2026</span></sc-if>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px;border-bottom:1px solid #E3E6EA">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">5</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Data Analysis &amp; Conclusions</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">1–2 hours</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;color:#636B75">Checkpoint: Data analysis shared with the teacher</p></sc-if>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="d-s5" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 5 date</label>
+                  <input id="d-s5" type="date" defaultValue="2026-11-20" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 20 Nov 2026</span></sc-if>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">6</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Finalising the Report</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">Up to 4 hours</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;color:#636B75">Checkpoint: Final report submitted to the teacher</p></sc-if>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="d-s6" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 6 date</label>
+                  <input id="d-s6" type="date" defaultValue="2027-01-22" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 22 Jan 2027</span></sc-if>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+              <button type="submit" style="height:48px;padding:0 20px;border-radius:8px;border:0;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Save dates</button>
+              <span style="font-size:15px;color:#4B535C">All 6 dates saved</span>
+            </div>
+          </form>
+        </main>
+      </div>
+    </div>
+
+    <div id="2b" style="display:flex;flex-direction:column;gap:11px">
+      <div style="display:flex;align-items:center;gap:11px">
+        <span style="display:inline-flex;align-items:center;padding:4px 9px;border-radius:6px;background:#1F3A6E;color:#fff;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em">2b</span>
+        <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.025em;color:#101419">The line, and a month under it</h2>
+      </div>
+      <p style="margin:0;max-width:1140px;font-size:15px;line-height:1.5;color:#4B535C;text-wrap:pretty">The line answers "is the year sensibly spread"; the month grid answers "which Friday, and what else is that week". One month at a time, stepped with the arrows or by clicking a month on the line. Everything the teacher has set is marked: stage dates filled, items hollow, weekends muted. <strong style="font-weight:600">Read-only</strong> — the dates are still set in the rows below, so nothing depends on clicking a small square. Collapsed state at the foot of this column.</p>
+      <div data-screen-label="2b · year line + month calendar open · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+        <header style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px;background:#fff;border-bottom:1px solid #E3E6EA">
+          <div style="display:flex;align-items:center;gap:11px;min-width:0">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <a href="#" style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none;white-space:nowrap">Leaving Cert Practical</a>
+            <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+            <span style="font-size:14px;color:#4B535C;white-space:nowrap">North Wicklow ETSS</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex:none">
+            <span style="font-size:14px;color:#343A42;white-space:nowrap">Katelyn Hanlon</span>
+            <a href="#" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+            <button type="button" style="padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap">Sign out</button>
+          </div>
+        </header>
+        <main style="padding:32px 28px 56px;max-width:880px;margin:0 auto">
+          <a href="#" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">My classes</a>
+          <h1 style="margin:10px 0 0;font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">6A Biology</h1>
+          <p style="margin:6px 0 0;font-size:16px;color:#4B535C">Biology, year 6, 2026/27</p>
+          <nav aria-label="Class sections" style="display:flex;gap:24px;margin-top:20px;border-bottom:1px solid #E3E6EA">
+            <a href="#" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#343A42;text-decoration:none">Students</a>
+            <a href="#" aria-current="page" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid #1F3A6E;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:none">Component</a>
+            <span aria-disabled="true" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#9AA2AC;cursor:not-allowed">Progress</span>
+          </nav>
+
+          <div style="margin-top:28px;display:flex;flex-direction:column;gap:7px">
+            <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">Biology in Practice Investigation, 2027</h2>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42;max-width:620px">Membranes, Osmosis &amp; Food Preservation · <span style="font-family:'Space Mono',monospace;font-size:14px;color:#636B75">2027L025C2EL</span></p>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42;max-width:620px">These are your class's own dates, not SEC deadlines. The SEC's only date is the completion date, <strong style="font-weight:600">26 Feb 2027</strong>.</p>
+          </div>
+
+          <div style="margin-top:20px;border:1px solid #DDE1E6;border-radius:10px;background:#fff;padding:18px 20px 16px">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:14px">
+              <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Your dates across the year</span>
+              <button type="button" style="padding:0;border:0;background:transparent;font-size:15px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Hide the year view</button>
+            </div>
+            <div style="position:relative;height:112px">
+              <div style="position:absolute;left:57.1%;width:11%;top:0;bottom:0;background:#F4F5F8;border-radius:6px"></div>
+              <div style="position:absolute;left:0;right:0;bottom:44px;height:1px;background:#DDE1E6"></div>
+              <div style="position:absolute;left:41.8%;top:4px;bottom:44px;width:0;border-left:1px dashed #9AA2AC"></div>
+              <span style="position:absolute;left:41.8%;top:0;transform:translateX(-100%);padding-right:7px;font-size:12px;color:#636B75;white-space:nowrap">Today</span>
+
+              <div style="position:absolute;left:0;bottom:44px;display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">1</span>
+                <span style="width:1px;height:22px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:2.6%;bottom:44px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">2</span>
+                <span style="width:1px;height:44px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:43.6%;bottom:44px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">3</span>
+                <span style="width:1px;height:22px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:51.3%;bottom:44px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">4</span>
+                <span style="width:1px;height:44px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:64.1%;bottom:44px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">5</span>
+                <span style="width:1px;height:22px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:87.2%;bottom:44px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#1F3A6E">6</span>
+                <span style="width:1px;height:44px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;right:0;bottom:44px;width:3px;height:30px;background:#1F3A6E"></div>
+
+              <span style="position:absolute;left:61.5%;bottom:32px;transform:translateX(-50%);width:10px;height:10px;border-radius:99px;border:2px solid #1F3A6E;background:#fff"></span>
+              <span style="position:absolute;left:69.2%;bottom:32px;transform:translateX(-50%);width:10px;height:10px;border-radius:99px;border:2px solid #1F3A6E;background:#fff"></span>
+
+              <div style="position:absolute;left:0;right:0;bottom:0;height:20px">
+                <span style="position:absolute;left:1.1%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Jun</span>
+                <span style="position:absolute;left:12.1%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Jul</span>
+                <span style="position:absolute;left:23.4%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Aug</span>
+                <span style="position:absolute;left:34.8%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Sep</span>
+                <span style="position:absolute;left:45.8%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Oct</span>
+                <span style="position:absolute;left:57.1%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#1F3A6E">Nov</span>
+                <span style="position:absolute;left:68.1%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Dec</span>
+                <span style="position:absolute;left:79.5%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Jan</span>
+                <span style="position:absolute;left:90.8%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Feb</span>
+              </div>
+            </div>
+
+            <div style="margin-top:8px;padding-top:16px;border-top:1px solid #E3E6EA">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px;flex-wrap:wrap">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <button type="button" aria-label="October 2026" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:18px;color:#343A42;cursor:pointer" style-hover="background:#EFF1F3">‹</button>
+                  <h3 style="margin:0;min-width:180px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;letter-spacing:-.02em;color:#101419">November 2026</h3>
+                  <button type="button" aria-label="December 2026" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:18px;color:#343A42;cursor:pointer" style-hover="background:#EFF1F3">›</button>
+                </div>
+                <button type="button" style="padding:0;border:0;background:transparent;font-size:15px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Hide calendar</button>
+              </div>
+
+              <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px;margin-bottom:1px">
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#636B75;padding:0 0 6px 8px">Mon</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#636B75;padding:0 0 6px 8px">Tue</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#636B75;padding:0 0 6px 8px">Wed</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#636B75;padding:0 0 6px 8px">Thu</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#636B75;padding:0 0 6px 8px">Fri</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#636B75;padding:0 0 6px 8px">Sat</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#636B75;padding:0 0 6px 8px">Sun</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:#E3E6EA;border:1px solid #E3E6EA;border-radius:8px;overflow:hidden">
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#FBFCFC;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#636B75">1</span></div>
+
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">2</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">3</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">4</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">5</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">6</span></div>
+                <div style="background:#FBFCFC;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#636B75">7</span></div>
+                <div style="background:#FBFCFC;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#636B75">8</span></div>
+
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">9</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">10</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">11</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">12</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px;display:flex;flex-direction:column;gap:4px">
+                  <span style="font-size:16px;color:#101419">13</span>
+                  <span style="display:block;padding:3px 7px;border-radius:6px;border:1px solid #1F3A6E;background:#fff;font-size:12px;font-weight:600;color:#1F3A6E;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Catch-up window closes</span>
+                </div>
+                <div style="background:#FBFCFC;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#636B75">14</span></div>
+                <div style="background:#FBFCFC;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#636B75">15</span></div>
+
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">16</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">17</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">18</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">19</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px;display:flex;flex-direction:column;gap:4px">
+                  <span style="font-size:16px;font-weight:700;color:#101419">20</span>
+                  <span style="display:block;padding:3px 7px;border-radius:6px;background:#1F3A6E;font-size:12px;font-weight:600;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Stage 5</span>
+                </div>
+                <div style="background:#FBFCFC;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#636B75">21</span></div>
+                <div style="background:#FBFCFC;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#636B75">22</span></div>
+
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">23</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">24</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">25</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">26</span></div>
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">27</span></div>
+                <div style="background:#FBFCFC;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#636B75">28</span></div>
+                <div style="background:#FBFCFC;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#636B75">29</span></div>
+
+                <div style="background:#fff;min-height:62px;padding:7px 8px"><span style="font-size:16px;color:#101419">30</span></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+                <div style="background:#F7F8F9;min-height:62px"></div>
+              </div>
+              <div style="margin-top:12px;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+                <span style="display:inline-flex;align-items:center;gap:8px;font-size:14px;color:#4B535C"><span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;flex:none"></span>Stage date</span>
+                <span style="display:inline-flex;align-items:center;gap:8px;font-size:14px;color:#4B535C"><span style="width:10px;height:10px;border-radius:99px;border:2px solid #1F3A6E;background:#fff;flex:none"></span>Your item</span>
+                <span style="display:inline-flex;align-items:center;gap:8px;font-size:14px;color:#4B535C"><span style="width:3px;height:14px;background:#1F3A6E;flex:none"></span>Completion date, 26 Feb 2027 — nothing may be set after it</span>
+              </div>
+            </div>
+          </div>
+
+          <form style="margin-top:14px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px;border-bottom:1px solid #E3E6EA">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">4</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Conducting the Experiment</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">About 1–2 hours per lab session · Supervised in class</p>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="e-s4" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 4 date</label>
+                  <input id="e-s4" type="date" defaultValue="2026-10-16" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 16 Oct 2026</span></sc-if>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px;background:#F4F5F8;box-shadow:inset 2px 0 0 #1F3A6E">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">5</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Data Analysis &amp; Conclusions</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">1–2 hours · shown on the calendar above</p>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="e-s5" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 5 date</label>
+                  <input id="e-s5" type="date" defaultValue="2026-11-20" style="border:1px solid #1F3A6E;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 20 Nov 2026</span></sc-if>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+              <button type="submit" style="height:48px;padding:0 20px;border-radius:8px;border:0;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Save dates</button>
+              <span style="font-size:15px;color:#4B535C">Stages 1–3 and 6 are above; trimmed here to keep the frame short.</span>
+            </div>
+          </form>
+        </main>
+      </div>
+
+      <p style="margin:10px 0 0;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.06em;color:#5C6470">Collapsed — a teacher who never wants it</p>
+      <div data-screen-label="2b · year view collapsed · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+        <main style="padding:26px 28px 32px;max-width:880px;margin:0 auto">
+          <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+            <span style="font-size:16px;color:#343A42">Your dates run 29 May 2026 to 22 Jan 2027, inside the completion date of 26 Feb 2027.</span>
+            <button type="button" style="padding:0;border:0;background:transparent;font-size:15px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;cursor:pointer;white-space:nowrap">Show the year view</button>
+          </div>
+          <div style="margin-top:14px;border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:18px;padding:12px 16px;border-bottom:1px solid #E3E6EA">
+              <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">1</span>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Initial Response to the Brief</p>
+                <p style="margin:0;font-size:14px;color:#636B75">1–2 hours</p>
+              </div>
+              <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                <label for="f-s1" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 1 date</label>
+                <input id="f-s1" type="date" defaultValue="2026-05-29" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 29 May 2026</span></sc-if>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:18px;padding:12px 16px">
+              <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">2</span>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Background Research</p>
+                <p style="margin:0;font-size:14px;color:#636B75">2–3 hours</p>
+              </div>
+              <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                <label for="f-s2" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 2 date</label>
+                <input id="f-s2" type="date" defaultValue="2026-06-05" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 5 Jun 2026</span></sc-if>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section style="width:max-content;padding:56px 56px 40px;display:flex;flex-direction:column;gap:22px">
+  <div style="max-width:860px;display:flex;flex-direction:column;gap:13px">
+    <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.08em;color:#5C6470">Turn 1 · Pack D-5 · teacher component setup · direction 2e Navy · rough</p>
+    <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">Three directions for the stage-dates editor</h1>
+    <p style="margin:0;font-size:16px;line-height:1.55;color:#343A42;text-wrap:pretty">Same page, same content, same chrome from D-2 — only the editor differs. They separate on one axis: <strong style="font-weight:600">how much help the page gives with spacing the dates</strong>. <a href="#1a">1a</a> gives none and stays a form. <a href="#1b">1b</a> answers it in numbers. <a href="#1c">1c</a> answers it in shape.</p>
+    <p style="margin:0;font-size:15px;line-height:1.55;color:#4B535C;text-wrap:pretty">Placeholder dates throughout, as supplied. Stage names and completion dates are the real ones. Warning and error states, the phone layouts and the teacher-item flows come after you pick.</p>
+  </div>
+  <div style="max-width:860px;border:1px solid #DDE1E6;border-radius:10px;background:#fff;padding:18px 20px;display:flex;flex-direction:column;gap:11px">
+    <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">My answers to your three questions</p>
+    <p style="margin:0;font-size:15px;line-height:1.55;color:#343A42;text-wrap:pretty"><strong style="font-weight:600">Save model — batch.</strong> One <strong style="font-weight:600">Save dates</strong> for all stages, as the API already works. A teacher sets a year in one sitting; six separate saves is six chances to half-finish, and there is no moment where "nothing was lost" can be confirmed. Teacher items stay one at a time — they are their own endpoints and their own small forms. All three directions show the batch bar.</p>
+    <p style="margin:0;font-size:15px;line-height:1.55;color:#343A42;text-wrap:pretty"><strong style="font-weight:600">Checkpoints — show them, read-only, one line.</strong> The checkpoint is what the date is <em>for</em>: "Plan discussed with the teacher" tells a teacher what has to happen in class by that date, which is exactly the judgement they are making. It is one 14px grey line per row and never gains a control here. Toggle it off in Tweaks to compare.</p>
+    <p style="margin:0;font-size:15px;line-height:1.55;color:#343A42;text-wrap:pretty"><strong style="font-weight:600">Date entry — the native date input</strong>, inside the D-1 field row, 16px, with the date echoed in words beneath it: <span style="font-family:'Space Mono',monospace;font-size:14px">Fri 16 Oct 2026</span>. Native gives the phone picker, keyboard entry and typing for free; a custom popover would be the biggest accessibility risk on the page. The echo is what makes "16 Oct 2026" true — the native control itself renders <span style="font-family:'Space Mono',monospace;font-size:14px">16/10/2026</span> in Ireland — and the weekday is a real check: every placeholder date here is a Friday, so a Sunday would show itself.</p>
+  </div>
+</section>
+
+<section style="width:max-content;padding:0 56px 96px;display:flex;flex-direction:column;gap:18px">
+  <div style="display:flex;gap:36px;align-items:flex-start;flex-wrap:wrap">
+
+    <div id="1a" style="display:flex;flex-direction:column;gap:11px">
+      <div style="display:flex;align-items:center;gap:11px">
+        <span style="display:inline-flex;align-items:center;padding:4px 9px;border-radius:6px;background:#1F3A6E;color:#fff;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em">1a</span>
+        <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.025em;color:#101419">The field group, extended</h2>
+      </div>
+      <p style="margin:0;max-width:1140px;font-size:15px;line-height:1.5;color:#4B535C;text-wrap:pretty">The <span style="font-family:'Space Mono',monospace;font-size:13.5px">/teach/classes/new</span> field group with the stage name as the row label. Nothing new is invented, row errors already work, and a teacher's own items nest inside the stage they belong to. The cost: rows are uneven, and the page gives no help at all with spacing — the teacher does the arithmetic.</p>
+      <div data-screen-label="1a · dates set · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+        <header style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px;background:#fff;border-bottom:1px solid #E3E6EA">
+          <div style="display:flex;align-items:center;gap:11px;min-width:0">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <a href="#" style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none;white-space:nowrap">Leaving Cert Practical</a>
+            <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+            <span style="font-size:14px;color:#4B535C;white-space:nowrap">North Wicklow ETSS</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex:none">
+            <span style="font-size:14px;color:#343A42;white-space:nowrap">Katelyn Hanlon</span>
+            <a href="#" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+            <button type="button" style="padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap">Sign out</button>
+          </div>
+        </header>
+        <main style="padding:32px 28px 56px;max-width:880px;margin:0 auto">
+          <a href="#" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">My classes</a>
+          <h1 style="margin:10px 0 0;font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">6A Biology</h1>
+          <p style="margin:6px 0 0;font-size:16px;color:#4B535C">Biology, year 6, 2026/27</p>
+          <nav aria-label="Class sections" style="display:flex;gap:24px;margin-top:20px;border-bottom:1px solid #E3E6EA">
+            <a href="#" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#343A42;text-decoration:none">Students</a>
+            <a href="#" aria-current="page" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid #1F3A6E;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:none">Component</a>
+            <span aria-disabled="true" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#9AA2AC;cursor:not-allowed">Progress</span>
+          </nav>
+
+          <div style="margin-top:28px;display:flex;flex-direction:column;gap:7px">
+            <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">Biology in Practice Investigation, 2027</h2>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42;max-width:620px">Membranes, Osmosis &amp; Food Preservation · <span style="font-family:'Space Mono',monospace;font-size:14px;color:#636B75">2027L025C2EL</span></p>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42;max-width:620px">These are your class's own dates, not SEC deadlines. The SEC's only date is the completion date, <strong style="font-weight:600">26 Feb 2027</strong>.</p>
+          </div>
+
+          <form style="margin-top:20px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 13px;border-bottom:1px solid #E3E6EA">
+                <label for="a-s1" style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Stage 1 · Initial Response to the Brief</label>
+                <input id="a-s1" type="date" defaultValue="2026-05-29" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419;width:170px">
+                <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><p style="margin:2px 0 0;font-size:14px;color:#636B75">Fri 29 May 2026</p></sc-if>
+                <p style="margin:3px 0 0;font-size:14px;line-height:1.45;color:#636B75">1–2 hours</p>
+                <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;line-height:1.45;color:#636B75">Checkpoint: Initial ideas discussed with the teacher</p></sc-if>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 13px;border-bottom:1px solid #E3E6EA">
+                <label for="a-s2" style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Stage 2 · Background Research</label>
+                <input id="a-s2" type="date" defaultValue="2026-06-05" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419;width:170px">
+                <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><p style="margin:2px 0 0;font-size:14px;color:#636B75">Fri 5 Jun 2026</p></sc-if>
+                <p style="margin:3px 0 0;font-size:14px;line-height:1.45;color:#636B75">2–3 hours</p>
+                <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;line-height:1.45;color:#636B75">Checkpoint: Investigative log shared with the teacher</p></sc-if>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 13px;border-bottom:1px solid #E3E6EA">
+                <label for="a-s3" style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Stage 3 · Designing &amp; Planning the Experiment</label>
+                <input id="a-s3" type="date" defaultValue="2026-09-25" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419;width:170px">
+                <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><p style="margin:2px 0 0;font-size:14px;color:#636B75">Fri 25 Sep 2026</p></sc-if>
+                <p style="margin:3px 0 0;font-size:14px;line-height:1.45;color:#636B75">2–3 hours</p>
+                <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;line-height:1.45;color:#636B75">Checkpoint: Plan discussed with the teacher (feasibility and safety)</p></sc-if>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 13px;border-bottom:1px solid #E3E6EA">
+                <label for="a-s4" style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Stage 4 · Conducting the Experiment</label>
+                <input id="a-s4" type="date" defaultValue="2026-10-16" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419;width:170px">
+                <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><p style="margin:2px 0 0;font-size:14px;color:#636B75">Fri 16 Oct 2026</p></sc-if>
+                <p style="margin:3px 0 0;font-size:14px;line-height:1.45;color:#636B75">About 1–2 hours per lab session · Supervised in class</p>
+                <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;line-height:1.45;color:#636B75">Checkpoint: Experiment carried out under supervision, in line with the research and planning already shared</p></sc-if>
+                <div style="margin-top:9px;padding-left:13px;border-left:2px solid #E3E6EA;display:flex;flex-direction:column;gap:7px;align-items:flex-start">
+                  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                    <span style="font-size:16px;color:#101419">Book a re-run slot if your data needs it</span>
+                    <span style="font-size:14px;color:#636B75">No date</span>
+                    <button type="button" style="padding:7px 12px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer">Edit</button>
+                    <button type="button" style="padding:7px 12px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#fff;font-size:14px;font-weight:600;color:#8E1D17;cursor:pointer">Retire</button>
+                  </div>
+                  <button type="button" style="padding:8px 13px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer">Add item</button>
+                </div>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 13px;border-bottom:1px solid #E3E6EA">
+                <label for="a-s5" style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Stage 5 · Data Analysis &amp; Conclusions</label>
+                <input id="a-s5" type="date" defaultValue="2026-11-20" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419;width:170px">
+                <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><p style="margin:2px 0 0;font-size:14px;color:#636B75">Fri 20 Nov 2026</p></sc-if>
+                <p style="margin:3px 0 0;font-size:14px;line-height:1.45;color:#636B75">1–2 hours</p>
+                <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;line-height:1.45;color:#636B75">Checkpoint: Data analysis shared with the teacher</p></sc-if>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:3px;padding:11px 15px 13px">
+                <label for="a-s6" style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Stage 6 · Finalising the Report</label>
+                <input id="a-s6" type="date" defaultValue="2027-01-22" style="border:0;outline:0;padding:0;background:transparent;font-size:16px;color:#101419;width:170px">
+                <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><p style="margin:2px 0 0;font-size:14px;color:#636B75">Fri 22 Jan 2027</p></sc-if>
+                <p style="margin:3px 0 0;font-size:14px;line-height:1.45;color:#636B75">Up to 4 hours</p>
+                <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;line-height:1.45;color:#636B75">Checkpoint: Final report submitted to the teacher</p></sc-if>
+                <div style="margin-top:9px;padding-left:13px;border-left:2px solid #E3E6EA;display:flex;flex-direction:column;gap:7px;align-items:flex-start">
+                  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                    <span style="font-size:16px;color:#101419">Full draft in for feedback</span>
+                    <span style="font-size:14px;color:#636B75">4 Dec 2026</span>
+                    <button type="button" style="padding:7px 12px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer">Edit</button>
+                    <button type="button" style="padding:7px 12px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#fff;font-size:14px;font-weight:600;color:#8E1D17;cursor:pointer">Retire</button>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                    <span style="font-size:16px;color:#101419">Catch-up window closes</span>
+                    <span style="font-size:14px;color:#636B75">13 Nov 2026</span>
+                    <button type="button" style="padding:7px 12px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer">Edit</button>
+                    <button type="button" style="padding:7px 12px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#fff;font-size:14px;font-weight:600;color:#8E1D17;cursor:pointer">Retire</button>
+                  </div>
+                  <button type="button" style="padding:8px 13px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer">Add item</button>
+                </div>
+              </div>
+
+            </div>
+            <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+              <button type="submit" style="height:48px;padding:0 20px;border-radius:8px;border:0;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Save dates</button>
+              <span style="font-size:15px;color:#4B535C">All 6 dates saved</span>
+            </div>
+          </form>
+        </main>
+      </div>
+    </div>
+
+    <div id="1b" style="display:flex;flex-direction:column;gap:11px">
+      <div style="display:flex;align-items:center;gap:11px">
+        <span style="display:inline-flex;align-items:center;padding:4px 9px;border-radius:6px;background:#1F3A6E;color:#fff;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em">1b</span>
+        <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.025em;color:#101419">The schedule, with the gap measured</h2>
+      </div>
+      <p style="margin:0;max-width:1140px;font-size:15px;line-height:1.5;color:#4B535C;text-wrap:pretty">One card, four columns, and the completion date as the last row of the same list — locked, navy-edged, not a sentence somewhere above. The rule "no date after this" becomes something you can see. The <strong style="font-weight:600">Gap</strong> column is the planning aid: it turns six dates into five intervals, and an out-of-order date shows up as a negative one before any warning fires.</p>
+      <div data-screen-label="1b · dates set · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+        <header style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px;background:#fff;border-bottom:1px solid #E3E6EA">
+          <div style="display:flex;align-items:center;gap:11px;min-width:0">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <a href="#" style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none;white-space:nowrap">Leaving Cert Practical</a>
+            <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+            <span style="font-size:14px;color:#4B535C;white-space:nowrap">North Wicklow ETSS</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex:none">
+            <span style="font-size:14px;color:#343A42;white-space:nowrap">Katelyn Hanlon</span>
+            <a href="#" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+            <button type="button" style="padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap">Sign out</button>
+          </div>
+        </header>
+        <main style="padding:32px 28px 56px;max-width:940px;margin:0 auto">
+          <a href="#" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">My classes</a>
+          <h1 style="margin:10px 0 0;font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">6A Biology</h1>
+          <p style="margin:6px 0 0;font-size:16px;color:#4B535C">Biology, year 6, 2026/27</p>
+          <nav aria-label="Class sections" style="display:flex;gap:24px;margin-top:20px;border-bottom:1px solid #E3E6EA">
+            <a href="#" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#343A42;text-decoration:none">Students</a>
+            <a href="#" aria-current="page" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid #1F3A6E;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:none">Component</a>
+            <span aria-disabled="true" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#9AA2AC;cursor:not-allowed">Progress</span>
+          </nav>
+
+          <div style="margin-top:28px;display:flex;flex-direction:column;gap:7px">
+            <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">Biology in Practice Investigation, 2027</h2>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42;max-width:640px">Membranes, Osmosis &amp; Food Preservation · <span style="font-family:'Space Mono',monospace;font-size:14px;color:#636B75">2027L025C2EL</span></p>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42;max-width:640px">These are your class's own dates, not SEC deadlines. The SEC's only date is the completion date at the foot of the list.</p>
+          </div>
+
+          <form style="margin-top:20px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+              <div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 176px 104px;gap:16px;padding:9px 16px;background:#F7F8F9;border-bottom:1px solid #E3E6EA">
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Stage</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Indicative</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Your date</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Gap</span>
+              </div>
+
+              <div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 176px 104px;gap:16px;padding:13px 16px;border-bottom:1px solid #E3E6EA">
+                <div style="min-width:0;display:flex;flex-direction:column;gap:2px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419"><span style="font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:#1F3A6E">1</span>&nbsp;&nbsp;Initial Response to the Brief</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;line-height:1.45;color:#636B75">Checkpoint: Initial ideas discussed with the teacher</p></sc-if>
+                </div>
+                <span style="font-size:15px;color:#4B535C">1–2 hours</span>
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <label for="b-s1" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 1 date</label>
+                  <input id="b-s1" type="date" defaultValue="2026-05-29" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:100%">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 29 May 2026</span></sc-if>
+                </div>
+                <span style="font-size:15px;color:#636B75">—</span>
+              </div>
+
+              <div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 176px 104px;gap:16px;padding:13px 16px;border-bottom:1px solid #E3E6EA">
+                <div style="min-width:0;display:flex;flex-direction:column;gap:2px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419"><span style="font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:#1F3A6E">2</span>&nbsp;&nbsp;Background Research</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;line-height:1.45;color:#636B75">Checkpoint: Investigative log shared with the teacher</p></sc-if>
+                </div>
+                <span style="font-size:15px;color:#4B535C">2–3 hours</span>
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <label for="b-s2" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 2 date</label>
+                  <input id="b-s2" type="date" defaultValue="2026-06-05" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:100%">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 5 Jun 2026</span></sc-if>
+                </div>
+                <span style="font-size:15px;color:#4B535C">1 week</span>
+              </div>
+
+              <div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 176px 104px;gap:16px;padding:13px 16px;border-bottom:1px solid #E3E6EA">
+                <div style="min-width:0;display:flex;flex-direction:column;gap:2px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419"><span style="font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:#1F3A6E">3</span>&nbsp;&nbsp;Designing &amp; Planning the Experiment</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;line-height:1.45;color:#636B75">Checkpoint: Plan discussed with the teacher (feasibility and safety)</p></sc-if>
+                </div>
+                <span style="font-size:15px;color:#4B535C">2–3 hours</span>
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <label for="b-s3" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 3 date</label>
+                  <input id="b-s3" type="date" defaultValue="2026-09-25" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:100%">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 25 Sep 2026</span></sc-if>
+                </div>
+                <span style="font-size:15px;color:#4B535C">16 weeks</span>
+              </div>
+
+              <div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 176px 104px;gap:16px;padding:13px 16px;border-bottom:1px solid #E3E6EA">
+                <div style="min-width:0;display:flex;flex-direction:column;gap:2px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419"><span style="font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:#1F3A6E">4</span>&nbsp;&nbsp;Conducting the Experiment</p>
+                  <p style="margin:0;font-size:14px;line-height:1.45;color:#636B75">Supervised in class</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;line-height:1.45;color:#636B75">Checkpoint: Experiment carried out under supervision, in line with the research and planning already shared</p></sc-if>
+                </div>
+                <span style="font-size:15px;color:#4B535C">About 1–2 hours per lab session</span>
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <label for="b-s4" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 4 date</label>
+                  <input id="b-s4" type="date" defaultValue="2026-10-16" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:100%">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 16 Oct 2026</span></sc-if>
+                </div>
+                <span style="font-size:15px;color:#4B535C">3 weeks</span>
+                <div style="grid-column:1 / -1;margin-top:4px;padding-left:11px;border-left:2px solid #E3E6EA;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                  <span style="font-size:15px;color:#343A42">Book a re-run slot if your data needs it</span>
+                  <span style="font-size:14px;color:#636B75">No date</span>
+                  <button type="button" style="padding:6px 11px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer">Edit</button>
+                  <button type="button" style="padding:6px 11px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#fff;font-size:14px;font-weight:600;color:#8E1D17;cursor:pointer">Retire</button>
+                </div>
+              </div>
+
+              <div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 176px 104px;gap:16px;padding:13px 16px;border-bottom:1px solid #E3E6EA">
+                <div style="min-width:0;display:flex;flex-direction:column;gap:2px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419"><span style="font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:#1F3A6E">5</span>&nbsp;&nbsp;Data Analysis &amp; Conclusions</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;line-height:1.45;color:#636B75">Checkpoint: Data analysis shared with the teacher</p></sc-if>
+                </div>
+                <span style="font-size:15px;color:#4B535C">1–2 hours</span>
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <label for="b-s5" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 5 date</label>
+                  <input id="b-s5" type="date" defaultValue="2026-11-20" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:100%">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 20 Nov 2026</span></sc-if>
+                </div>
+                <span style="font-size:15px;color:#4B535C">5 weeks</span>
+              </div>
+
+              <div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 176px 104px;gap:16px;padding:13px 16px;border-bottom:1px solid #E3E6EA">
+                <div style="min-width:0;display:flex;flex-direction:column;gap:2px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419"><span style="font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:#1F3A6E">6</span>&nbsp;&nbsp;Finalising the Report</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;line-height:1.45;color:#636B75">Checkpoint: Final report submitted to the teacher</p></sc-if>
+                </div>
+                <span style="font-size:15px;color:#4B535C">Up to 4 hours</span>
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <label for="b-s6" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 6 date</label>
+                  <input id="b-s6" type="date" defaultValue="2027-01-22" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:100%">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 22 Jan 2027</span></sc-if>
+                </div>
+                <span style="font-size:15px;color:#4B535C">9 weeks</span>
+                <div style="grid-column:1 / -1;margin-top:4px;padding-left:11px;border-left:2px solid #E3E6EA;display:flex;flex-direction:column;gap:7px">
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                    <span style="font-size:15px;color:#343A42">Full draft in for feedback</span>
+                    <span style="font-size:14px;color:#636B75">4 Dec 2026</span>
+                    <button type="button" style="padding:6px 11px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer">Edit</button>
+                    <button type="button" style="padding:6px 11px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#fff;font-size:14px;font-weight:600;color:#8E1D17;cursor:pointer">Retire</button>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                    <span style="font-size:15px;color:#343A42">Catch-up window closes</span>
+                    <span style="font-size:14px;color:#636B75">13 Nov 2026</span>
+                    <button type="button" style="padding:6px 11px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer">Edit</button>
+                    <button type="button" style="padding:6px 11px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#fff;font-size:14px;font-weight:600;color:#8E1D17;cursor:pointer">Retire</button>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 176px 104px;gap:16px;padding:14px 16px;background:#F4F5F8;box-shadow:inset 4px 0 0 #1F3A6E">
+                <div style="min-width:0;display:flex;flex-direction:column;gap:2px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Completion date</p>
+                  <p style="margin:0;font-size:14px;line-height:1.45;color:#636B75">Set by the SEC. No stage date may be after it.</p>
+                </div>
+                <span style="font-size:15px;color:#4B535C"></span>
+                <span style="font-size:16px;font-weight:600;color:#101419;padding:8px 0">Fri 26 Feb 2027</span>
+                <span style="font-size:15px;color:#4B535C">5 weeks</span>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+              <button type="submit" style="height:48px;padding:0 20px;border-radius:8px;border:0;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Save dates</button>
+              <span style="font-size:15px;color:#4B535C">All 6 dates saved</span>
+              <button type="button" style="margin-left:auto;padding:11px 15px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer" style-hover="background:#EFF1F3">Add item</button>
+            </div>
+          </form>
+        </main>
+      </div>
+    </div>
+
+    <div id="1c" style="display:flex;flex-direction:column;gap:11px">
+      <div style="display:flex;align-items:center;gap:11px">
+        <span style="display:inline-flex;align-items:center;padding:4px 9px;border-radius:6px;background:#1F3A6E;color:#fff;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em">1c</span>
+        <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.025em;color:#101419">The year on one line</h2>
+      </div>
+      <p style="margin:0;max-width:1140px;font-size:15px;line-height:1.5;color:#4B535C;text-wrap:pretty">The memorable element is a band across the school year: six marks, the summer gap, and the completion date as a navy end-stop you cannot pass. It redraws as dates change, so bunching is visible before it is a problem. Rows below stay compact — items move out to their own section so the date list reads as one column. The risk: the band is the one decoration on the page, and it has to earn its 120px.</p>
+      <div data-screen-label="1c · dates set · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+        <header style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px;background:#fff;border-bottom:1px solid #E3E6EA">
+          <div style="display:flex;align-items:center;gap:11px;min-width:0">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <a href="#" style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none;white-space:nowrap">Leaving Cert Practical</a>
+            <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+            <span style="font-size:14px;color:#4B535C;white-space:nowrap">North Wicklow ETSS</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex:none">
+            <span style="font-size:14px;color:#343A42;white-space:nowrap">Katelyn Hanlon</span>
+            <a href="#" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+            <button type="button" style="padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap">Sign out</button>
+          </div>
+        </header>
+        <main style="padding:32px 28px 56px;max-width:880px;margin:0 auto">
+          <a href="#" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">My classes</a>
+          <h1 style="margin:10px 0 0;font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">6A Biology</h1>
+          <p style="margin:6px 0 0;font-size:16px;color:#4B535C">Biology, year 6, 2026/27</p>
+          <nav aria-label="Class sections" style="display:flex;gap:24px;margin-top:20px;border-bottom:1px solid #E3E6EA">
+            <a href="#" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#343A42;text-decoration:none">Students</a>
+            <a href="#" aria-current="page" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid #1F3A6E;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:none">Component</a>
+            <span aria-disabled="true" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#9AA2AC;cursor:not-allowed">Progress</span>
+          </nav>
+
+          <div style="margin-top:28px;display:flex;flex-direction:column;gap:7px">
+            <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">Biology in Practice Investigation, 2027</h2>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42;max-width:620px">Membranes, Osmosis &amp; Food Preservation · <span style="font-family:'Space Mono',monospace;font-size:14px;color:#636B75">2027L025C2EL</span></p>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42;max-width:620px">These are your class's own dates, not SEC deadlines. The SEC's only date is the completion date, <strong style="font-weight:600">26 Feb 2027</strong>.</p>
+          </div>
+
+          <div style="margin-top:20px;border:1px solid #DDE1E6;border-radius:10px;background:#fff;padding:18px 20px 14px">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:10px">
+              <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#636B75">Your dates across the year</span>
+              <span style="font-size:14px;font-weight:600;color:#101419;white-space:nowrap">Completion 26 Feb 2027</span>
+            </div>
+            <div style="position:relative;height:96px">
+              <div style="position:absolute;left:0;right:0;bottom:26px;height:1px;background:#DDE1E6"></div>
+              <div style="position:absolute;left:0%;bottom:26px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#1F3A6E">1</span>
+                <span style="width:1px;height:26px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:2.6%;bottom:26px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#1F3A6E">2</span>
+                <span style="width:1px;height:50px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:43.6%;bottom:26px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#1F3A6E">3</span>
+                <span style="width:1px;height:26px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:51.3%;bottom:26px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#1F3A6E">4</span>
+                <span style="width:1px;height:50px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:64.1%;bottom:26px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#1F3A6E">5</span>
+                <span style="width:1px;height:26px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;left:87.2%;bottom:26px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#1F3A6E">6</span>
+                <span style="width:1px;height:50px;background:#C9D0D8"></span>
+                <span style="width:11px;height:11px;border-radius:99px;background:#1F3A6E;margin-bottom:-6px"></span>
+              </div>
+              <div style="position:absolute;right:0;bottom:26px;width:3px;height:34px;background:#1F3A6E"></div>
+              <div style="position:absolute;left:0;right:0;bottom:0;height:20px">
+                <span style="position:absolute;left:1.1%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Jun</span>
+                <span style="position:absolute;left:12.1%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Jul</span>
+                <span style="position:absolute;left:23.4%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Aug</span>
+                <span style="position:absolute;left:34.8%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Sep</span>
+                <span style="position:absolute;left:45.8%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Oct</span>
+                <span style="position:absolute;left:57.1%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Nov</span>
+                <span style="position:absolute;left:68.1%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Dec</span>
+                <span style="position:absolute;left:79.5%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Jan</span>
+                <span style="position:absolute;left:90.8%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:12px;color:#636B75">Feb</span>
+              </div>
+            </div>
+          </div>
+
+          <form style="margin-top:14px;display:flex;flex-direction:column;gap:16px">
+            <div style="border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow:hidden">
+
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px;border-bottom:1px solid #E3E6EA">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">1</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Initial Response to the Brief</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">1–2 hours</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;color:#636B75">Checkpoint: Initial ideas discussed with the teacher</p></sc-if>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="c-s1" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 1 date</label>
+                  <input id="c-s1" type="date" defaultValue="2026-05-29" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 29 May 2026</span></sc-if>
+                </div>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px;border-bottom:1px solid #E3E6EA">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">2</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Background Research</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">2–3 hours</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;color:#636B75">Checkpoint: Investigative log shared with the teacher</p></sc-if>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="c-s2" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 2 date</label>
+                  <input id="c-s2" type="date" defaultValue="2026-06-05" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 5 Jun 2026</span></sc-if>
+                </div>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px;border-bottom:1px solid #E3E6EA">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">3</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Designing &amp; Planning the Experiment</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">2–3 hours</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;color:#636B75">Checkpoint: Plan discussed with the teacher (feasibility and safety)</p></sc-if>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="c-s3" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 3 date</label>
+                  <input id="c-s3" type="date" defaultValue="2026-09-25" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 25 Sep 2026</span></sc-if>
+                </div>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px;border-bottom:1px solid #E3E6EA">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">4</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Conducting the Experiment</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">About 1–2 hours per lab session · Supervised in class</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;color:#636B75">Checkpoint: Experiment carried out under supervision, in line with the research and planning already shared</p></sc-if>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="c-s4" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 4 date</label>
+                  <input id="c-s4" type="date" defaultValue="2026-10-16" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 16 Oct 2026</span></sc-if>
+                </div>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px;border-bottom:1px solid #E3E6EA">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">5</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Data Analysis &amp; Conclusions</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">1–2 hours</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;color:#636B75">Checkpoint: Data analysis shared with the teacher</p></sc-if>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="c-s5" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 5 date</label>
+                  <input id="c-s5" type="date" defaultValue="2026-11-20" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 20 Nov 2026</span></sc-if>
+                </div>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 16px">
+                <span style="flex:none;width:24px;font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#1F3A6E">6</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <p style="margin:0;font-size:16px;font-weight:600;color:#101419">Finalising the Report</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">Up to 4 hours</p>
+                  <sc-if value="{{ showCheckpoints }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14px;color:#636B75">Checkpoint: Final report submitted to the teacher</p></sc-if>
+                </div>
+                <div style="flex:none;display:flex;flex-direction:column;gap:2px;align-items:flex-end">
+                  <label for="c-s6" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Stage 6 date</label>
+                  <input id="c-s6" type="date" defaultValue="2027-01-22" style="border:1px solid #DDE1E6;border-radius:8px;padding:8px 10px;background:#fff;font-size:16px;color:#101419;width:176px">
+                  <sc-if value="{{ showWeekday }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#636B75">Fri 22 Jan 2027</span></sc-if>
+                </div>
+              </div>
+
+            </div>
+            <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+              <button type="submit" style="height:48px;padding:0 20px;border-radius:8px;border:0;background:#1F3A6E;color:#fff;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#16294E">Save dates</button>
+              <span style="font-size:15px;color:#4B535C">All 6 dates saved</span>
+            </div>
+          </form>
+
+          <section aria-labelledby="c-items" style="margin-top:32px;display:flex;flex-direction:column;gap:12px">
+            <h2 id="c-items" style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">Your items</h2>
+            <p style="margin:0;font-size:15px;line-height:1.5;color:#4B535C;max-width:620px">Your own to-dos, attached to a stage. Students see them on their component page and their timeline.</p>
+            <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px">
+              <li style="display:flex;align-items:center;gap:16px;border:1px solid #DDE1E6;border-radius:10px;background:#fff;padding:13px 16px">
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+                  <p style="margin:0;font-size:16px;color:#101419">Book a re-run slot if your data needs it</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">Stage 4 · no date</p>
+                </div>
+                <div style="display:flex;gap:9px;flex:none">
+                  <button type="button" style="padding:10px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer">Edit</button>
+                  <button type="button" style="padding:10px 14px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#fff;font-size:15px;font-weight:600;color:#8E1D17;cursor:pointer">Retire</button>
+                </div>
+              </li>
+              <li style="display:flex;align-items:center;gap:16px;border:1px solid #DDE1E6;border-radius:10px;background:#fff;padding:13px 16px">
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+                  <p style="margin:0;font-size:16px;color:#101419">Catch-up window closes</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">Stage 6 · 13 Nov 2026</p>
+                </div>
+                <div style="display:flex;gap:9px;flex:none">
+                  <button type="button" style="padding:10px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer">Edit</button>
+                  <button type="button" style="padding:10px 14px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#fff;font-size:15px;font-weight:600;color:#8E1D17;cursor:pointer">Retire</button>
+                </div>
+              </li>
+              <li style="display:flex;align-items:center;gap:16px;border:1px solid #DDE1E6;border-radius:10px;background:#fff;padding:13px 16px">
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+                  <p style="margin:0;font-size:16px;color:#101419">Full draft in for feedback</p>
+                  <p style="margin:0;font-size:14px;color:#636B75">Stage 6 · 4 Dec 2026</p>
+                </div>
+                <div style="display:flex;gap:9px;flex:none">
+                  <button type="button" style="padding:10px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer">Edit</button>
+                  <button type="button" style="padding:10px 14px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#fff;font-size:15px;font-weight:600;color:#8E1D17;cursor:pointer">Retire</button>
+                </div>
+              </li>
+            </ul>
+            <div>
+              <button type="button" style="padding:11px 15px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer" style-hover="background:#EFF1F3">Add item</button>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showCheckpoints&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Open questions&quot;},&quot;showWeekday&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Open questions&quot;}}"></script>
+</body>
+</html>
