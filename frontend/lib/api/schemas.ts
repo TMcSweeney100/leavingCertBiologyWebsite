@@ -188,6 +188,7 @@ export const studentItemSchema = z.object({ id: z.string(), text: z.string(), du
 
 export const myComponentSchema = z.object({
   componentId: z.string(),
+  classId: z.string(),
   className: z.string(),
   subjectCode: z.string(),
   subjectName: z.string(),

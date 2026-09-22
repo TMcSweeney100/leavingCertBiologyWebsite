@@ -237,7 +237,7 @@ public class ComponentService {
 
     public List<MyComponent> myComponents(Actor actor) {
         return components.forStudent(actor.userId()).stream()
-                .map(c -> new MyComponent(c.componentId(), c.className(), c.subjectCode(), c.subjectName(), c.briefTitle(), c.completionDate()))
+                .map(c -> new MyComponent(c.componentId(), c.classId(), c.className(), c.subjectCode(), c.subjectName(), c.briefTitle(), c.completionDate()))
                 .toList();
     }
 

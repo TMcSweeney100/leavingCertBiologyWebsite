@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#E6E8EC;font-family:'Public Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:#1F3A6E}
+  a:hover{color:#16294E}
+  input,button,select{font:inherit}
+  input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #1F3A6E;outline-offset:2px}
+</style>
+</helmet>
+
+<section style="width:max-content;padding:56px 56px 96px;display:flex;flex-direction:column;gap:40px">
+
+  <div style="max-width:900px;display:flex;flex-direction:column;gap:13px">
+    <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.08em;color:#5C6470">Pack D-4 · round 3 · <strong style="font-weight:700">2c with a collapsing calendar</strong></p>
+    <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">Best of both: the aside folds away</h1>
+    <p style="margin:0;font-size:16px;line-height:1.55;color:#343A42;text-wrap:pretty">One change makes this work: <strong style="font-weight:600">navigation moves out of the aside and into the header row</strong>, as in <a href="#2b">2b</a>. Nothing a student needs to reach can then disappear with the calendar, and the aside becomes purely a second way of reading the same dates. Collapsed, the list gets <a href="#2b">2b</a>'s full-width four-column row.</p>
+    <p style="margin:0;font-size:15px;line-height:1.55;color:#4B535C;text-wrap:pretty">The toggle is a real control with a word on it, not an icon, and the state goes in the URL beside the view — <span style="font-family:'Space Mono',monospace;font-size:14px">?view=list&amp;from=2026-10-12&amp;calendar=off</span> — so back works and a shared link reopens what the student was looking at. Default: shown at 1140, absent at 390 (where the Month view already does the job).</p>
+  </div>
+
+  <div id="3a" style="display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#1F3A6E;background:#EFF1F3;border-radius:6px;padding:4px 9px">3a</span>
+      <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:23px;font-weight:700;letter-spacing:-.025em;color:#101419">Calendar shown — the default at 1140</h2>
+    </div>
+
+    <div data-screen-label="3a · /home list · calendar shown · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+      <header style="background:#fff;border-bottom:1px solid #E3E6EA">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px">
+          <div style="display:flex;align-items:center;gap:11px;min-width:0">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <a href="#3a" style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none;white-space:nowrap">Leaving Cert Practical</a>
+            <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+            <span style="font-size:14px;color:#4B535C;white-space:nowrap">North Wicklow ETSS</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex:none">
+            <span style="font-size:14px;color:#343A42;white-space:nowrap">Cian Murphy</span>
+            <a href="#3a" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+            <button type="button" style="padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap">Sign out</button>
+          </div>
+        </div>
+        <nav aria-label="Main" style="display:flex;align-items:center;gap:10px;padding:0 28px;border-top:1px solid #E3E6EA">
+          <a href="#3a" aria-current="page" style="min-height:52px;display:flex;align-items:center;padding:0 4px;margin-right:8px;box-shadow:inset 0 -3px 0 #1F3A6E;font-size:16px;font-weight:700;color:#1F3A6E;text-decoration:none">Timeline</a>
+          <a href="#3a" style="min-height:52px;display:flex;align-items:center;gap:9px;padding:0 4px;font-size:16px;font-weight:600;color:#343A42;text-decoration:none"><span aria-hidden="true" style="width:4px;height:17px;background:#0E6E7A;flex:none"></span>Biology</a>
+          <a href="#3a" style="min-height:52px;display:flex;align-items:center;gap:9px;padding:0 4px;font-size:16px;font-weight:600;color:#343A42;text-decoration:none"><span aria-hidden="true" style="width:4px;height:17px;background:#8E2846;flex:none"></span>Chemistry</a>
+          <span style="min-height:52px;display:flex;align-items:center;gap:9px;padding:0 4px;font-size:16px;color:#636B75"><span aria-hidden="true" style="width:4px;height:17px;background:#6D3AA8;flex:none"></span>Business <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#A04806">pending approval</span></span>
+          <span style="flex:1"></span>
+          <a href="#3a" style="min-height:52px;display:flex;align-items:center;font-size:16px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Join a class</a>
+        </nav>
+      </header>
+
+      <div style="display:flex;gap:40px;padding:34px 28px 56px">
+        <main style="flex:1;min-width:0;display:flex;flex-direction:column;gap:24px">
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px">
+            <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Timeline</h1>
+            <button type="button" style="min-height:48px;padding:0 20px;border:0;border-radius:8px;background:#1F3A6E;font-size:16px;font-weight:600;color:#fff;cursor:pointer">Add my own item</button>
+          </div>
+
+          <article style="border-radius:10px;border:1px solid #1F3A6E;background:#fff;overflow:hidden">
+            <div style="background:#1F3A6E;padding:18px 22px;display:flex;align-items:baseline;justify-content:space-between;gap:20px">
+              <p style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:700;letter-spacing:-.035em;line-height:1;color:#fff">in 2 days</p>
+              <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#C3CDE1">Next up · Wed 14 Oct 2026</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;padding:16px 22px">
+              <span aria-hidden="true" style="width:11px;height:11px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+              <div style="flex:1;min-width:0">
+                <p style="margin:0;font-size:18px;font-weight:600;line-height:1.35;color:#101419">Irish oral mock</p>
+                <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Test · my own item · only you can see this</p>
+              </div>
+              <a href="#3a" style="flex:none;font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Edit</a>
+            </div>
+          </article>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+            <nav aria-label="Timeline view" style="display:flex;gap:3px;padding:3px;border-radius:10px;background:#EFF1F3">
+              <a href="#3a" aria-current="page" style="min-height:38px;display:flex;align-items:center;padding:0 16px;border-radius:7px;background:#fff;border:1px solid #DDE1E6;font-size:15px;font-weight:600;color:#1F3A6E;text-decoration:none">List</a>
+              <a href="#3a" style="min-height:38px;display:flex;align-items:center;padding:0 16px;border-radius:7px;border:1px solid transparent;font-size:15px;font-weight:600;color:#4B535C;text-decoration:none">Week</a>
+              <a href="#3a" style="min-height:38px;display:flex;align-items:center;padding:0 16px;border-radius:7px;border:1px solid transparent;font-size:15px;font-weight:600;color:#4B535C;text-decoration:none">Month</a>
+            </nav>
+            <div style="display:flex;align-items:center;gap:18px">
+              <a href="#3a" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Previous</a>
+              <h2 style="margin:0;font-size:16px;font-weight:600;color:#101419">12 Oct – 8 Nov 2026</h2>
+              <a href="#3a" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Next</a>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <article style="border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:11px 20px;border-bottom:1px solid #E3E6EA;background:#F7F8F9">
+                <h3 style="margin:0;font-size:16px;font-weight:600;color:#101419">Friday 16 Oct</h3>
+                <span style="font-size:15px;color:#4B535C">in 4 days</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-left:4px solid #0E6E7A">
+                <span aria-hidden="true" style="width:11px;height:11px;background:#1F3A6E;flex:none"></span>
+                <div style="min-width:0">
+                  <p style="margin:0;font-size:18px;font-weight:600;line-height:1.35;color:#101419">Stage 4 Conducting the Experiment</p>
+                  <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Stage date · Biology</p>
+                </div>
+              </div>
+            </article>
+            <article style="border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:11px 20px;border-bottom:1px solid #E3E6EA;background:#F7F8F9">
+                <h3 style="margin:0;font-size:16px;font-weight:600;color:#101419">Wednesday 21 Oct</h3>
+                <span style="font-size:15px;color:#4B535C">in 9 days</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:16px 20px">
+                <span aria-hidden="true" style="width:11px;height:11px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+                <div style="min-width:0">
+                  <p style="margin:0;font-size:18px;font-weight:600;line-height:1.35;color:#101419">English comparative essay</p>
+                  <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Essay · my own item</p>
+                </div>
+              </div>
+            </article>
+            <article style="border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:11px 20px;border-bottom:1px solid #E3E6EA;background:#F7F8F9">
+                <h3 style="margin:0;font-size:16px;font-weight:600;color:#101419">Friday 23 Oct</h3>
+                <span style="font-size:15px;color:#4B535C">in 11 days</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-left:4px solid #0E6E7A">
+                <span aria-hidden="true" style="width:11px;height:11px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+                <div style="min-width:0">
+                  <p style="margin:0;font-size:18px;font-weight:600;line-height:1.35;color:#101419">Biology class test</p>
+                  <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Test · my own item · Biology</p>
+                </div>
+              </div>
+            </article>
+          </div>
+        </main>
+
+        <aside style="width:344px;flex:none;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;justify-content:flex-end">
+            <button type="button" aria-expanded="true" style="min-height:44px;padding:0 15px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer">Hide calendar</button>
+          </div>
+          <div style="border-radius:10px;border:1px solid #DDE1E6;background:#fff;padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+              <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.02em;color:#101419">October 2026</h2>
+              <a href="#3a" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Month view</a>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center">
+              <span style="font-family:'Space Mono',monospace;font-size:12px;color:#636B75">M</span>
+              <span style="font-family:'Space Mono',monospace;font-size:12px;color:#636B75">T</span>
+              <span style="font-family:'Space Mono',monospace;font-size:12px;color:#636B75">W</span>
+              <span style="font-family:'Space Mono',monospace;font-size:12px;color:#636B75">T</span>
+              <span style="font-family:'Space Mono',monospace;font-size:12px;color:#636B75">F</span>
+              <span style="font-family:'Space Mono',monospace;font-size:12px;color:#636B75">S</span>
+              <span style="font-family:'Space Mono',monospace;font-size:12px;color:#636B75">S</span>
+              <span style="padding:7px 0;font-size:14px;color:#9AA2AC">28</span>
+              <span style="padding:7px 0;font-size:14px;color:#9AA2AC">29</span>
+              <span style="padding:7px 0;font-size:14px;color:#9AA2AC">30</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">1</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">2</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">3</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">4</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">5</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">6</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">7</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">8</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">9</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">10</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">11</span>
+              <span style="padding:7px 0;border-radius:6px;background:#1F3A6E;font-size:14px;font-weight:700;color:#fff">12</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">13</span>
+              <span style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;font-size:14px;color:#101419;font-weight:700">14<span aria-hidden="true" style="width:5px;height:5px;border-radius:99px;background:#1F3A6E"></span></span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">15</span>
+              <span style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;font-size:14px;color:#101419;font-weight:700">16<span aria-hidden="true" style="width:5px;height:5px;border-radius:99px;background:#1F3A6E"></span></span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">17</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">18</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">19</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">20</span>
+              <span style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;font-size:14px;color:#101419;font-weight:700">21<span aria-hidden="true" style="width:5px;height:5px;border-radius:99px;background:#1F3A6E"></span></span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">22</span>
+              <span style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;font-size:14px;color:#101419;font-weight:700">23<span aria-hidden="true" style="width:5px;height:5px;border-radius:99px;background:#1F3A6E"></span></span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">24</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">25</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">26</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">27</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">28</span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">29</span>
+              <span style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;font-size:14px;color:#101419;font-weight:700">30<span aria-hidden="true" style="width:5px;height:5px;border-radius:99px;background:#1F3A6E"></span></span>
+              <span style="padding:7px 0;font-size:14px;color:#343A42">31</span>
+              <span style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;font-size:14px;color:#101419;font-weight:700">1<span aria-hidden="true" style="width:5px;height:5px;border-radius:99px;background:#1F3A6E"></span></span>
+            </div>
+            <p style="margin:0;font-size:14px;line-height:1.45;color:#636B75">A dot means something is due. The list beside it says what.</p>
+          </div>
+
+          <div style="border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+            <p style="margin:0;padding:14px 18px 10px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">Completion dates</p>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:11px 18px;border-top:1px solid #E3E6EA;border-left:4px solid #0E6E7A">
+              <span style="font-size:16px;color:#343A42">Biology</span>
+              <span style="font-size:15px;color:#4B535C">26 Feb 2027</span>
+            </div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:11px 18px;border-top:1px solid #E3E6EA;border-left:4px solid #8E2846">
+              <span style="font-size:16px;color:#343A42">Chemistry</span>
+              <span style="font-size:15px;color:#4B535C">23 Apr 2027</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <p style="margin:0;max-width:1140px;font-size:15px;line-height:1.5;color:#636B75;text-wrap:pretty">The aside is now only the calendar and the two completion dates — no navigation, no status. Everything that must always be reachable sits in the header row above.</p>
+
+    <div style="display:flex;align-items:center;gap:10px;margin-top:14px">
+      <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#1F3A6E;background:#EFF1F3;border-radius:6px;padding:4px 9px">3a</span>
+      <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:23px;font-weight:700;letter-spacing:-.025em;color:#101419">Calendar hidden — the list takes the width</h2>
+    </div>
+
+    <div data-screen-label="3a · /home list · calendar hidden · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+      <header style="background:#fff;border-bottom:1px solid #E3E6EA">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px">
+          <div style="display:flex;align-items:center;gap:11px;min-width:0">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <a href="#3a" style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none;white-space:nowrap">Leaving Cert Practical</a>
+            <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+            <span style="font-size:14px;color:#4B535C;white-space:nowrap">North Wicklow ETSS</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex:none">
+            <span style="font-size:14px;color:#343A42;white-space:nowrap">Cian Murphy</span>
+            <a href="#3a" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+            <button type="button" style="padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap">Sign out</button>
+          </div>
+        </div>
+        <nav aria-label="Main" style="display:flex;align-items:center;gap:10px;padding:0 28px;border-top:1px solid #E3E6EA">
+          <a href="#3a" aria-current="page" style="min-height:52px;display:flex;align-items:center;padding:0 4px;margin-right:8px;box-shadow:inset 0 -3px 0 #1F3A6E;font-size:16px;font-weight:700;color:#1F3A6E;text-decoration:none">Timeline</a>
+          <a href="#3a" style="min-height:52px;display:flex;align-items:center;gap:9px;padding:0 4px;font-size:16px;font-weight:600;color:#343A42;text-decoration:none"><span aria-hidden="true" style="width:4px;height:17px;background:#0E6E7A;flex:none"></span>Biology</a>
+          <a href="#3a" style="min-height:52px;display:flex;align-items:center;gap:9px;padding:0 4px;font-size:16px;font-weight:600;color:#343A42;text-decoration:none"><span aria-hidden="true" style="width:4px;height:17px;background:#8E2846;flex:none"></span>Chemistry</a>
+          <span style="min-height:52px;display:flex;align-items:center;gap:9px;padding:0 4px;font-size:16px;color:#636B75"><span aria-hidden="true" style="width:4px;height:17px;background:#6D3AA8;flex:none"></span>Business <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#A04806">pending approval</span></span>
+          <span style="flex:1"></span>
+          <a href="#3a" style="min-height:52px;display:flex;align-items:center;font-size:16px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Join a class</a>
+        </nav>
+      </header>
+
+      <main style="max-width:916px;margin:0 auto;padding:34px 28px 56px;display:flex;flex-direction:column;gap:26px">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px">
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Timeline</h1>
+          <div style="display:flex;align-items:center;gap:10px">
+            <button type="button" aria-expanded="false" style="min-height:48px;padding:0 16px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:16px;font-weight:600;color:#343A42;cursor:pointer">Show calendar</button>
+            <button type="button" style="min-height:48px;padding:0 20px;border:0;border-radius:8px;background:#1F3A6E;font-size:16px;font-weight:600;color:#fff;cursor:pointer">Add my own item</button>
+          </div>
+        </div>
+
+        <article style="border-radius:10px;border:1px solid #1F3A6E;background:#fff;overflow:hidden">
+          <div style="background:#1F3A6E;padding:20px 24px;display:flex;align-items:baseline;justify-content:space-between;gap:20px">
+            <p style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:48px;font-weight:700;letter-spacing:-.04em;line-height:1;color:#fff">in 2 days</p>
+            <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#C3CDE1">Next up · Wed 14 Oct 2026</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;padding:16px 24px">
+            <span aria-hidden="true" style="width:11px;height:11px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+            <div style="flex:1;min-width:0">
+              <p style="margin:0;font-size:18px;font-weight:600;line-height:1.35;color:#101419">Irish oral mock</p>
+              <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Test · my own item · only you can see this</p>
+            </div>
+            <a href="#3a" style="flex:none;font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Edit</a>
+          </div>
+        </article>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:20px">
+          <nav aria-label="Timeline view" style="display:flex;gap:3px;padding:3px;border-radius:10px;background:#EFF1F3">
+            <a href="#3a" aria-current="page" style="min-height:38px;display:flex;align-items:center;padding:0 18px;border-radius:7px;background:#fff;border:1px solid #DDE1E6;font-size:15px;font-weight:600;color:#1F3A6E;text-decoration:none">List</a>
+            <a href="#3a" style="min-height:38px;display:flex;align-items:center;padding:0 18px;border-radius:7px;border:1px solid transparent;font-size:15px;font-weight:600;color:#4B535C;text-decoration:none">Week</a>
+            <a href="#3a" style="min-height:38px;display:flex;align-items:center;padding:0 18px;border-radius:7px;border:1px solid transparent;font-size:15px;font-weight:600;color:#4B535C;text-decoration:none">Month</a>
+          </nav>
+          <div style="display:flex;align-items:center;gap:18px">
+            <a href="#3a" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Previous</a>
+            <h2 style="margin:0;font-size:16px;font-weight:600;color:#101419">12 Oct – 8 Nov 2026</h2>
+            <a href="#3a" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Next</a>
+          </div>
+        </div>
+
+        <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column">
+          <li style="padding:0 0 10px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">October</p>
+          </li>
+          <li style="display:flex;align-items:center;gap:24px;padding:17px 0;border-top:1px solid #E3E6EA">
+            <span style="width:96px;flex:none;font-family:'Space Mono',monospace;font-size:15px;color:#636B75">Wed 14 Oct</span>
+            <span aria-hidden="true" style="width:11px;height:11px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+            <div style="flex:1;min-width:0">
+              <p style="margin:0;font-size:17px;font-weight:600;line-height:1.35;color:#101419">Irish oral mock</p>
+              <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Test · my own item</p>
+            </div>
+            <span style="flex:none;width:96px;text-align:right;font-size:15px;color:#4B535C">in 2 days</span>
+          </li>
+          <li style="display:flex;align-items:center;gap:24px;padding:17px 0 17px 18px;border-top:1px solid #E3E6EA;box-shadow:inset 4px 0 0 #0E6E7A">
+            <span style="width:96px;flex:none;font-family:'Space Mono',monospace;font-size:15px;color:#636B75">Fri 16 Oct</span>
+            <span aria-hidden="true" style="width:11px;height:11px;background:#1F3A6E;flex:none"></span>
+            <div style="flex:1;min-width:0">
+              <p style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;letter-spacing:-.018em;line-height:1.3;color:#101419">Stage 4 Conducting the Experiment</p>
+              <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Stage date · Biology</p>
+            </div>
+            <span style="flex:none;width:96px;text-align:right;font-size:15px;color:#4B535C">in 4 days</span>
+          </li>
+          <li style="display:flex;align-items:center;gap:24px;padding:17px 0;border-top:1px solid #E3E6EA">
+            <span style="width:96px;flex:none;font-family:'Space Mono',monospace;font-size:15px;color:#636B75">Wed 21 Oct</span>
+            <span aria-hidden="true" style="width:11px;height:11px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+            <div style="flex:1;min-width:0">
+              <p style="margin:0;font-size:17px;font-weight:600;line-height:1.35;color:#101419">English comparative essay</p>
+              <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Essay · my own item</p>
+            </div>
+            <span style="flex:none;width:96px;text-align:right;font-size:15px;color:#4B535C">in 9 days</span>
+          </li>
+          <li style="display:flex;align-items:center;gap:24px;padding:17px 0;border-top:1px solid #E3E6EA">
+            <span style="width:96px;flex:none;font-family:'Space Mono',monospace;font-size:15px;color:#636B75">Fri 23 Oct</span>
+            <span aria-hidden="true" style="width:11px;height:11px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+            <div style="flex:1;min-width:0">
+              <p style="margin:0;font-size:17px;font-weight:600;line-height:1.35;color:#101419">Biology class test</p>
+              <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Test · my own item · Biology</p>
+            </div>
+            <span style="flex:none;width:96px;text-align:right;font-size:15px;color:#4B535C">in 11 days</span>
+          </li>
+          <li style="display:flex;align-items:center;gap:24px;padding:17px 0 17px 18px;border-top:1px solid #E3E6EA;box-shadow:inset 4px 0 0 #8E2846">
+            <span style="width:96px;flex:none;font-family:'Space Mono',monospace;font-size:15px;color:#636B75">Fri 30 Oct</span>
+            <span aria-hidden="true" style="width:11px;height:11px;background:#1F3A6E;flex:none"></span>
+            <div style="flex:1;min-width:0">
+              <p style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;letter-spacing:-.018em;line-height:1.3;color:#101419">Stage 3 Designing &amp; Planning the Experiment</p>
+              <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Stage date · Chemistry</p>
+            </div>
+            <span style="flex:none;width:96px;text-align:right;font-size:15px;color:#4B535C">in 18 days</span>
+          </li>
+          <li style="padding:26px 0 10px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">November</p>
+          </li>
+          <li style="display:flex;align-items:center;gap:24px;padding:17px 0;border-top:1px solid #E3E6EA;border-bottom:1px solid #E3E6EA">
+            <span style="width:96px;flex:none;font-family:'Space Mono',monospace;font-size:15px;color:#636B75">Sun 1 Nov</span>
+            <span aria-hidden="true" style="width:11px;height:11px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+            <div style="flex:1;min-width:0">
+              <p style="margin:0;font-size:17px;font-weight:600;line-height:1.35;color:#101419">CAO account</p>
+              <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Deadline · my own item</p>
+            </div>
+            <span style="flex:none;width:96px;text-align:right;font-size:15px;color:#4B535C">in 20 days</span>
+          </li>
+        </ul>
+      </main>
+    </div>
+
+    <div style="max-width:1140px;display:flex;flex-direction:column;gap:9px;padding:20px 24px;border-radius:10px;border:1px solid #DDE1E6;background:#fff">
+      <h3 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;letter-spacing:-.02em;color:#101419">What the toggle costs, and what it buys</h3>
+      <p style="margin:0;font-size:16px;line-height:1.55;color:#343A42;text-wrap:pretty">Collapsed, the day cards give way to the flat row grid — date, marker, item, days remaining — because a 916px card with one row inside it is mostly air. That's the one thing to agree: <strong style="font-weight:600">the toggle changes the row form, not just the column width.</strong> If you'd rather the day cards stayed and simply got wider, say so and I'll draw that instead.</p>
+      <p style="margin:0;font-size:16px;line-height:1.55;color:#343A42;text-wrap:pretty">It also adds one preference to remember. The URL carries it, so nothing new is stored server-side, but it does mean a new query parameter and a line in <span style="font-family:'Space Mono',monospace;font-size:14px">NOTES.md</span> under open questions. Motion: the aside is the page's one designed moment — width and opacity, 160ms, the D-1 easing, nothing under reduced motion.</p>
+    </div>
+  </div>
+
+</section>
+
+
+
+<section style="width:max-content;padding:0 56px 96px;display:flex;flex-direction:column;gap:44px">
+
+  <div style="max-width:900px;display:flex;flex-direction:column;gap:13px">
+    <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.08em;color:#5C6470">Pack D-4 · the student timeline · direction 2e Navy · round 2, rough · <strong style="font-weight:700">1140 first</strong></p>
+    <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">Three directions for <span style="font-family:'Space Mono',monospace;font-size:30px;font-weight:400;letter-spacing:-.01em">/home</span> at 1140</h1>
+    <p style="margin:0;font-size:16px;line-height:1.55;color:#343A42;text-wrap:pretty">Same three ideas as round 1, now decided at laptop width and drawn as their own layouts rather than a widened phone — each one spends the extra 750px differently. The 390 beside each is the companion, not the source. Round 1 is still below if you want to compare.</p>
+    <p style="margin:0;font-size:15px;line-height:1.55;color:#4B535C;text-wrap:pretty">Today is Mon 12 Oct 2026; approved in 6A Biology and 6C Chemistry, pending in 6 Business. Stage names are real; other dates are placeholders. Item kinds are told apart by a marker <strong style="font-weight:600">and</strong> a word, never by colour. Reply with <a href="#2a">2a</a>, <a href="#2b">2b</a> or <a href="#2c">2c</a>.</p>
+  </div>
+
+  <!-- ══════════════════════════════  2A  ══════════════════════════════ -->
+  <div id="2a" style="display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#1F3A6E;background:#EFF1F3;border-radius:6px;padding:4px 9px">2a</span>
+      <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:23px;font-weight:700;letter-spacing:-.025em;color:#101419">Standing rail, grouped list</h2>
+      <p style="margin:0;font-size:15px;color:#4B535C">Navigation is a column that never moves · weight fixed by source · approval status sits under the subjects</p>
+    </div>
+
+    <div style="display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap">
+      <div data-screen-label="2a · /home list · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+        <header style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px;background:#fff;border-bottom:1px solid #E3E6EA">
+          <div style="display:flex;align-items:center;gap:11px;min-width:0">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <a href="#2a" style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none;white-space:nowrap">Leaving Cert Practical</a>
+            <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+            <span style="font-size:14px;color:#4B535C;white-space:nowrap">North Wicklow ETSS</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex:none">
+            <span style="font-size:14px;color:#343A42;white-space:nowrap">Cian Murphy</span>
+            <a href="#2a" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+            <button type="button" style="padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap">Sign out</button>
+          </div>
+        </header>
+
+        <div style="display:flex;gap:44px;padding:36px 28px 56px">
+          <nav aria-label="Main" style="width:248px;flex:none;display:flex;flex-direction:column;gap:22px">
+            <div style="display:flex;flex-direction:column">
+              <a href="#2a" aria-current="page" style="min-height:44px;display:flex;align-items:center;padding:0 14px;border-radius:8px;background:#F4F5F8;box-shadow:inset 3px 0 0 #1F3A6E;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:none">Timeline</a>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <p style="margin:0 0 2px;padding:0 14px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">My components</p>
+              <a href="#2a" style="min-height:48px;display:flex;flex-direction:column;justify-content:center;gap:1px;padding:6px 14px;border-left:4px solid #0E6E7A;text-decoration:none">
+                <span style="font-size:16px;font-weight:600;color:#101419">Biology</span>
+                <span style="font-size:14px;color:#4B535C">6A Biology</span>
+              </a>
+              <a href="#2a" style="min-height:48px;display:flex;flex-direction:column;justify-content:center;gap:1px;padding:6px 14px;border-left:4px solid #8E2846;text-decoration:none">
+                <span style="font-size:16px;font-weight:600;color:#101419">Chemistry</span>
+                <span style="font-size:14px;color:#4B535C">6C Chemistry</span>
+              </a>
+              <div style="display:flex;flex-direction:column;gap:2px;padding:9px 14px;border-left:4px solid #6D3AA8;background:#F6EDE6;border-radius:0 8px 8px 0">
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#A04806">Pending approval</span>
+                <span style="font-size:16px;font-weight:600;color:#101419">Business</span>
+                <span style="font-size:14px;line-height:1.4;color:#4B535C">A teacher needs to approve you.</span>
+              </div>
+            </div>
+            <a href="#2a" style="min-height:44px;display:flex;align-items:center;padding:0 14px;font-size:16px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Join a class</a>
+          </nav>
+
+          <main style="flex:1;min-width:0;display:flex;flex-direction:column;gap:26px">
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px">
+              <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Timeline</h1>
+              <button type="button" style="min-height:48px;padding:0 20px;border:0;border-radius:8px;background:#1F3A6E;font-size:16px;font-weight:600;color:#fff;cursor:pointer">Add my own item</button>
+            </div>
+
+            <div style="border-radius:10px;background:#1F3A6E;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:32px">
+              <div style="min-width:0">
+                <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#C3CDE1">Next up</p>
+                <p style="margin:8px 0 0;font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:600;letter-spacing:-.02em;line-height:1.2;color:#fff">Irish oral mock</p>
+                <p style="margin:4px 0 0;font-size:16px;color:#C3CDE1">Test · my own item · Wednesday 14 Oct 2026 · only you can see this</p>
+              </div>
+              <p style="margin:0;flex:none;font-family:'Space Grotesk',sans-serif;font-size:60px;font-weight:700;letter-spacing:-.04em;line-height:.95;color:#fff;text-align:right">in 2<br><span style="font-size:32px;letter-spacing:-.025em">days</span></p>
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:20px">
+              <nav aria-label="Timeline view" style="display:flex;gap:3px;padding:3px;border-radius:10px;background:#EFF1F3">
+                <a href="#2a" aria-current="page" style="min-height:38px;display:flex;align-items:center;padding:0 18px;border-radius:7px;background:#fff;border:1px solid #DDE1E6;font-size:15px;font-weight:600;color:#1F3A6E;text-decoration:none">List</a>
+                <a href="#2a" style="min-height:38px;display:flex;align-items:center;padding:0 18px;border-radius:7px;border:1px solid transparent;font-size:15px;font-weight:600;color:#4B535C;text-decoration:none">Week</a>
+                <a href="#2a" style="min-height:38px;display:flex;align-items:center;padding:0 18px;border-radius:7px;border:1px solid transparent;font-size:15px;font-weight:600;color:#4B535C;text-decoration:none">Month</a>
+              </nav>
+              <div style="display:flex;align-items:center;gap:18px">
+                <a href="#2a" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Previous</a>
+                <h2 style="margin:0;font-size:16px;font-weight:600;color:#101419">12 Oct – 8 Nov 2026</h2>
+                <a href="#2a" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Next</a>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:22px">
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">This week · 12–18 Oct</p>
+                <ul style="margin:0;padding:0;list-style:none;border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+                  <li style="display:flex;align-items:center;gap:22px;padding:16px 22px;border-bottom:1px solid #E3E6EA">
+                    <div style="width:78px;flex:none;display:flex;align-items:baseline;gap:8px">
+                      <span style="font-size:15px;color:#636B75">Wed</span>
+                      <span style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;color:#101419">14</span>
+                    </div>
+                    <span aria-hidden="true" style="width:11px;height:3px;background:#4B535C;flex:none"></span>
+                    <div style="flex:1;min-width:0">
+                      <p style="margin:0;font-size:17px;line-height:1.35;color:#101419">Irish oral mock</p>
+                      <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Test · my own item</p>
+                    </div>
+                    <span style="flex:none;font-size:15px;color:#4B535C">in 2 days</span>
+                  </li>
+                  <li style="display:flex;align-items:center;gap:22px;padding:16px 22px;border-left:4px solid #0E6E7A">
+                    <div style="width:78px;flex:none;display:flex;align-items:baseline;gap:8px">
+                      <span style="font-size:15px;color:#636B75">Fri</span>
+                      <span style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;color:#101419">16</span>
+                    </div>
+                    <span aria-hidden="true" style="width:11px;height:11px;background:#1F3A6E;flex:none"></span>
+                    <div style="flex:1;min-width:0">
+                      <p style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:600;letter-spacing:-.015em;line-height:1.3;color:#101419">Stage 4 Conducting the Experiment</p>
+                      <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Stage date · Biology</p>
+                    </div>
+                    <span style="flex:none;font-size:15px;color:#4B535C">in 4 days</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">Next week · 19–25 Oct</p>
+                <ul style="margin:0;padding:0;list-style:none;border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+                  <li style="display:flex;align-items:center;gap:22px;padding:16px 22px;border-bottom:1px solid #E3E6EA">
+                    <div style="width:78px;flex:none;display:flex;align-items:baseline;gap:8px">
+                      <span style="font-size:15px;color:#636B75">Wed</span>
+                      <span style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;color:#101419">21</span>
+                    </div>
+                    <span aria-hidden="true" style="width:11px;height:3px;background:#4B535C;flex:none"></span>
+                    <div style="flex:1;min-width:0">
+                      <p style="margin:0;font-size:17px;line-height:1.35;color:#101419">English comparative essay</p>
+                      <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Essay · my own item</p>
+                    </div>
+                    <span style="flex:none;font-size:15px;color:#4B535C">in 9 days</span>
+                  </li>
+                  <li style="display:flex;align-items:center;gap:22px;padding:16px 22px;border-left:4px solid #0E6E7A">
+                    <div style="width:78px;flex:none;display:flex;align-items:baseline;gap:8px">
+                      <span style="font-size:15px;color:#636B75">Fri</span>
+                      <span style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;color:#101419">23</span>
+                    </div>
+                    <span aria-hidden="true" style="width:11px;height:3px;background:#4B535C;flex:none"></span>
+                    <div style="flex:1;min-width:0">
+                      <p style="margin:0;font-size:17px;line-height:1.35;color:#101419">Biology class test</p>
+                      <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Test · my own item · Biology</p>
+                    </div>
+                    <span style="flex:none;font-size:15px;color:#4B535C">in 11 days</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">26 Oct – 1 Nov</p>
+                <ul style="margin:0;padding:0;list-style:none;border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+                  <li style="display:flex;align-items:center;gap:22px;padding:16px 22px;border-bottom:1px solid #E3E6EA;border-left:4px solid #8E2846">
+                    <div style="width:78px;flex:none;display:flex;align-items:baseline;gap:8px">
+                      <span style="font-size:15px;color:#636B75">Fri</span>
+                      <span style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;color:#101419">30</span>
+                    </div>
+                    <span aria-hidden="true" style="width:11px;height:11px;background:#1F3A6E;flex:none"></span>
+                    <div style="flex:1;min-width:0">
+                      <p style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:600;letter-spacing:-.015em;line-height:1.3;color:#101419">Stage 3 Designing &amp; Planning the Experiment</p>
+                      <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Stage date · Chemistry</p>
+                    </div>
+                    <span style="flex:none;font-size:15px;color:#4B535C">in 18 days</span>
+                  </li>
+                  <li style="display:flex;align-items:center;gap:22px;padding:16px 22px">
+                    <div style="width:78px;flex:none;display:flex;align-items:baseline;gap:8px">
+                      <span style="font-size:15px;color:#636B75">Sun</span>
+                      <span style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em;color:#101419">1</span>
+                    </div>
+                    <span aria-hidden="true" style="width:11px;height:3px;background:#4B535C;flex:none"></span>
+                    <div style="flex:1;min-width:0">
+                      <p style="margin:0;font-size:17px;line-height:1.35;color:#101419">CAO account</p>
+                      <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Deadline · my own item</p>
+                    </div>
+                    <span style="flex:none;font-size:15px;color:#4B535C">in 20 days</span>
+                  </li>
+                </ul>
+              </div>
+
+              <p style="margin:0;font-size:16px;line-height:1.5;color:#4B535C">Nothing else until <a href="#2a" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Thursday 19 Nov</a>.</p>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 companion · the rail becomes a bottom bar</p>
+        <div data-screen-label="2a · /home list · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+          <header style="background:#fff;border-bottom:1px solid #E3E6EA">
+            <div style="display:flex;align-items:center;gap:9px;padding:10px 16px">
+              <img src="assets/crest-nwetss.png" alt="" style="width:26px;height:26px;object-fit:contain;flex:none">
+              <a href="#2a" style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none">Leaving Cert Practical</a>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 16px 11px">
+              <span style="font-size:14px;color:#4B535C">Cian Murphy</span>
+              <div style="display:flex;align-items:center;gap:10px;flex:none">
+                <a href="#2a" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Change password</a>
+                <button type="button" style="padding:9px 12px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer">Sign out</button>
+              </div>
+            </div>
+          </header>
+          <div style="padding:20px 16px 24px;display:flex;flex-direction:column;gap:16px">
+            <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Timeline</h1>
+            <div style="border-radius:10px;background:#1F3A6E;padding:18px;display:flex;flex-direction:column;gap:3px">
+              <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#C3CDE1">Next up</p>
+              <p style="margin:2px 0 0;font-family:'Space Grotesk',sans-serif;font-size:44px;font-weight:700;letter-spacing:-.035em;line-height:1;color:#fff">in 2 days</p>
+              <p style="margin:7px 0 0;font-size:17px;font-weight:600;line-height:1.35;color:#fff">Irish oral mock</p>
+              <p style="margin:0;font-size:15px;color:#C3CDE1">Test · Wed 14 Oct 2026 · only you can see this</p>
+            </div>
+            <div style="border-radius:10px;border:1px solid rgba(160,72,6,.3);border-left:4px solid #A04806;background:#F6EDE6;padding:13px 15px;display:flex;flex-direction:column;gap:4px">
+              <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#A04806">Pending approval</p>
+              <p style="margin:0;font-size:16px;line-height:1.45;color:#343A42">6 Business — a teacher needs to approve you.</p>
+            </div>
+            <nav aria-label="Timeline view" style="display:flex;gap:3px;padding:3px;border-radius:10px;background:#EFF1F3">
+              <a href="#2a" aria-current="page" style="flex:1;text-align:center;padding:9px 6px;border-radius:7px;background:#fff;border:1px solid #DDE1E6;font-size:14px;font-weight:600;color:#1F3A6E;text-decoration:none">List</a>
+              <a href="#2a" style="flex:1;text-align:center;padding:9px 6px;border-radius:7px;border:1px solid transparent;font-size:14px;font-weight:600;color:#4B535C;text-decoration:none">Week</a>
+              <a href="#2a" style="flex:1;text-align:center;padding:9px 6px;border-radius:7px;border:1px solid transparent;font-size:14px;font-weight:600;color:#4B535C;text-decoration:none">Month</a>
+            </nav>
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">This week · 12–18 Oct</p>
+            <ul style="margin:0;padding:0;list-style:none;border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+              <li style="display:flex;gap:13px;padding:14px 15px;border-bottom:1px solid #E3E6EA">
+                <div style="width:42px;flex:none;display:flex;flex-direction:column;align-items:center;gap:1px">
+                  <span style="font-size:13px;color:#636B75">Wed</span>
+                  <span style="font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">14</span>
+                </div>
+                <div style="min-width:0;display:flex;flex-direction:column;gap:3px">
+                  <div style="display:flex;align-items:center;gap:7px">
+                    <span aria-hidden="true" style="width:10px;height:3px;background:#4B535C;flex:none"></span>
+                    <span style="font-size:14px;color:#4B535C">Test · my own item · in 2 days</span>
+                  </div>
+                  <p style="margin:0;font-size:16px;line-height:1.35;color:#101419">Irish oral mock</p>
+                </div>
+              </li>
+              <li style="display:flex;gap:13px;padding:14px 15px;border-left:4px solid #0E6E7A">
+                <div style="width:42px;flex:none;display:flex;flex-direction:column;align-items:center;gap:1px">
+                  <span style="font-size:13px;color:#636B75">Fri</span>
+                  <span style="font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">16</span>
+                </div>
+                <div style="min-width:0;display:flex;flex-direction:column;gap:3px">
+                  <div style="display:flex;align-items:center;gap:7px">
+                    <span aria-hidden="true" style="width:10px;height:10px;background:#1F3A6E;flex:none"></span>
+                    <span style="font-size:14px;color:#4B535C">Stage date · Biology · in 4 days</span>
+                  </div>
+                  <p style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;letter-spacing:-.015em;line-height:1.3;color:#101419">Stage 4 Conducting the Experiment</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <nav aria-label="Main" style="display:flex;background:#fff;border-top:1px solid #E3E6EA">
+            <a href="#2a" aria-current="page" style="flex:1;min-height:56px;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:inset 0 2px 0 #1F3A6E;font-size:14px;font-weight:600;color:#1F3A6E">Timeline</a>
+            <a href="#2a" style="flex:1;min-height:56px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:14px;font-weight:600;color:#4B535C">My components</a>
+            <a href="#2a" style="flex:1;min-height:56px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:14px;font-weight:600;color:#4B535C">Join a class</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin:0;max-width:900px;font-size:15px;line-height:1.5;color:#636B75;text-wrap:pretty">The laptop case: every subject is one click, permanently, and the pending class sits where the missing subject would be. The list reads as a rhythm of weeks rather than one long run. The cost is a 248px column that a timeline doesn't strictly need, and a rail that has to become something else entirely on a phone.</p>
+  </div>
+
+  <!-- ══════════════════════════════  2B  ══════════════════════════════ -->
+  <div id="2b" style="display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#1F3A6E;background:#EFF1F3;border-radius:6px;padding:4px 9px">2b</span>
+      <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:23px;font-weight:700;letter-spacing:-.025em;color:#101419">One wide column, countdown as headline</h2>
+      <p style="margin:0;font-size:15px;color:#4B535C">Navigation is a row in the header · weight fixed by source plus a student-set "Important" · approval sits on the subject</p>
+    </div>
+
+    <div style="display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap">
+      <div data-screen-label="2b · /home list · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+        <header style="background:#fff;border-bottom:1px solid #E3E6EA">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px">
+            <div style="display:flex;align-items:center;gap:11px;min-width:0">
+              <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+              <a href="#2b" style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none;white-space:nowrap">Leaving Cert Practical</a>
+              <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+              <span style="font-size:14px;color:#4B535C;white-space:nowrap">North Wicklow ETSS</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;flex:none">
+              <span style="font-size:14px;color:#343A42;white-space:nowrap">Cian Murphy</span>
+              <a href="#2b" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+              <button type="button" style="padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap">Sign out</button>
+            </div>
+          </div>
+          <nav aria-label="Main" style="display:flex;align-items:center;gap:10px;padding:0 28px;border-top:1px solid #E3E6EA">
+            <a href="#2b" aria-current="page" style="min-height:52px;display:flex;align-items:center;padding:0 4px;margin-right:8px;box-shadow:inset 0 -3px 0 #1F3A6E;font-size:16px;font-weight:700;color:#1F3A6E;text-decoration:none">Timeline</a>
+            <a href="#2b" style="min-height:52px;display:flex;align-items:center;gap:9px;padding:0 4px;font-size:16px;font-weight:600;color:#343A42;text-decoration:none"><span aria-hidden="true" style="width:4px;height:17px;background:#0E6E7A;flex:none"></span>Biology</a>
+            <a href="#2b" style="min-height:52px;display:flex;align-items:center;gap:9px;padding:0 4px;font-size:16px;font-weight:600;color:#343A42;text-decoration:none"><span aria-hidden="true" style="width:4px;height:17px;background:#8E2846;flex:none"></span>Chemistry</a>
+            <span style="min-height:52px;display:flex;align-items:center;gap:9px;padding:0 4px;font-size:16px;color:#636B75"><span aria-hidden="true" style="width:4px;height:17px;background:#6D3AA8;flex:none"></span>Business <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#A04806">pending approval</span></span>
+            <span style="flex:1"></span>
+            <a href="#2b" style="min-height:52px;display:flex;align-items:center;font-size:16px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Join a class</a>
+          </nav>
+        </header>
+
+        <main style="max-width:916px;margin:0 auto;padding:40px 28px 60px;display:flex;flex-direction:column;gap:30px">
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:40px">
+            <div style="min-width:0">
+              <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">Next up · Wednesday 14 Oct 2026</p>
+              <p style="margin:6px 0 0;font-family:'Space Grotesk',sans-serif;font-size:76px;font-weight:700;letter-spacing:-.045em;line-height:.92;color:#1F3A6E">in 2 days</p>
+              <p style="margin:14px 0 0;font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:600;letter-spacing:-.022em;line-height:1.2;color:#101419">Irish oral mock</p>
+              <p style="margin:4px 0 0;font-size:16px;color:#4B535C">Test · my own item · only you can see this</p>
+            </div>
+            <button type="button" style="flex:none;min-height:48px;padding:0 20px;border:0;border-radius:8px;background:#1F3A6E;font-size:16px;font-weight:600;color:#fff;cursor:pointer">Add my own item</button>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:24px;border-top:1px solid #E3E6EA">
+            <nav aria-label="Timeline view" style="display:flex;gap:22px">
+              <a href="#2b" aria-current="page" style="font-size:16px;font-weight:700;color:#1F3A6E;text-decoration:none;box-shadow:inset 0 -2px 0 #1F3A6E">List</a>
+              <a href="#2b" style="font-size:16px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Week</a>
+              <a href="#2b" style="font-size:16px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Month</a>
+            </nav>
+            <div style="display:flex;align-items:center;gap:18px">
+              <a href="#2b" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Previous</a>
+              <h2 style="margin:0;font-size:16px;font-weight:600;color:#101419">12 Oct – 8 Nov 2026</h2>
+              <a href="#2b" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Next</a>
+            </div>
+          </div>
+
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column">
+            <li style="padding:0 0 10px">
+              <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">October</p>
+            </li>
+            <li style="display:flex;align-items:center;gap:24px;padding:17px 0;border-top:1px solid #E3E6EA">
+              <span style="width:96px;flex:none;font-family:'Space Mono',monospace;font-size:15px;color:#636B75">Wed 14 Oct</span>
+              <span aria-hidden="true" style="width:11px;height:11px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+              <div style="flex:1;min-width:0">
+                <p style="margin:0;font-size:17px;font-weight:600;line-height:1.35;color:#101419">Irish oral mock</p>
+                <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Test · my own item</p>
+              </div>
+              <span style="flex:none;width:96px;text-align:right;font-size:15px;color:#4B535C">in 2 days</span>
+            </li>
+            <li style="display:flex;align-items:center;gap:24px;padding:17px 0 17px 18px;border-top:1px solid #E3E6EA;box-shadow:inset 4px 0 0 #0E6E7A">
+              <span style="width:96px;flex:none;font-family:'Space Mono',monospace;font-size:15px;color:#636B75">Fri 16 Oct</span>
+              <span aria-hidden="true" style="width:11px;height:11px;background:#1F3A6E;flex:none"></span>
+              <div style="flex:1;min-width:0">
+                <p style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;letter-spacing:-.018em;line-height:1.3;color:#101419">Stage 4 Conducting the Experiment</p>
+                <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Stage date · Biology</p>
+              </div>
+              <span style="flex:none;width:96px;text-align:right;font-size:15px;color:#4B535C">in 4 days</span>
+            </li>
+            <li style="display:flex;align-items:center;gap:24px;padding:17px 0;border-top:1px solid #E3E6EA">
+              <span style="width:96px;flex:none;font-family:'Space Mono',monospace;font-size:15px;color:#636B75">Wed 21 Oct</span>
+              <span aria-hidden="true" style="width:11px;height:11px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+              <div style="flex:1;min-width:0">
+                <p style="margin:0;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-size:17px;font-weight:600;line-height:1.35;color:#101419">English comparative essay <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#1F3A6E;border:1px solid #DDE1E6;border-radius:6px;padding:2px 7px">Important</span></p>
+                <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Essay · my own item</p>
+              </div>
+              <span style="flex:none;width:96px;text-align:right;font-size:15px;color:#4B535C">in 9 days</span>
+            </li>
+            <li style="display:flex;align-items:center;gap:24px;padding:17px 0;border-top:1px solid #E3E6EA">
+              <span style="width:96px;flex:none;font-family:'Space Mono',monospace;font-size:15px;color:#636B75">Fri 23 Oct</span>
+              <span aria-hidden="true" style="width:11px;height:11px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+              <div style="flex:1;min-width:0">
+                <p style="margin:0;font-size:17px;font-weight:600;line-height:1.35;color:#101419">Biology class test</p>
+                <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Test · my own item · Biology</p>
+              </div>
+              <span style="flex:none;width:96px;text-align:right;font-size:15px;color:#4B535C">in 11 days</span>
+            </li>
+            <li style="display:flex;align-items:center;gap:24px;padding:17px 0 17px 18px;border-top:1px solid #E3E6EA;box-shadow:inset 4px 0 0 #8E2846">
+              <span style="width:96px;flex:none;font-family:'Space Mono',monospace;font-size:15px;color:#636B75">Fri 30 Oct</span>
+              <span aria-hidden="true" style="width:11px;height:11px;background:#1F3A6E;flex:none"></span>
+              <div style="flex:1;min-width:0">
+                <p style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;letter-spacing:-.018em;line-height:1.3;color:#101419">Stage 3 Designing &amp; Planning the Experiment</p>
+                <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Stage date · Chemistry</p>
+              </div>
+              <span style="flex:none;width:96px;text-align:right;font-size:15px;color:#4B535C">in 18 days</span>
+            </li>
+            <li style="padding:26px 0 10px">
+              <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">November</p>
+            </li>
+            <li style="display:flex;align-items:center;gap:24px;padding:17px 0;border-top:1px solid #E3E6EA">
+              <span style="width:96px;flex:none;font-family:'Space Mono',monospace;font-size:15px;color:#636B75">Sun 1 Nov</span>
+              <span aria-hidden="true" style="width:11px;height:11px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+              <div style="flex:1;min-width:0">
+                <p style="margin:0;font-size:17px;font-weight:600;line-height:1.35;color:#101419">CAO account</p>
+                <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Deadline · my own item</p>
+              </div>
+              <span style="flex:none;width:96px;text-align:right;font-size:15px;color:#4B535C">in 20 days</span>
+            </li>
+            <li style="display:flex;align-items:center;gap:24px;padding:17px 0;border-top:1px solid #E3E6EA;border-bottom:1px solid #E3E6EA">
+              <span style="width:96px;flex:none;font-family:'Space Mono',monospace;font-size:15px;color:#636B75">Thu 19 Nov</span>
+              <span aria-hidden="true" style="width:11px;height:11px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+              <div style="flex:1;min-width:0">
+                <p style="margin:0;font-size:17px;font-weight:600;line-height:1.35;color:#101419">Driving test</p>
+                <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Other · my own item</p>
+              </div>
+              <span style="flex:none;width:96px;text-align:right;font-size:15px;color:#4B535C">in 38 days</span>
+            </li>
+          </ul>
+        </main>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 companion · the header row wraps</p>
+        <div data-screen-label="2b · /home list · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+          <header style="background:#fff;border-bottom:1px solid #E3E6EA">
+            <div style="display:flex;align-items:center;gap:9px;padding:10px 16px">
+              <img src="assets/crest-nwetss.png" alt="" style="width:26px;height:26px;object-fit:contain;flex:none">
+              <a href="#2b" style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none">Leaving Cert Practical</a>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 16px 11px">
+              <span style="font-size:14px;color:#4B535C">Cian Murphy</span>
+              <div style="display:flex;align-items:center;gap:10px;flex:none">
+                <a href="#2b" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Change password</a>
+                <button type="button" style="padding:9px 12px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer">Sign out</button>
+              </div>
+            </div>
+            <nav aria-label="Main" style="display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 12px">
+              <a href="#2b" aria-current="page" style="min-height:44px;display:flex;align-items:center;padding:0 14px;border-radius:8px;background:#1F3A6E;font-size:15px;font-weight:600;color:#fff;text-decoration:none">Timeline</a>
+              <a href="#2b" style="min-height:44px;display:flex;align-items:center;padding:0 13px;border-radius:8px;border:1px solid #DDE1E6;border-left:4px solid #0E6E7A;background:#fff;font-size:15px;font-weight:600;color:#343A42;text-decoration:none">Biology</a>
+              <a href="#2b" style="min-height:44px;display:flex;align-items:center;padding:0 13px;border-radius:8px;border:1px solid #DDE1E6;border-left:4px solid #8E2846;background:#fff;font-size:15px;font-weight:600;color:#343A42;text-decoration:none">Chemistry</a>
+              <span style="min-height:44px;display:flex;align-items:center;gap:7px;padding:0 13px;border-radius:8px;border:1px dashed #DDE1E6;border-left:4px solid #6D3AA8;background:#fff;font-size:15px;color:#636B75">Business <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#A04806">waiting</span></span>
+              <a href="#2b" style="min-height:44px;display:flex;align-items:center;padding:0 13px;font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Join a class</a>
+            </nav>
+          </header>
+          <div style="padding:22px 16px 26px;display:flex;flex-direction:column;gap:20px">
+            <div>
+              <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">Next up · Wed 14 Oct 2026</p>
+              <p style="margin:2px 0 0;font-family:'Space Grotesk',sans-serif;font-size:52px;font-weight:700;letter-spacing:-.04em;line-height:.98;color:#1F3A6E">in 2 days</p>
+              <p style="margin:8px 0 0;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;letter-spacing:-.02em;line-height:1.25;color:#101419">Irish oral mock</p>
+              <p style="margin:3px 0 0;font-size:15px;color:#4B535C">Test · my own item · only you can see this</p>
+            </div>
+            <div style="height:1px;background:#E3E6EA"></div>
+            <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column">
+              <li style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #E3E6EA">
+                <span style="width:58px;flex:none;font-family:'Space Mono',monospace;font-size:14px;line-height:1.5;color:#636B75">Wed 14</span>
+                <div style="min-width:0">
+                  <p style="margin:0;font-size:16px;font-weight:600;line-height:1.35;color:#101419">Irish oral mock</p>
+                  <p style="margin:0;display:flex;align-items:center;gap:7px;font-size:14px;color:#4B535C"><span aria-hidden="true" style="width:9px;height:9px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>Test · my own item · in 2 days</p>
+                </div>
+              </li>
+              <li style="display:flex;gap:12px;padding:14px 0 14px 14px;border-bottom:1px solid #E3E6EA;box-shadow:inset 4px 0 0 #0E6E7A">
+                <span style="width:58px;flex:none;font-family:'Space Mono',monospace;font-size:14px;line-height:1.5;color:#636B75">Fri 16</span>
+                <div style="min-width:0">
+                  <p style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;letter-spacing:-.015em;line-height:1.3;color:#101419">Stage 4 Conducting the Experiment</p>
+                  <p style="margin:0;display:flex;align-items:center;gap:7px;font-size:14px;color:#4B535C"><span aria-hidden="true" style="width:9px;height:9px;background:#1F3A6E;flex:none"></span>Stage date · Biology · in 4 days</p>
+                </div>
+              </li>
+            </ul>
+            <button type="button" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;font-size:16px;font-weight:600;color:#fff;cursor:pointer">Add my own item</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin:0;max-width:900px;font-size:15px;line-height:1.5;color:#636B75;text-wrap:pretty">The laptop case: the answer to "what's next" is legible across a room, and the row becomes a real four-column grid — date, kind, item, days remaining — which is what a wide screen is for. Navigation is one row and never competes with the page. The cost is that the countdown owns the fold, so the first item of the list sits below it twice.</p>
+  </div>
+
+  <!-- ══════════════════════════════  2C  ══════════════════════════════ -->
+  <div id="2c" style="display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#1F3A6E;background:#EFF1F3;border-radius:6px;padding:4px 9px">2c</span>
+      <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:23px;font-weight:700;letter-spacing:-.025em;color:#101419">Two panes: list and the month beside it</h2>
+      <p style="margin:0;font-size:15px;color:#4B535C">Navigation lives in the aside · flat weight, the kind carried by a marker · approval in the aside</p>
+    </div>
+
+    <div style="display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap">
+      <div data-screen-label="2c · /home list · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+        <header style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px;background:#fff;border-bottom:1px solid #E3E6EA">
+          <div style="display:flex;align-items:center;gap:11px;min-width:0">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <a href="#2c" style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none;white-space:nowrap">Leaving Cert Practical</a>
+            <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+            <span style="font-size:14px;color:#4B535C;white-space:nowrap">North Wicklow ETSS</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex:none">
+            <span style="font-size:14px;color:#343A42;white-space:nowrap">Cian Murphy</span>
+            <a href="#2c" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+            <button type="button" style="padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap">Sign out</button>
+          </div>
+        </header>
+
+        <div style="display:flex;gap:40px;padding:36px 28px 56px">
+          <main style="flex:1;min-width:0;display:flex;flex-direction:column;gap:24px">
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px">
+              <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Timeline</h1>
+              <nav aria-label="Timeline view" style="display:flex;gap:3px;padding:3px;border-radius:10px;background:#EFF1F3">
+                <a href="#2c" aria-current="page" style="min-height:38px;display:flex;align-items:center;padding:0 16px;border-radius:7px;background:#fff;border:1px solid #DDE1E6;font-size:15px;font-weight:600;color:#1F3A6E;text-decoration:none">List</a>
+                <a href="#2c" style="min-height:38px;display:flex;align-items:center;padding:0 16px;border-radius:7px;border:1px solid transparent;font-size:15px;font-weight:600;color:#4B535C;text-decoration:none">Week</a>
+                <a href="#2c" style="min-height:38px;display:flex;align-items:center;padding:0 16px;border-radius:7px;border:1px solid transparent;font-size:15px;font-weight:600;color:#4B535C;text-decoration:none">Month</a>
+              </nav>
+            </div>
+
+            <article style="border-radius:10px;border:1px solid #1F3A6E;background:#fff;overflow:hidden">
+              <div style="background:#1F3A6E;padding:18px 22px;display:flex;align-items:baseline;justify-content:space-between;gap:20px">
+                <p style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:700;letter-spacing:-.035em;line-height:1;color:#fff">in 2 days</p>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#C3CDE1">Next up · Wed 14 Oct 2026</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:16px 22px">
+                <span aria-hidden="true" style="width:11px;height:11px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+                <div style="flex:1;min-width:0">
+                  <p style="margin:0;font-size:18px;font-weight:600;line-height:1.35;color:#101419">Irish oral mock</p>
+                  <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Test · my own item · only you can see this</p>
+                </div>
+                <a href="#2c" style="flex:none;font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Edit</a>
+              </div>
+            </article>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:20px">
+              <h2 style="margin:0;font-size:16px;font-weight:600;color:#101419">12 Oct – 8 Nov 2026</h2>
+              <div style="display:flex;align-items:center;gap:18px">
+                <a href="#2c" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Previous</a>
+                <a href="#2c" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Next</a>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <article style="border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:11px 20px;border-bottom:1px solid #E3E6EA;background:#F7F8F9">
+                  <h3 style="margin:0;font-size:16px;font-weight:600;color:#101419">Friday 16 Oct</h3>
+                  <span style="font-size:15px;color:#4B535C">in 4 days</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-left:4px solid #0E6E7A">
+                  <span aria-hidden="true" style="width:11px;height:11px;background:#1F3A6E;flex:none"></span>
+                  <div style="min-width:0">
+                    <p style="margin:0;font-size:18px;font-weight:600;line-height:1.35;color:#101419">Stage 4 Conducting the Experiment</p>
+                    <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Stage date · Biology</p>
+                  </div>
+                </div>
+              </article>
+              <article style="border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:11px 20px;border-bottom:1px solid #E3E6EA;background:#F7F8F9">
+                  <h3 style="margin:0;font-size:16px;font-weight:600;color:#101419">Wednesday 21 Oct</h3>
+                  <span style="font-size:15px;color:#4B535C">in 9 days</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:14px;padding:16px 20px">
+                  <span aria-hidden="true" style="width:11px;height:11px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+                  <div style="min-width:0">
+                    <p style="margin:0;font-size:18px;font-weight:600;line-height:1.35;color:#101419">English comparative essay</p>
+                    <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Essay · my own item</p>
+                  </div>
+                </div>
+              </article>
+              <article style="border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:11px 20px;border-bottom:1px solid #E3E6EA;background:#F7F8F9">
+                  <h3 style="margin:0;font-size:16px;font-weight:600;color:#101419">Friday 23 Oct</h3>
+                  <span style="font-size:15px;color:#4B535C">in 11 days</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-left:4px solid #0E6E7A">
+                  <span aria-hidden="true" style="width:11px;height:11px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+                  <div style="min-width:0">
+                    <p style="margin:0;font-size:18px;font-weight:600;line-height:1.35;color:#101419">Biology class test</p>
+                    <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Test · my own item · Biology</p>
+                  </div>
+                </div>
+              </article>
+              <article style="border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:11px 20px;border-bottom:1px solid #E3E6EA;background:#F7F8F9">
+                  <h3 style="margin:0;font-size:16px;font-weight:600;color:#101419">Friday 30 Oct</h3>
+                  <span style="font-size:15px;color:#4B535C">in 18 days</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-left:4px solid #8E2846">
+                  <span aria-hidden="true" style="width:11px;height:11px;background:#1F3A6E;flex:none"></span>
+                  <div style="min-width:0">
+                    <p style="margin:0;font-size:18px;font-weight:600;line-height:1.35;color:#101419">Stage 3 Designing &amp; Planning the Experiment</p>
+                    <p style="margin:2px 0 0;font-size:15px;color:#4B535C">Stage date · Chemistry</p>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </main>
+
+          <aside style="width:344px;flex:none;display:flex;flex-direction:column;gap:20px">
+            <button type="button" style="min-height:48px;border:0;border-radius:8px;background:#1F3A6E;font-size:16px;font-weight:600;color:#fff;cursor:pointer">Add my own item</button>
+
+            <div style="border-radius:10px;border:1px solid #DDE1E6;background:#fff;padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+                <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.02em;color:#101419">October 2026</h2>
+                <a href="#2c" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Month view</a>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center">
+                <span style="font-family:'Space Mono',monospace;font-size:12px;color:#636B75">M</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;color:#636B75">T</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;color:#636B75">W</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;color:#636B75">T</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;color:#636B75">F</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;color:#636B75">S</span>
+                <span style="font-family:'Space Mono',monospace;font-size:12px;color:#636B75">S</span>
+                <span style="padding:7px 0;font-size:14px;color:#9AA2AC">28</span>
+                <span style="padding:7px 0;font-size:14px;color:#9AA2AC">29</span>
+                <span style="padding:7px 0;font-size:14px;color:#9AA2AC">30</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">1</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">2</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">3</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">4</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">5</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">6</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">7</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">8</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">9</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">10</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">11</span>
+                <span style="padding:7px 0;border-radius:6px;background:#1F3A6E;font-size:14px;font-weight:700;color:#fff">12</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">13</span>
+                <span style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;font-size:14px;color:#101419;font-weight:700">14<span aria-hidden="true" style="width:5px;height:5px;border-radius:99px;background:#1F3A6E"></span></span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">15</span>
+                <span style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;font-size:14px;color:#101419;font-weight:700">16<span aria-hidden="true" style="width:5px;height:5px;border-radius:99px;background:#1F3A6E"></span></span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">17</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">18</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">19</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">20</span>
+                <span style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;font-size:14px;color:#101419;font-weight:700">21<span aria-hidden="true" style="width:5px;height:5px;border-radius:99px;background:#1F3A6E"></span></span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">22</span>
+                <span style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;font-size:14px;color:#101419;font-weight:700">23<span aria-hidden="true" style="width:5px;height:5px;border-radius:99px;background:#1F3A6E"></span></span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">24</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">25</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">26</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">27</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">28</span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">29</span>
+                <span style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;font-size:14px;color:#101419;font-weight:700">30<span aria-hidden="true" style="width:5px;height:5px;border-radius:99px;background:#1F3A6E"></span></span>
+                <span style="padding:7px 0;font-size:14px;color:#343A42">31</span>
+                <span style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;font-size:14px;color:#101419;font-weight:700">1<span aria-hidden="true" style="width:5px;height:5px;border-radius:99px;background:#1F3A6E"></span></span>
+              </div>
+              <p style="margin:0;font-size:14px;line-height:1.45;color:#636B75">A dot means something is due. The list beside it says what.</p>
+            </div>
+
+            <nav aria-label="Main" style="border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+              <p style="margin:0;padding:14px 18px 8px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">My components</p>
+              <a href="#2c" style="min-height:56px;display:flex;flex-direction:column;justify-content:center;gap:1px;padding:8px 18px;border-top:1px solid #E3E6EA;border-left:4px solid #0E6E7A;text-decoration:none">
+                <span style="font-size:16px;font-weight:600;color:#101419">Biology</span>
+                <span style="font-size:14px;color:#4B535C">completion date 26 Feb 2027</span>
+              </a>
+              <a href="#2c" style="min-height:56px;display:flex;flex-direction:column;justify-content:center;gap:1px;padding:8px 18px;border-top:1px solid #E3E6EA;border-left:4px solid #8E2846;text-decoration:none">
+                <span style="font-size:16px;font-weight:600;color:#101419">Chemistry</span>
+                <span style="font-size:14px;color:#4B535C">completion date 23 Apr 2027</span>
+              </a>
+              <div style="display:flex;flex-direction:column;gap:2px;padding:12px 18px;border-top:1px solid #E3E6EA;border-left:4px solid #6D3AA8;background:#F6EDE6">
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#A04806">Pending approval</span>
+                <span style="font-size:16px;font-weight:600;color:#101419">Business</span>
+                <span style="font-size:14px;line-height:1.4;color:#4B535C">A teacher needs to approve you.</span>
+              </div>
+              <a href="#2c" style="min-height:52px;display:flex;align-items:center;padding:0 18px;border-top:1px solid #E3E6EA;font-size:16px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Join a class</a>
+            </nav>
+          </aside>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">390 companion · the aside becomes a menu sheet</p>
+        <div data-screen-label="2c · /home list · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+          <header style="background:#fff;border-bottom:1px solid #E3E6EA">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:9px;padding:10px 16px">
+              <div style="display:flex;align-items:center;gap:9px;min-width:0">
+                <img src="assets/crest-nwetss.png" alt="" style="width:26px;height:26px;object-fit:contain;flex:none">
+                <a href="#2c" style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none">Leaving Cert Practical</a>
+              </div>
+              <button type="button" aria-expanded="false" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer;flex:none">Menu</button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 16px 11px">
+              <span style="font-size:14px;color:#4B535C">Cian Murphy</span>
+              <div style="display:flex;align-items:center;gap:10px;flex:none">
+                <a href="#2c" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Change password</a>
+                <button type="button" style="padding:9px 12px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer">Sign out</button>
+              </div>
+            </div>
+          </header>
+          <div style="padding:20px 16px 26px;display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+              <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Timeline</h1>
+              <span style="font-size:15px;color:#4B535C">Mon 12 Oct</span>
+            </div>
+            <nav aria-label="Timeline view" style="display:flex;gap:3px;padding:3px;border-radius:10px;background:#EFF1F3">
+              <a href="#2c" aria-current="page" style="flex:1;text-align:center;padding:9px 6px;border-radius:7px;background:#fff;border:1px solid #DDE1E6;font-size:14px;font-weight:600;color:#1F3A6E;text-decoration:none">List</a>
+              <a href="#2c" style="flex:1;text-align:center;padding:9px 6px;border-radius:7px;border:1px solid transparent;font-size:14px;font-weight:600;color:#4B535C;text-decoration:none">Week</a>
+              <a href="#2c" style="flex:1;text-align:center;padding:9px 6px;border-radius:7px;border:1px solid transparent;font-size:14px;font-weight:600;color:#4B535C;text-decoration:none">Month</a>
+            </nav>
+            <article style="border-radius:10px;border:1px solid #1F3A6E;background:#fff;overflow:hidden">
+              <div style="background:#1F3A6E;padding:14px 16px 15px">
+                <p style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:34px;font-weight:700;letter-spacing:-.03em;line-height:1;color:#fff">in 2 days</p>
+                <p style="margin:5px 0 0;font-size:15px;color:#C3CDE1">Next up · Wednesday 14 Oct 2026</p>
+              </div>
+              <div style="display:flex;gap:11px;padding:14px 16px">
+                <span aria-hidden="true" style="margin-top:6px;width:9px;height:9px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+                <div style="min-width:0">
+                  <p style="margin:0;font-size:17px;font-weight:600;line-height:1.35;color:#101419">Irish oral mock</p>
+                  <p style="margin:2px 0 0;font-size:14px;color:#4B535C">Test · my own item · only you can see this</p>
+                </div>
+              </div>
+            </article>
+            <article style="border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:11px 16px;border-bottom:1px solid #E3E6EA;background:#F7F8F9">
+                <h2 style="margin:0;font-size:16px;font-weight:600;color:#101419">Friday 16 Oct</h2>
+                <span style="font-size:14px;color:#4B535C">in 4 days</span>
+              </div>
+              <div style="display:flex;gap:11px;padding:14px 16px;border-left:4px solid #0E6E7A">
+                <span aria-hidden="true" style="margin-top:6px;width:9px;height:9px;background:#1F3A6E;flex:none"></span>
+                <div style="min-width:0">
+                  <p style="margin:0;font-size:17px;font-weight:600;line-height:1.35;color:#101419">Stage 4 Conducting the Experiment</p>
+                  <p style="margin:2px 0 0;font-size:14px;color:#4B535C">Stage date · Biology</p>
+                </div>
+              </div>
+            </article>
+            <button type="button" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;font-size:16px;font-weight:600;color:#fff;cursor:pointer">Add my own item</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin:0;max-width:900px;font-size:15px;line-height:1.5;color:#636B75;text-wrap:pretty">The laptop case: the month and the list are visible together, which is the one thing a phone can never do, and the aside gives navigation, status and the completion dates a permanent home. The cost is that the page has two reading orders, and the phone has to throw the whole right-hand pane into a menu — so the two widths share less than the other two directions.</p>
+  </div>
+
+  <div style="max-width:900px;display:flex;flex-direction:column;gap:10px;padding:22px 24px;border-radius:10px;border:1px solid #DDE1E6;background:#fff">
+    <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">What I'd pick at 1140</h2>
+    <p style="margin:0;font-size:16px;line-height:1.55;color:#343A42;text-wrap:pretty"><a href="#2b">2b</a>. It's the only one of the three where the extra width goes into the <em>content</em> rather than into furniture: the row becomes a four-column grid that a phone can't hold, and the countdown gets to be the biggest thing on the page without a card around it. <a href="#2a">2a</a> is the better answer if you expect students to move between subjects constantly — a standing rail beats a header row for that. <a href="#2c">2c</a> is the most "app-like" and the least like something a student would call theirs.</p>
+    <p style="margin:0;font-size:16px;line-height:1.55;color:#343A42;text-wrap:pretty">Still open, and unchanged from round 1: whether a student can mark their own items <strong style="font-weight:600">Important</strong> (drawn in <a href="#2b">2b</a>, a new field, so it needs your yes before it's built), and whether the SEC completion date — now its own timeline item per roadmap Q-P2-E — is the heaviest kind on the page.</p>
+  </div>
+
+</section>
+
+
+
+<section style="width:max-content;padding:0 56px 96px;display:flex;flex-direction:column;gap:40px">
+
+  <div style="max-width:880px;display:flex;flex-direction:column;gap:13px">
+    <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.08em;color:#5C6470">Pack D-4 · round 1, rough · phone-first — superseded by round 2 above</p>
+    <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">Three directions for <span style="font-family:'Space Mono',monospace;font-size:30px;font-weight:400;letter-spacing:-.01em">/home</span> at 390</h1>
+    <p style="margin:0;font-size:16px;line-height:1.55;color:#343A42;text-wrap:pretty">Each one answers the same three questions differently: <strong style="font-weight:600">where student navigation lives</strong>, <strong style="font-weight:600">how the three kinds of item are weighted</strong>, and <strong style="font-weight:600">where class approval status goes</strong>. Nothing here is finished — type, spacing and copy are indicative. Pick one (or parts of two) and I'll build every view and state at 390 and 1140.</p>
+    <p style="margin:0;font-size:15px;line-height:1.55;color:#4B535C;text-wrap:pretty">Same data in all three: today is Mon 12 Oct 2026; approved in 6A Biology and 6C Chemistry, pending in 6 Business. Stage names are the real ones from the briefs; dates other than the SEC completion dates are placeholders. Item kinds are told apart by a marker <strong style="font-weight:600">and</strong> a word, never by colour.</p>
+    <p style="margin:0;font-size:15px;line-height:1.55;color:#4B535C;text-wrap:pretty">Reply with <a href="#1a">1a</a>, <a href="#1b">1b</a> or <a href="#1c">1c</a>.</p>
+  </div>
+
+  <div style="display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap">
+
+    <!-- ══════════════════════════════  1A  ══════════════════════════════ -->
+    <div id="1a" style="width:430px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#1F3A6E;background:#EFF1F3;border-radius:6px;padding:4px 9px">1a</span>
+        <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:23px;font-weight:700;letter-spacing:-.025em;color:#101419">Countdown card, date rail</h2>
+      </div>
+      <ul style="margin:0;padding:0 0 0 18px;display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:1.5;color:#343A42;max-width:410px">
+        <li><strong style="font-weight:600">Nav:</strong> bottom bar, three tabs. My components opens a list of subjects.</li>
+        <li><strong style="font-weight:600">Weight:</strong> fixed by source — stage dates heaviest, then teacher items, then your own.</li>
+        <li><strong style="font-weight:600">Approval:</strong> an amber strip on the timeline, above the list.</li>
+        <li><strong style="font-weight:600">Bold bit:</strong> a navy countdown card, the only saturated surface.</li>
+      </ul>
+
+      <div data-screen-label="1a · /home list · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+        <header style="background:#fff;border-bottom:1px solid #E3E6EA">
+          <div style="display:flex;align-items:center;gap:9px;padding:10px 16px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:26px;height:26px;object-fit:contain;flex:none">
+            <a href="#1a" style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none">Leaving Cert Practical</a>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 16px 11px">
+            <span style="font-size:14px;color:#4B535C">Cian Murphy</span>
+            <div style="display:flex;align-items:center;gap:10px;flex:none">
+              <a href="#1a" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Change password</a>
+              <button type="button" style="padding:9px 12px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer">Sign out</button>
+            </div>
+          </div>
+        </header>
+
+        <div style="padding:20px 16px 26px;display:flex;flex-direction:column;gap:18px">
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Timeline</h1>
+
+          <div style="border-radius:10px;background:#1F3A6E;padding:18px 18px 17px;display:flex;flex-direction:column;gap:3px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#C3CDE1">Next up</p>
+            <p style="margin:2px 0 0;font-family:'Space Grotesk',sans-serif;font-size:44px;font-weight:700;letter-spacing:-.035em;line-height:1;color:#fff">in 2 days</p>
+            <p style="margin:7px 0 0;font-size:17px;font-weight:600;line-height:1.35;color:#fff">Irish oral mock</p>
+            <p style="margin:0;font-size:15px;color:#C3CDE1">Test · Wed 14 Oct 2026 · only you can see this</p>
+          </div>
+
+          <div style="border-radius:10px;border:1px solid rgba(160,72,6,.3);border-left:4px solid #A04806;background:#F6EDE6;padding:13px 15px;display:flex;flex-direction:column;gap:4px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#A04806">Pending approval</p>
+            <p style="margin:0;font-size:16px;line-height:1.45;color:#343A42">6 Business — a teacher needs to approve you before its dates show here.</p>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <nav aria-label="Timeline view" style="display:flex;gap:3px;padding:3px;border-radius:10px;background:#EFF1F3">
+              <a href="#1a" aria-current="page" style="flex:1;text-align:center;padding:9px 6px;border-radius:7px;background:#fff;border:1px solid #DDE1E6;font-size:14px;font-weight:600;color:#1F3A6E;text-decoration:none">List</a>
+              <a href="#1a" style="flex:1;text-align:center;padding:9px 6px;border-radius:7px;border:1px solid transparent;font-size:14px;font-weight:600;color:#4B535C;text-decoration:none">Week</a>
+              <a href="#1a" style="flex:1;text-align:center;padding:9px 6px;border-radius:7px;border:1px solid transparent;font-size:14px;font-weight:600;color:#4B535C;text-decoration:none">Month</a>
+            </nav>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+              <a href="#1a" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Previous</a>
+              <h2 style="margin:0;font-size:15px;font-weight:600;color:#101419">12 Oct – 8 Nov 2026</h2>
+              <a href="#1a" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Next</a>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:14px">
+
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">This week · 12–18 Oct</p>
+            <ul style="margin:0;padding:0;list-style:none;border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+              <li style="display:flex;gap:13px;padding:14px 15px;border-bottom:1px solid #E3E6EA">
+                <div style="width:42px;flex:none;display:flex;flex-direction:column;align-items:center;gap:1px">
+                  <span style="font-size:13px;color:#636B75">Wed</span>
+                  <span style="font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">14</span>
+                </div>
+                <div style="min-width:0;display:flex;flex-direction:column;gap:3px">
+                  <div style="display:flex;align-items:center;gap:7px">
+                    <span aria-hidden="true" style="width:10px;height:3px;background:#4B535C;flex:none"></span>
+                    <span style="font-size:14px;color:#4B535C">Test · my own item · in 2 days</span>
+                  </div>
+                  <p style="margin:0;font-size:16px;line-height:1.35;color:#101419">Irish oral mock</p>
+                </div>
+              </li>
+              <li style="display:flex;gap:13px;padding:14px 15px;border-left:4px solid #0E6E7A;background:#fff">
+                <div style="width:42px;flex:none;display:flex;flex-direction:column;align-items:center;gap:1px">
+                  <span style="font-size:13px;color:#636B75">Fri</span>
+                  <span style="font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">16</span>
+                </div>
+                <div style="min-width:0;display:flex;flex-direction:column;gap:3px">
+                  <div style="display:flex;align-items:center;gap:7px">
+                    <span aria-hidden="true" style="width:10px;height:10px;background:#1F3A6E;flex:none"></span>
+                    <span style="font-size:14px;color:#4B535C">Stage date · Biology · in 4 days</span>
+                  </div>
+                  <p style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;letter-spacing:-.015em;line-height:1.3;color:#101419">Stage 4 Conducting the Experiment</p>
+                </div>
+              </li>
+            </ul>
+
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">Next week · 19–25 Oct</p>
+            <ul style="margin:0;padding:0;list-style:none;border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+              <li style="display:flex;gap:13px;padding:14px 15px;border-bottom:1px solid #E3E6EA">
+                <div style="width:42px;flex:none;display:flex;flex-direction:column;align-items:center;gap:1px">
+                  <span style="font-size:13px;color:#636B75">Wed</span>
+                  <span style="font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">21</span>
+                </div>
+                <div style="min-width:0;display:flex;flex-direction:column;gap:3px">
+                  <div style="display:flex;align-items:center;gap:7px">
+                    <span aria-hidden="true" style="width:10px;height:3px;background:#4B535C;flex:none"></span>
+                    <span style="font-size:14px;color:#4B535C">Essay · my own item · in 9 days</span>
+                  </div>
+                  <p style="margin:0;font-size:16px;line-height:1.35;color:#101419">English comparative essay</p>
+                </div>
+              </li>
+              <li style="display:flex;gap:13px;padding:14px 15px;border-left:4px solid #0E6E7A">
+                <div style="width:42px;flex:none;display:flex;flex-direction:column;align-items:center;gap:1px">
+                  <span style="font-size:13px;color:#636B75">Fri</span>
+                  <span style="font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">23</span>
+                </div>
+                <div style="min-width:0;display:flex;flex-direction:column;gap:3px">
+                  <div style="display:flex;align-items:center;gap:7px">
+                    <span aria-hidden="true" style="width:10px;height:3px;background:#4B535C;flex:none"></span>
+                    <span style="font-size:14px;color:#4B535C">Test · my own item · Biology · in 11 days</span>
+                  </div>
+                  <p style="margin:0;font-size:16px;line-height:1.35;color:#101419">Biology class test</p>
+                </div>
+              </li>
+            </ul>
+
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">26 Oct – 1 Nov</p>
+            <ul style="margin:0;padding:0;list-style:none;border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+              <li style="display:flex;gap:13px;padding:14px 15px;border-bottom:1px solid #E3E6EA;border-left:4px solid #8E2846">
+                <div style="width:42px;flex:none;display:flex;flex-direction:column;align-items:center;gap:1px">
+                  <span style="font-size:13px;color:#636B75">Fri</span>
+                  <span style="font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">30</span>
+                </div>
+                <div style="min-width:0;display:flex;flex-direction:column;gap:3px">
+                  <div style="display:flex;align-items:center;gap:7px">
+                    <span aria-hidden="true" style="width:10px;height:10px;background:#1F3A6E;flex:none"></span>
+                    <span style="font-size:14px;color:#4B535C">Stage date · Chemistry · in 18 days</span>
+                  </div>
+                  <p style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;letter-spacing:-.015em;line-height:1.3;color:#101419">Stage 3 Designing &amp; Planning the Experiment</p>
+                </div>
+              </li>
+              <li style="display:flex;gap:13px;padding:14px 15px">
+                <div style="width:42px;flex:none;display:flex;flex-direction:column;align-items:center;gap:1px">
+                  <span style="font-size:13px;color:#636B75">Sun</span>
+                  <span style="font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">1</span>
+                </div>
+                <div style="min-width:0;display:flex;flex-direction:column;gap:3px">
+                  <div style="display:flex;align-items:center;gap:7px">
+                    <span aria-hidden="true" style="width:10px;height:3px;background:#4B535C;flex:none"></span>
+                    <span style="font-size:14px;color:#4B535C">Deadline · my own item · in 20 days</span>
+                  </div>
+                  <p style="margin:0;font-size:16px;line-height:1.35;color:#101419">CAO account</p>
+                </div>
+              </li>
+            </ul>
+
+            <p style="margin:0;font-size:15px;line-height:1.5;color:#4B535C">Nothing else until <a href="#1a" style="color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Thu 19 Nov</a>.</p>
+          </div>
+
+          <button type="button" style="height:48px;border:1px solid #DDE1E6;border-radius:8px;background:#fff;font-size:16px;font-weight:600;color:#343A42;cursor:pointer">Add my own item</button>
+        </div>
+
+        <nav aria-label="Main" style="position:sticky;bottom:0;display:flex;background:#fff;border-top:1px solid #E3E6EA">
+          <a href="#1a" aria-current="page" style="flex:1;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-decoration:none;box-shadow:inset 0 2px 0 #1F3A6E">
+            <span style="font-size:14px;font-weight:600;color:#1F3A6E">Timeline</span>
+          </a>
+          <a href="#1a" style="flex:1;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-decoration:none">
+            <span style="font-size:14px;font-weight:600;color:#4B535C">My components</span>
+          </a>
+          <a href="#1a" style="flex:1;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-decoration:none">
+            <span style="font-size:14px;font-weight:600;color:#4B535C">Join a class</span>
+          </a>
+        </nav>
+      </div>
+
+      <p style="margin:0;max-width:410px;font-size:14px;line-height:1.5;color:#636B75;text-wrap:pretty">Three fixed tabs never scroll sideways, however many subjects a student has. The cost is one extra tap to reach Biology, and a bar that eats 56px of a phone screen.</p>
+    </div>
+
+    <!-- ══════════════════════════════  1B  ══════════════════════════════ -->
+    <div id="1b" style="width:430px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#1F3A6E;background:#EFF1F3;border-radius:6px;padding:4px 9px">1b</span>
+        <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:23px;font-weight:700;letter-spacing:-.025em;color:#101419">Subject row, one stream</h2>
+      </div>
+      <ul style="margin:0;padding:0 0 0 18px;display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:1.5;color:#343A42;max-width:410px">
+        <li><strong style="font-weight:600">Nav:</strong> a wrapping row under the header — Timeline, then each subject, then Join a class.</li>
+        <li><strong style="font-weight:600">Weight:</strong> source order <em>plus</em> an "Important" flag the student sets on their own items.</li>
+        <li><strong style="font-weight:600">Approval:</strong> a pending subject sits in the nav row itself, marked "waiting".</li>
+        <li><strong style="font-weight:600">Bold bit:</strong> the countdown is the page's headline, no card.</li>
+      </ul>
+
+      <div data-screen-label="1b · /home list · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+        <header style="background:#fff;border-bottom:1px solid #E3E6EA">
+          <div style="display:flex;align-items:center;gap:9px;padding:10px 16px">
+            <img src="assets/crest-nwetss.png" alt="" style="width:26px;height:26px;object-fit:contain;flex:none">
+            <a href="#1b" style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none">Leaving Cert Practical</a>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 16px 11px">
+            <span style="font-size:14px;color:#4B535C">Cian Murphy</span>
+            <div style="display:flex;align-items:center;gap:10px;flex:none">
+              <a href="#1b" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Change password</a>
+              <button type="button" style="padding:9px 12px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer">Sign out</button>
+            </div>
+          </div>
+          <nav aria-label="Main" style="display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 12px">
+            <a href="#1b" aria-current="page" style="min-height:44px;display:flex;align-items:center;padding:0 14px;border-radius:8px;background:#1F3A6E;font-size:15px;font-weight:600;color:#fff;text-decoration:none">Timeline</a>
+            <a href="#1b" style="min-height:44px;display:flex;align-items:center;padding:0 13px;border-radius:8px;border:1px solid #DDE1E6;border-left:4px solid #0E6E7A;background:#fff;font-size:15px;font-weight:600;color:#343A42;text-decoration:none">Biology</a>
+            <a href="#1b" style="min-height:44px;display:flex;align-items:center;padding:0 13px;border-radius:8px;border:1px solid #DDE1E6;border-left:4px solid #8E2846;background:#fff;font-size:15px;font-weight:600;color:#343A42;text-decoration:none">Chemistry</a>
+            <span style="min-height:44px;display:flex;align-items:center;gap:7px;padding:0 13px;border-radius:8px;border:1px dashed #DDE1E6;border-left:4px solid #6D3AA8;background:#fff;font-size:15px;color:#636B75">Business <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#A04806">waiting</span></span>
+            <a href="#1b" style="min-height:44px;display:flex;align-items:center;padding:0 13px;font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Join a class</a>
+          </nav>
+        </header>
+
+        <div style="padding:22px 16px 30px;display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">Next up · Wed 14 Oct 2026</p>
+            <p style="margin:2px 0 0;font-family:'Space Grotesk',sans-serif;font-size:52px;font-weight:700;letter-spacing:-.04em;line-height:.98;color:#1F3A6E">in 2 days</p>
+            <p style="margin:8px 0 0;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;letter-spacing:-.02em;line-height:1.25;color:#101419">Irish oral mock</p>
+            <p style="margin:3px 0 0;font-size:15px;color:#4B535C">Your own item · Test · only you can see this</p>
+          </div>
+
+          <div style="height:1px;background:#E3E6EA"></div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <nav aria-label="Timeline view" style="display:flex;gap:16px">
+              <a href="#1b" aria-current="page" style="font-size:15px;font-weight:700;color:#1F3A6E;text-decoration:none;box-shadow:inset 0 -2px 0 #1F3A6E">List</a>
+              <a href="#1b" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Week</a>
+              <a href="#1b" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Month</a>
+            </nav>
+            <div style="display:flex;gap:12px">
+              <a href="#1b" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Previous</a>
+              <a href="#1b" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Next</a>
+            </div>
+          </div>
+
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column">
+            <li style="padding:7px 0 9px;border-bottom:1px solid #E3E6EA">
+              <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">October</p>
+            </li>
+            <li style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #E3E6EA">
+              <span style="width:58px;flex:none;font-family:'Space Mono',monospace;font-size:14px;line-height:1.5;color:#636B75">Wed 14</span>
+              <div style="min-width:0;display:flex;flex-direction:column;gap:2px">
+                <p style="margin:0;font-size:16px;font-weight:600;line-height:1.35;color:#101419">Irish oral mock</p>
+                <p style="margin:0;display:flex;align-items:center;gap:7px;font-size:14px;color:#4B535C"><span aria-hidden="true" style="width:9px;height:9px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>Test · my own item · in 2 days</p>
+              </div>
+            </li>
+            <li style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #E3E6EA;box-shadow:inset 4px 0 0 #0E6E7A;padding-left:14px">
+              <span style="width:58px;flex:none;font-family:'Space Mono',monospace;font-size:14px;line-height:1.5;color:#636B75">Fri 16</span>
+              <div style="min-width:0;display:flex;flex-direction:column;gap:2px">
+                <p style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;letter-spacing:-.015em;line-height:1.3;color:#101419">Stage 4 Conducting the Experiment</p>
+                <p style="margin:0;display:flex;align-items:center;gap:7px;font-size:14px;color:#4B535C"><span aria-hidden="true" style="width:9px;height:9px;background:#1F3A6E;flex:none"></span>Stage date · Biology · in 4 days</p>
+              </div>
+            </li>
+            <li style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #E3E6EA">
+              <span style="width:58px;flex:none;font-family:'Space Mono',monospace;font-size:14px;line-height:1.5;color:#636B75">Wed 21</span>
+              <div style="min-width:0;display:flex;flex-direction:column;gap:2px">
+                <p style="margin:0;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-size:16px;font-weight:600;line-height:1.35;color:#101419">English comparative essay <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#1F3A6E;border:1px solid #DDE1E6;border-radius:6px;padding:2px 6px">Important</span></p>
+                <p style="margin:0;display:flex;align-items:center;gap:7px;font-size:14px;color:#4B535C"><span aria-hidden="true" style="width:9px;height:9px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>Essay · my own item · in 9 days</p>
+              </div>
+            </li>
+            <li style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #E3E6EA">
+              <span style="width:58px;flex:none;font-family:'Space Mono',monospace;font-size:14px;line-height:1.5;color:#636B75">Fri 23</span>
+              <div style="min-width:0;display:flex;flex-direction:column;gap:2px">
+                <p style="margin:0;font-size:16px;font-weight:600;line-height:1.35;color:#101419">Biology class test</p>
+                <p style="margin:0;display:flex;align-items:center;gap:7px;font-size:14px;color:#4B535C"><span aria-hidden="true" style="width:9px;height:9px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>Test · my own item · Biology · in 11 days</p>
+              </div>
+            </li>
+            <li style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #E3E6EA;box-shadow:inset 4px 0 0 #8E2846;padding-left:14px">
+              <span style="width:58px;flex:none;font-family:'Space Mono',monospace;font-size:14px;line-height:1.5;color:#636B75">Fri 30</span>
+              <div style="min-width:0;display:flex;flex-direction:column;gap:2px">
+                <p style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;letter-spacing:-.015em;line-height:1.3;color:#101419">Stage 3 Designing &amp; Planning the Experiment</p>
+                <p style="margin:0;display:flex;align-items:center;gap:7px;font-size:14px;color:#4B535C"><span aria-hidden="true" style="width:9px;height:9px;background:#1F3A6E;flex:none"></span>Stage date · Chemistry · in 18 days</p>
+              </div>
+            </li>
+            <li style="padding:16px 0 9px;border-bottom:1px solid #E3E6EA">
+              <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">November</p>
+            </li>
+            <li style="display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #E3E6EA">
+              <span style="width:58px;flex:none;font-family:'Space Mono',monospace;font-size:14px;line-height:1.5;color:#636B75">Sun 1</span>
+              <div style="min-width:0;display:flex;flex-direction:column;gap:2px">
+                <p style="margin:0;font-size:16px;font-weight:600;line-height:1.35;color:#101419">CAO account</p>
+                <p style="margin:0;display:flex;align-items:center;gap:7px;font-size:14px;color:#4B535C"><span aria-hidden="true" style="width:9px;height:9px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>Deadline · my own item · in 20 days</p>
+              </div>
+            </li>
+          </ul>
+
+          <button type="button" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;font-size:16px;font-weight:600;color:#fff;cursor:pointer">Add my own item</button>
+        </div>
+      </div>
+
+      <p style="margin:0;max-width:410px;font-size:14px;line-height:1.5;color:#636B75;text-wrap:pretty">Every destination is one tap and visible at once, and a pending class is where the student expects the subject to be. The cost is a header that grows to four lines with four subjects.</p>
+    </div>
+
+    <!-- ══════════════════════════════  1C  ══════════════════════════════ -->
+    <div id="1c" style="width:430px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#1F3A6E;background:#EFF1F3;border-radius:6px;padding:4px 9px">1c</span>
+        <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:23px;font-weight:700;letter-spacing:-.025em;color:#101419">Day cards, flat weight</h2>
+      </div>
+      <ul style="margin:0;padding:0 0 0 18px;display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:1.5;color:#343A42;max-width:410px">
+        <li><strong style="font-weight:600">Nav:</strong> a "Menu" button in the header opens a sheet; subjects and status live in it.</li>
+        <li><strong style="font-weight:600">Weight:</strong> none — every item is set the same, the kind carried by a marker column.</li>
+        <li><strong style="font-weight:600">Approval:</strong> in the menu sheet, beside the subject it belongs to.</li>
+        <li><strong style="font-weight:600">Bold bit:</strong> the countdown is a day card that outgrew the others.</li>
+      </ul>
+
+      <div data-screen-label="1c · /home list · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+        <header style="background:#fff;border-bottom:1px solid #E3E6EA">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:9px;padding:10px 16px">
+            <div style="display:flex;align-items:center;gap:9px;min-width:0">
+              <img src="assets/crest-nwetss.png" alt="" style="width:26px;height:26px;object-fit:contain;flex:none">
+              <a href="#1c" style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none">Leaving Cert Practical</a>
+            </div>
+            <button type="button" aria-expanded="false" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer;flex:none">Menu</button>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 16px 11px">
+            <span style="font-size:14px;color:#4B535C">Cian Murphy</span>
+            <div style="display:flex;align-items:center;gap:10px;flex:none">
+              <a href="#1c" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Change password</a>
+              <button type="button" style="padding:9px 12px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer">Sign out</button>
+            </div>
+          </div>
+        </header>
+
+        <div style="padding:20px 16px 30px;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+            <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.07;color:#101419">Timeline</h1>
+            <span style="font-size:15px;color:#4B535C">Mon 12 Oct</span>
+          </div>
+
+          <nav aria-label="Timeline view" style="display:flex;gap:3px;padding:3px;border-radius:10px;background:#EFF1F3">
+            <a href="#1c" aria-current="page" style="flex:1;text-align:center;padding:9px 6px;border-radius:7px;background:#fff;border:1px solid #DDE1E6;font-size:14px;font-weight:600;color:#1F3A6E;text-decoration:none">List</a>
+            <a href="#1c" style="flex:1;text-align:center;padding:9px 6px;border-radius:7px;border:1px solid transparent;font-size:14px;font-weight:600;color:#4B535C;text-decoration:none">Week</a>
+            <a href="#1c" style="flex:1;text-align:center;padding:9px 6px;border-radius:7px;border:1px solid transparent;font-size:14px;font-weight:600;color:#4B535C;text-decoration:none">Month</a>
+          </nav>
+
+          <article style="border-radius:10px;border:1px solid #1F3A6E;background:#fff;overflow:hidden">
+            <div style="background:#1F3A6E;padding:14px 16px 15px;display:flex;align-items:baseline;justify-content:space-between;gap:10px">
+              <div>
+                <p style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:34px;font-weight:700;letter-spacing:-.03em;line-height:1;color:#fff">in 2 days</p>
+                <p style="margin:5px 0 0;font-size:15px;color:#C3CDE1">Wednesday 14 Oct 2026</p>
+              </div>
+              <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#C3CDE1">Next up</span>
+            </div>
+            <div style="display:flex;gap:11px;padding:14px 16px">
+              <span aria-hidden="true" style="margin-top:6px;width:9px;height:9px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+              <div style="min-width:0">
+                <p style="margin:0;font-size:17px;font-weight:600;line-height:1.35;color:#101419">Irish oral mock</p>
+                <p style="margin:2px 0 0;font-size:14px;color:#4B535C">Test · my own item · only you can see this</p>
+              </div>
+            </div>
+          </article>
+
+          <article style="border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:11px 16px;border-bottom:1px solid #E3E6EA;background:#F7F8F9">
+              <h2 style="margin:0;font-size:16px;font-weight:600;color:#101419">Friday 16 Oct</h2>
+              <span style="font-size:14px;color:#4B535C">in 4 days</span>
+            </div>
+            <div style="display:flex;gap:11px;padding:14px 16px;border-left:4px solid #0E6E7A">
+              <span aria-hidden="true" style="margin-top:6px;width:9px;height:9px;background:#1F3A6E;flex:none"></span>
+              <div style="min-width:0">
+                <p style="margin:0;font-size:17px;font-weight:600;line-height:1.35;color:#101419">Stage 4 Conducting the Experiment</p>
+                <p style="margin:2px 0 0;font-size:14px;color:#4B535C">Stage date · Biology</p>
+              </div>
+            </div>
+          </article>
+
+          <article style="border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:11px 16px;border-bottom:1px solid #E3E6EA;background:#F7F8F9">
+              <h2 style="margin:0;font-size:16px;font-weight:600;color:#101419">Wednesday 21 Oct</h2>
+              <span style="font-size:14px;color:#4B535C">in 9 days</span>
+            </div>
+            <div style="display:flex;gap:11px;padding:14px 16px">
+              <span aria-hidden="true" style="margin-top:6px;width:9px;height:9px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+              <div style="min-width:0">
+                <p style="margin:0;font-size:17px;font-weight:600;line-height:1.35;color:#101419">English comparative essay</p>
+                <p style="margin:2px 0 0;font-size:14px;color:#4B535C">Essay · my own item</p>
+              </div>
+            </div>
+          </article>
+
+          <article style="border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:11px 16px;border-bottom:1px solid #E3E6EA;background:#F7F8F9">
+              <h2 style="margin:0;font-size:16px;font-weight:600;color:#101419">Friday 23 Oct</h2>
+              <span style="font-size:14px;color:#4B535C">in 11 days</span>
+            </div>
+            <div style="display:flex;gap:11px;padding:14px 16px;border-left:4px solid #0E6E7A">
+              <span aria-hidden="true" style="margin-top:6px;width:9px;height:9px;border:2px solid #4B535C;transform:rotate(45deg);flex:none"></span>
+              <div style="min-width:0">
+                <p style="margin:0;font-size:17px;font-weight:600;line-height:1.35;color:#101419">Biology class test</p>
+                <p style="margin:2px 0 0;font-size:14px;color:#4B535C">Test · my own item · Biology</p>
+              </div>
+            </div>
+          </article>
+
+          <article style="border-radius:10px;border:1px solid #DDE1E6;background:#fff;overflow:hidden">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:11px 16px;border-bottom:1px solid #E3E6EA;background:#F7F8F9">
+              <h2 style="margin:0;font-size:16px;font-weight:600;color:#101419">Friday 30 Oct</h2>
+              <span style="font-size:14px;color:#4B535C">in 18 days</span>
+            </div>
+            <div style="display:flex;gap:11px;padding:14px 16px;border-left:4px solid #8E2846">
+              <span aria-hidden="true" style="margin-top:6px;width:9px;height:9px;background:#1F3A6E;flex:none"></span>
+              <div style="min-width:0">
+                <p style="margin:0;font-size:17px;font-weight:600;line-height:1.35;color:#101419">Stage 3 Designing &amp; Planning the Experiment</p>
+                <p style="margin:2px 0 0;font-size:14px;color:#4B535C">Stage date · Chemistry</p>
+              </div>
+            </div>
+          </article>
+
+          <button type="button" style="height:48px;border:0;border-radius:8px;background:#1F3A6E;font-size:16px;font-weight:600;color:#fff;cursor:pointer">Add my own item</button>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p style="margin:0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:#5C6470">1c · the menu sheet, where navigation and class status live</p>
+        <div data-screen-label="1c · menu sheet · 390" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#fff">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 16px;border-bottom:1px solid #E3E6EA">
+            <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;letter-spacing:-.02em;color:#101419">Menu</h2>
+            <button type="button" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer">Close</button>
+          </div>
+          <nav aria-label="Main" style="display:flex;flex-direction:column">
+            <a href="#1c" aria-current="page" style="min-height:56px;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid #E3E6EA;background:#F4F5F8;box-shadow:inset 3px 0 0 #1F3A6E;font-size:17px;font-weight:600;color:#1F3A6E;text-decoration:none">Timeline</a>
+            <p style="margin:0;padding:16px 16px 6px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#636B75">My components</p>
+            <a href="#1c" style="min-height:56px;display:flex;flex-direction:column;justify-content:center;gap:1px;padding:8px 16px;border-top:1px solid #E3E6EA;border-left:4px solid #0E6E7A;text-decoration:none">
+              <span style="font-size:17px;font-weight:600;color:#101419">Biology</span>
+              <span style="font-size:14px;color:#4B535C">6A Biology · completion date 26 Feb 2027</span>
+            </a>
+            <a href="#1c" style="min-height:56px;display:flex;flex-direction:column;justify-content:center;gap:1px;padding:8px 16px;border-top:1px solid #E3E6EA;border-left:4px solid #8E2846;text-decoration:none">
+              <span style="font-size:17px;font-weight:600;color:#101419">Chemistry</span>
+              <span style="font-size:14px;color:#4B535C">6C Chemistry · completion date 23 Apr 2027</span>
+            </a>
+            <div style="min-height:56px;display:flex;flex-direction:column;justify-content:center;gap:1px;padding:8px 16px;border-top:1px solid #E3E6EA;border-left:4px solid #6D3AA8;background:#F6EDE6">
+              <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#A04806">Pending approval</span>
+              <span style="font-size:17px;font-weight:600;color:#101419">Business</span>
+              <span style="font-size:14px;color:#4B535C">6 Business · waiting for a teacher</span>
+            </div>
+            <a href="#1c" style="min-height:56px;display:flex;align-items:center;padding:0 16px;border-top:1px solid #E3E6EA;font-size:17px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Join a class</a>
+          </nav>
+        </div>
+      </div>
+
+      <p style="margin:0;max-width:410px;font-size:14px;line-height:1.5;color:#636B75;text-wrap:pretty">The quietest page of the three and it scales to any number of subjects, but every subject is two taps away and the menu hides status until you open it — which the brief warns against.</p>
+    </div>
+
+  </div>
+
+  <div style="max-width:880px;display:flex;flex-direction:column;gap:10px;padding:22px 24px;border-radius:10px;border:1px solid #DDE1E6;background:#fff">
+    <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">What I'd pick, and what I still need from you</h2>
+    <p style="margin:0;font-size:16px;line-height:1.55;color:#343A42;text-wrap:pretty"><a href="#1b">1b</a> for the page, <a href="#1a">1a</a>'s grouped list if a fortnight ever gets busy: the countdown as the headline is bolder than a card and costs nothing, and a pending class sitting in the nav row is the most honest place for it — it's where the student will look for the subject. <a href="#1c">1c</a> is the safe one; it's also the one where a student on the bus learns least per tap.</p>
+    <p style="margin:0;font-size:16px;line-height:1.55;color:#343A42;text-wrap:pretty">On your weights question: I'd fix the order by source (stage date, teacher item, own item) <em>and</em> let a student mark any of their own items "Important", as in <a href="#1b">1b</a>. Fixed order alone can't know that the driving test matters more this week than Stage 5. A student-set flag is a new field, so it goes in <span style="font-family:'Space Mono',monospace;font-size:14px">NOTES.md</span> as an open question before it's built.</p>
+    <p style="margin:0;font-size:16px;line-height:1.55;color:#343A42;text-wrap:pretty">One thing the roadmap changed on 20 Sep that isn't in your pack brief: the SEC completion date is now its own timeline item (Q-P2-E). That's a fourth kind, and the biggest date on the page — I'll give it its own marker and treat it as the heaviest item unless you say otherwise.</p>
+  </div>
+
+</section>
+</x-dc>
+</body>
+</html>

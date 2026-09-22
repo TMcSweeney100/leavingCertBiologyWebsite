@@ -56,6 +56,6 @@ public final class ComponentViews {
             int weightingPercent, int marksTotal, BriefDetail brief, String processNote, LocalDate today,
             List<StudentStage> stages, List<SectionView> sections, List<MarkBandView> markBands) implements ComponentView {}
 
-    public record MyComponent(UUID componentId, String className, String subjectCode, String subjectName,
+    public record MyComponent(UUID componentId, UUID classId, String className, String subjectCode, String subjectName,
             String briefTitle, LocalDate completionDate) {}
 }
