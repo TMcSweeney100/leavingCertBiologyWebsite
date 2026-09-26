@@ -18,21 +18,27 @@ export type NoticeTone = keyof typeof TONES;
 export function Notice({
   tone,
   eyebrow,
+  heading,
   role,
   children,
 }: {
   tone: NoticeTone;
   eyebrow?: string;
+  /** A sentence-case heading instead of a mono eyebrow, for a banner that states a change (pack D-5 §6). */
+  heading?: string;
   role?: "alert" | "status";
   children: ReactNode;
 }) {
   const t = TONES[tone];
+  const titled = Boolean(eyebrow || heading);
   return (
     <div
       role={role}
-      className={`app-appear rounded-app-card border border-l-4 text-app-base leading-[1.45] text-app-copy ${t.box} ${eyebrow ? "flex flex-col gap-[5px] px-[18px] py-4" : "flex items-start gap-[9px] px-3.5 py-3"}`}
+      className={`app-appear rounded-app-card border border-l-4 text-app-base leading-[1.45] text-app-copy ${t.box} ${titled ? "flex flex-col gap-[5px] px-[18px] py-4" : "flex items-start gap-[9px] px-3.5 py-3"}`}
     >
-      {eyebrow ? (
+      {heading ? (
+        <p className={`font-heading text-[18px] font-bold tracking-[-.015em] ${t.label}`}>{heading}</p>
+      ) : eyebrow ? (
         <p className={`${eyebrowClass} ${t.label}`}>{eyebrow}</p>
       ) : (
         <span

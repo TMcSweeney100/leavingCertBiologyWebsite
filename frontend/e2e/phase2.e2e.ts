@@ -33,14 +33,14 @@ test("teacher sets up a Biology component", async ({ page: teacher }) => {
   await expect(teacher.getByRole("button", { name: "Save dates" })).toBeVisible();
   await expectAccessible(teacher);
 
-  await teacher.getByLabel("Stage 6 Finalising the Biology in Practice Investigation Report").fill("2027-03-05");
+  await teacher.getByLabel("Stage 6 date").fill("2027-03-05");
   await teacher.getByRole("button", { name: "Save dates" }).click();
   await expect(teacher.getByRole("alert").filter({ hasText: "Stage 6 is after the completion date, 26 Feb 2027" })).toBeVisible();
   await expectAccessible(teacher);
 
-  await teacher.getByLabel("Stage 6 Finalising the Biology in Practice Investigation Report").fill("2027-01-22");
-  await teacher.getByLabel("Stage 4 Conducting the Experiment").fill("2026-10-16");
-  await teacher.getByLabel("Stage 5 Data Analysis and Conclusions").fill("2026-12-09");
+  await teacher.getByLabel("Stage 6 date").fill("2027-01-22");
+  await teacher.getByLabel("Stage 4 date").fill("2026-10-16");
+  await teacher.getByLabel("Stage 5 date").fill("2026-12-09");
   // Wait for the PUT itself to settle before reloading: a reload while it's still in flight can
   // cancel the request, losing the save (seen flaky on the phone project without this).
   await Promise.all([
@@ -49,14 +49,13 @@ test("teacher sets up a Biology component", async ({ page: teacher }) => {
   ]);
   await expect(teacher.getByRole("alert").filter({ hasText: "completion date" })).toHaveCount(0);
   await teacher.reload();
-  await expect(teacher.getByLabel("Stage 4 Conducting the Experiment")).toHaveValue("2026-10-16");
+  await expect(teacher.getByLabel("Stage 4 date")).toHaveValue("2026-10-16");
 
-  await teacher.getByRole("button", { name: "Add item to Stage 6" }).click();
-  await teacher.getByRole("textbox", { name: "Item" }).fill("Full draft in for feedback");
-  await teacher.getByLabel("Date (optional)").fill("2026-12-04");
-  // exact: true — Playwright's accessible-name match is substring by default, and every other
-  // stage still shows its own "Add item to Stage N" button while this one's form is open.
   await teacher.getByRole("button", { name: "Add item", exact: true }).click();
+  await teacher.getByRole("textbox", { name: "Item" }).fill("Full draft in for feedback");
+  await teacher.getByLabel("Stage", { exact: true }).selectOption({ label: "Stage 6 — Finalising the Biology in Practice Investigation Report" });
+  await teacher.getByLabel("Date (optional)").fill("2026-12-04");
+  await teacher.getByRole("button", { name: "Save item" }).click();
   await expect(teacher.getByRole("listitem").filter({ hasText: "Full draft in for feedback" })).toBeVisible();
   await expectAccessible(teacher);
 });

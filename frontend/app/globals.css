@@ -72,6 +72,10 @@
   --color-app-inset: var(--app-inset);
   --color-app-ground: var(--app-ground);
   --color-app-surface: var(--app-surface);
+  --color-app-stem: var(--app-stem);
+  --color-app-stem-attention: var(--app-stem-attention);
+  --color-app-stem-error: var(--app-stem-error);
+  --color-app-weekend: var(--app-weekend);
   --color-app-subject-biology: var(--app-subject-biology);
   --color-app-subject-business: var(--app-subject-business);
   --color-app-subject-chemistry: var(--app-subject-chemistry);
@@ -272,6 +276,15 @@
   --app-marker-stroke: 2px;      /* the two hollow markers */
   --app-calendar-dot: 5px;       /* "something is due" dot, aside month grid */
   --app-calendar-cell: 34px;     /* aside month cell */
+
+  /* Pack D-5 — the teacher's year view. Line art only: a stem and a weekend cell are structure,
+     not text or a control, so they sit below the 4.5:1 floor deliberately (WCAG 1.4.11's
+     exemption for decorative hairlines). Each stem colour is the desaturated partner of the mark
+     it hangs from, so a red or amber mark reads as one object from numeral to axis. */
+  --app-stem: #C9D0D8;           /* 1px timeline stem, neutral */
+  --app-stem-attention: #D6A97F; /* stem under an amber mark */
+  --app-stem-error: #E0A9A5;     /* stem under a red mark */
+  --app-weekend: #FBFCFC;        /* weekend calendar cell, one step off white */
 
   /* shadcn semantic variables — mapped onto the BiPi tokens above so every primitive
      (Card, Badge, Progress, Collapsible, Table, Button) inherits the BiPi palette. */
