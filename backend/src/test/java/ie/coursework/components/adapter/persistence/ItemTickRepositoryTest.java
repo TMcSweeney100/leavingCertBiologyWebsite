@@ -23,12 +23,27 @@ class ItemTickRepositoryTest extends PostgresIntegrationTest {
         UUID item = components.item(component, components.stageId(ComponentFixtures.BIOLOGY_2027, 6), "Full draft in", null);
 
         ticks.set(component, world.approvedStudent(), item, true, Instant.parse("2026-11-01T10:00:00Z"));
-        assertThat(ticks.doneItems(component, world.approvedStudent())).containsExactly(item);
+        assertThat(ticks.doneItems(component, world.approvedStudent()).keySet()).containsExactly(item);
         assertThat(ticks.doneItems(component, world.pendingStudent())).isEmpty();
 
         ticks.set(component, world.approvedStudent(), item, false, Instant.parse("2026-11-02T10:00:00Z"));
         ticks.set(component, world.approvedStudent(), item, false, Instant.parse("2026-11-02T10:05:00Z"));
         assertThat(ticks.doneItems(component, world.approvedStudent())).isEmpty();
         assertThat(jdbcTemplate.queryForObject("SELECT count(*) FROM item_tick", Integer.class)).isEqualTo(1);
+    }
+
+    @Test
+    void doneItemsCarriesWhenEachItemWasTicked() {
+        ClassFixtures.World world = fixtures.world();
+        UUID component = components.component(world.class1(), world.teacher1(), ComponentFixtures.BIOLOGY_2027);
+        UUID item = components.item(component, components.stageId(ComponentFixtures.BIOLOGY_2027, 6), "Full draft in", null);
+        UUID student = world.approvedStudent();
+
+        Instant when = Instant.parse("2026-10-01T23:30:00Z");
+        ticks.set(component, student, item, true, when);
+        assertThat(ticks.doneItems(component, student)).containsEntry(item, when);
+
+        ticks.set(component, student, item, false, when.plusSeconds(60));
+        assertThat(ticks.doneItems(component, student)).isEmpty();
     }
 }

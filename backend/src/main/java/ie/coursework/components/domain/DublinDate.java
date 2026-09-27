@@ -1,6 +1,7 @@
 package ie.coursework.components.domain;
 
 import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
@@ -12,6 +13,10 @@ public final class DublinDate {
     private DublinDate() {}
 
     public static LocalDate today(Clock clock) {
-        return LocalDate.ofInstant(clock.instant(), DUBLIN);
+        return of(clock.instant());
+    }
+
+    public static LocalDate of(Instant instant) {
+        return LocalDate.ofInstant(instant, DUBLIN);
     }
 }

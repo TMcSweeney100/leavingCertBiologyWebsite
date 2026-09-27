@@ -2,9 +2,10 @@ package ie.coursework.components.adapter.persistence;
 
 import ie.coursework.shared.persistence.Timestamps;
 import java.time.Instant;
-import java.util.Set;
+import java.time.OffsetDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
@@ -17,12 +18,18 @@ public class ItemTickRepository {
         this.jdbc = jdbc;
     }
 
-    public Set<UUID> doneItems(UUID componentId, UUID studentId) {
-        return jdbc.sql("""
-                SELECT teacher_item_id FROM item_tick
+    /** Each ticked item and when it was ticked. Unticked rows (done_at null) aren't returned. */
+    public Map<UUID, Instant> doneItems(UUID componentId, UUID studentId) {
+        Map<UUID, Instant> done = new LinkedHashMap<>();
+        jdbc.sql("""
+                SELECT teacher_item_id, done_at FROM item_tick
                 WHERE instance_id = :component AND student_user_id = :student AND done_at IS NOT NULL
                 """).param("component", componentId).param("student", studentId)
-                .query(UUID.class).stream().collect(Collectors.toSet());
+                .query(rs -> {
+                    done.put(rs.getObject("teacher_item_id", UUID.class),
+                            rs.getObject("done_at", OffsetDateTime.class).toInstant());
+                });
+        return done;
     }
 
     public void set(UUID componentId, UUID studentId, UUID itemId, boolean done, Instant now) {

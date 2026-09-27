@@ -20,8 +20,8 @@ beforeEach(() => {
 
 describe("ItemTick", () => {
   it("ticks straight away, says who ticked it, and saves", async () => {
-    vi.mocked(api.send).mockResolvedValue({ id: "i1", text: "Full draft in", dueDate: null, done: true });
-    render(<ItemTick componentId="k1" item={{ id: "i1", text: "Full draft in", dueDate: "2026-12-04", done: false }} />);
+    vi.mocked(api.send).mockResolvedValue({ id: "i1", text: "Full draft in", dueDate: null, done: true, doneOn: "2026-10-02" });
+    render(<ItemTick componentId="k1" item={{ id: "i1", text: "Full draft in", dueDate: "2026-12-04", done: false, doneOn: null }} />);
     const box = screen.getByRole("checkbox", { name: /Full draft in/ });
 
     await userEvent.click(box);
@@ -32,9 +32,21 @@ describe("ItemTick", () => {
 
   it("puts the box back and shows the error when saving fails", async () => {
     vi.mocked(api.send).mockRejectedValue(new Error("offline"));
-    render(<ItemTick componentId="k1" item={{ id: "i1", text: "Full draft in", dueDate: null, done: true }} />);
+    render(<ItemTick componentId="k1" item={{ id: "i1", text: "Full draft in", dueDate: null, done: true, doneOn: null }} />);
     await userEvent.click(screen.getByRole("checkbox", { name: /Full draft in/ }));
     expect(await screen.findByRole("alert")).toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: /Full draft in/ })).toBeChecked();
+  });
+
+  it("says when the student ticked it", () => {
+    render(<ItemTick componentId="k1" item={{ id: "i1", text: "Full draft in", dueDate: null, done: true, doneOn: "2026-10-02" }} />);
+    expect(screen.getByText("You ticked this · 2 Oct 2026")).toBeInTheDocument();
+  });
+
+  it("says only 'You ticked this' until the server has a date", async () => {
+    vi.mocked(api.send).mockReturnValue(new Promise(() => {})); // still in flight
+    render(<ItemTick componentId="k1" item={{ id: "i1", text: "Full draft in", dueDate: null, done: false, doneOn: null }} />);
+    await userEvent.click(screen.getByRole("checkbox", { name: "Full draft in" }));
+    expect(screen.getByText("You ticked this")).toBeInTheDocument();
   });
 });

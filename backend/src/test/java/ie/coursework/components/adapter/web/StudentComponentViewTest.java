@@ -100,6 +100,19 @@ class StudentComponentViewTest extends PostgresIntegrationTest {
                 .get("/api/v1/components/" + component).andExpect(jsonPath("$.view").value("TEACHER"));
     }
 
+    @Test
+    void aTickedItemSaysWhichDayItWasTicked() throws Exception {
+        UUID item = components.item(component, components.stageId(BIO, 6), "Full draft in", null);
+        ApiSession student = new ApiSession(mockMvc).login(ClassFixtures.APPROVED_STUDENT, TestAccounts.PASSWORD);
+        student.put("/api/v1/components/" + component + "/teacher-items/" + item + "/tick", "{\"done\":true}")
+                .andExpect(status().isOk()).andExpect(jsonPath("$.doneOn").value("2026-10-12"));
+        student.get("/api/v1/components/" + component).andExpect(status().isOk())
+                .andExpect(jsonPath("$.stages[?(@.ordinal == 6)].items[?(@.text == 'Full draft in')].doneOn")
+                        .value(org.hamcrest.Matchers.contains("2026-10-12")));
+        student.put("/api/v1/components/" + component + "/teacher-items/" + item + "/tick", "{\"done\":false}")
+                .andExpect(jsonPath("$.doneOn").value(nullValue()));
+    }
+
     private ApiSession student() throws Exception {
         return new ApiSession(mockMvc).login(ClassFixtures.APPROVED_STUDENT, TestAccounts.PASSWORD);
     }

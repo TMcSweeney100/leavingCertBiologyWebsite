@@ -10,7 +10,7 @@ import { formatCalendarDate } from "@/lib/app/component-setup";
 import { ErrorPanel } from "./error-panel";
 
 /** One teacher item a student can tick (plan 2E P2-37, P2-38). The box moves at once; a failure puts it back. */
-export function ItemTick({ componentId, item }: { componentId: string; item: { id: string; text: string; dueDate: string | null; done: boolean } }) {
+export function ItemTick({ componentId, item }: { componentId: string; item: { id: string; text: string; dueDate: string | null; done: boolean; doneOn: string | null } }) {
   const router = useRouter();
   const [done, setDone] = useState(item.done);
   const [error, setError] = useState<ApiError | null>(null);
@@ -50,7 +50,11 @@ export function ItemTick({ componentId, item }: { componentId: string; item: { i
             </span>
           )}
         </label>
-        {done && <span aria-live="polite" className="app-appear ml-auto text-app-small text-app-grey">You ticked this</span>}
+        {done && (
+          <span aria-live="polite" className="app-appear ml-auto text-app-small text-app-grey">
+            {item.done && item.doneOn ? `You ticked this · ${formatCalendarDate(item.doneOn)}` : "You ticked this"}
+          </span>
+        )}
       </div>
       {error && <ErrorPanel error={error} />}
     </div>
