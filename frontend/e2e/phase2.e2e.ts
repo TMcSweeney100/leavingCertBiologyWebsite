@@ -94,6 +94,9 @@ test("a student sees the component and ticks a teacher item", async ({ page: tea
   await expect(student.getByText("You ticked this")).toBeVisible();
   await student.reload();
   await student.getByTestId("stage-list").getByText("Finalising the Biology in Practice Investigation Report").click();
+  // en-IE abbreviates most months to 3 letters, but September to "Sept" (4) — see
+  // component-setup.test.ts's note on formatCalendarDate.
+  await expect(student.getByText(/^You ticked this · \d{1,2} [A-Z][a-z]{2,3} \d{4}$/)).toBeVisible();
   await expect(student.getByRole("checkbox", { name: /Full draft in for feedback/ })).toBeChecked();
   await expectAccessible(student);
 });
@@ -139,4 +142,9 @@ test("the timeline shows the stage date, the teacher's item and the student's ow
   await expectAccessible(student);
 
   expect(componentUrl).toMatch(/\/components\//);
+
+  await student.goto("/home?view=list&from=2027-02-26");
+  const completion = student.getByRole("list", { name: "Timeline items" }).getByRole("listitem").first();
+  await expect(completion).toContainText("SEC completion date · Biology");
+  await expectAccessible(student);
 });
