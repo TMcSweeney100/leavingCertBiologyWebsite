@@ -554,7 +554,7 @@ If the API is down, the proxy returns its own problem response rather than a bla
 |---|---|---|
 | Q1 | Which Chemistry, Physics and Business teachers will review their subject's content, and by when? | Phase 2 content sign-off |
 | Q2 | What's the leader view's on-track threshold? (80% is a placeholder.) | Phase 5 |
-| Q3 | Should a teacher see that a student hid an entry that was previously visible? The history is kept either way. | Phase 3 |
+| ~~Q3~~ | **Answered 20 Sep 2026 (Tim): yes.** A teacher sees that a student hid an entry that was previously visible. The history is kept either way. | Phase 3 |
 | Q4 | How long is pilot data kept? Proposal: until the SEC appeals process for that cohort ends, unless the school says otherwise. | Pilot readiness |
 | Q5 | Who drafts the data processing agreement and the privacy notice? | Pilot readiness |
 | Q6 | Do the AI-use fields in §6.7 match the current Coursework Rules and Procedures? | Phase 6 |
