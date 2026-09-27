@@ -63,7 +63,7 @@ export function CreateClassForm({
       </h1>
       {error && (
         <div className="mt-[22px]">
-          <ErrorPanel error={error} />
+          <ErrorPanel error={error} focus />
         </div>
       )}
       <div className="mt-[22px] flex flex-col gap-4">

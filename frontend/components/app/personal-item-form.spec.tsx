@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { ApiError } from "@/lib/api/problem";
+
 const refresh = vi.fn();
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), refresh }) }));
 vi.mock("@/lib/api/client", async () => {
@@ -56,6 +58,17 @@ describe("AddPersonalItem", () => {
     await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
     expect(screen.queryByRole("textbox", { name: "Title" })).not.toBeInTheDocument();
     expect(api.send).not.toHaveBeenCalled();
+  });
+
+  it("moves focus to the alert when saving fails", async () => {
+    vi.mocked(api.send).mockRejectedValue(new ApiError({ code: "VALIDATION_FAILED", status: 400, detail: "Check the date." }));
+    render(<AddPersonalItem classes={classes} />);
+    await userEvent.click(screen.getByRole("button", { name: "Add my own item" }));
+    await userEvent.type(screen.getByRole("textbox", { name: "Title" }), "Irish oral mock");
+    await userEvent.type(screen.getByLabelText("Date"), "2026-10-14");
+    await userEvent.click(screen.getByRole("button", { name: "Save item" }));
+
+    expect(await screen.findByRole("alert")).toHaveFocus();
   });
 
   it("says it's saving while the request is in flight", async () => {

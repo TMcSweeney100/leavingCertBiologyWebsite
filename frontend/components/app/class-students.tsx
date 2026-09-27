@@ -88,7 +88,7 @@ export function ClassStudents({ detail, now }: { detail: ClassDetail; now?: Date
 
       {error && (
         <div className="mt-6">
-          <ErrorPanel error={error} />
+          <ErrorPanel error={error} focus />
         </div>
       )}
 

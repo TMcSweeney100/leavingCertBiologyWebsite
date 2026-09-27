@@ -111,6 +111,7 @@ describe("StageDatesForm", () => {
     expect(panel).toHaveTextContent("Your dates weren't saved");
     expect(panel).toHaveTextContent("One date needs another look. Nothing was changed.");
     expect(within(panel).getByRole("listitem")).toHaveTextContent("Stage 6");
+    expect(panel).toHaveFocus();
 
     const input = screen.getByLabelText("Stage 6 date");
     expect(input).toHaveAttribute("aria-invalid", "true");

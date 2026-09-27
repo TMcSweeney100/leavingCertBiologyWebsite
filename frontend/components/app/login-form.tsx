@@ -42,7 +42,7 @@ export function LoginForm({ next }: { next?: string }) {
       </h1>
       {error && (
         <div className="mt-4 lg:mt-[18px]">
-          <ErrorPanel error={error} />
+          <ErrorPanel error={error} focus />
         </div>
       )}
       <div className="mt-4 flex flex-col gap-4 lg:mt-[18px] lg:gap-[18px]">

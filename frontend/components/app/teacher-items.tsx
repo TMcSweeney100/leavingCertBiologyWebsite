@@ -109,7 +109,7 @@ export function TeacherItems({ componentId, stages }: { componentId: string; sta
       <p className={`max-w-[620px] ${lead}`}>
         {"Your own to-dos, attached to a stage. Students see them on their component page and their timeline. Letters follow the date, so they change when a date does."}
       </p>
-      {error && <ErrorPanel error={error} />}
+      {error && <ErrorPanel error={error} focus />}
 
       {items.length > 0 && (
         <ul className="flex flex-col gap-2.5">

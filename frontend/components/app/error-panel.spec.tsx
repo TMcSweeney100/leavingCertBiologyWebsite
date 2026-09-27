@@ -25,4 +25,34 @@ describe("ErrorPanel", () => {
     );
     expect(screen.getByRole("alert")).toHaveTextContent("academicYear: must look like 2026/27");
   });
+
+  it("takes focus when asked, and again for a new error", () => {
+    const first = new ApiError({ code: "VALIDATION_FAILED", status: 400, detail: "Check the date." });
+    const { rerender } = render(
+      <>
+        <button>Before</button>
+        <ErrorPanel error={first} focus />
+      </>,
+    );
+    expect(screen.getByRole("alert")).toHaveFocus();
+    screen.getByRole("button", { name: "Before" }).focus();
+    const second = new ApiError({ code: "VALIDATION_FAILED", status: 400, detail: "Check the title." });
+    rerender(
+      <>
+        <button>Before</button>
+        <ErrorPanel error={second} focus />
+      </>,
+    );
+    expect(screen.getByRole("alert")).toHaveFocus();
+  });
+
+  it("leaves focus alone by default", () => {
+    render(
+      <>
+        <button autoFocus>Stay</button>
+        <ErrorPanel error={new ApiError({ code: "NOT_FOUND", status: 404, detail: "No such class." })} />
+      </>,
+    );
+    expect(screen.getByRole("button", { name: "Stay" })).toHaveFocus();
+  });
 });

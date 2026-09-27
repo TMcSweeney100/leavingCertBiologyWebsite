@@ -63,7 +63,7 @@ export function CreateComponentForm({ classId, briefs }: { classId: string; brie
       <p className={lead}>
         {"This class does one coursework component. Choose the exam year's brief to set it up. The stages and the completion date come from the SEC; the dates in between are yours."}
       </p>
-      {error && <ErrorPanel error={error} />}
+      {error && <ErrorPanel error={error} focus />}
 
       <FieldGroup>
         <Field id="brief" label="Brief" help={`The ${nextYear} briefs appear here when the SEC publishes them.`} controlClassName="cursor-pointer">
