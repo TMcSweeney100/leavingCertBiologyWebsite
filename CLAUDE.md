@@ -18,6 +18,13 @@ Two things that share a Next.js app:
 5. `docs/PILOT-DESIGN.md` — the sections the plan cites. It wins over the roadmap; the roadmap wins over the specs in `docs/newDevelopement/`.
 6. `docs/design/UI-STANDARDS.md` before any task that touches app UI; `docs/design/UI-CHECKLIST.md` before calling it done. `docs/design/UI-BRIEF.md` is what Claude Design gets. **The app no longer uses the BiPi look** (roadmap R25): its palette is navy/amber `--app-*`, applied through `.app-theme`; `--bipi-*` is only for the live schedule.
 
+## Working loop
+
+- **Milestone work** keeps its own path: roadmap → plan in `docs/superpowers/plans/` → build → `docs/HANDOFF.md`.
+- **Anything else bigger than a one-sentence diff**: `/interview-me` (if the ask is vague) → `/plan-feature` → fresh session `/implement-plan` → fresh session `/self-review` → `code-simplification` (optional, its own commit) → merge → `/write-changes`. Files go in `docs/intent/`, `docs/plans/` and `docs/changes/`, one slug across all three, all committed.
+- Run `/self-review` in a fresh session before merging any branch, milestone branches included.
+- The skills' verification step is `make verify` (add `make e2e` when a journey changed). The diff base is `pilotMain` for pilot work and `main` for BiPi work.
+
 ## Commands (repo root)
 
 - `make db-up` / `make db-down` — Postgres 18 in Docker
