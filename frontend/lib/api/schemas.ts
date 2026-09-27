@@ -202,7 +202,7 @@ export const personalKindSchema = z.enum(["TEST", "ESSAY", "DEADLINE", "OTHER"])
 export type PersonalKind = z.infer<typeof personalKindSchema>;
 
 export const timelineItemSchema = z.object({
-  kind: z.enum(["STAGE", "TEACHER_ITEM", "PERSONAL"]),
+  kind: z.enum(["COMPLETION", "STAGE", "TEACHER_ITEM", "PERSONAL"]),
   date: z.string(),
   title: z.string(),
   stageLabel: z.string().nullable(),

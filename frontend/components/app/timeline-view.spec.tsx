@@ -94,4 +94,12 @@ describe("TimelineView", () => {
     expect(toggle).toHaveAttribute("aria-expanded", "false");
     expect(screen.queryByText("A dot means something is due. The list beside it says what.")).not.toBeInTheDocument();
   });
+
+  it("shows the SEC completion date as its own item, in words", () => {
+    const completion: TimelineItem = { ...base, kind: "COMPLETION", date: "2027-02-26", title: "Biology in Practice Investigation" };
+    view({ items: [completion], range: { view: "list", from: "2027-02-01", to: "2027-02-28" }, today: "2027-02-01" });
+    const row = within(screen.getByRole("list", { name: "Timeline items" })).getByRole("listitem");
+    expect(row).toHaveTextContent("SEC completion date · Biology");
+    expect(within(row).getByRole("link", { name: "Biology in Practice Investigation" })).toHaveAttribute("href", "/components/k1");
+  });
 });

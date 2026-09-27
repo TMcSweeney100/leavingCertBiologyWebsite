@@ -21,6 +21,7 @@ const MONTH_NAME = new Intl.DateTimeFormat("en-IE", { month: "long", timeZone: "
 
 /** Plan 2F P2-49: the kind is always a word. */
 function kindWord(item: TimelineItem) {
+  if (item.kind === "COMPLETION") return "SEC completion date";
   if (item.kind === "STAGE") return "Stage date";
   if (item.kind === "TEACHER_ITEM") return "From your teacher";
   return item.personalKind ? KIND_LABEL[item.personalKind] : "Own item";
@@ -35,7 +36,7 @@ function Title({ item }: { item: TimelineItem }) {
     because both are the component's own dates; teacher and own items share grey and a stroke. */
 function Marker({ item, small }: { item: TimelineItem; small?: boolean }) {
   const size = small ? "size-[var(--app-marker-sm)]" : "size-[var(--app-marker)]";
-  if (item.kind === "STAGE") return <span aria-hidden="true" className={`${size} flex-none bg-app-accent`} />;
+  if (item.kind === "STAGE" || item.kind === "COMPLETION") return <span aria-hidden="true" className={`${size} flex-none bg-app-accent`} />;
   if (item.kind === "TEACHER_ITEM") return <span aria-hidden="true" className={`${size} flex-none rounded-full border-[length:var(--app-marker-stroke)] border-app-grey`} />;
   return <span aria-hidden="true" className={`${size} flex-none rotate-45 border-[length:var(--app-marker-stroke)] border-app-grey`} />;
 }
@@ -69,12 +70,12 @@ export function TimelineView({
   const row = (item: TimelineItem, isNext: boolean) => (
     <li
       key={`${item.kind}-${item.personalItemId ?? item.componentId}-${item.date}-${item.title}`}
-      className={`flex items-center gap-3 border-t border-app-line py-[17px] lg:gap-6 ${item.kind === "STAGE" && item.subjectName ? `border-l-4 pl-3.5 lg:pl-[14px] ${subjectEdge(item.subjectName)}` : ""}`}
+      className={`flex items-center gap-3 border-t border-app-line py-[17px] lg:gap-6 ${(item.kind === "STAGE" || item.kind === "COMPLETION") && item.subjectName ? `border-l-4 pl-3.5 lg:pl-[14px] ${subjectEdge(item.subjectName)}` : ""}`}
     >
       <span className="w-[58px] flex-none font-mono text-app-help text-app-muted lg:w-[96px] lg:text-app-meta">{weekday(item.date)}</span>
       <Marker item={item} small />
       <div className="min-w-0 flex-1">
-        <p className={item.kind === "STAGE" ? "font-heading text-app-base font-semibold tracking-[-.018em] text-app-ink lg:text-app-title" : "text-app-help font-semibold text-app-ink lg:text-app-meta"}>
+        <p className={item.kind === "STAGE" || item.kind === "COMPLETION" ? "font-heading text-app-base font-semibold tracking-[-.018em] text-app-ink lg:text-app-title" : "text-app-help font-semibold text-app-ink lg:text-app-meta"}>
           <Title item={item} />
         </p>
         <p className="text-app-help text-app-grey lg:text-app-small">{metaLine(item)}</p>
