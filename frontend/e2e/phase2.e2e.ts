@@ -56,7 +56,9 @@ test("teacher sets up a Biology component", async ({ page: teacher }) => {
   await teacher.getByLabel("Stage", { exact: true }).selectOption({ label: "Stage 6 — Finalising the Biology in Practice Investigation Report" });
   await teacher.getByLabel("Date (optional)").fill("2026-12-04");
   await teacher.getByRole("button", { name: "Save item" }).click();
-  await expect(teacher.getByRole("listitem").filter({ hasText: "Full draft in for feedback" })).toBeVisible();
+  await expect(
+    teacher.getByRole("region", { name: "Your items" }).getByRole("listitem").filter({ hasText: "Full draft in for feedback" }),
+  ).toBeVisible();
   await expectAccessible(teacher);
 });
 
