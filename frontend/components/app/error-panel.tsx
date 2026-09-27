@@ -35,8 +35,8 @@ export function ErrorPanel({
   /** Names a field error's target. Without it the raw field key is printed, which is fine for a
       username but not for a stage id. */
   fieldLabel?: (field: string) => string;
-  /** A client form passes this so a failed submit puts keyboard focus on the message (UI-STANDARDS §29).
-      Pages that failed to load don't: after a navigation, focus belongs to the main content. */
+  /** A client form passes this so a failed submit puts keyboard focus on the message (UI-STANDARDS §83).
+      Pages that failed to load don't: after a navigation, focus belongs to the main content (§105). */
   focus?: boolean;
 }) {
   const unreachable = error.code === ApiErrorCode.BACKEND_UNREACHABLE;
