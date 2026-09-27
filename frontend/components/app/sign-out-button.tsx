@@ -23,7 +23,7 @@ export function SignOutButton() {
 
   return (
     <Button type="button" variant="outline" size="header" onClick={signOut} disabled={busy}>
-      Sign out
+      {busy ? "Signing out…" : "Sign out"}
     </Button>
   );
 }

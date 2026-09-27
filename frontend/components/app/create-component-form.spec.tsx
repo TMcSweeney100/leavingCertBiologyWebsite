@@ -76,4 +76,13 @@ describe("CreateComponentForm", () => {
     await userEvent.click(screen.getByRole("button", { name: "Create component" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("This class already has a component.");
   });
+
+  it("says it's creating the component while the request is in flight", async () => {
+    vi.mocked(api.send).mockReturnValue(new Promise(() => {}));
+    render(<CreateComponentForm classId="c1" briefs={[brief]} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Create component" }));
+
+    expect(screen.getByRole("button", { name: "Creating component…" })).toBeDisabled();
+  });
 });

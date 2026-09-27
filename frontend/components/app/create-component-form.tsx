@@ -97,7 +97,7 @@ export function CreateComponentForm({ classId, briefs }: { classId: string; brie
 
       <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
         <Button type="submit" disabled={busy || !briefId} className="sm:flex-none">
-          Create component
+          {busy ? "Creating component…" : "Create component"}
         </Button>
         <p className="text-app-meta text-app-grey">Students see the component as soon as it exists, with dates still to come.</p>
       </div>

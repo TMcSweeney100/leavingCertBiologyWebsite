@@ -121,7 +121,7 @@ export function SignUpForm({ code }: { code: string }) {
           </Field>
         </FieldGroup>
         <Button type="submit" size="form" disabled={busy}>
-          Create account and join
+          {busy ? "Creating account…" : "Create account and join"}
         </Button>
       </div>
       <p className="mt-[18px] text-app-base">

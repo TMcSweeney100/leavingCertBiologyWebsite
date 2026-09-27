@@ -111,4 +111,14 @@ describe("TeacherItems", () => {
     expect(screen.queryAllByRole("listitem")).toHaveLength(0);
     expect(screen.getByRole("button", { name: "Add item" })).toBeInTheDocument();
   });
+
+  it("says it's saving while the item request is in flight", async () => {
+    vi.mocked(api.send).mockReturnValue(new Promise(() => {}));
+    render(<TeacherItems componentId="k1" stages={stages()} />);
+    await userEvent.click(screen.getByRole("button", { name: "Add item" }));
+    await userEvent.type(screen.getByRole("textbox", { name: "Item" }), "Lab notebooks in");
+    await userEvent.click(screen.getByRole("button", { name: "Save item" }));
+
+    expect(screen.getByRole("button", { name: "Saving…" })).toBeDisabled();
+  });
 });

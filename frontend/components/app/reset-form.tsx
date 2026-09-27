@@ -122,7 +122,7 @@ export function ResetForm() {
           </Field>
         </FieldGroup>
         <Button type="submit" size="form" disabled={busy}>
-          Set new password
+          {busy ? "Setting password…" : "Set new password"}
         </Button>
       </div>
     </form>

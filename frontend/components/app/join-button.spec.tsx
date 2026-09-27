@@ -53,4 +53,13 @@ describe("JoinButton", () => {
     expect(screen.getByRole("link", { name: "Enter a different join code" })).toHaveAttribute("href", "/join");
     expect(screen.queryByRole("button", { name: "Join this class" })).not.toBeInTheDocument();
   });
+
+  it("says it's joining while the request is in flight", async () => {
+    vi.mocked(api.send).mockReturnValue(new Promise(() => {}));
+    render(<JoinButton code="ABCDEFGH" />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Join this class" }));
+
+    expect(screen.getByRole("button", { name: "Joining…" })).toBeDisabled();
+  });
 });

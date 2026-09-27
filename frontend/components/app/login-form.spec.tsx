@@ -93,4 +93,11 @@ describe("LoginForm", () => {
 
     expect(screen.getByRole("alert")).toHaveTextContent("Can't reach the service");
   });
+
+  it("says it's signing in while the request is in flight", async () => {
+    vi.mocked(api.send).mockReturnValue(new Promise(() => {}));
+    render(<LoginForm />);
+    await fillAndSubmit();
+    expect(screen.getByRole("button", { name: "Signing in…" })).toBeDisabled();
+  });
 });

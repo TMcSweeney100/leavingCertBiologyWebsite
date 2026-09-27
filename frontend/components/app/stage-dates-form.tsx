@@ -226,7 +226,7 @@ export function StageDatesForm({ component, today }: { component: TeacherCompone
         </div>
         <div className="flex flex-col items-stretch gap-3 md:flex-row md:items-center">
           <Button type="submit" disabled={busy} className="md:flex-none">
-            Save dates
+            {busy ? "Saving dates…" : "Save dates"}
           </Button>
           <p className="text-center text-app-meta text-app-grey md:text-left">{status}</p>
         </div>

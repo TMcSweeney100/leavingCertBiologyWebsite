@@ -78,7 +78,7 @@ export function PersonalItemForm({
         </Field>
       </FieldGroup>
       <div className="flex flex-wrap gap-2">
-        <Button type="submit" disabled={busy}>Save item</Button>
+        <Button type="submit" disabled={busy}>{busy ? "Saving…" : "Save item"}</Button>
         <Button type="button" variant="outline" onClick={onDone}>Cancel</Button>
       </div>
     </form>

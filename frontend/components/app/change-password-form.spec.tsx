@@ -88,4 +88,13 @@ describe("ChangePasswordForm", () => {
     expect(screen.getByLabelText("Current password")).toHaveAttribute("aria-invalid", "true");
     expect(screen.getByLabelText("New password")).not.toHaveAttribute("aria-invalid");
   });
+
+  it("says it's changing the password while the request is in flight", async () => {
+    vi.mocked(api.sendNoContent).mockReturnValue(new Promise(() => {}));
+    render(<ChangePasswordForm forced={false} landing="/teach" />);
+
+    await fill("Temporary-Pass-1", "my-own-password-1");
+
+    expect(screen.getByRole("button", { name: "Changing password…" })).toBeDisabled();
+  });
 });

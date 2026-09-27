@@ -110,7 +110,7 @@ export function CreateClassForm({
         </FieldGroup>
         <div className="flex flex-wrap items-center gap-3.5">
           <Button type="submit" size="form" disabled={busy}>
-            Create
+            {busy ? "Creating…" : "Create"}
           </Button>
           <Link href="/teach" className={`text-app-base ${textLink}`}>
             Cancel

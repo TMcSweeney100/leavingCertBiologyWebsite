@@ -84,4 +84,13 @@ describe("SignUpForm", () => {
 
     expect(screen.getByRole("textbox", { name: "Username" })).toHaveAttribute("aria-invalid", "true");
   });
+
+  it("says it's creating the account while the request is in flight", async () => {
+    vi.mocked(api.send).mockReturnValue(new Promise(() => {}));
+    render(<SignUpForm code="ABCDEFGH" />);
+
+    await fill();
+
+    expect(screen.getByRole("button", { name: "Creating account…" })).toBeDisabled();
+  });
 });

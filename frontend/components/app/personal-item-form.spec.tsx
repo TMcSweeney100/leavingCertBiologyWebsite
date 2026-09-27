@@ -57,4 +57,15 @@ describe("AddPersonalItem", () => {
     expect(screen.queryByRole("textbox", { name: "Title" })).not.toBeInTheDocument();
     expect(api.send).not.toHaveBeenCalled();
   });
+
+  it("says it's saving while the request is in flight", async () => {
+    vi.mocked(api.send).mockReturnValue(new Promise(() => {}));
+    render(<AddPersonalItem classes={classes} />);
+    await userEvent.click(screen.getByRole("button", { name: "Add my own item" }));
+    await userEvent.type(screen.getByRole("textbox", { name: "Title" }), "Irish oral mock");
+    await userEvent.type(screen.getByLabelText("Date"), "2026-10-14");
+    await userEvent.click(screen.getByRole("button", { name: "Save item" }));
+
+    expect(screen.getByRole("button", { name: "Saving…" })).toBeDisabled();
+  });
 });

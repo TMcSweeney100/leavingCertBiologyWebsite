@@ -92,7 +92,7 @@ export function TeacherItems({ componentId, stages }: { componentId: string; sta
       </FieldGroup>
       <div className="flex flex-wrap gap-2">
         <Button type="submit" size="header" disabled={busy || !text.trim()}>
-          Save item
+          {busy ? "Saving…" : "Save item"}
         </Button>
         <Button type="button" variant="outline" size="header" onClick={() => setEditing(null)}>
           Cancel

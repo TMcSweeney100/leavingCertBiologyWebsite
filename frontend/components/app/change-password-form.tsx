@@ -116,7 +116,7 @@ export function ChangePasswordForm({ forced, landing }: { forced: boolean; landi
           </Field>
         </FieldGroup>
         <Button type="submit" size="form" disabled={busy}>
-          Change password
+          {busy ? "Changing password…" : "Change password"}
         </Button>
       </div>
       <div className="mt-[18px] lg:mt-5">
