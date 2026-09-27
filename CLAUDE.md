@@ -20,10 +20,18 @@ Two things that share a Next.js app:
 
 ## Working loop
 
-- **Milestone work** keeps its own path: roadmap → plan in `docs/superpowers/plans/` → build → `docs/HANDOFF.md`.
-- **Anything else bigger than a one-sentence diff**: `/interview-me` (if the ask is vague) → `/plan-feature` → fresh session `/implement-plan` → fresh session `/self-review` → `code-simplification` (optional, its own commit) → merge → `/write-changes`. Files go in `docs/intent/`, `docs/plans/` and `docs/changes/`, one slug across all three, all committed.
-- Run `/self-review` in a fresh session before merging any branch, milestone branches included.
-- The skills' verification step is `make verify` (add `make e2e` when a journey changed). The diff base is `pilotMain` for pilot work and `main` for BiPi work.
+Milestones and any other work bigger than a one-sentence diff:
+
+1. `/interview-me` when the ask is vague → `docs/intent/<slug>.md`. Later steps treat it as settled.
+2. `brainstorming` → `writing-plans` (plans in `docs/superpowers/plans/`) → `subagent-driven-development`.
+3. `/self-review` in a fresh session.
+4. `code-simplification` if self-review flagged complexity, as its own commit.
+5. `write-changes` → `docs/changes/<slug>.md`, the learning doc. Every implementation gets one, committed on the branch before merge.
+6. Merge; update `docs/HANDOFF.md` and the roadmap as usual.
+
+Every plan has a **Decisions made** section (each question asked and what was agreed) and a **Concepts in play** section (each pattern, library or technique used: what it is, why it fits here, and a file in this repo that already uses it).
+
+One slug across `docs/intent/`, the plan and `docs/changes/`: the plan's file name without the date. The diff base is `pilotMain` for pilot work and `main` for BiPi work.
 
 ## Commands (repo root)
 
