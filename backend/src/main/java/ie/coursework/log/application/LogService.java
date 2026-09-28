@@ -25,6 +25,7 @@ import java.time.Clock;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
@@ -94,6 +95,7 @@ public class LogService {
     }
 
     /** Roadmap §8.3 3C. The class's teacher, and only for an approved student of that class; anything else is 404. */
+    @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
     public TeacherStudentLog teacherView(Actor actor, UUID componentId, UUID studentId) {
         ComponentInstance component = componentService.requireOwned(actor, componentId);
         Member student = enrolments.membersOf(component.classId()).stream()

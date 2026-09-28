@@ -21,6 +21,8 @@ class LogScopeTest extends PostgresIntegrationTest {
     @Autowired private MockMvc mockMvc;
     @Autowired private ClassFixtures fixtures;
     @Autowired private ComponentFixtures components;
+    @Autowired private ie.coursework.classes.adapter.persistence.ClassGroupRepository classes;
+    @Autowired private java.time.Clock clock;
 
     private String log;
     private java.util.UUID component;
@@ -32,7 +34,7 @@ class LogScopeTest extends PostgresIntegrationTest {
         world = fixtures.world();
         component = components.component(world.class1(), world.teacher1(), ComponentFixtures.BIOLOGY_2027);
         log = "/api/v1/components/" + component + "/log";
-        String body = as(ClassFixtures.APPROVED_STUDENT).post(log, "{\"kind\":\"NOTE\",\"body\":\"mine\"}")
+        String body = as(ClassFixtures.APPROVED_STUDENT).post(log, "{\"kind\":\"NOTE\",\"body\":\"OWNER-ONLY-marker\"}")
                 .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
         entry = "/api/v1/log/" + JsonPath.read(body, "$.entry.id");
     }
@@ -113,10 +115,21 @@ class LogScopeTest extends PostgresIntegrationTest {
         // Each approved student's path returns only their own log.
         String own = as(ClassFixtures.TEACHER1).get("/api/v1/components/" + component + "/students/" + classmate + "/log")
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-        org.assertj.core.api.Assertions.assertThat(own).contains("classmate-text").doesNotContain("mine");
+        org.assertj.core.api.Assertions.assertThat(own).contains("classmate-text").doesNotContain("OWNER-ONLY-marker");
         String owner = as(ClassFixtures.TEACHER1).get("/api/v1/components/" + component + "/students/" + world.approvedStudent() + "/log")
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-        org.assertj.core.api.Assertions.assertThat(owner).contains("mine").doesNotContain("classmate-text");
+        org.assertj.core.api.Assertions.assertThat(owner).contains("OWNER-ONLY-marker").doesNotContain("classmate-text");
+    }
+
+    @Test
+    void aStudentApprovedOnlyInClassOneIsNotReachableThroughTheSameTeachersSecondClass() throws Exception {
+        java.util.UUID class3 = classes.insert(world.schoolA(), fixtures.subject("BIOLOGY"), "6C Biology", 6, "2026/27", null,
+                world.teacher1(), "CKASSTHR", clock.instant().plusSeconds(86_400));
+        java.util.UUID second = components.component(class3, world.teacher1(), ComponentFixtures.BIOLOGY_2027);
+        as(ClassFixtures.TEACHER1).get("/api/v1/components/" + second + "/students/" + world.approvedStudent() + "/log")
+                .andExpect(status().isNotFound());
+        as(ClassFixtures.TEACHER1).get("/api/v1/components/" + component + "/students/" + world.approvedStudent() + "/log")
+                .andExpect(status().isOk());
     }
 
     private ApiSession as(String username) throws Exception {

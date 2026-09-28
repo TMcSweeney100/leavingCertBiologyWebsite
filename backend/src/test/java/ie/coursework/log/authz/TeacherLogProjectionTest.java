@@ -47,12 +47,16 @@ class TeacherLogProjectionTest extends PostgresIntegrationTest {
         String note = create(student, "{\"kind\":\"NOTE\",\"body\":\"SECRET-note-v1\"}");
         student.post(note + "/revisions", "{\"body\":\"SECRET-note-v2\"}").andExpect(status().isCreated());
         student.put(note + "/visibility", "{\"visible\":false}").andExpect(status().isOk());
+        student.post(note + "/revisions", "{\"body\":\"SECRET-note-v3-written-while-hidden\"}").andExpect(status().isCreated());
         String source = create(student, """
-                {"kind":"SOURCE","fields":{"type":"ONLINE_TEXT_OR_IMAGE","title":"SECRET-title","url":"https://example.ie/SECRET-url","dateAccessed":"2026-10-01","reflections":"SECRET-reflection"}}
+                {"kind":"SOURCE","fields":{"type":"ONLINE_TEXT_OR_IMAGE","title":"SECRET-title","author":"SECRET-author","url":"https://example.ie/SECRET-url","dateAccessed":"2026-10-01","reflections":"SECRET-reflection"}}
                 """);
+        student.post(source + "/revisions", """
+                {"fields":{"type":"ONLINE_TEXT_OR_IMAGE","title":"SECRET-title-v2","author":"SECRET-author-v2","url":"https://example.ie/SECRET-url-v2","dateAccessed":"2026-10-01","reflections":"SECRET-reflection-v2"}}
+                """).andExpect(status().isCreated());
         student.put(source + "/visibility", "{\"visible\":false}").andExpect(status().isOk());
         create(student, """
-                {"kind":"AI_USE","visibleToTeacher":false,"fields":{"toolNameAndVersion":"SECRET-tool","developer":"SECRET-dev","dateGenerated":"2026-10-01","howUsed":"SECRET-how","prompts":"SECRET-prompt"}}
+                {"kind":"AI_USE","visibleToTeacher":false,"fields":{"toolNameAndVersion":"SECRET-tool","developer":"SECRET-dev","dateGenerated":"2026-10-01","howUsed":"SECRET-how","prompts":"SECRET-prompt","shareUrl":"https://example.ie/SECRET-share"}}
                 """);
 
         String json = as(ClassFixtures.TEACHER1).get(teacherPath).andExpect(status().isOk())
@@ -64,7 +68,7 @@ class TeacherLogProjectionTest extends PostgresIntegrationTest {
         assertThat(JsonPath.<java.util.List<String>>read(json, "$.entries[?(@.visibility == 'HIDDEN')].kind"))
                 .containsExactlyInAnyOrder("NOTE", "SOURCE", "AI_USE");
         assertThat(JsonPath.<java.util.List<Integer>>read(json, "$.entries[?(@.kind == 'NOTE' && @.visibility == 'HIDDEN')].revisionCount"))
-                .containsExactly(2);
+                .containsExactly(3);
         // Hidden after being visible (Q3): hiddenAt is set. Private from the start: it isn't.
         assertThat(JsonPath.<java.util.List<Object>>read(json, "$.entries[?(@.kind == 'NOTE' && @.visibility == 'HIDDEN')].hiddenAt"))
                 .doesNotContainNull();
