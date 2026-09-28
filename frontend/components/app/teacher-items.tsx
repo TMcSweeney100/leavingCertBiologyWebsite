@@ -31,13 +31,12 @@ export function TeacherItems({ componentId, stages }: { componentId: string; sta
   const items = useMemo(() => letteredItems(stages), [stages]);
   const base = `/components/${componentId}/teacher-items`;
 
-  async function run(action: () => Promise<unknown>) {
+  async function run(action: () => Promise<unknown>, after: () => void) {
     setBusy(true);
     setError(null);
     try {
       await action();
-      setEditing(null);
-      setRetiring(null);
+      after();
       router.refresh();
     } catch (e) {
       setError(e instanceof ApiError ? e : ApiError.unreachable(e));
@@ -58,10 +57,12 @@ export function TeacherItems({ componentId, stages }: { componentId: string; sta
   function submit(event: FormEvent) {
     event.preventDefault();
     const body = { text, dueDate: dueDate || null };
-    void run(() =>
-      editing === "new"
-        ? api.send("POST", base, { stageId, ...body }, teacherItemSchema)
-        : api.send("PATCH", `${base}/${editing}`, body, teacherItemSchema),
+    void run(
+      () =>
+        editing === "new"
+          ? api.send("POST", base, { stageId, ...body }, teacherItemSchema)
+          : api.send("PATCH", `${base}/${editing}`, body, teacherItemSchema),
+      () => setEditing(null),
     );
   }
 
@@ -91,7 +92,7 @@ export function TeacherItems({ componentId, stages }: { componentId: string; sta
       </FieldGroup>
       <div className="flex flex-wrap gap-2">
         <Button type="submit" size="header" disabled={busy || !text.trim()}>
-          Save item
+          {busy ? "Saving…" : "Save item"}
         </Button>
         <Button type="button" variant="outline" size="header" onClick={() => setEditing(null)}>
           Cancel
@@ -108,7 +109,7 @@ export function TeacherItems({ componentId, stages }: { componentId: string; sta
       <p className={`max-w-[620px] ${lead}`}>
         {"Your own to-dos, attached to a stage. Students see them on their component page and their timeline. Letters follow the date, so they change when a date does."}
       </p>
-      {error && <ErrorPanel error={error} />}
+      {error && <ErrorPanel error={error} focus />}
 
       {items.length > 0 && (
         <ul className="flex flex-col gap-2.5">
@@ -159,7 +160,15 @@ export function TeacherItems({ componentId, stages }: { componentId: string; sta
                     variant="confirmDestructive"
                     size="header"
                     disabled={busy}
-                    onClick={() => run(() => api.sendNoContent("DELETE", `${base}/${item.id}`))}
+                    onClick={() =>
+                      run(
+                        () => api.sendNoContent("DELETE", `${base}/${item.id}`),
+                        () => {
+                          setRetiring(null);
+                          if (editing === item.id) setEditing(null);
+                        },
+                      )
+                    }
                   >
                     Retire item
                   </Button>

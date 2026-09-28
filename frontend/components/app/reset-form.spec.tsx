@@ -65,4 +65,13 @@ describe("ResetForm", () => {
 
     expect(screen.getByRole("textbox", { name: "Reset code" })).toHaveAttribute("aria-invalid", "true");
   });
+
+  it("says it's setting the password while the request is in flight", async () => {
+    vi.mocked(api.sendNoContent).mockReturnValue(new Promise(() => {}));
+    render(<ResetForm />);
+
+    await fill();
+
+    expect(screen.getByRole("button", { name: "Setting password…" })).toBeDisabled();
+  });
 });

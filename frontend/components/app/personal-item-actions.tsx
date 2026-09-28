@@ -52,7 +52,7 @@ export function PersonalItemActions({ item, classes }: { item: Item; classes: Cl
           <Button type="button" variant="outline" aria-label={`Delete ${item.title}`} onClick={() => setMode("confirming")}>Delete</Button>
         </>
       )}
-      {error && <ErrorPanel error={error} />}
+      {error && <ErrorPanel error={error} focus />}
     </div>
   );
 }

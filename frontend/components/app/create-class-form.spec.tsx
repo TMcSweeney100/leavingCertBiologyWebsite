@@ -73,4 +73,14 @@ describe("CreateClassForm", () => {
     render(<CreateClassForm schoolId="s1" subjects={subjects} defaultAcademicYear="2026/27" />);
     expect(screen.getByRole("link", { name: "Cancel" })).toHaveAttribute("href", "/teach");
   });
+
+  it("says it's creating the class while the request is in flight", async () => {
+    vi.mocked(api.send).mockReturnValue(new Promise(() => {}));
+    render(<CreateClassForm schoolId="s1" subjects={subjects} defaultAcademicYear="2026/27" />);
+
+    await userEvent.type(screen.getByRole("textbox", { name: "Class name" }), "5th Chem");
+    await userEvent.click(screen.getByRole("button", { name: "Create" }));
+
+    expect(screen.getByRole("button", { name: "Creating…" })).toBeDisabled();
+  });
 });

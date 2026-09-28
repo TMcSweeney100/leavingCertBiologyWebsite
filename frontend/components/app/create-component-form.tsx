@@ -63,7 +63,7 @@ export function CreateComponentForm({ classId, briefs }: { classId: string; brie
       <p className={lead}>
         {"This class does one coursework component. Choose the exam year's brief to set it up. The stages and the completion date come from the SEC; the dates in between are yours."}
       </p>
-      {error && <ErrorPanel error={error} />}
+      {error && <ErrorPanel error={error} focus />}
 
       <FieldGroup>
         <Field id="brief" label="Brief" help={`The ${nextYear} briefs appear here when the SEC publishes them.`} controlClassName="cursor-pointer">
@@ -97,7 +97,7 @@ export function CreateComponentForm({ classId, briefs }: { classId: string; brie
 
       <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
         <Button type="submit" disabled={busy || !briefId} className="sm:flex-none">
-          Create component
+          {busy ? "Creating component…" : "Create component"}
         </Button>
         <p className="text-app-meta text-app-grey">Students see the component as soon as it exists, with dates still to come.</p>
       </div>

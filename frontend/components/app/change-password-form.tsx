@@ -61,7 +61,7 @@ export function ChangePasswordForm({ forced, landing }: { forced: boolean; landi
       )}
       {error && (
         <div className="mt-4 lg:mt-[18px]">
-          <ErrorPanel error={error} />
+          <ErrorPanel error={error} focus />
         </div>
       )}
       <div className="mt-4 flex flex-col gap-4 lg:mt-[18px] lg:gap-[18px]">
@@ -116,7 +116,7 @@ export function ChangePasswordForm({ forced, landing }: { forced: boolean; landi
           </Field>
         </FieldGroup>
         <Button type="submit" size="form" disabled={busy}>
-          Change password
+          {busy ? "Changing password…" : "Change password"}
         </Button>
       </div>
       <div className="mt-[18px] lg:mt-5">

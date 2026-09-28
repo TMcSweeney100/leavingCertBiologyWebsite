@@ -44,12 +44,12 @@ import ie.coursework.shared.error.DomainException;
 import ie.coursework.shared.error.ErrorCode;
 import ie.coursework.shared.error.FieldError;
 import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -134,10 +134,13 @@ public class ComponentService {
         Map<UUID, List<PromptView>> prompts = templates.prompts(brief.versionId()).stream()
                 .collect(Collectors.groupingBy(TemplatePrompt::stageId, LinkedHashMap::new,
                         Collectors.mapping(p -> new PromptView(p.heading(), p.text()), Collectors.toList())));
-        Set<UUID> done = ticks.doneItems(component.id(), actor.userId());
+        Map<UUID, Instant> done = ticks.doneItems(component.id(), actor.userId());
         Map<UUID, List<StudentItem>> items = this.items.active(component.id()).stream()
                 .collect(Collectors.groupingBy(TeacherItem::stageId,
-                        Collectors.mapping(i -> new StudentItem(i.id(), i.text(), i.dueDate(), done.contains(i.id())), Collectors.toList())));
+                        Collectors.mapping(i -> {
+                            Instant at = done.get(i.id());
+                            return new StudentItem(i.id(), i.text(), i.dueDate(), at != null, at == null ? null : DublinDate.of(at));
+                        }, Collectors.toList())));
 
         List<StudentStage> stages = templates.stages(brief.versionId()).stream().map(s -> {
             LocalDate due = dates.get(s.id());
@@ -231,8 +234,9 @@ public class ComponentService {
         ComponentInstance component = components.findForApprovedStudent(componentId, actor.userId())
                 .orElseThrow(ComponentService::notFound);
         TeacherItem item = items.findActive(itemId, component.id()).orElseThrow(ComponentService::itemNotFound);
-        ticks.set(component.id(), actor.userId(), item.id(), done, clock.instant());
-        return new StudentItem(item.id(), item.text(), item.dueDate(), done);
+        Instant now = clock.instant();
+        ticks.set(component.id(), actor.userId(), item.id(), done, now);
+        return new StudentItem(item.id(), item.text(), item.dueDate(), done, done ? DublinDate.of(now) : null);
     }
 
     public List<MyComponent> myComponents(Actor actor) {

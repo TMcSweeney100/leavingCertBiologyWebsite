@@ -111,6 +111,7 @@ describe("StageDatesForm", () => {
     expect(panel).toHaveTextContent("Your dates weren't saved");
     expect(panel).toHaveTextContent("One date needs another look. Nothing was changed.");
     expect(within(panel).getByRole("listitem")).toHaveTextContent("Stage 6");
+    expect(panel).toHaveFocus();
 
     const input = screen.getByLabelText("Stage 6 date");
     expect(input).toHaveAttribute("aria-invalid", "true");
@@ -157,5 +158,14 @@ describe("StageDatesForm", () => {
     render5(allSix());
     expect(screen.getByRole("button", { name: "Hide the year view" })).toBeInTheDocument();
     expect(screen.getByText("Your dates run 29 May 2026 to 22 Jan 2027, inside the completion date of 26 Feb 2027.")).toBeInTheDocument();
+  });
+
+  it("says it's saving the dates while the request is in flight", async () => {
+    vi.mocked(api.send).mockReturnValue(new Promise(() => {}));
+    render5();
+    await userEvent.type(screen.getByLabelText("Stage 4 date"), "2026-10-16");
+    await userEvent.click(screen.getByRole("button", { name: "Save dates" }));
+
+    expect(screen.getByRole("button", { name: "Saving dates…" })).toBeDisabled();
   });
 });

@@ -30,7 +30,7 @@ const component = (overrides: Partial<StudentComponent> = {}): StudentComponent 
   today: "2026-10-12",
   stages: [
     stage(3, "2026-09-25", { checkpoint: { text: "Plan discussed with the teacher (feasibility and safety)", state: "DUE" } }),
-    stage(4, "2026-10-16", { items: [{ id: "i1", text: "Book a re-run slot", dueDate: null, done: true }], prompts: [{ heading: "Data analysis may include", text: "calculations and/or graphs" }] }),
+    stage(4, "2026-10-16", { items: [{ id: "i1", text: "Book a re-run slot", dueDate: null, done: true, doneOn: "2026-10-01" }], prompts: [{ heading: "Data analysis may include", text: "calculations and/or graphs" }] }),
     stage(5, null),
   ],
   sections: [{ label: "1", name: "Title and Introduction", suggestedWords: null, indicativeContent: [], stageIds: [] }],

@@ -22,4 +22,13 @@ describe("SignOutButton", () => {
     expect(api.sendNoContent).toHaveBeenCalledWith("POST", "/auth/logout");
     expect(push).toHaveBeenCalledWith("/login");
   });
+
+  it("says it's signing out while the request is in flight", async () => {
+    vi.mocked(api.sendNoContent).mockReturnValue(new Promise(() => {}));
+    render(<SignOutButton />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Sign out" }));
+
+    expect(screen.getByRole("button", { name: "Signing out…" })).toBeDisabled();
+  });
 });

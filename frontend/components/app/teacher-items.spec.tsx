@@ -92,9 +92,33 @@ describe("TeacherItems", () => {
     expect(refresh).toHaveBeenCalled();
   });
 
+  it("retiring one item keeps an unsaved edit of another", async () => {
+    vi.mocked(api.sendNoContent).mockResolvedValue(undefined);
+    render(<TeacherItems componentId="k1" stages={stages()} />);
+    await userEvent.click(screen.getByRole("button", { name: "Edit Full draft in for feedback" }));
+    const box = screen.getByRole("textbox", { name: "Item" });
+    await userEvent.clear(box);
+    await userEvent.type(box, "Half-typed change");
+    await userEvent.click(screen.getByRole("button", { name: "Retire Catch-up window closes" }));
+    await userEvent.click(screen.getByRole("button", { name: "Retire item" }));
+
+    expect(api.sendNoContent).toHaveBeenCalledWith("DELETE", "/components/k1/teacher-items/i1");
+    expect(screen.getByRole("textbox", { name: "Item" })).toHaveValue("Half-typed change");
+  });
+
   it("invites a first item when there are none", () => {
     render(<TeacherItems componentId="k1" stages={stages().map((s) => ({ ...s, items: [] }))} />);
     expect(screen.queryAllByRole("listitem")).toHaveLength(0);
     expect(screen.getByRole("button", { name: "Add item" })).toBeInTheDocument();
+  });
+
+  it("says it's saving while the item request is in flight", async () => {
+    vi.mocked(api.send).mockReturnValue(new Promise(() => {}));
+    render(<TeacherItems componentId="k1" stages={stages()} />);
+    await userEvent.click(screen.getByRole("button", { name: "Add item" }));
+    await userEvent.type(screen.getByRole("textbox", { name: "Item" }), "Lab notebooks in");
+    await userEvent.click(screen.getByRole("button", { name: "Save item" }));
+
+    expect(screen.getByRole("button", { name: "Saving…" })).toBeDisabled();
   });
 });

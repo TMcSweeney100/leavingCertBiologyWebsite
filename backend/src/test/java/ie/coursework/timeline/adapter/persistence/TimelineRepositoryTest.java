@@ -71,4 +71,36 @@ class TimelineRepositoryTest extends PostgresIntegrationTest {
     void theTeacherGetsNoneOfTheStudentsItems() {
         assertThat(timeline.between(world.teacher1(), FROM, TO)).isEmpty();
     }
+
+    // Note: unlike the plan's snippet, these two reuse the class-level `world` (and the component
+    // `seed()` already created on world.class1()) instead of calling fixtures.world() again —
+    // that fixture isn't repeatable within one test (fixed school roll numbers), and class1 already
+    // has a component (component_instance.class_group_id is unique), so a second fixtures.world()
+    // call collides on both counts.
+    @Test
+    void theBriefsCompletionDateIsItsOwnItemAndComesFirstOnItsDay() {
+        UUID component = jdbcTemplate.queryForObject(
+                "SELECT id FROM component_instance WHERE class_group_id = ?", UUID.class, world.class1());
+        LocalDate completion = LocalDate.of(2027, 2, 26); // the 2027 Biology brief (plan 2C, BriefContentTest)
+        components.stageDate(component, components.stageId(BIO, 6), completion);
+
+        List<TimelineEntry> day = timeline.between(world.approvedStudent(), completion, completion);
+
+        assertThat(day).extracting(TimelineEntry::kind).containsExactly("COMPLETION", "STAGE");
+        TimelineEntry item = day.getFirst();
+        assertThat(item.title()).isEqualTo(jdbcTemplate.queryForObject(
+                "SELECT title FROM annual_brief WHERE sec_code = ?", String.class, BIO));
+        assertThat(item.subjectName()).isEqualTo("Biology");
+        assertThat(item.componentId()).isEqualTo(component);
+        assertThat(item.stageLabel()).isNull();
+    }
+
+    @Test
+    void completionDatesOnlyForApprovedClassesAndOnlyInRange() {
+        LocalDate completion = LocalDate.of(2027, 2, 26);
+
+        assertThat(timeline.between(world.pendingStudent(), completion, completion)).isEmpty();
+        assertThat(timeline.between(world.removedStudent(), completion, completion)).isEmpty();
+        assertThat(timeline.between(world.approvedStudent(), completion.minusDays(1), completion.minusDays(1))).isEmpty();
+    }
 }

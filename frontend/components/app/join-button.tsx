@@ -54,9 +54,9 @@ export function JoinButton({ code, signedInAs }: { code: string; signedInAs?: st
   if (error?.code === "JOIN_CODE_INVALID") return <ExpiredCode error={error} />;
   return (
     <div className="mt-5 flex flex-col gap-[18px]">
-      {error && <ErrorPanel error={error} />}
+      {error && <ErrorPanel error={error} focus />}
       <Button type="button" size="form" onClick={join} disabled={busy}>
-        Join this class
+        {busy ? "Joining…" : "Join this class"}
       </Button>
       {signedInAs && <p className="text-app-meta text-app-grey">Signed in as {signedInAs}.</p>}
     </div>

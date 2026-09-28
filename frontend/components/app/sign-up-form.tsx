@@ -52,7 +52,7 @@ export function SignUpForm({ code }: { code: string }) {
       </h2>
       {error && (
         <div className="mt-3.5">
-          <ErrorPanel error={error} />
+          <ErrorPanel error={error} focus />
         </div>
       )}
       <div className="mt-3.5 flex flex-col gap-4 lg:gap-[18px]">
@@ -121,7 +121,7 @@ export function SignUpForm({ code }: { code: string }) {
           </Field>
         </FieldGroup>
         <Button type="submit" size="form" disabled={busy}>
-          Create account and join
+          {busy ? "Creating account…" : "Create account and join"}
         </Button>
       </div>
       <p className="mt-[18px] text-app-base">
@@ -140,7 +140,7 @@ export function ExpiredCode({ error }: { error: ApiError }) {
   return (
     <div className="mt-5 flex flex-col items-start gap-[18px]">
       <div className="w-full">
-        <ErrorPanel error={error} />
+        <ErrorPanel error={error} focus />
       </div>
       <Link href="/join" className={`text-app-base font-semibold ${textLink}`}>
         Enter a different join code

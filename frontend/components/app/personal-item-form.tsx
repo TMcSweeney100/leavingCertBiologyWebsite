@@ -53,7 +53,7 @@ export function PersonalItemForm({
     <form onSubmit={submit} className="flex flex-col gap-3">
       <h2 className={sectionTitle}>{itemId ? "Edit my own item" : "Add my own item"}</h2>
       <p className="text-app-small text-app-grey">{"Only you can see this. Your teachers can't."}</p>
-      {error && <ErrorPanel error={error} />}
+      {error && <ErrorPanel error={error} focus />}
       <FieldGroup>
         <Field id={`pi-title-${id}`} label="Title">
           {(c) => <input {...c} required maxLength={120} value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} />}
@@ -78,7 +78,7 @@ export function PersonalItemForm({
         </Field>
       </FieldGroup>
       <div className="flex flex-wrap gap-2">
-        <Button type="submit" disabled={busy}>Save item</Button>
+        <Button type="submit" disabled={busy}>{busy ? "Saving…" : "Save item"}</Button>
         <Button type="button" variant="outline" onClick={onDone}>Cancel</Button>
       </div>
     </form>

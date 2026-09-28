@@ -19,4 +19,10 @@ class DublinDateTest {
     void inWinterDublinIsUtc() {
         assertThat(DublinDate.today(new MutableClock(Instant.parse("2026-12-15T23:30:00Z")))).isEqualTo(LocalDate.of(2026, 12, 15));
     }
+
+    @Test
+    void anInstantLateOnAnIrishSummerEveningIsThatIrishDay() {
+        // 23:30 UTC on 1 Oct 2026 is 00:30 on 2 Oct in Dublin (IST, UTC+1).
+        assertThat(DublinDate.of(Instant.parse("2026-10-01T23:30:00Z"))).isEqualTo(LocalDate.of(2026, 10, 2));
+    }
 }

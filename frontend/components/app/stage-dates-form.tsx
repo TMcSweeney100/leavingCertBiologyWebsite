@@ -185,6 +185,7 @@ export function StageDatesForm({ component, today }: { component: TeacherCompone
           heading={refused.size > 0 ? "Your dates weren't saved" : undefined}
           summary={refused.size > 0 ? `${WORDS[refused.size] ?? refused.size} date${refused.size === 1 ? "" : "s"} need${refused.size === 1 ? "s" : ""} another look. Nothing was changed.` : undefined}
           fieldLabel={(field) => byId.get(field)?.label ?? field}
+          focus
         />
       )}
 
@@ -226,7 +227,7 @@ export function StageDatesForm({ component, today }: { component: TeacherCompone
         </div>
         <div className="flex flex-col items-stretch gap-3 md:flex-row md:items-center">
           <Button type="submit" disabled={busy} className="md:flex-none">
-            Save dates
+            {busy ? "Saving dates…" : "Save dates"}
           </Button>
           <p className="text-center text-app-meta text-app-grey md:text-left">{status}</p>
         </div>

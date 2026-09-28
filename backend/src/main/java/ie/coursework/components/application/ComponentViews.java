@@ -39,7 +39,7 @@ public final class ComponentViews {
 
     public record CheckpointView(String text, CheckpointState state) {}
 
-    public record StudentItem(UUID id, String text, LocalDate dueDate, boolean done) {}
+    public record StudentItem(UUID id, String text, LocalDate dueDate, boolean done, LocalDate doneOn) {}
 
     public record PromptView(String heading, String text) {}
 

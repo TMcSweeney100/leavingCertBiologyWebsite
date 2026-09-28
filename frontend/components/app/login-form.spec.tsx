@@ -93,4 +93,20 @@ describe("LoginForm", () => {
 
     expect(screen.getByRole("alert")).toHaveTextContent("Can't reach the service");
   });
+
+  it("moves focus to the alert when sign-in fails", async () => {
+    vi.mocked(api.send).mockRejectedValue(new ApiError({ code: "INVALID_CREDENTIALS", status: 401, detail: "Wrong username or password." }));
+    render(<LoginForm />);
+
+    await fillAndSubmit("k.hanlon", "nope-nope-nope");
+
+    expect(await screen.findByRole("alert")).toHaveFocus();
+  });
+
+  it("says it's signing in while the request is in flight", async () => {
+    vi.mocked(api.send).mockReturnValue(new Promise(() => {}));
+    render(<LoginForm />);
+    await fillAndSubmit();
+    expect(screen.getByRole("button", { name: "Signing in…" })).toBeDisabled();
+  });
 });

@@ -142,7 +142,7 @@ export const studentStageSchema = z.object({
   supervised: z.boolean(),
   dueDate: z.string().nullable(),
   checkpoint: z.object({ text: z.string(), state: checkpointStateSchema }).nullable(),
-  items: z.array(z.object({ id: z.string(), text: z.string(), dueDate: z.string().nullable(), done: z.boolean() })),
+  items: z.array(z.object({ id: z.string(), text: z.string(), dueDate: z.string().nullable(), done: z.boolean(), doneOn: z.string().nullable() })),
   prompts: z.array(z.object({ heading: z.string().nullable(), text: z.string() })),
 });
 export type StudentStage = z.infer<typeof studentStageSchema>;
@@ -184,7 +184,7 @@ export type StudentComponent = z.infer<typeof studentComponentSchema>;
 
 export const componentViewSchema = z.discriminatedUnion("view", [teacherComponentSchema, studentComponentSchema]);
 
-export const studentItemSchema = z.object({ id: z.string(), text: z.string(), dueDate: z.string().nullable(), done: z.boolean() });
+export const studentItemSchema = z.object({ id: z.string(), text: z.string(), dueDate: z.string().nullable(), done: z.boolean(), doneOn: z.string().nullable() });
 
 export const myComponentSchema = z.object({
   componentId: z.string(),
@@ -202,7 +202,7 @@ export const personalKindSchema = z.enum(["TEST", "ESSAY", "DEADLINE", "OTHER"])
 export type PersonalKind = z.infer<typeof personalKindSchema>;
 
 export const timelineItemSchema = z.object({
-  kind: z.enum(["STAGE", "TEACHER_ITEM", "PERSONAL"]),
+  kind: z.enum(["COMPLETION", "STAGE", "TEACHER_ITEM", "PERSONAL"]),
   date: z.string(),
   title: z.string(),
   stageLabel: z.string().nullable(),

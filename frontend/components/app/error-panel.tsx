@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
 import { ApiError, ApiErrorCode } from "@/lib/api/problem";
 
 import { textLink } from "./styles";
@@ -21,6 +25,7 @@ export function ErrorPanel({
   heading,
   summary,
   fieldLabel,
+  focus,
 }: {
   error: ApiError;
   /** Forces a heading on a refusal that isn't a service failure (pack D-5's "Your dates weren't saved"). */
@@ -30,6 +35,9 @@ export function ErrorPanel({
   /** Names a field error's target. Without it the raw field key is printed, which is fine for a
       username but not for a stage id. */
   fieldLabel?: (field: string) => string;
+  /** A client form passes this so a failed submit puts keyboard focus on the message (UI-STANDARDS §83).
+      Pages that failed to load don't: after a navigation, focus belongs to the main content (§105). */
+  focus?: boolean;
 }) {
   const unreachable = error.code === ApiErrorCode.BACKEND_UNREACHABLE;
   const serviceFailure = SERVICE_FAILURES.has(error.code) || error.status >= 500;
@@ -42,11 +50,18 @@ export function ErrorPanel({
   const title = heading ?? (unreachable ? "Can't reach the service" : error.title);
   const titled = serviceFailure || Boolean(heading);
 
+  const ref = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (focus) ref.current?.focus();
+  }, [focus, error]);
+
   return (
     <section
+      ref={ref}
+      tabIndex={focus ? -1 : undefined}
       role="alert"
       aria-live="polite"
-      className={`app-appear flex items-start gap-[9px] rounded-app-card border border-l-4 px-3.5 py-3 text-app-base leading-[1.45] text-app-copy ${tone}`}
+      className={`app-appear flex items-start gap-[9px] rounded-app-card border border-l-4 px-3.5 py-3 text-app-base leading-[1.45] text-app-copy outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${tone}`}
     >
       <span
         aria-hidden="true"

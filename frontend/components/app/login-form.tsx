@@ -42,7 +42,7 @@ export function LoginForm({ next }: { next?: string }) {
       </h1>
       {error && (
         <div className="mt-4 lg:mt-[18px]">
-          <ErrorPanel error={error} />
+          <ErrorPanel error={error} focus />
         </div>
       )}
       <div className="mt-4 flex flex-col gap-4 lg:mt-[18px] lg:gap-[18px]">
@@ -77,7 +77,7 @@ export function LoginForm({ next }: { next?: string }) {
           </Field>
         </FieldGroup>
         <Button type="submit" size="form" disabled={busy}>
-          Sign in
+          {busy ? "Signing in…" : "Sign in"}
         </Button>
       </div>
       <div className="mt-[18px] flex flex-col gap-2 text-app-base leading-normal lg:mt-5">
