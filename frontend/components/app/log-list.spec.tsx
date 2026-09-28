@@ -24,16 +24,25 @@ describe("LogList", () => {
     const rows = within(screen.getByRole("list", { name: "Log entries" })).getAllByRole("listitem");
     expect(rows[0]).toHaveTextContent("Note");
     expect(rows[0]).toHaveTextContent("12 Oct 2026");
-    expect(rows[0]).toHaveTextContent("Only you can read this");
+    expect(rows[0]).toHaveTextContent("Only you");
+    expect(within(rows[0]).getByRole("button", { name: "Show Private thought to your teacher" })).toBeInTheDocument();
     expect(rows[1]).toHaveTextContent("AI use");
     expect(rows[1]).toHaveTextContent("Edited");
-    expect(rows[1]).toHaveTextContent("Your teacher can read this");
+    expect(rows[1]).toHaveTextContent("Teacher can read");
+    expect(rows[1]).toHaveTextContent("How you used it");
+    expect(within(rows[1]).getByRole("button", { name: "Hide ChatGPT-4 from your teacher" })).toBeInTheDocument();
     expect(within(rows[1]).getByRole("link", { name: "ChatGPT-4" })).toHaveAttribute("href", "/components/k1/log/e1");
+  });
+
+  it("states the rule once, above the list", () => {
+    render(<LogList componentId="k1" entries={entries} />);
+    expect(screen.getByText(/Each entry is dated when you save it/)).toBeInTheDocument();
   });
 
   it("says so when the log is empty, and offers a first entry", () => {
     render(<LogList componentId="k1" entries={[]} />);
-    expect(screen.getByText("Nothing in your log yet.")).toBeInTheDocument();
+    expect(screen.getByText("Nothing in your log yet")).toBeInTheDocument();
+    for (const rule of ["Dated for you.", "Edits are kept.", "Nothing is deleted."]) expect(screen.getByText(rule)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "New entry" })).toHaveAttribute("href", "/components/k1/log/new");
   });
 });

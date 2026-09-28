@@ -92,6 +92,16 @@
   --color-app-done-ground: var(--app-done-ground);
   --color-app-done-ink: var(--app-done-ink);
   --shadow-app-now-lift: var(--app-now-lift);
+
+  /* Pack D-6 (docs/design/pilot/D-6-log/tokens.css) — the log's kind chips and hidden entries. */
+  --color-app-kind-note: var(--app-kind-note);
+  --color-app-kind-note-tint: var(--app-kind-note-tint);
+  --color-app-kind-source: var(--app-kind-source);
+  --color-app-kind-source-tint: var(--app-kind-source-tint);
+  --color-app-kind-ai: var(--app-kind-ai);
+  --color-app-kind-ai-tint: var(--app-kind-ai-tint);
+  --color-app-private-ground: var(--app-private-ground);
+  --color-app-switch-off: var(--app-switch-off);
 }
 
 @theme {
@@ -285,6 +295,17 @@
   --app-stem-attention: #D6A97F; /* stem under an amber mark */
   --app-stem-error: #E0A9A5;     /* stem under a red mark */
   --app-weekend: #FBFCFC;        /* weekend calendar cell, one step off white */
+
+  /* Pack D-6 — the log. The kind word is always in the chip; the hue only helps a reader scan.
+     Hidden entries get a grey ground plus an eye-off icon and the words "Only you". */
+  --app-kind-note: #343A42;          /* = --app-body; 10.14:1 on its tint */
+  --app-kind-note-tint: #EFF1F3;     /* = --app-inset */
+  --app-kind-source: #52561A;        /* 6.86:1 on its tint */
+  --app-kind-source-tint: #F1F2E4;
+  --app-kind-ai: #7A2E6B;            /* 7.61:1 on its tint */
+  --app-kind-ai-tint: #F7EEF4;
+  --app-private-ground: #F7F8F9;     /* hidden rows and cards; ink 17.38:1, muted 5.08:1 */
+  --app-switch-off: #636B75;         /* switch track when off; 5.40:1 on white */
 
   /* shadcn semantic variables — mapped onto the BiPi tokens above so every primitive
      (Card, Badge, Progress, Collapsible, Table, Button) inherits the BiPi palette. */
