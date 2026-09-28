@@ -26,7 +26,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ id: 
         <>
           <h1 className={`mt-2.5 ${pageTitle}`}>{loaded.data.subjectName}</h1>
           <p className="mt-1.5 text-app-base text-app-grey">{`${loaded.data.brief.title}, ${loaded.data.brief.examYear} · ${loaded.data.className}`}</p>
-          <ComponentTabs componentId={loaded.data.id} />
+          <ComponentTabs componentId={loaded.data.id} current="overview" />
           <ComponentOverview component={loaded.data} />
         </>
       ) : (

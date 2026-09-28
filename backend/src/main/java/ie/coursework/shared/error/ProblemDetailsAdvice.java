@@ -3,6 +3,7 @@ package ie.coursework.shared.error;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ProblemDetail;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.exc.InvalidFormatException;
 
 /** Turns exceptions into RFC 9457 problem details, each with a stable {@code code}. */
 @RestControllerAdvice
@@ -39,7 +42,16 @@ public class ProblemDetailsAdvice {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    ResponseEntity<ProblemDetail> unreadable(HttpServletRequest request) {
+    ResponseEntity<ProblemDetail> unreadable(HttpMessageNotReadableException exception, HttpServletRequest request) {
+        // A well-formed body with one wrong value (an unknown enum name, a bad date) names its field.
+        if (exception.getCause() instanceof InvalidFormatException invalid && !invalid.getPath().isEmpty()) {
+            String field = invalid.getPath().stream().map(JacksonException.Reference::getPropertyName)
+                    .filter(name -> name != null).collect(Collectors.joining("."));
+            if (!field.isEmpty()) {
+                return respond(ErrorCode.VALIDATION_FAILED, "One or more fields are invalid.", request,
+                        List.of(new FieldError(field, "is not a recognised value")));
+            }
+        }
         return respond(ErrorCode.MALFORMED_REQUEST, "The request body could not be read.", request, List.of());
     }
 

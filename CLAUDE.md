@@ -70,6 +70,7 @@ One slug across `docs/intent/`, the plan and `docs/changes/`: the plan's file na
 - Class-scoped endpoints go through `ClassService.owned(actor, classId)` first; an enrolment id is looked up with `EnrolmentRepository.findInClass`, never by id alone.
 - Component-scoped endpoints go through `ComponentService.owned(actor, componentId)` first; a teacher item id is looked up with `TeacherItemRepository.findActive(itemId, componentId)`, never by id alone.
 - A student's component access goes through `ComponentRepository.findForApprovedStudent(componentId, studentId)`.
+- A log entry id is only looked up with `LogRepository.findOwn(entryId, studentId)`, never by id alone.
 
 ## Frontend conventions (pilot app)
 

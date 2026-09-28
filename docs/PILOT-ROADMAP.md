@@ -56,8 +56,8 @@ Detailed plans so far:
 | | 2D Teacher component setup | written 16 Sep 2026 | **built 18 Sep 2026**; `make verify` and `make e2e` green (311 backend tests; 96 `node:test`, 106 Vitest specs; e2e clean on laptop and phone, axe clean); `ComponentScopeTest` proves every component endpoint 404s outside the owning teacher; restyled from D-5 on 26 Sep 2026 (`pilot/2d-restyle-d5`); `make e2e` re-run green on Docker 27 Sep 2026 (one test-locator bug found and fixed, not a UI defect — see HANDOFF) | Gate 2D |
 | | 2E Student component page | written 16 Sep 2026 | **built 18 Sep 2026**; `make verify` and `make e2e` green (329 backend tests; 101 `node:test`, 119 Vitest specs; e2e clean on laptop and phone, axe clean); `ComponentRepository.findForApprovedStudent` proves a pending, removed or outside student gets 404, and `ComponentScopeTest` proves only an approved student of the class can tick; Task 8 restyle skipped — `docs/design/pilot/D-3-student-component/` doesn't exist yet (see HANDOFF) | Gate 2E |
 | | 2F Personal items and timeline | written 16 Sep 2026 | **built 18 Sep 2026**; `make verify` and `make e2e` green (348 backend tests; 114 `node:test`, 130 Vitest specs; e2e clean on laptop and phone, axe clean); `PersonalItemPrivacyTest` proves no teacher, leader or other student reaches a student's personal items through any endpoint, with a mutation-and-revert bite test; **Task 7 restyle from D-4 built 22 Sep 2026** (`pilot/2f-restyle-d4`, see HANDOFF) | **Gate P2** |
-| | 2G Phase 2 follow-ups (Part A, plan pilot-3-the-log) | written 27 Sep 2026 | **built 27 Sep 2026, waiting on merge into `pilotMain`**; `make verify` green (355 backend tests; 140 `node:test`, 185 Vitest specs) and `make e2e` green (10/10, laptop and phone, axe clean); fresh-context self-review of the whole branch found no critical or important issues; `docs/changes/pilot-2g-phase2-follow-ups.md` | Part A gate |
-| 3 The log | 3A–3C | to write | — | **Gate P3** |
+| | 2G Phase 2 follow-ups (Part A, plan pilot-3-the-log) | written 27 Sep 2026 | **built 27 Sep 2026, merged into `pilotMain`**; `make verify` green (355 backend tests; 140 `node:test`, 185 Vitest specs) and `make e2e` green (10/10, laptop and phone, axe clean); fresh-context self-review of the whole branch found no critical or important issues; `docs/changes/pilot-2g-phase2-follow-ups.md` | Part A gate |
+| 3 The log | 3A–3C (Part B of plan pilot-3-the-log) | written 27 Sep 2026 | **built 28 Sep 2026 on `pilot/3-the-log`, not merged**; `make verify` green (428 backend tests; 144 `node:test`, 206 Vitest specs, lint/types/build clean) and `make e2e` green (16/16, laptop and phone, axe clean on every new page); `LogEntriesTest`, `LogScopeTest` and `TeacherLogProjectionTest` (with its bite test) cover Gate P3's code items. Waiting on: `/self-review` in a fresh session, `docs/changes/pilot-3-the-log.md`, merge. Task B15 (restyle from D-6) skipped — the pack hasn't arrived (see HANDOFF) | **Gate P3** |
 | 4 Teacher grid | 4A–4B | to write | — | **Gate P4 = pilot can start** |
 | 5 School leader view | 5A | to write | — | Gate P5 |
 | 6 Writing tools | 6A–6C | to write | — | Gate P6 |
@@ -117,7 +117,7 @@ From design §11, plus the ones this roadmap adds (H1–H4).
 | Q1 | Which Chemistry, Physics and Business teachers review their subject's checkpoints, and by when? | Gate P2 (content marked reviewed) |
 | ~~Q3~~ | **Answered 20 Sep 2026 (Tim): yes.** A teacher sees that a student hid an entry that used to be visible (the history is kept either way). The Phase 3 plan builds to this. | Phase 3 plan |
 | Q2 | Leader view on-track threshold (80% is a placeholder) | Phase 5 plan |
-| Q6 | Do the AI-use fields match the current Coursework Rules and Procedures? | Phase 6 plan. Needs the document added to `subjectDocs/` first. |
+| Q6 | Do the AI-use fields match the current Coursework Rules and Procedures? | Phase 6 plan. **Fields answered from the 2025–26 Rules, p. 34** (Phase 3 built them); formatters still Phase 6. Risk: diff Appendix 2 when the 2026–27 edition is out. |
 | Q4 | How long is pilot data kept? | Go-live |
 | Q5 | Who drafts the data processing agreement and privacy notice? | Go-live. **Start this now.** It's calendar-bound, not code-bound (design §1.1). |
 | Q7 | If the 2028 briefs are late, does a 5th-year pilot wait? | 5th-year go-live |
@@ -382,7 +382,7 @@ All under `/api/v1`. JSON, camelCase. Errors are RFC 9457 problem details with a
 | Phase | Endpoints |
 |---|---|
 | 2 | **Built (2D):** `GET /briefs?subjectCode=&examYear=` (published briefs for a subject, exam year optional) · `POST /classes/{id}/components` (create from a brief; `COMPONENT_ALREADY_EXISTS` if the class already has one) · `PUT /components/{id}/stage-dates` (batch save; `COMPLETION_DATE_EXCEEDED` on any date after the brief's completion date, named by stage) · `POST /components/{id}/teacher-items` · `PATCH /components/{id}/teacher-items/{itemId}` · `DELETE /components/{id}/teacher-items/{itemId}` (retires, never deletes); `GET /classes/{id}` already carries `componentId`. **Built (2E):** `GET /components/{id}` (role-shaped; `view: "TEACHER"` or `"STUDENT"`, controller returns `Object`, §10) now also builds the approved student's page — stages with dates, checkpoint states, items, prompts, sections, mark bands, brief rules, `today` as a Dublin calendar date — scoped by `ComponentRepository.findForApprovedStudent` · `PUT /components/{id}/teacher-items/{itemId}/tick` (`{ "done": true|false }`, idempotent; only the approved student themself) · `GET /me/components` (a student's own components for navigation: `classId` (added 2F Task 7, D-4, so the frontend can join a class to its component without matching on the teacher-set, non-unique class name), subject and completion date). **Built (2F):** `GET /me/timeline?from=&to=` (merged stage dates, dated active teacher items and personal items for the signed-in student, one ordered list, range capped at 100 days: `VALIDATION_FAILED` beyond that or if `to` is before `from`) · `GET /me/personal-items` (the student's own items) · `POST /me/personal-items` (add; optional `classId` label, must be a class the student has joined) · `PATCH /me/personal-items/{id}` (edit; re-checks the class label only when it's actually changing) · `DELETE /me/personal-items/{id}` (delete). All five are owner-only: any id that isn't the caller's own is `NOT_FOUND`, never `FORBIDDEN`. |
-| 3 | `GET/POST /components/{id}/log` · `POST /log/{entryId}/revisions` · `GET /log/{entryId}/revisions` · `PUT /log/{entryId}/visibility` · `GET /components/{id}/students/{studentId}/log` (teacher projection) |
+| 3 | **Built (B6):** `GET\|POST /components/{id}/log` · `GET /log/{entryId}` (entry and history) · `POST /log/{entryId}/revisions` · `PUT /log/{entryId}/visibility` · `GET /components/{id}/students/{studentId}/log` (teacher projection, B11) |
 | 4 | `GET /components/{id}/progress` · `POST /components/{id}/students/{studentId}/signoffs` · `POST /signoffs/{id}/revoke` |
 | 5 | `GET /schools/{schoolId}/overview?yearGroup=&academicYear=` |
 | 6 | `GET /components/{id}/references` · `GET /components/{id}/ai-use/appendix` |
@@ -506,6 +506,13 @@ Results in `docs/HANDOFF.md`. 151 backend tests pass (schema through the complet
 
 **Before the plan:** Q3 answered (yes, 20 Sep 2026). D-6 requested.
 
+**Status, 28 Sep 2026:** 3A–3C built on `pilot/3-the-log` (Part B of plan `2026-09-27-pilot-3-the-log.md`), not merged. Restyle from D-6 skipped: `docs/design/pilot/D-6-log/` doesn't exist (prompt: `docs/design/prompts/D-6-log.md`). Fresh-session `/self-review` and the changes doc are still to do.
+
+**Phase 3 open questions for Tim (not decided):**
+- (a) Hidden entries show the teacher the kind, revision count and last-edited time, but the student-facing copy only promises "sees that you made an entry on <date>". Either make the copy honest or trim `HiddenEntry`'s `editedAt`/`revisionCount`.
+- (b) The global `ProblemDetailsAdvice` changed: a wrong value in well-formed JSON is now `VALIDATION_FAILED` with a `fieldErrors` entry instead of `MALFORMED_REQUEST`. It affects every endpoint and needs Tim's explicit OK.
+- (c) *Fixed after code review:* the visibility toggle's accessible name is now its visible text ("Hide from your teacher"); the entry title moved to `aria-describedby`, and showing a hidden entry warns that its earlier versions become readable.
+
 | Milestone | Tasks (outline) |
 |---|---|
 | **3A Log model** | Tables in design §6.6. Domain rules: server-set `created_at`, revisions append-only (a DB rule rejects `UPDATE`/`DELETE` on `log_entry_revision`), `fields` validated per kind by Java records, links https only. |
@@ -513,9 +520,12 @@ Results in `docs/HANDOFF.md`. 151 backend tests pass (schema through the complet
 | **3C Teacher reading view** | One projection class builds the teacher view; a test proves a hidden entry's body, fields and history never appear in the JSON, while its kind, dates and revision count do. Page `/teach/classes/[id]/students/[studentId]`. |
 
 **Gate P3**
-- [ ] `make verify` and `make e2e` green; journey extended: student logs an entry, hides it; teacher sees an entry exists on that date, not its text; student edits another entry, teacher sees "edited" and the history
-- [ ] An attempt to back-date (send `createdAt`) is ignored, and a test says so
-- [ ] Authz: another student's log → 404; a teacher of a different class → 404
+- [x] `make verify` and `make e2e` green; journey extended: student logs an entry, hides it; teacher sees an entry exists on that date, not its text; student edits another entry, teacher sees "edited" and the history
+- [ ] An attempt to back-date (send `createdAt`) is ignored, and a test says so (`LogEntriesTest`)
+- [x] Authz: another student's log → 404; a teacher of a different class → 404 (`LogScopeTest`)
+- [x] The projection's raw-JSON test passes with its bite test (`TeacherLogProjectionTest`)
+- [ ] `/self-review` in a fresh session
+- [ ] `docs/changes/pilot-3-the-log.md` committed on the branch
 
 ### 8.4 Phase 4 — Teacher grid
 
@@ -571,7 +581,7 @@ These run alongside the phases, and most are calendar-bound rather than code-bou
 | # | Item | Owner | When |
 |---|---|---|---|
 | R1 | Hosting chosen (H1); backups turned on; **a restore actually tested** into a scratch database | Claude builds, Tim approves | Gate 1A (chosen), before go-live (restore tested) |
-| R2 | Monitoring: uptime check on `/api/v1/health` through the proxy; error tracking on both tiers; structured JSON logs with a correlation id passed by the proxy | Claude | Phase 3 |
+| R2 | Monitoring: uptime check on `/api/v1/health` through the proxy; error tracking on both tiers; structured JSON logs with a correlation id passed by the proxy | Claude | Before go-live |
 | R3 | Privacy notice for students and parents; data processing agreement with the school; DPIA treating the log and personal items as content (design §9) | Someone qualified (Q5) | **Now** — before go-live |
 | R4 | Content review: Katelyn for Biology; named teachers for Chemistry, Physics, Business (Q1) | Tim | **Now** — before Gate P2 for Biology |
 | R5 | Source documents: four final 2027 briefs and the Coursework Rules and Procedures added to `subjectDocs/`; fix the swapped filenames noted in design §4.1 | Tim | **Now** — before Phase 2 plan |

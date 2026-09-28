@@ -256,6 +256,11 @@ public class ComponentService {
         return new DomainException(ErrorCode.NOT_FOUND, "No such item.");
     }
 
+    /** For another feature's teacher endpoint (the log's reading view): the component if the actor teaches its class, else 404. */
+    public ComponentInstance requireOwned(Actor actor, UUID componentId) {
+        return owned(actor, componentId).component();
+    }
+
     Owned owned(Actor actor, UUID componentId) {
         if (!actor.holds(Role.TEACHER)) {
             throw notFound();

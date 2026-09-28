@@ -43,6 +43,14 @@ describe("ClassStudents", () => {
     expect(within(approved).getByText(/Aoife Byrne/)).toBeInTheDocument();
   });
 
+  it("links an approved student's name to their log, and not a pending one's", () => {
+    render(<ClassStudents detail={detail} />);
+    const approved = screen.getByRole("region", { name: "Students" });
+    expect(within(approved).getByRole("link", { name: "Aoife Byrne" })).toHaveAttribute("href", "/teach/classes/c1/students/s2");
+    expect(screen.queryByRole("link", { name: "Cian Murphy" })).not.toBeInTheDocument();
+    expect(within(approved).getByRole("button", { name: "Remove Aoife Byrne" })).toBeInTheDocument();
+  });
+
   it("approves and declines pending requests, then refreshes", async () => {
     vi.mocked(api.send).mockResolvedValue({ enrolmentId: "e1", classId: "c1", className: "6A", subjectName: "Biology", schoolName: "S", status: "APPROVED" });
     render(<ClassStudents detail={detail} />);
