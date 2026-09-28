@@ -57,7 +57,7 @@ Detailed plans so far:
 | | 2E Student component page | written 16 Sep 2026 | **built 18 Sep 2026**; `make verify` and `make e2e` green (329 backend tests; 101 `node:test`, 119 Vitest specs; e2e clean on laptop and phone, axe clean); `ComponentRepository.findForApprovedStudent` proves a pending, removed or outside student gets 404, and `ComponentScopeTest` proves only an approved student of the class can tick; Task 8 restyle skipped — `docs/design/pilot/D-3-student-component/` doesn't exist yet (see HANDOFF) | Gate 2E |
 | | 2F Personal items and timeline | written 16 Sep 2026 | **built 18 Sep 2026**; `make verify` and `make e2e` green (348 backend tests; 114 `node:test`, 130 Vitest specs; e2e clean on laptop and phone, axe clean); `PersonalItemPrivacyTest` proves no teacher, leader or other student reaches a student's personal items through any endpoint, with a mutation-and-revert bite test; **Task 7 restyle from D-4 built 22 Sep 2026** (`pilot/2f-restyle-d4`, see HANDOFF) | **Gate P2** |
 | | 2G Phase 2 follow-ups (Part A, plan pilot-3-the-log) | written 27 Sep 2026 | **built 27 Sep 2026, merged into `pilotMain`**; `make verify` green (355 backend tests; 140 `node:test`, 185 Vitest specs) and `make e2e` green (10/10, laptop and phone, axe clean); fresh-context self-review of the whole branch found no critical or important issues; `docs/changes/pilot-2g-phase2-follow-ups.md` | Part A gate |
-| 3 The log | 3A–3C (Part B of plan pilot-3-the-log) | written 27 Sep 2026 | **built 28 Sep 2026 on `pilot/3-the-log`, not merged**; `make verify` green (428 backend tests; 144 `node:test`, 206 Vitest specs, lint/types/build clean) and `make e2e` green (16/16, laptop and phone, axe clean on every new page); `LogEntriesTest`, `LogScopeTest` and `TeacherLogProjectionTest` (with its bite test) cover Gate P3's code items. Waiting on: `/self-review` in a fresh session, `docs/changes/pilot-3-the-log.md`, merge. Task B15 (restyle from D-6) skipped — the pack hasn't arrived (see HANDOFF) | **Gate P3** |
+| 3 The log | 3A–3C (Part B of plan pilot-3-the-log) | written 27 Sep 2026 | **built 28 Sep 2026; 3A–3C merged into `pilotMain` (`1034d14`), the D-6 restyle (`pilot/3b-restyle-d6`) merged locally 28 Sep 2026, not pushed**; `make verify` green (428 backend tests; 144 `node:test`, 206 Vitest specs, lint/types/build clean) and `make e2e` green (16/16, laptop and phone, axe clean on every new page); `LogEntriesTest`, `LogScopeTest` and `TeacherLogProjectionTest` (with its bite test) cover Gate P3's code items. `/self-review` was run in a fresh session (Tim, 28 Sep 2026); `docs/changes/pilot-3-the-log.md` is committed. Task B15 (restyle from D-6) built as `pilot/3b-restyle-d6`: `make e2e` green 16/16, 215 Vitest specs. Undo on Hide/Show, per-source-type Title messages and per-field error links deliberately not built (see HANDOFF). Waiting on: Tim's push, and a changes doc for the restyle if wanted | **Gate P3** |
 | 4 Teacher grid | 4A–4B | to write | — | **Gate P4 = pilot can start** |
 | 5 School leader view | 5A | to write | — | Gate P5 |
 | 6 Writing tools | 6A–6C | to write | — | Gate P6 |
@@ -506,7 +506,7 @@ Results in `docs/HANDOFF.md`. 151 backend tests pass (schema through the complet
 
 **Before the plan:** Q3 answered (yes, 20 Sep 2026). D-6 requested.
 
-**Status, 28 Sep 2026:** 3A–3C built on `pilot/3-the-log` (Part B of plan `2026-09-27-pilot-3-the-log.md`), not merged. Restyle from D-6 skipped: `docs/design/pilot/D-6-log/` doesn't exist (prompt: `docs/design/prompts/D-6-log.md`). Fresh-session `/self-review` and the changes doc are still to do.
+**Status, 28 Sep 2026:** 3A–3C built and merged into `pilotMain` (Part B of plan `2026-09-27-pilot-3-the-log.md`). The D-6 restyle (`pilot/3b-restyle-d6`) is merged locally too; nothing is pushed yet. Fresh-session `/self-review` was run and the changes doc is committed.
 
 **Phase 3 open questions for Tim (not decided):**
 - (a) Hidden entries show the teacher the kind, revision count and last-edited time, but the student-facing copy only promises "sees that you made an entry on <date>". Either make the copy honest or trim `HiddenEntry`'s `editedAt`/`revisionCount`.
@@ -521,11 +521,11 @@ Results in `docs/HANDOFF.md`. 151 backend tests pass (schema through the complet
 
 **Gate P3**
 - [x] `make verify` and `make e2e` green; journey extended: student logs an entry, hides it; teacher sees an entry exists on that date, not its text; student edits another entry, teacher sees "edited" and the history
-- [ ] An attempt to back-date (send `createdAt`) is ignored, and a test says so (`LogEntriesTest`)
+- [x] An attempt to back-date (send `createdAt`) is ignored, and a test says so (`LogEntriesTest`)
 - [x] Authz: another student's log → 404; a teacher of a different class → 404 (`LogScopeTest`)
 - [x] The projection's raw-JSON test passes with its bite test (`TeacherLogProjectionTest`)
-- [ ] `/self-review` in a fresh session
-- [ ] `docs/changes/pilot-3-the-log.md` committed on the branch
+- [x] `/self-review` in a fresh session (run by Tim; its findings aren't recorded here)
+- [x] `docs/changes/pilot-3-the-log.md` committed on the branch
 
 ### 8.4 Phase 4 — Teacher grid
 
