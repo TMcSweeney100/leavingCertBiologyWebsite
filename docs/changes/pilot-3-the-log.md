@@ -83,7 +83,7 @@ A student now keeps a dated, versioned log for each component: notes, sources th
 
 ## Self-review findings
 
-The fresh-session `/self-review` was **not run**: Tim chose to merge because the changes were small. What did happen were in-session reviews by separate agents (B2, B3–B6, B11), which caught the missing link caps, the missing classmate test, the trigger/CHECK test gap, and confirmed no path lets hidden content reach the teacher. Treat the branch as not having had the review the plan asks for.
+The fresh-session `/self-review` was **not run**: Tim chose to merge because the changes were small. What did happen were in-session reviews by separate agents (B2, B3–B6, B11), which caught the missing link caps, the missing classmate test, the trigger/CHECK test gap, and confirmed no path lets hidden content reach the teacher. A later code review then changed `LogVisibilityToggle`: the button's accessible name is now exactly its visible text ("Hide from your teacher", so speech control matches what's on screen), the entry title moved into `aria-describedby`, and showing a hidden entry warns that its earlier versions become readable (the P3-7 consequence, now said in words). Lint, types, 209 Vitest and `make e2e` 16/16 pass with those edits. The plan's fresh-session `/self-review` itself was still not run.
 
 ## Deviations from the plan
 
@@ -91,6 +91,7 @@ The fresh-session `/self-review` was **not run**: Tim chose to merge because the
 - `LogEntryForm` has `noValidate` so the browser's own bubble for `type="url"` can't pre-empt the server's message.
 - The revise form gained a `role="status"` line, "Saved as a new revision." (UI-STANDARDS §8: confirm in place through a live region).
 - `LogService.teacherView` is `REPEATABLE_READ`, `readOnly`, so its three reads share one snapshot.
+- The toggle's label and description were reworked after review (see above).
 - Extra tests beyond the plan: classmate, second class of the same teacher, tighter projection markers, stripped links, unknown kind.
 - Task B15 (restyle from D-6) skipped: the design pack doesn't exist yet.
 
@@ -98,7 +99,6 @@ The fresh-session `/self-review` was **not run**: Tim chose to merge because the
 
 - **Decide the hidden-entry disclosure.** The teacher sees a hidden entry's kind, revision count and last-edited time, but the student-facing copy only promises "sees that you made an entry on <date>". Either make the copy honest or drop `editedAt` and `revisionCount` from `HiddenEntry`.
 - **Confirm or reverse the global `ProblemDetailsAdvice` change.** Known limits: list indexes are dropped from field paths; wrong-*type* values are still `MALFORMED_REQUEST`; a bad enum inside `fields` is reported as `fields`, not `fields.type`.
-- The hide/show button's accessible name ("Hide <title> from your teacher") doesn't contain its visible text contiguously.
 - Not checked: manual keyboard run on a phone, a visual look at 390/1140, touch-target size, contrast of the inactive tab text, real-browser date picker.
 - When D-6 arrives: Task B15 (restyle; every existing spec must keep passing).
 - When the 2026–27 SEC Rules come out, diff Appendix 2 §4 against `LogFieldSourcesTest`.

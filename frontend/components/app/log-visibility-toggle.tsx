@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useId, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { api, ApiError } from "@/lib/api/client";
@@ -12,6 +12,7 @@ import { ErrorPanel } from "./error-panel";
 /** FR-24c: one tap, not buried in a menu. The name says what the tap will do, and to which entry. */
 export function LogVisibilityToggle({ entryId, title, visible }: { entryId: string; title: string; visible: boolean }) {
   const router = useRouter();
+  const noteId = useId();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
 
@@ -31,10 +32,12 @@ export function LogVisibilityToggle({ entryId, title, visible }: { entryId: stri
   const label = visible ? "Hide from your teacher" : "Show to your teacher";
   return (
     <div className="flex flex-col gap-2">
-      <Button type="button" variant="outline" size="header" disabled={busy} onClick={toggle}
-        aria-label={visible ? `Hide ${title} from your teacher` : `Show ${title} to your teacher`}>
+      <Button type="button" variant="outline" size="header" disabled={busy} onClick={toggle} aria-describedby={noteId}>
         {busy ? (visible ? "Hiding…" : "Showing…") : label}
       </Button>
+      <p id={noteId} className={visible ? "sr-only" : "text-app-small text-app-copy"}>
+        {visible ? `About: ${title}` : `About: ${title}. Showing it lets your teacher read its earlier versions too, including any you wrote while it was hidden.`}
+      </p>
       {error && <ErrorPanel error={error} focus />}
     </div>
   );

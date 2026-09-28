@@ -511,7 +511,7 @@ Results in `docs/HANDOFF.md`. 151 backend tests pass (schema through the complet
 **Phase 3 open questions for Tim (not decided):**
 - (a) Hidden entries show the teacher the kind, revision count and last-edited time, but the student-facing copy only promises "sees that you made an entry on <date>". Either make the copy honest or trim `HiddenEntry`'s `editedAt`/`revisionCount`.
 - (b) The global `ProblemDetailsAdvice` changed: a wrong value in well-formed JSON is now `VALIDATION_FAILED` with a `fieldErrors` entry instead of `MALFORMED_REQUEST`. It affects every endpoint and needs Tim's explicit OK.
-- (c) The visibility toggle's accessible name ("Hide <title> from your teacher") doesn't contain its visible text ("Hide from your teacher") contiguously, which speech-control users may notice.
+- (c) *Fixed after code review:* the visibility toggle's accessible name is now its visible text ("Hide from your teacher"); the entry title moved to `aria-describedby`, and showing a hidden entry warns that its earlier versions become readable.
 
 | Milestone | Tasks (outline) |
 |---|---|

@@ -93,8 +93,9 @@ test("the student logs a note, a source and an AI use, hides the note and edits 
   await student.getByRole("textbox", { name: "How you used it" }).fill("Suggested possible project themes.");
   await save(student);
 
-  await student.getByRole("button", { name: `Hide ${NOTE} from your teacher` }).click();
-  await expect(student.getByRole("button", { name: `Show ${NOTE} to your teacher` })).toBeVisible();
+  const noteRow = student.getByRole("listitem").filter({ hasText: NOTE });
+  await noteRow.getByRole("button", { name: "Hide from your teacher" }).click();
+  await expect(noteRow.getByRole("button", { name: "Show to your teacher" })).toBeVisible();
   await expectAccessible(student);
 
   await student.getByRole("link", { name: "Titration technique demo" }).click();
