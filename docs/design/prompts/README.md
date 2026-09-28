@@ -19,7 +19,7 @@ One file per pack (or pair of packs), ready to paste into Claude Design alongsid
 | D-3 | Student component page, and the BiPi-components reuse decision | `D-3-student-component.md` |
 | D-4 | Timeline (`/home` list, week, month, add item) and student navigation | `D-4-timeline.md` |
 | D-5 | Teacher component setup (the Component tab) | `D-5-teacher-component-setup.md` |
-| D-6 | The log | Phase 3, design §8.5 and §6.6 |
+| D-6 | The log | `D-6-log.md` |
 | D-7 | Progress grid | Phase 4, design §8.4 |
 | D-8 | School overview | Phase 5 |
 | D-9 | Writing tools | Phase 6, design §8.6 and §6.7 |
