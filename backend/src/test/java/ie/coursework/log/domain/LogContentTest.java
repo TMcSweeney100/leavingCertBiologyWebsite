@@ -83,4 +83,48 @@ class LogContentTest {
     void fieldsMustMatchTheKind() {
         assertThat(LogContent.problems(EntryKind.AI_USE, null, book("A book"))).extracting(FieldError::field).containsExactly("fields");
     }
+
+    private static final String LONG_LINK = "https://example.com/" + "a".repeat(481);
+
+    @Test
+    void aShortFieldAllows500AndRefuses501() {
+        assertThat(LogContent.problems(EntryKind.SOURCE, null, book("t".repeat(500)))).isEmpty();
+        assertThat(LogContent.problems(EntryKind.SOURCE, null, book("t".repeat(501)))).extracting(FieldError::field).containsExactly("fields.title");
+        SourceFields longAuthor = new SourceFields(SourceType.BOOK, "A book", "a".repeat(501), null, null, null, null, null, null, null, null);
+        assertThat(LogContent.problems(EntryKind.SOURCE, null, longAuthor)).extracting(FieldError::field).containsExactly("fields.author");
+    }
+
+    @Test
+    void aSourceLongFieldAllows4000AndRefuses4001() {
+        SourceFields ok = new SourceFields(SourceType.BOOK, "A book", null, null, null, null, null, null, "k".repeat(4000), null, null);
+        SourceFields tooLong = new SourceFields(SourceType.BOOK, "A book", null, null, null, null, null, null, "k".repeat(4001), null, null);
+        assertThat(LogContent.problems(EntryKind.SOURCE, null, ok)).isEmpty();
+        assertThat(LogContent.problems(EntryKind.SOURCE, null, tooLong)).extracting(FieldError::field).containsExactly("fields.keyInformation");
+    }
+
+    @Test
+    void howUsedAllows4000AndRefuses4001() {
+        assertThat(LogContent.problems(EntryKind.AI_USE, null, ai("ChatGPT-4", "OpenAI", LocalDate.of(2025, 2, 14), "h".repeat(4000), null))).isEmpty();
+        assertThat(LogContent.problems(EntryKind.AI_USE, null, ai("ChatGPT-4", "OpenAI", LocalDate.of(2025, 2, 14), "h".repeat(4001), null)))
+                .extracting(FieldError::field).containsExactly("fields.howUsed");
+    }
+
+    @Test
+    void aSourceWithoutATypeIsRefused() {
+        SourceFields noType = new SourceFields(null, "A book", null, null, null, null, null, null, null, null, null);
+        assertThat(LogContent.problems(EntryKind.SOURCE, null, noType)).extracting(FieldError::field).containsExactly("fields.type");
+    }
+
+    @Test
+    void linksAreCappedAt500WithoutASecondError() {
+        assertThat(LONG_LINK.length()).isEqualTo(501);
+        assertThat(LogContent.problems(EntryKind.SOURCE, null, online(LONG_LINK, LocalDate.of(2024, 12, 12))))
+                .extracting(FieldError::field, FieldError::message)
+                .containsExactly(org.assertj.core.groups.Tuple.tuple("fields.url", "must be at most 500 characters"));
+        assertThat(LogContent.problems(EntryKind.AI_USE, null, ai("ChatGPT-4", "OpenAI", LocalDate.of(2025, 2, 14), "x", LONG_LINK)))
+                .extracting(FieldError::field, FieldError::message)
+                .containsExactly(org.assertj.core.groups.Tuple.tuple("fields.shareUrl", "must be at most 500 characters"));
+        String exactly500 = LONG_LINK.substring(0, 500);
+        assertThat(LogContent.problems(EntryKind.AI_USE, null, ai("ChatGPT-4", "OpenAI", LocalDate.of(2025, 2, 14), "x", exactly500))).isEmpty();
+    }
 }

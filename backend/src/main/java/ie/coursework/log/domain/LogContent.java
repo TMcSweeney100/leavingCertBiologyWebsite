@@ -37,9 +37,9 @@ public final class LogContent {
 
     private static void source(SourceFields s, List<FieldError> problems) {
         if (s.type() == null) problems.add(new FieldError("fields.type", "choose a type"));
-        required("fields.title", s.title(), problems);
+        required("fields.title", s.title(), SHORT_MAX, problems);
         if (s.type() != null && s.type().online()) {
-            required("fields.url", s.url(), problems);
+            if (blank(s.url())) problems.add(new FieldError("fields.url", "required"));
             if (s.dateAccessed() == null) problems.add(new FieldError("fields.dateAccessed", "required for an online source"));
         }
         link("fields.url", s.url(), problems);
@@ -53,20 +53,20 @@ public final class LogContent {
     }
 
     private static void aiUse(AiUseFields a, List<FieldError> problems) {
-        required("fields.toolNameAndVersion", a.toolNameAndVersion(), problems);
-        required("fields.developer", a.developer(), problems);
+        required("fields.toolNameAndVersion", a.toolNameAndVersion(), SHORT_MAX, problems);
+        required("fields.developer", a.developer(), SHORT_MAX, problems);
         if (a.dateGenerated() == null) problems.add(new FieldError("fields.dateGenerated", "required"));
-        required("fields.howUsed", a.howUsed(), problems);
+        required("fields.howUsed", a.howUsed(), LONG_MAX, problems);
         capped("fields.prompts", a.prompts(), LONG_MAX, problems);
         link("fields.shareUrl", a.shareUrl(), problems);
     }
 
-    /** Required and, when present, within SHORT_MAX — except howUsed, which is a description. */
-    private static void required(String field, String value, List<FieldError> problems) {
+    /** Required and, when present, within {@code max}. */
+    private static void required(String field, String value, int max, List<FieldError> problems) {
         if (blank(value)) {
             problems.add(new FieldError(field, "required"));
         } else {
-            capped(field, value, field.equals("fields.howUsed") ? LONG_MAX : SHORT_MAX, problems);
+            capped(field, value, max, problems);
         }
     }
 
@@ -77,7 +77,12 @@ public final class LogContent {
     }
 
     private static void link(String field, String value, List<FieldError> problems) {
-        if (!blank(value) && !HttpsLink.valid(value) && problems.stream().noneMatch(p -> p.field().equals(field))) {
+        if (blank(value)) {
+            return;
+        }
+        if (value.length() > SHORT_MAX) {
+            capped(field, value, SHORT_MAX, problems);
+        } else if (!HttpsLink.valid(value)) {
             problems.add(new FieldError(field, "must be a full https:// link"));
         }
     }
