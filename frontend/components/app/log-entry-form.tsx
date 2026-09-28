@@ -42,6 +42,7 @@ export function LogEntryForm(props: Props) {
   const [visible, setVisible] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
+  const [saved, setSaved] = useState(false);
 
   const fieldError = (key: string) => error?.fieldErrors?.find((f) => f.field === key)?.message;
   const set = (key: string) => (e: { target: { value: string } }) => setValues({ ...values, [key]: e.target.value });
@@ -50,6 +51,7 @@ export function LogEntryForm(props: Props) {
     event.preventDefault();
     setBusy(true);
     setError(null);
+    setSaved(false);
     const content = { body: body.trim() ? body : null, fields: payload(kind, values) };
     try {
       if (props.mode === "create") {
@@ -57,6 +59,7 @@ export function LogEntryForm(props: Props) {
         router.push(`/components/${props.componentId}/log`);
       } else {
         await api.send("POST", `/log/${props.entryId}/revisions`, content, logEntryDetailSchema);
+        setSaved(true);
         router.refresh();
       }
     } catch (e) {
@@ -118,6 +121,7 @@ export function LogEntryForm(props: Props) {
           <p aria-live="polite" className="text-app-small text-app-copy">{visibilityLine(visible, props.today)}</p>
         </div>
       )}
+      {revising && <p role="status" className="text-app-small text-app-copy">{saved ? "Saved as a new revision." : ""}</p>}
       <div>
         <Button type="submit" disabled={busy}>
           {busy ? "Saving…" : revising ? "Save new revision" : "Save entry"}

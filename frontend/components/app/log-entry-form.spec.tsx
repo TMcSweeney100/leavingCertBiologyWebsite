@@ -88,4 +88,16 @@ describe("LogEntryForm", () => {
     expect(await screen.findByRole("alert")).toHaveFocus();
     expect(screen.getByRole("textbox", { name: "Link" })).toHaveAttribute("aria-invalid", "true");
   });
+  it("saves a new revision without changing the kind", async () => {
+    vi.mocked(api.send).mockResolvedValue({ entry: { id: "e1" }, history: [] });
+    render(<LogEntryForm mode="revise" entryId="e1" kind="NOTE" body="v1" fields={null} componentId="k1" today="2027-03-03" />);
+    expect(screen.queryByRole("radio")).not.toBeInTheDocument();
+    const note = screen.getByRole("textbox", { name: "Note" });
+    await userEvent.clear(note);
+    await userEvent.type(note, "v2");
+    await userEvent.click(screen.getByRole("button", { name: "Save new revision" }));
+    expect(api.send).toHaveBeenCalledWith("POST", "/log/e1/revisions", { body: "v2", fields: null }, expect.anything());
+    expect(refresh).toHaveBeenCalled();
+    expect(screen.getByRole("status")).toHaveTextContent("Saved as a new revision.");
+  });
 });
