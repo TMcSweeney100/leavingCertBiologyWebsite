@@ -29,15 +29,19 @@ export function LogVisibilityToggle({ entryId, title, visible }: { entryId: stri
     }
   }
 
-  const label = visible ? "Hide from your teacher" : "Show to your teacher";
+  // The visible word starts the name (WCAG 2.5.3), and the title says which entry it acts on.
+  const name = busy ? `${visible ? "Hiding" : "Showing"} ${title}…` : visible ? `Hide ${title} from your teacher` : `Show ${title} to your teacher`;
   return (
     <div className="flex flex-col gap-2">
-      <Button type="button" variant="outline" size="header" disabled={busy} onClick={toggle} aria-describedby={noteId}>
-        {busy ? (visible ? "Hiding…" : "Showing…") : label}
+      <Button type="button" variant="outline" disabled={busy} onClick={toggle} aria-label={name}
+        aria-describedby={visible ? undefined : noteId} className="min-w-[76px] text-app-accent">
+        {busy ? (visible ? "Hiding…" : "Showing…") : visible ? "Hide" : "Show"}
       </Button>
-      <p id={noteId} className={visible ? "sr-only" : "text-app-small text-app-copy"}>
-        {visible ? `About: ${title}` : `About: ${title}. Showing it lets your teacher read its earlier versions too, including any you wrote while it was hidden.`}
-      </p>
+      {!visible && (
+        <p id={noteId} className="text-app-small text-app-copy">
+          Showing it lets your teacher read its earlier versions too, including any you wrote while it was hidden.
+        </p>
+      )}
       {error && <ErrorPanel error={error} focus />}
     </div>
   );

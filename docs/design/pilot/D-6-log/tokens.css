@@ -1,0 +1,36 @@
+/* Pack D-6 — the log. Additions only, on top of D-1 to D-4. No --bipi-* value is changed.
+   Contrast computed with the WCAG 2.x formula. Text pairs need 4.5:1; the chip
+   tints themselves carry no meaning (the word does), so they have no 3:1 target. */
+
+:root {
+  /* ── Entry kind ──────────────────────────────────────────────────────────
+     A tinted chip with the kind word in it: "Note", "Source", "AI use".
+     The word carries the meaning, the tint helps a reader scan. The hues avoid
+     navy (action), amber (pending), green (done), red (error) and the four
+     subject hues, so a kind can't be read as a state or a subject.
+     Used on the student list, entry page and teacher reading view only. */
+  --app-kind-note: #343A42;          /* = --app-body. 10.14:1 on its tint */
+  --app-kind-note-tint: #EFF1F3;     /* = --app-inset */
+  --app-kind-source: #52561A;        /* olive. 6.86:1 on its tint; 7.76:1 on white; 7.30:1 on hidden ground */
+  --app-kind-source-tint: #F1F2E4;
+  --app-kind-ai: #7A2E6B;            /* plum. 7.61:1 on its tint; 8.64:1 on white; 8.13:1 on hidden ground */
+  --app-kind-ai-tint: #F7EEF4;
+
+  /* ── Hidden entry ────────────────────────────────────────────────────────
+     The ground behind a hidden row or card. It's never the only carrier: a hidden
+     entry also has the eye-off icon and the words "Only you" (student) or
+     "Private entry" / "Made private" (teacher), set in bold ink. No new hue: grey
+     is the one neutral that says "withheld" without saying "wrong" or "late".
+     Alias of --app-ground, named so it can be changed on its own later. */
+  --app-private-ground: #F7F8F9;     /* ink 17.38:1, body 10.79:1, muted 5.08:1, accent 10.46:1 */
+
+  /* ── Visibility switch ───────────────────────────────────────────────────
+     On = --app-accent track (a control, so navy). Off = --app-muted track:
+     5.40:1 on white, 5.08:1 on the private ground, which passes the 3:1 for
+     controls. The sentence under the switch changes too, so the state is never
+     carried by the track colour alone. */
+  --app-switch-off: #636B75;         /* = --app-muted */
+
+  /* ── Undo window ───────────────────────────────────────────────────────── */
+  --app-undo-ms: 5000;               /* how long "Undo" stays after Hide or Show */
+}

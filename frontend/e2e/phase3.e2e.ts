@@ -67,7 +67,7 @@ test("the student logs a note, a source and an AI use, hides the note and edits 
   await signInStudent(student);
   await student.getByRole("link", { name: /Biology/ }).click();
   await student.getByRole("navigation", { name: "Component sections" }).getByRole("link", { name: "Log" }).click();
-  await expect(student.getByText("Nothing in your log yet.")).toBeVisible();
+  await expect(student.getByText("Nothing in your log yet")).toBeVisible();
   await expectAccessible(student);
 
   await newEntry(student);
@@ -77,7 +77,7 @@ test("the student logs a note, a source and an AI use, hides the note and edits 
   await save(student);
 
   await newEntry(student);
-  await student.getByRole("radio", { name: "Source" }).check();
+  await student.locator("label").filter({ hasText: /^Source$/ }).click(); // the radio itself is visually hidden; its label is the target
   await student.getByRole("combobox", { name: "Type of source" }).selectOption("ONLINE_VIDEO");
   await student.getByRole("textbox", { name: "Title" }).fill("Titration technique demo");
   await student.getByRole("textbox", { name: "Link" }).fill("https://youtu.be/yCv4iyPqZKQ");
@@ -86,7 +86,7 @@ test("the student logs a note, a source and an AI use, hides the note and edits 
   await save(student);
 
   await newEntry(student);
-  await student.getByRole("radio", { name: "AI use" }).check();
+  await student.locator("label").filter({ hasText: /^AI use$/ }).click(); // the radio itself is visually hidden; its label is the target
   await student.getByRole("textbox", { name: "AI tool and version" }).fill("ChatGPT-4");
   await student.getByRole("textbox", { name: "Developer or publisher" }).fill("OpenAI");
   await student.getByLabel("Date the output was generated").fill("2026-10-01");
@@ -94,11 +94,12 @@ test("the student logs a note, a source and an AI use, hides the note and edits 
   await save(student);
 
   const noteRow = student.getByRole("listitem").filter({ hasText: NOTE });
-  await noteRow.getByRole("button", { name: "Hide from your teacher" }).click();
-  await expect(noteRow.getByRole("button", { name: "Show to your teacher" })).toBeVisible();
+  await noteRow.getByRole("button", { name: /^Hide / }).click();
+  await expect(noteRow.getByRole("button", { name: /^Show / })).toBeVisible();
   await expectAccessible(student);
 
   await student.getByRole("link", { name: "Titration technique demo" }).click();
+  await student.getByRole("link", { name: "Revise entry" }).click();
   await student.getByRole("textbox", { name: "Title" }).fill("Titration technique demo (RTÉ)");
   await Promise.all([
     student.waitForResponse((r) => r.url().includes("/revisions") && r.request().method() === "POST"),
@@ -117,7 +118,7 @@ test("the teacher sees the hidden note exists but not its text, and the edited s
 
   const rows = teacher.getByRole("list", { name: "Log entries" }).getByRole("listitem");
   await expect(rows).toHaveCount(3);
-  await expect(teacher.getByText(/Note · .* · Hidden by the student on /)).toBeVisible();
+  await expect(teacher.getByText(/Made private by Aoife on /)).toBeVisible();
   await expect(teacher.getByText(NOTE)).toHaveCount(0);
   const source = rows.filter({ hasText: "Titration technique demo (RTÉ)" });
   await expect(source).toContainText("Edited");

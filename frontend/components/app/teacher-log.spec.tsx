@@ -23,8 +23,13 @@ describe("TeacherLog", () => {
   it("shows a hidden entry exists, when, and that it was hidden — never what it said", () => {
     render(<TeacherLog log={log} />);
     const rows = within(screen.getByRole("list", { name: "Log entries" })).getAllByRole("listitem");
-    expect(rows[0]).toHaveTextContent("Note · 3 Mar 2027 · Hidden by the student on 4 Mar 2027");
-    expect(rows[1]).toHaveTextContent("AI use · Private entry · 2 Mar 2027");
+    expect(rows[0]).toHaveTextContent("Note");
+    expect(rows[0]).toHaveTextContent("3 Mar 2027");
+    expect(rows[0]).toHaveTextContent("Made private by Cian on 4 Mar 2027");
+    expect(rows[1]).toHaveTextContent("AI use");
+    expect(rows[1]).toHaveTextContent("Private entry");
+    expect(rows[1]).toHaveTextContent("2 Mar 2027");
+    expect(rows[1]).not.toHaveTextContent("Made private");
   });
 
   it("renders a hidden entry as one meta line with no content, even if content is smuggled into props", () => {
@@ -34,8 +39,8 @@ describe("TeacherLog", () => {
     } as unknown as TeacherStudentLog["entries"][number];
     render(<TeacherLog log={{ ...log, entries: [smuggled] }} />);
     const row = within(screen.getByRole("list", { name: "Log entries" })).getByRole("listitem");
-    expect(row.textContent).toBe("Note · 3 Mar 2027 · Hidden by the student on 4 Mar 2027");
-    expect(row.children).toHaveLength(0);
+    expect(row).toHaveTextContent("Made private by Cian on 4 Mar 2027");
+    expect(row.querySelector("details")).toBeNull();
     expect(document.body.textContent).not.toContain("SECRET");
     expect(screen.queryByText(/History/)).not.toBeInTheDocument();
   });
@@ -43,14 +48,21 @@ describe("TeacherLog", () => {
   it("shows a visible entry, marks it edited, and keeps its history one tap away", () => {
     render(<TeacherLog log={log} />);
     const rows = within(screen.getByRole("list", { name: "Log entries" })).getAllByRole("listitem");
-    expect(rows[2]).toHaveTextContent("Note · 1 Mar 2027 · Edited");
+    expect(rows[2]).toHaveTextContent("1 Mar 2027");
+    expect(rows[2]).toHaveTextContent("Edited · 2 revisions, last on 2 Mar 2027");
     expect(rows[2]).toHaveTextContent("Pilot run went well");
     expect(within(rows[2]).getByText("History (2 revisions)")).toBeInTheDocument();
+  });
+
+  it("counts what the student has shared, framed as their choice", () => {
+    render(<TeacherLog log={log} />);
+    expect(screen.getByText("3 entries. Cian has shared 1 with you.")).toBeInTheDocument();
   });
 
   it("says when the student hasn't written anything", () => {
     render(<TeacherLog log={{ ...log, entries: [] }} />);
     expect(screen.getByText("Cian hasn't written any log entries yet.")).toBeInTheDocument();
+    expect(screen.getByText(/see only the kind and date of any they keep private/)).toBeInTheDocument();
   });
 
   it("refuses a hidden entry that carries content", () => {

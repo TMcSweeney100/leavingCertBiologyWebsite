@@ -57,9 +57,47 @@ export function visibilityLine(visible: boolean, today: string): string {
     : `Only you can read this. Your teacher sees that you made an entry on ${dayMonth(today)}.`;
 }
 
-export function entryTitle(entry: LogEntry): string {
+/** The whole first line of a note, or the title of anything else. The list wraps it; `entryTitle` cuts it for names. */
+export function entryHeading(entry: LogEntry): string {
   if (entry.kind === "SOURCE") return entry.fields.title;
   if (entry.kind === "AI_USE") return entry.fields.toolNameAndVersion;
-  const line = (entry.body ?? "").split("\n")[0].trim();
+  return (entry.body ?? "").split("\n")[0].trim();
+}
+
+/** The accessible name's version of the heading (pack D-6 question 8): cut at 80 characters. */
+export function entryTitle(entry: LogEntry): string {
+  const line = entryHeading(entry);
   return line.length > 80 ? `${line.slice(0, 79)}…` : line;
+}
+
+/** "example.ie" from a link, for showing where it goes without printing the whole address. */
+export function linkHost(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return url;
+  }
+}
+
+/** The second line of a list row: a source's type and locator (or host, when online), or "How you used it". */
+export function entryDetail(entry: Pick<LogEntry, "kind" | "fields">): string | null {
+  if (entry.kind === "AI_USE") return "How you used it";
+  if (entry.kind !== "SOURCE") return null;
+  const f = entry.fields as { type: SourceType; url: string | null; locator: string | null };
+  const type = SOURCE_TYPES.find((t) => t.value === f.type)?.label.replace(/ article$/, "") ?? f.type;
+  const where = isOnline(f.type) && f.url ? linkHost(f.url) : f.locator;
+  return where ? `${type} · ${where}` : type;
+}
+
+/** What was wrong with a link the server refused, in words the student can act on. The app never rewrites what was typed. */
+export function linkMessage(value: string): string {
+  const v = value.trim();
+  if (/^http:\/\//i.test(v)) return "This link starts with http://, which isn't secure. Use the https:// address: copy it again from your browser's address bar.";
+  if (/^www\./i.test(v)) return `Add https:// to the start, like https://${v}`;
+  return "That isn't a link. Copy the address from your browser's address bar; it starts with https://";
+}
+
+/** "3,850 of 4,000" once a field is within 10% of its limit; nothing before that. */
+export function counterText(value: string, limit: number): string | null {
+  return value.length >= limit * 0.9 ? `${value.length.toLocaleString("en-IE")} of ${limit.toLocaleString("en-IE")}` : null;
 }
