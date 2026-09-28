@@ -228,3 +228,61 @@ export const personalItemSchema = z.object({
   subjectName: z.string().nullable(),
 });
 export type PersonalItem = z.infer<typeof personalItemSchema>;
+
+// Mirrors log/application/LogViews.java and log/domain/*Fields.java (plan pilot-3-the-log).
+export const entryKindSchema = z.enum(["NOTE", "SOURCE", "AI_USE"]);
+export type EntryKind = z.infer<typeof entryKindSchema>;
+export const sourceTypeSchema = z.enum(["BOOK", "NEWSPAPER_OR_MAGAZINE", "ONLINE_TEXT_OR_IMAGE", "ONLINE_AUDIO", "ONLINE_VIDEO", "OTHER"]);
+export type SourceType = z.infer<typeof sourceTypeSchema>;
+
+export const sourceFieldsSchema = z.object({
+  type: sourceTypeSchema,
+  title: z.string(),
+  author: z.string().nullable(),
+  publication: z.string().nullable(),
+  datePublished: z.string().nullable(),
+  url: z.string().nullable(),
+  dateAccessed: z.string().nullable(),
+  locator: z.string().nullable(),
+  keyInformation: z.string().nullable(),
+  relevance: z.string().nullable(),
+  reflections: z.string().nullable(),
+});
+export type SourceFields = z.infer<typeof sourceFieldsSchema>;
+
+export const aiUseFieldsSchema = z.object({
+  toolNameAndVersion: z.string(),
+  developer: z.string(),
+  dateGenerated: z.string(),
+  howUsed: z.string(),
+  prompts: z.string().nullable(),
+  shareUrl: z.string().nullable(),
+});
+export type AiUseFields = z.infer<typeof aiUseFieldsSchema>;
+
+const entryBase = {
+  id: z.string(),
+  componentId: z.string(),
+  createdAt: z.string(),
+  editedAt: z.string().nullable(),
+  revisionCount: z.number(),
+  visibleToTeacher: z.boolean(),
+  body: z.string().nullable(),
+};
+export const logEntrySchema = z.discriminatedUnion("kind", [
+  z.object({ ...entryBase, kind: z.literal("NOTE"), fields: z.null() }),
+  z.object({ ...entryBase, kind: z.literal("SOURCE"), fields: sourceFieldsSchema }),
+  z.object({ ...entryBase, kind: z.literal("AI_USE"), fields: aiUseFieldsSchema }),
+]);
+export type LogEntry = z.infer<typeof logEntrySchema>;
+
+export const revisionSchema = z.object({
+  number: z.number(),
+  body: z.string().nullable(),
+  fields: z.union([sourceFieldsSchema, aiUseFieldsSchema]).nullable(),
+  createdAt: z.string(),
+});
+export type Revision = z.infer<typeof revisionSchema>;
+
+export const logEntryDetailSchema = z.object({ entry: logEntrySchema, history: z.array(revisionSchema) });
+export type LogEntryDetail = z.infer<typeof logEntryDetailSchema>;
