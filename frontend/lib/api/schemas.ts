@@ -286,3 +286,17 @@ export type Revision = z.infer<typeof revisionSchema>;
 
 export const logEntryDetailSchema = z.object({ entry: logEntrySchema, history: z.array(revisionSchema) });
 export type LogEntryDetail = z.infer<typeof logEntryDetailSchema>;
+
+// Mirrors log/application/TeacherLogViews.java. A hidden entry is .strict(): if content ever reached the
+// browser in one, parsing would fail and the page would show an error rather than the content.
+const teacherEntryBase = { id: z.string(), kind: entryKindSchema, createdAt: z.string(), editedAt: z.string().nullable(), revisionCount: z.number() };
+export const teacherEntrySchema = z.discriminatedUnion("visibility", [
+  z.object({ ...teacherEntryBase, visibility: z.literal("VISIBLE"), body: z.string().nullable(),
+    fields: z.union([sourceFieldsSchema, aiUseFieldsSchema]).nullable(), history: z.array(revisionSchema) }),
+  z.object({ ...teacherEntryBase, visibility: z.literal("HIDDEN"), hiddenAt: z.string().nullable() }).strict(),
+]);
+export type TeacherEntry = z.infer<typeof teacherEntrySchema>;
+export const teacherStudentLogSchema = z.object({
+  studentId: z.string(), firstName: z.string(), lastName: z.string(), componentId: z.string(), entries: z.array(teacherEntrySchema),
+});
+export type TeacherStudentLog = z.infer<typeof teacherStudentLogSchema>;

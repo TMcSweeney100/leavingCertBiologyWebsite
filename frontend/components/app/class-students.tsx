@@ -1,6 +1,7 @@
 "use client";
 
 import { Copy } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -17,7 +18,7 @@ import { askedAgo } from "@/lib/app/asked-ago";
 
 import { ClassHeader } from "./class-header";
 import { ErrorPanel } from "./error-panel";
-import { card, eyebrow, lead, sectionTitle } from "./styles";
+import { card, eyebrow, lead, sectionTitle, textLink } from "./styles";
 
 function formatDate(iso: string): string {
   return new Intl.DateTimeFormat("en-IE", {
@@ -254,7 +255,9 @@ export function ClassStudents({ detail, now }: { detail: ClassDetail; now?: Date
                 >
                   <div className="flex min-w-0 flex-[1_1_5rem] flex-col gap-0.5">
                     <p id={nameId} className="text-app-lead font-semibold break-words text-app-ink">
-                      {fullName(m)}
+                      <Link href={`/teach/classes/${detail.id}/students/${m.studentId}`} className={textLink}>
+                        {fullName(m)}
+                      </Link>
                     </p>
                     <p translate="no" className="font-mono text-app-help [overflow-wrap:anywhere] text-app-muted">
                       {m.username}
