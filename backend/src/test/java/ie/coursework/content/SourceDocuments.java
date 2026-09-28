@@ -33,7 +33,8 @@ public final class SourceDocuments {
             "SEC-2027L025C2EL", new Source("SEC-2027L025C2EL-Biology-brief.pdf", 0),
             "SEC-2027L022C2EL", new Source("SEC-2027L022C2EL-Chemistry-brief.pdf", 0),
             "SEC-2027L021C2EL", new Source("SEC-2027L021C2EL-Physics-brief.pdf", 0),
-            "SEC-2027L033C2EL", new Source("SEC-2027L033C2EL-Business-brief.pdf", 0));
+            "SEC-2027L033C2EL", new Source("SEC-2027L033C2EL-Business-brief.pdf", 0),
+            "SEC-RULES", new Source("Coursework Rules and Procedures For 2025_2026.pdf", 0));
 
     private static final Map<String, List<String>> PAGES = new ConcurrentHashMap<>();
 
