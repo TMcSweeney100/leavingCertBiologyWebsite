@@ -72,6 +72,14 @@ class ProblemDetailsAdviceTest {
     }
 
     @Test
+    void aWrongValueInWellFormedJsonNamesItsField() throws Exception {
+        mockMvc.perform(post("/test/enum").contentType(MediaType.APPLICATION_JSON).content("{\"colour\":\"PURPLE\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("VALIDATION_FAILED"))
+                .andExpect(jsonPath("$.fieldErrors[0].field").value("colour"));
+    }
+
+    @Test
     void unknownPathIsANotFoundProblem() throws Exception {
         mockMvc.perform(get("/test/nothing-here"))
                 .andExpect(status().isNotFound())
@@ -97,11 +105,20 @@ class ProblemDetailsAdviceTest {
 
     record NamedRequest(@NotBlank String name) {}
 
+    enum Colour { RED }
+
+    record ColourRequest(Colour colour) {}
+
     @RestController
     static class TestController {
         @GetMapping("/test/domain")
         String domain() {
             throw new DomainException(ErrorCode.NOT_FOUND, "No class with that id.");
+        }
+
+        @PostMapping("/test/enum")
+        String enumerated(@RequestBody ColourRequest request) {
+            return String.valueOf(request.colour());
         }
 
         @PostMapping("/test/validated")
