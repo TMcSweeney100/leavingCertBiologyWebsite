@@ -1,11 +1,17 @@
 package ie.coursework.log.application;
 
+import ie.coursework.classes.adapter.persistence.EnrolmentRepository;
+import ie.coursework.classes.adapter.persistence.EnrolmentRepository.Member;
+import ie.coursework.classes.domain.EnrolmentStatus;
 import ie.coursework.components.adapter.persistence.ComponentRepository;
+import ie.coursework.components.application.ComponentService;
+import ie.coursework.components.domain.ComponentInstance;
 import ie.coursework.identity.domain.Actor;
 import ie.coursework.log.adapter.persistence.LogRepository;
 import ie.coursework.log.application.LogViews.RevisionView;
 import ie.coursework.log.application.LogViews.StudentEntry;
 import ie.coursework.log.application.LogViews.StudentEntryDetail;
+import ie.coursework.log.application.TeacherLogViews.TeacherStudentLog;
 import ie.coursework.log.domain.AiUseFields;
 import ie.coursework.log.domain.EntryFields;
 import ie.coursework.log.domain.EntryKind;
@@ -33,12 +39,17 @@ public class LogService {
 
     private final LogRepository log;
     private final ComponentRepository components;
+    private final ComponentService componentService;
+    private final EnrolmentRepository enrolments;
     private final ObjectMapper json;
     private final Clock clock;
 
-    public LogService(LogRepository log, ComponentRepository components, ObjectMapper json, Clock clock) {
+    public LogService(LogRepository log, ComponentRepository components, ComponentService componentService,
+            EnrolmentRepository enrolments, ObjectMapper json, Clock clock) {
         this.log = log;
         this.components = components;
+        this.componentService = componentService;
+        this.enrolments = enrolments;
         this.json = json;
         this.clock = clock;
     }
@@ -80,6 +91,17 @@ public class LogService {
         own(actor, entryId);
         log.setVisibility(entryId, visible, clock.instant());
         return view(own(actor, entryId));
+    }
+
+    /** Roadmap §8.3 3C. The class's teacher, and only for an approved student of that class; anything else is 404. */
+    public TeacherStudentLog teacherView(Actor actor, UUID componentId, UUID studentId) {
+        ComponentInstance component = componentService.requireOwned(actor, componentId);
+        Member student = enrolments.membersOf(component.classId()).stream()
+                .filter(m -> m.studentId().equals(studentId) && m.status() == EnrolmentStatus.APPROVED)
+                .findFirst().orElseThrow(LogService::notFound);
+        return new TeacherStudentLog(student.studentId(), student.firstName(), student.lastName(), component.id(),
+                TeacherLogProjection.project(log.list(componentId, studentId), log.hiddenAt(componentId, studentId),
+                        log.visibleHistory(componentId, studentId)));
     }
 
     private void approved(Actor actor, UUID componentId) {
