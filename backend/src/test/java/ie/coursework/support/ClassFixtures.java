@@ -30,6 +30,7 @@ public class ClassFixtures {
     public static final String PENDING_STUDENT = "pending.student";
     public static final String REMOVED_STUDENT = "removed.student";
     public static final String OUTSIDER = "outsider.student";
+    public static final String CLASSMATE = "classmate.student";
 
     public static final String SCHOOL_A_NAME = "School A";
     public static final String SCHOOL_B_NAME = "School B";
@@ -85,6 +86,14 @@ public class ClassFixtures {
         return new World(schoolA, schoolB, teacher1, teacher2, teacherB, leaderA,
                 approved, pending, removed, outsider, class1, class2, classB,
                 approvedEnrolment, pendingEnrolment, removedEnrolment, class1Code);
+    }
+
+    /** A second APPROVED student in class1, added on top of {@link #world()} so existing tests are undisturbed. */
+    public UUID classmate(World world) {
+        UUID classmate = accounts.userWithRole(CLASSMATE, world.schoolA(), Role.STUDENT);
+        UUID enrolment = enrolments.request(world.class1(), classmate, clock.instant());
+        enrolments.decide(enrolment, EnrolmentStatus.APPROVED, world.teacher1(), clock.instant());
+        return classmate;
     }
 
     public UUID subject(String code) {

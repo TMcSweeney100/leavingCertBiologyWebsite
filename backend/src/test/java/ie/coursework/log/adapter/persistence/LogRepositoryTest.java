@@ -59,6 +59,22 @@ class LogRepositoryTest extends PostgresIntegrationTest {
     }
 
     @Test
+    void anApprovedClassmateNeverGetsTheOwnersRows() {
+        UUID classmate = fixtures.classmate(world);
+        UUID hiddenLater = log.create(component, world.approvedStudent(), EntryKind.NOTE, true, "A hides", null, T0);
+        UUID shown = log.create(component, world.approvedStudent(), EntryKind.NOTE, true, "A shows", null, T0);
+        log.setVisibility(hiddenLater, false, T0.plusSeconds(1));
+        UUID theirs = log.create(component, classmate, EntryKind.NOTE, true, "B", null, T0);
+
+        assertThat(log.list(component, classmate)).extracting(LogEntry::id).containsExactly(theirs);
+        assertThat(log.findOwn(hiddenLater, classmate)).isEmpty();
+        assertThat(log.findOwn(shown, classmate)).isEmpty();
+        assertThat(log.hiddenAt(component, classmate)).isEmpty();
+        assertThat(log.visibleHistory(component, classmate)).containsOnlyKeys(theirs);
+        assertThat(log.list(component, world.approvedStudent())).extracting(LogEntry::id).doesNotContain(theirs);
+    }
+
+    @Test
     void revisionsAppendAndMoveTheCurrentOne() {
         UUID entry = log.create(component, world.approvedStudent(), EntryKind.NOTE, true, "v1", null, T0);
         assertThat(log.addRevision(entry, "v2", null, T0.plusSeconds(3600))).isEqualTo(2);

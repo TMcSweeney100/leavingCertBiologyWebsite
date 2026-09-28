@@ -55,6 +55,23 @@ class LogScopeTest extends PostgresIntegrationTest {
     }
 
     @Test
+    void anApprovedClassmateCantTouchTheOwnersEntryAndSeesOnlyTheirOwnLog() throws Exception {
+        fixtures.classmate(world);
+        ApiSession classmate = as(ClassFixtures.CLASSMATE);
+        classmate.get(entry).andExpect(status().isNotFound());
+        classmate.post(entry + "/revisions", "{\"body\":\"x\"}").andExpect(status().isNotFound());
+        classmate.put(entry + "/visibility", "{\"visible\":false}").andExpect(status().isNotFound());
+
+        String ownerEntryId = entry.substring(entry.lastIndexOf('/') + 1);
+        String own = classmate.post(log, "{\"kind\":\"NOTE\",\"body\":\"theirs\"}").andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+        String listed = classmate.get(log).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        org.assertj.core.api.Assertions.assertThat(listed).doesNotContain(ownerEntryId).contains(JsonPath.<String>read(own, "$.entry.id"));
+
+        as(ClassFixtures.APPROVED_STUDENT).get(entry).andExpect(status().isOk());
+    }
+
+    @Test
     void theOwnerLosesAccessWhenRemovedAndNothingIsDeleted() throws Exception {
         jdbcTemplate.update("UPDATE enrolment SET status = 'REMOVED' WHERE id = ?", world.approvedEnrolment());
         as(ClassFixtures.APPROVED_STUDENT).get(entry).andExpect(status().isNotFound());

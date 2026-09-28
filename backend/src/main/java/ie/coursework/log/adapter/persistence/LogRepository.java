@@ -17,12 +17,15 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.ObjectMapper;
 
 /**
- * Design §6.6. Every read takes the student and filters by them; there is deliberately no lookup by entry id
- * alone (the PersonalItemRepository rule). Only TeacherLogProjection's caller reads another student's rows,
- * and only after ComponentService has proved the teacher owns the class.
+ * Design §6.6. {@code list}, {@code findOwn}, {@code hiddenAt} and {@code visibleHistory} take the student and
+ * filter by them. {@code revisions(entryId)}, {@code addRevision} and {@code setVisibility} are keyed by entry id
+ * alone: they are called only after LogService.own() has proved the caller owns that entry, and must never be
+ * reached with an id that hasn't been through it. Only TeacherLogProjection's caller reads another student's
+ * rows, and only after ComponentService has proved the teacher owns the class.
  */
 @Repository
 public class LogRepository {
@@ -42,6 +45,7 @@ public class LogRepository {
         this.json = json;
     }
 
+    @Transactional
     public UUID create(UUID componentId, UUID studentId, EntryKind kind, boolean visible, String body, EntryFields fields, Instant now) {
         UUID id = jdbc.sql("""
                 INSERT INTO log_entry (instance_id, student_user_id, kind, created_at, visible_to_teacher)
@@ -79,6 +83,7 @@ public class LogRepository {
     }
 
     /** Moves current_revision first: the row lock serialises two saves of the same entry. */
+    @Transactional
     public int addRevision(UUID entryId, String body, EntryFields fields, Instant now) {
         int number = jdbc.sql("UPDATE log_entry SET current_revision = current_revision + 1 WHERE id = :id RETURNING current_revision")
                 .param("id", entryId).query(Integer.class).single();

@@ -37,6 +37,8 @@ The same repo also serves Katelyn's public BiPi schedule at `/[class]`, which ha
 | Response shape | `frontend/lib/api/schemas.ts` | Every response is parsed with a Zod schema that mirrors the Java response record field for field. A mismatch throws `RESPONSE_SHAPE_UNEXPECTED` rather than rendering garbage. **Change a Java record → change the schema in the same PR.** |
 | Errors | `backend/…/shared/error/`, `frontend/lib/api/problem.ts` | Spring throws `DomainException(ErrorCode, detail)`; `ProblemDetailsAdvice` turns it into RFC 9457 JSON with a stable `code`. Security filters that reject before a controller use `ProblemResponses` to write the same shape. The frontend wraps every failure, including network and shape failures, in one `ApiError` class with `code`, `title`, `detail`, `fieldErrors`. `ErrorCode` names are API contract: renaming one breaks the frontend. |
 
+`ProblemDetailsAdvice` maps a wrong value inside well-formed JSON (Jackson's `InvalidFormatException`: an unknown enum name, a bad date) to `VALIDATION_FAILED` with a `fieldErrors` entry naming the property; unparseable JSON stays `MALFORMED_REQUEST`. Known limits: list indexes are dropped from the field path (`items[2].kind` reports `items.kind`), and a wrong-*type* value (a string where an object is expected) is still `MALFORMED_REQUEST`.
+
 Environment variables the proxy and server client need: `APP_ENABLED`, `BACKEND_INTERNAL_URL`, `PROXY_SHARED_SECRET` (`frontend/.env.example`). None of them is `NEXT_PUBLIC_`; the browser never sees them.
 
 ## 3. Authentication: who you are

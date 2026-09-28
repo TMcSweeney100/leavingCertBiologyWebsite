@@ -18,11 +18,12 @@ class LogSchemaTest extends PostgresIntegrationTest {
     @Autowired private ClassFixtures fixtures;
     @Autowired private ComponentFixtures components;
 
+    private ClassFixtures.World world;
     private UUID entry;
 
     @BeforeEach
     void anEntryWithOneRevisionAndOneChange() {
-        ClassFixtures.World world = fixtures.world();
+        world = fixtures.world();
         UUID component = components.component(world.class1(), world.teacher1(), ComponentFixtures.BIOLOGY_2027);
         entry = jdbcTemplate.queryForObject("""
                 INSERT INTO log_entry (instance_id, student_user_id, kind, created_at)
@@ -66,8 +67,21 @@ class LogSchemaTest extends PostgresIntegrationTest {
 
     @Test
     void theKindMustBeOneOfThree() {
-        assertThatThrownBy(() -> jdbcTemplate.update("UPDATE log_entry SET kind = 'DIARY' WHERE id = ?", entry))
-                .isInstanceOf(DataIntegrityViolationException.class);
+        assertThatThrownBy(() -> jdbcTemplate.update("""
+                INSERT INTO log_entry (instance_id, student_user_id, kind, created_at)
+                SELECT instance_id, student_user_id, 'DIARY', now() FROM log_entry WHERE id = ?
+                """, entry))
+                .isInstanceOf(DataIntegrityViolationException.class)
+                .hasMessageContaining("log_entry_kind_check");
+    }
+
+    @Test
+    void anEntryCantMoveToAnotherComponentOrStudent() {
+        UUID other = components.component(world.class2(), world.teacher2(), ComponentFixtures.BIOLOGY_2027);
+        assertThatThrownBy(() -> jdbcTemplate.update("UPDATE log_entry SET instance_id = ? WHERE id = ?", other, entry))
+                .isInstanceOf(DataIntegrityViolationException.class).hasMessageContaining("append-only");
+        assertThatThrownBy(() -> jdbcTemplate.update("UPDATE log_entry SET student_user_id = ? WHERE id = ?", world.pendingStudent(), entry))
+                .isInstanceOf(DataIntegrityViolationException.class).hasMessageContaining("append-only");
     }
 
     private void assertRefused(String sql) {
