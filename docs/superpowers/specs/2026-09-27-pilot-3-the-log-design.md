@@ -93,11 +93,11 @@ log_visibility_change (entry_id → log_entry, visible boolean, changed_at times
 - **Server-set time only.** Every timestamp is `Timestamps.utc(clock.instant())`. No request record has a `createdAt`; one sent by a client is ignored.
 - **Kind is fixed at creation**; a revision's `fields` must match the entry's kind.
 
-**Per-kind content** (`sealed interface EntryFields permits NoFields, SourceFields, AiUseFields`, in `log/domain/`, no Spring):
+**Per-kind content** (`sealed interface EntryFields permits SourceFields, AiUseFields`, in `log/domain/`, no Spring):
 
 | Kind | Required | Optional | Source |
 |---|---|---|---|
-| `NOTE` | `body` | — | — |
+| `NOTE` | `body` | — (`fields` is null; P3-17) | — |
 | `SOURCE` | `type`; `title`; for the three online types also `url` and `dateAccessed` | `author`, `publication`, `datePublished` (free text), `locator`, `keyInformation`, `relevance`, `reflections`, `body` | NCCA-BIO p. 15–16; NCCA-BUS p. 19 (Appendix Three) and p. 21 |
 | `AI_USE` | `toolNameAndVersion`, `developer`, `dateGenerated`, `howUsed` | `prompts`, `shareUrl`, `body` | SEC-RULES p. 34 |
 
