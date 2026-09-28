@@ -101,7 +101,7 @@ Student, `/components/[id]/log` and its children:
 Teacher, `/teach/classes/[id]/students/[studentId]`:
 
 12. **Visible entries:** each with its kind, date, content, an "edited" marker, and an expandable history of earlier revisions.
-13. **A hidden entry:** one line, "Hidden by the student on 3 Mar". No title, no content, not even a hint of the kind's fields.
+13. **A hidden entry:** one line, "Hidden by the student on 3 Mar". No title, no content, no field details. The kind word (Note, Source, AI use) may appear, and so may the date and an "edited" marker with the revision count.
 14. **A private-from-the-start entry:** one line, "Private entry · 3 Mar".
 15. **No entries yet.**
 16. **The class has no component yet:** nothing to read; say why and point back to the Component tab.
@@ -111,7 +111,7 @@ Teacher, `/teach/classes/[id]/students/[studentId]`:
 
 - **List row anatomy on a phone.** Kind, title, date, edited marker, who can read it and the hide/show control all want to be on one row at 390px. Which to promote, which to fold away, and how you keep a 44px hide/show target that can't be hit by accident when scrolling.
 - **Kind choice.** Three tabs, a segmented control, a radio group, or a menu when the student taps "New entry". Recommend one, thinking about a student adding an AI-use entry in a hurry after a lesson.
-- **Hidden entry, teacher side.** The teacher sees only that an entry exists and when it was hidden. Say whether that reads as respectful and clear, or as accusing, and adjust the wording if so.
+- **Hidden entry, teacher side.** The teacher sees only that an entry exists, its kind, and when it was hidden. Say whether that reads as respectful and clear, or as accusing, and adjust the wording if so.
 
 ## Rules that constrain you
 
