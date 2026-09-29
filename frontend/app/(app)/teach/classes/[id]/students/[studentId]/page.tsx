@@ -44,7 +44,7 @@ export default async function StudentLogPage({ params }: { params: Promise<{ id:
       {log.ok ? (
         <>
           <h1 className={`mt-2.5 ${pageTitle}`}>{`${log.data.firstName} ${log.data.lastName}`}</h1>
-          <p className="mt-1.5 text-app-base text-app-grey">{"You read the entries they share. Any they keep private show only the kind and date."}</p>
+          <p className="mt-1.5 text-app-base text-app-grey">{"You read the entries they share. Any they keep private show only the kind, the dates and how many times they were edited."}</p>
           <TeacherLog log={log.data} />
         </>
       ) : (

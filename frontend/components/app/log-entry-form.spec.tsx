@@ -37,7 +37,7 @@ describe("LogEntryForm", () => {
     render(<LogEntryForm mode="create" componentId="k1" today="2027-03-03" />);
     await userEvent.click(screen.getByRole("switch", { name: "Let my teacher read this" }));
     expect(screen.getByText("Only you can read this.")).toBeInTheDocument();
-    expect(screen.getByText(/Your teacher sees that you made an entry on 3 March\./)).toBeInTheDocument();
+    expect(screen.getByText(/Your teacher sees that you made a note on 3 March, how many times you edit it and when, and the date you hid it, but never what it says\./)).toBeInTheDocument();
   });
 
   it("asks an online source for its link and the date accessed", async () => {

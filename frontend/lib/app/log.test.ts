@@ -9,8 +9,13 @@ test("an instant late on an Irish summer evening is the next Irish day", () => {
 });
 
 test("the visibility line says who can read the entry, in words (FR-24e)", () => {
-  assert.equal(visibilityLine(true, "2027-03-03"), "Your teacher can read this.");
-  assert.equal(visibilityLine(false, "2027-03-03"), "Only you can read this. Your teacher sees that you made an entry on 3 March.");
+  assert.equal(visibilityLine(true, "2027-03-03", "NOTE"), "Your teacher can read this.");
+  assert.equal(
+    visibilityLine(false, "2027-03-03", "NOTE"),
+    "Only you can read this. Your teacher sees that you made a note on 3 March, how many times you edit it and when, and the date you hid it, but never what it says.",
+  );
+  assert.match(visibilityLine(false, "2027-03-03", "SOURCE"), /made a source on 3 March/);
+  assert.match(visibilityLine(false, "2027-03-03", "AI_USE"), /made an AI use entry on 3 March/);
   assert.equal(dayMonth("2026-10-12"), "12 October");
 });
 
