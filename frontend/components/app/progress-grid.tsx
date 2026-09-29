@@ -70,7 +70,7 @@ export function ProgressGrid({ grid, basePath, laptopStage, phoneStage, hideName
       return <RevokeStrip question={revokeQuestion(asking.checkpoint.text, fullName(st), "grid")} text={asking.checkpoint.text} name={fullName(st)}
         busy={s.busy?.key === targetKey(t)} onRevoke={() => s.revoke(t)} onKeep={s.keep} />;
     }
-    if (failed) return <SignoffAlert message={failSentence(failed.action, failed.target.checkpoint.text, fullName(st))} onRetry={s.retry} />;
+    if (failed) return <SignoffAlert message={failSentence(failed.action, failed.target.checkpoint.text, fullName(st))} name={fullName(st)} onRetry={s.retry} />;
     return null;
   }
 

@@ -62,8 +62,8 @@ describe("RevokeStrip and SignoffAlert", () => {
 
   it("a failure is an alert with Try again", async () => {
     const onRetry = vi.fn();
-    render(<SignoffAlert message="Couldn’t sign off." onRetry={onRetry} />);
-    expect(screen.getByRole("alert")).toHaveTextContent("Couldn’t sign off.");
+    render(<SignoffAlert message="Couldn’t sign off for Aoife Byrne." name="Aoife Byrne" onRetry={onRetry} />);
+    expect(screen.getByRole("alert")).toHaveTextContent("Couldn’t sign off for Aoife Byrne.");
     await userEvent.click(screen.getByRole("button", { name: "Try again" }));
     expect(onRetry).toHaveBeenCalled();
   });

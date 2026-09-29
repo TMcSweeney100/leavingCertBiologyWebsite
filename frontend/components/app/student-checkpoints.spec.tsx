@@ -45,7 +45,7 @@ describe("StudentCheckpoints", () => {
     expect(api.send).toHaveBeenCalledWith("PUT", "/components/k1/students/s1/checkpoints/c2/signoff", { signedOff: true }, expect.anything());
 
     await userEvent.click(screen.getByRole("button", { name: `Revoke sign-off of ${INITIAL} for Cian Murphy` }));
-    expect(screen.getByText("Revoke this sign-off for Cian Murphy? It stays in the record as revoked by you.")).toBeInTheDocument();
+    expect(screen.getByText(/^Revoke this sign-off for/)).toHaveTextContent("Revoke this sign-off for Cian Murphy? It stays in the record as revoked by you.");
     await userEvent.click(screen.getByRole("button", { name: `Keep sign-off of ${INITIAL} for Cian Murphy` }));
     expect(screen.queryByText(/Revoke this sign-off/)).not.toBeInTheDocument();
   });

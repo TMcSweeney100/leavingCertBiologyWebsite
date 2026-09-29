@@ -77,7 +77,7 @@ describe("ProgressGrid", () => {
     render(<ProgressGrid grid={START} {...props} />);
     await userEvent.click(table().getByRole("button", { name: `Revoke sign-off of ${INITIAL} for Cian Murphy` }));
     expect(api.send).not.toHaveBeenCalled();
-    expect(table().getByText(`Revoke the sign-off of “${INITIAL}” for Cian Murphy? It stays in the record as revoked by you.`)).toBeInTheDocument();
+    expect(table().getByText(/^Revoke the sign-off of/)).toHaveTextContent(`Revoke the sign-off of “${INITIAL}” for Cian Murphy? It stays in the record as revoked by you.`);
     await userEvent.click(table().getByRole("button", { name: `Revoke sign-off of ${INITIAL} for Cian Murphy` }));
     expect(api.send).toHaveBeenCalledWith("PUT", "/components/k1/students/c/checkpoints/c1/signoff", { signedOff: false }, expect.anything());
   });
@@ -100,6 +100,18 @@ describe("ProgressGrid", () => {
     expect(container.firstElementChild).toHaveClass("app-hide-names");
     expect(document.cookie).toContain("app_hide_names=1");
     expect(table().getByRole("link", { name: "Aoife Byrne" })).toHaveAttribute("data-private");
+  });
+
+  it("Hide names also blurs the student's name in the revoke question and the failure alert (plan P4-16)", async () => {
+    vi.mocked(api.send).mockRejectedValueOnce(new Error("offline"));
+    render(<ProgressGrid grid={START} {...props} hideNames />);
+    await userEvent.click(table().getByRole("button", { name: `Revoke sign-off of ${INITIAL} for Cian Murphy` }));
+    const question = table().getByText(/^Revoke the sign-off of/);
+    expect(within(question).getByText("Cian Murphy")).toHaveAttribute("data-private");
+
+    await userEvent.click(table().getByRole("button", { name: `Keep sign-off of ${INITIAL} for Cian Murphy` }));
+    await userEvent.click(table().getByRole("button", { name: `Sign off ${LOG} for Aoife Byrne` }));
+    expect(within(table().getByRole("alert")).getByText("Aoife Byrne")).toHaveAttribute("data-private");
   });
 
   it("a one-stage view shows the full checkpoint and a Sign off per student", () => {

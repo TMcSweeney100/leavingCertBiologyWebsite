@@ -51,7 +51,7 @@ export function StudentCheckpoints({ componentId, data }: { componentId: string;
                 <RevokeStrip question={revokeQuestion(st.checkpoint.text, name, "student")} text={st.checkpoint.text} name={name}
                   busy={s.busy?.key === key} onRevoke={() => s.revoke(t)} onKeep={s.keep} />
               )}
-              {failed && <SignoffAlert message={failSentence(failed.action, st.checkpoint.text, name)} onRetry={s.retry} />}
+              {failed && <SignoffAlert message={failSentence(failed.action, st.checkpoint.text, name)} name={name} onRetry={s.retry} />}
             </li>
           );
         })}

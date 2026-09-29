@@ -76,12 +76,19 @@ export function CheckpointCell({ layout, cell, names, busy, recent, confirming, 
   );
 }
 
+/** A sentence with the student's name marked data-private, so Hide names blurs it where it's visible (plan P4-16). */
+function withPrivateName(sentence: string, name: string) {
+  const [before, ...after] = sentence.split(name);
+  if (after.length === 0) return sentence;
+  return <>{before}<span data-private>{name}</span>{after.join(name)}</>;
+}
+
 /** Pack D-2's in-place confirmation. Short visible labels; full names so two open strips can't be confused. */
 export function RevokeStrip({ question, text, name, busy, onRevoke, onKeep }:
   { question: string; text: string; name: string; busy: boolean; onRevoke: () => void; onKeep: () => void }) {
   return (
     <div className="flex flex-wrap items-center gap-3 rounded-app-inner border border-app-error/30 bg-app-error-tint px-4 py-3">
-      <p className="min-w-0 flex-1 text-app-small text-app-copy">{question}</p>
+      <p className="min-w-0 flex-1 text-app-small text-app-copy">{withPrivateName(question, name)}</p>
       <Button type="button" variant="confirmDestructive" aria-label={revokeName(text, name)} disabled={busy} onClick={onRevoke}>
         {busy ? "Revoking…" : "Revoke"}
       </Button>
@@ -91,11 +98,11 @@ export function RevokeStrip({ question, text, name, busy, onRevoke, onKeep }:
 }
 
 /** Pack D-1's compact alert, under the row, with Try again. The cell is unchanged. */
-export function SignoffAlert({ message, onRetry }: { message: string; onRetry: () => void }) {
+export function SignoffAlert({ message, name, onRetry }: { message: string; name: string; onRetry: () => void }) {
   return (
     <div role="alert" className="flex flex-wrap items-center gap-3 rounded-app-inner border border-app-error/30 border-l-4 border-l-app-error bg-app-error-tint px-4 py-3">
       <span aria-hidden className="flex size-5 flex-none items-center justify-center rounded-full bg-app-error text-app-label font-bold text-app-surface">!</span>
-      <span className="min-w-0 flex-1 text-app-small text-app-copy">{message}</span>
+      <span className="min-w-0 flex-1 text-app-small text-app-copy">{withPrivateName(message, name)}</span>
       <Button type="button" variant="outline" onClick={onRetry}>Try again</Button>
     </div>
   );
