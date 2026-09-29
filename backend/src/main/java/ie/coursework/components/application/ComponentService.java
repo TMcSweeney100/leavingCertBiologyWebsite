@@ -147,7 +147,7 @@ public class ComponentService {
             String checkpoint = checkpoints.get(s.id());
             return new StudentStage(s.id(), s.ordinal(), s.label(), s.name(), s.description(), s.hoursMin(), s.hoursMax(),
                     s.hoursGroup(), s.supervised(), due,
-                    checkpoint == null ? null : new CheckpointView(checkpoint, CheckpointState.at(due, today)),
+                    checkpoint == null ? null : new CheckpointView(checkpoint, CheckpointState.at(due, today, false)),
                     items.getOrDefault(s.id(), List.of()), prompts.getOrDefault(s.id(), List.of()));
         }).toList();
 
