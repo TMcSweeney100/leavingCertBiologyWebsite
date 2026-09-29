@@ -67,6 +67,7 @@ The live BiPi schedule (`app/[class]/`, `components/bipi/`) has its own notes in
 
 - `<button>` for actions, `<Link>` / `<a>` for navigation. Never a `div` with `onClick`. Links keep middle-click and Cmd-click working.
 - Every control at least 44×44px on touch (the visual can be smaller if the hit area is padded), 8px between neighbours. On laptop pointer targets at least 24×24px. `Button`'s sizes already meet this; the D-2 exports draw 40px row buttons, which the build rounds up to 44.
+- Exception (pack D-7): the Progress tab's phone stage picker has 6px gaps between its 44 × 48 buttons; eight across 358px leave no room for 8px.
 - Hover states on everything clickable, but nothing that only works on hover. `cursor-pointer` on custom controls.
 - `touch-action: manipulation` on buttons and links.
 - Icons come from `lucide-react` only, one stroke width, sized by a token. Decorative icons beside text get `aria-hidden="true"`; an icon-only control gets `aria-label` and, where it applies, `aria-pressed` or `aria-expanded`.

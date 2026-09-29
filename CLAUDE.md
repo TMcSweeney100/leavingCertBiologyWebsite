@@ -71,6 +71,7 @@ One slug across `docs/intent/`, the plan and `docs/changes/`: the plan's file na
 - Component-scoped endpoints go through `ComponentService.owned(actor, componentId)` first; a teacher item id is looked up with `TeacherItemRepository.findActive(itemId, componentId)`, never by id alone.
 - A student's component access goes through `ComponentRepository.findForApprovedStudent(componentId, studentId)`.
 - A log entry id is only looked up with `LogRepository.findOwn(entryId, studentId)`, never by id alone.
+- A checkpoint sign-off goes through `ComponentService.requireOwned`, an approved-student check within the class, and `TemplateRepository.checkpointInVersion`; a checkpoint id is never used unscoped.
 
 ## Frontend conventions (pilot app)
 
