@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -84,11 +85,19 @@ public class TemplateRepository {
 
     public List<TemplateCheckpoint> checkpoints(UUID versionId) {
         return jdbc.sql("""
-                SELECT c.stage_id, c.text FROM template_checkpoint c JOIN template_stage s ON s.id = c.stage_id
+                SELECT c.id, c.stage_id, c.text FROM template_checkpoint c JOIN template_stage s ON s.id = c.stage_id
                 WHERE c.version_id = :version ORDER BY s.ordinal, c.ordinal
-                """).param("version", versionId)
-                .query((rs, i) -> new TemplateCheckpoint(rs.getObject("stage_id", UUID.class), rs.getString("text")))
-                .list();
+                """).param("version", versionId).query(TemplateRepository::checkpoint).list();
+    }
+
+    /** A checkpoint only if it belongs to this template version: a sign-off can't name another subject's checkpoint. */
+    public Optional<TemplateCheckpoint> checkpointInVersion(UUID checkpointId, UUID versionId) {
+        return jdbc.sql("SELECT id, stage_id, text FROM template_checkpoint WHERE id = :id AND version_id = :version")
+                .param("id", checkpointId).param("version", versionId).query(TemplateRepository::checkpoint).optional();
+    }
+
+    private static TemplateCheckpoint checkpoint(ResultSet rs, int row) throws SQLException {
+        return new TemplateCheckpoint(rs.getObject("id", UUID.class), rs.getObject("stage_id", UUID.class), rs.getString("text"));
     }
 
     public String processNote(UUID versionId) {
