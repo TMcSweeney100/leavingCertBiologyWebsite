@@ -2,13 +2,13 @@ import Link from "next/link";
 
 import { backLink, pageTitle } from "./styles";
 
-export type ClassTab = "students" | "component";
+export type ClassTab = "students" | "component" | "progress";
 
 const TAB = "-mb-px border-b-2 px-0.5 py-2.5 text-app-base font-semibold";
 
 /**
- * The top of every class page (pack D-2): back link, class name, and the section tabs. Progress is shown
- * but unusable until Phase 4.
+ * The top of every class page (pack D-2): back link, class name, and the section tabs. Progress arrived in
+ * Phase 4 (pack D-7).
  */
 export function ClassHeader({
   detail,
@@ -20,6 +20,7 @@ export function ClassHeader({
   const tabs: ReadonlyArray<{ key: ClassTab; label: string; href: string }> = [
     { key: "students", label: "Students", href: `/teach/classes/${detail.id}` },
     { key: "component", label: "Component", href: `/teach/classes/${detail.id}/component` },
+    { key: "progress", label: "Progress", href: `/teach/classes/${detail.id}/progress` },
   ];
   return (
     <>
@@ -42,9 +43,6 @@ export function ClassHeader({
             </Link>
           ),
         )}
-        <span aria-disabled="true" className={`${TAB} cursor-not-allowed border-transparent text-app-disabled`}>
-          Progress
-        </span>
       </nav>
     </>
   );
