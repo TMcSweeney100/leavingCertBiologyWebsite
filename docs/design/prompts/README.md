@@ -20,6 +20,6 @@ One file per pack (or pair of packs), ready to paste into Claude Design alongsid
 | D-4 | Timeline (`/home` list, week, month, add item) and student navigation | `D-4-timeline.md` |
 | D-5 | Teacher component setup (the Component tab) | `D-5-teacher-component-setup.md` |
 | D-6 | The log | `D-6-log.md` |
-| D-7 | Progress grid | Phase 4, design §8.4 |
+| D-7 | Progress grid, sign-offs on the student view, signed-off state on the stage card | `D-7-progress-grid.md` |
 | D-8 | School overview | Phase 5 |
 | D-9 | Writing tools | Phase 6, design §8.6 and §6.7 |

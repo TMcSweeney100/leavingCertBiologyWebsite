@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Public Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:#1F3A6E}
+  a:hover{color:#16294E}
+  input,button,select{font:inherit}
+  button,a{touch-action:manipulation}
+  input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #1F3A6E;outline-offset:2px}
+</style>
+</helmet>
+<div style="display:flex;flex-direction:column;gap:10px">
+
+<sc-if value="{{ isWide }}" hint-placeholder-val="{{ true }}">
+<div data-screen-label="{{ frameLabel }}" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9;font-family:'Public Sans',system-ui,sans-serif">
+  <header style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px;background:#fff;border-bottom:1px solid #E3E6EA">
+    <div style="display:flex;align-items:center;gap:11px;min-width:0">
+      <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+      <a href="#" style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none;white-space:nowrap">Leaving Cert Practical</a>
+      <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+      <span style="font-size:14px;color:#4B535C;white-space:nowrap">North Wicklow ETSS</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;flex:none">
+      <span style="font-size:14px;color:#343A42;white-space:nowrap">Katelyn Hanlon</span>
+      <a href="#" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+      <button type="button" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap">Sign out</button>
+    </div>
+  </header>
+  <main style="padding:32px 28px 56px">
+    <a href="#" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">My classes</a>
+    <h1 style="margin:10px 0 0;font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">{{ className }}</h1>
+    <p style="margin:6px 0 0;font-size:16px;color:#4B535C">{{ classSub }}</p>
+    <nav aria-label="Class sections" style="display:flex;gap:24px;margin-top:20px;border-bottom:1px solid #E3E6EA">
+      <a href="#" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#4B535C;text-decoration:none" style-hover="color:#101419">Students</a>
+      <a href="#" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#4B535C;text-decoration:none" style-hover="color:#101419">Component</a>
+      <a href="#" aria-current="page" style="padding:10px 2px;margin-bottom:-1px;border-bottom:2px solid #1F3A6E;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:none">Progress</a>
+    </nav>
+
+    <sc-if value="{{ isError }}" hint-placeholder-val="{{ false }}">
+      <section role="alert" aria-live="polite" style="margin-top:28px;max-width:640px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;border-radius:10px;background:#FBF1F0;padding:17px 19px;display:flex;flex-direction:column;gap:7px">
+        <div style="display:flex;align-items:center;gap:9px">
+          <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+          <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;letter-spacing:-.015em;color:#8E1D17">Can't reach the service</h2>
+        </div>
+        <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42">Check your connection and try again in a moment.</p>
+        <a href="#" style="align-self:flex-start;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Try again</a>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ hasEmpty }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:28px;background:#fff;border:1px solid #DDE1E6;border-radius:10px;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;gap:24px">
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+          <h2 style="margin:0;font-size:17px;font-weight:600;color:#101419">{{ emptyHead }}</h2>
+          <p style="margin:0;font-size:16px;line-height:1.5;color:#4B535C;max-width:600px;text-wrap:pretty">{{ emptyBody }}</p>
+        </div>
+        <a href="#" style="flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid #DDE1E6;border-radius:8px;background:#fff;font-size:15px;font-weight:600;color:#343A42;text-decoration:none" style-hover="background:#EFF1F3">{{ emptyAction }}</a>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showGrid }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-top:26px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+          <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;letter-spacing:-.02em;color:#101419">{{ summaryHead }}</h2>
+          <p style="margin:0;font-size:16px;color:#4B535C;text-wrap:pretty">{{ summarySub }}</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <sc-if value="{{ showResort }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ resort }}" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap" style-hover="background:#EFF1F3">{{ resortLabel }}</button></sc-if>
+          <button type="button" role="switch" aria-checked="{{ hideStr }}" onClick="{{ toggleHide }}" style="display:flex;align-items:center;gap:10px;min-height:44px;padding:0 14px 0 10px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;cursor:pointer;font-size:15px;font-weight:600;color:#343A42;white-space:nowrap" style-hover="background:#EFF1F3">
+            <span aria-hidden="true" style="position:relative;width:36px;height:20px;border-radius:99px;background:{{ trackBg }};flex:none"><span style="position:absolute;top:2px;left:{{ knobLeft }};width:16px;height:16px;border-radius:99px;background:#fff;transition:left 160ms cubic-bezier(.2,.7,.3,1)"></span></span>
+            Hide names
+          </button>
+        </div>
+      </div>
+
+      <sc-if value="{{ hasNotice }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 16px 14px 18px;border:1px solid #DDE1E6;border-radius:10px;background:#fff">
+          <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42;text-wrap:pretty">{{ noticeText }}</p>
+          <sc-if value="{{ noticeLink }}"><a href="#" style="flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid #DDE1E6;border-radius:8px;background:#fff;font-size:15px;font-weight:600;color:#343A42;text-decoration:none" style-hover="background:#EFF1F3">Go to the Component tab</a></sc-if>
+        </div>
+      </sc-if>
+
+      <nav aria-label="Checkpoint view" style="margin-top:16px">
+        <ul style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat({{ pickCount }},minmax(0,1fr));gap:8px">
+          <sc-for list="{{ picks }}" as="p" hint-placeholder-count="7">
+            <li style="display:flex;min-width:0">
+              <sc-if value="{{ p.isLink }}"><a href="{{ p.href }}" onClick="{{ p.onClick }}" aria-current="{{ p.current }}" aria-label="{{ p.aName }}" style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;padding:9px 11px;border-radius:8px;border:{{ p.border }};background:{{ p.bg }};text-decoration:none" style-hover="border-color:#1F3A6E"><span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:{{ p.labelColor }}">{{ p.label }}</span><span style="font-size:14px;font-weight:600;line-height:1.25;color:#101419">{{ p.short }}</span><span style="margin-top:2px;font-size:12px;color:#636B75">{{ p.date }}</span><span style="font-size:12px;font-weight:700;color:{{ p.stateColor }}">{{ p.stateWord }}</span></a></sc-if>
+              <sc-if value="{{ p.isNone }}"><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;padding:9px 11px;border-radius:8px;border:1px dashed #DDE1E6;background:transparent"><span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#636B75">{{ p.label }}</span><span style="font-size:14px;line-height:1.25;color:#4B535C">No checkpoint</span><span style="margin-top:2px;font-size:12px;color:#636B75">{{ p.date }}</span><span style="font-size:12px;color:#636B75">Nothing to sign off</span></span></sc-if>
+            </li>
+          </sc-for>
+        </ul>
+      </nav>
+
+      <div style="margin-top:12px;border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow-x:auto">
+        <sc-if value="{{ isAll }}" hint-placeholder-val="{{ true }}">
+          <table style="width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;table-layout:fixed">
+            <caption style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">{{ caption }}</caption>
+            <thead>
+              <tr>
+                <th scope="col" style="text-align:left;vertical-align:bottom;padding:12px 14px;font-size:13px;font-weight:600;color:#636B75;width:196px">Student</th>
+                <sc-for list="{{ cols }}" as="s" hint-placeholder-count="6">
+                  <th scope="col" style="text-align:left;vertical-align:bottom;padding:12px 8px;font-weight:400">
+                    <span style="display:block;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#636B75">{{ s.label }}</span>
+                    <a href="{{ s.href }}" onClick="{{ s.onOpen }}" style="display:block;font-size:14px;font-weight:600;line-height:1.25;color:#101419;text-decoration:underline;text-decoration-color:#C9D0D8;text-underline-offset:3px" style-hover="text-decoration-color:#101419">{{ s.short }}</a>
+                    <span style="display:block;margin-top:2px;font-size:12px;font-weight:700;color:{{ s.stateColor }}">{{ s.stateWord }}</span>
+                  </th>
+                </sc-for>
+                <th scope="col" style="text-align:left;vertical-align:bottom;padding:12px 14px 12px 8px;font-size:13px;font-weight:600;color:#636B75;width:134px">Log</th>
+              </tr>
+            </thead>
+            <sc-for list="{{ bands }}" as="b" hint-placeholder-count="3">
+              <tbody>
+                <tr>
+                  <th scope="rowgroup" colspan="{{ colsAll }}" style="text-align:left;padding:18px 14px 8px;border-top:1px solid #E3E6EA;background:#F7F8F9;font-weight:400">
+                    <span style="display:flex;align-items:baseline;gap:10px">
+                      <sc-if value="{{ b.isNum }}"><span style="font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;line-height:1;letter-spacing:-.02em;color:#A04806">{{ b.big }}</span></sc-if>
+                      <span style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;letter-spacing:-.01em;color:{{ b.color }}">{{ b.label }}</span>
+                      <span style="font-size:14px;color:#636B75">{{ b.count }}</span>
+                    </span>
+                  </th>
+                </tr>
+                <sc-for list="{{ b.rows }}" as="r" hint-placeholder-count="3">
+                  <tr>
+                    <th scope="row" style="text-align:left;padding:7px 14px;border-top:1px solid #E3E6EA;font-weight:400;vertical-align:middle">
+                      <a href="#" style="display:block;font-size:16px;font-weight:600;line-height:1.3;color:#101419;text-decoration:none;overflow-wrap:anywhere;filter:{{ blurCss }}" style-hover="text-decoration:underline">{{ r.name }}</a>
+                      <span style="display:block;font-size:13px;font-weight:{{ r.behindWeight }};color:{{ r.behindColor }}">{{ r.behindWords }}</span>
+                    </th>
+                    <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="6">
+                      <td style="padding:4px 3px;border-top:1px solid #E3E6EA;vertical-align:middle">
+                        <sc-if value="{{ c.isDue }}"><button type="button" aria-label="{{ c.aSign }}" onClick="{{ c.onSign }}" style="width:100%;min-height:48px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding:4px 10px;border-radius:6px;border:1px solid rgba(160,72,6,.32);background:#F6EDE6;cursor:pointer;text-align:left" style-hover="border-color:#A04806"><span style="font-size:12px;font-weight:700;color:#A04806">Due</span><span style="font-size:14px;font-weight:600;color:#1F3A6E">Sign off</span></button></sc-if>
+                        <sc-if value="{{ c.isNotDue }}"><button type="button" aria-label="{{ c.aSign }}" onClick="{{ c.onSign }}" style="width:100%;min-height:48px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding:4px 10px;border-radius:6px;border:1px solid #E3E6EA;background:#fff;cursor:pointer;text-align:left" style-hover="border-color:#C9D0D8;background:#F7F8F9"><span style="font-size:12px;color:#636B75">Not due yet</span><span style="font-size:14px;font-weight:600;color:#343A42">Sign off</span></button></sc-if>
+                        <sc-if value="{{ c.isBusy }}"><button type="button" disabled="" aria-label="{{ c.aSign }}" style="width:100%;min-height:48px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding:4px 10px;border-radius:6px;border:1px solid #E3E6EA;background:#EFF1F3;text-align:left"><span style="font-size:12px;font-weight:700;color:{{ c.busyColor }}">{{ c.busyWord }}</span><span style="font-size:14px;font-weight:600;color:#4B535C">Signing off…</span></button></sc-if>
+                        <sc-if value="{{ c.isSettled }}"><button type="button" aria-label="{{ c.aRevoke }}" onClick="{{ c.onAsk }}" style="width:100%;min-height:48px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding:4px 10px;border-radius:6px;border:1px solid #EFF1F3;background:#fff;cursor:pointer;text-align:left" style-hover="border-color:#DDE1E6"><span style="font-size:12px;font-weight:700;color:#0F5C3A">Signed off</span><span style="font-size:14px;color:#343A42;white-space:nowrap;filter:{{ blurCss }}">{{ c.date }}</span></button></sc-if>
+                        <sc-if value="{{ c.isRecent }}"><div style="min-height:48px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding:4px 10px;border-radius:6px;background:#F1F6F4"><span style="font-size:12px;font-weight:700;color:#0F5C3A">Signed off today</span><button type="button" aria-label="{{ c.aUndo }}" onClick="{{ c.onUndo }}" style="min-height:24px;padding:0;border:0;background:none;font-size:14px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Undo</button></div></sc-if>
+                        <sc-if value="{{ c.isConfirm }}"><div style="min-height:48px;display:flex;flex-direction:column;justify-content:center;padding:4px 10px;border-radius:6px;border:1px solid rgba(179,37,30,.4);background:#FBF1F0"><span style="font-size:12px;font-weight:700;color:#8E1D17">Revoke?</span><span style="font-size:13px;color:#343A42">Confirm below</span></div></sc-if>
+                      </td>
+                    </sc-for>
+                    <td style="padding:6px 14px 6px 8px;border-top:1px solid #E3E6EA;vertical-align:middle;font-size:14px;line-height:1.3;color:{{ r.logColor }};font-weight:{{ r.logWeight }}"><span style="filter:{{ blurCss }}">{{ r.log }}</span></td>
+                  </tr>
+                  <sc-if value="{{ r.hasConfirm }}">
+                    <tr><td colspan="{{ colsAll }}" style="padding:0 8px 8px">
+                      <div style="display:flex;align-items:center;gap:11px;flex-wrap:wrap;padding:10px 12px 10px 16px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#FBF1F0">
+                        <p style="margin:0;flex:1;min-width:0;font-size:15px;line-height:1.4;color:#8E1D17;text-wrap:pretty">{{ r.confirmText }}</p>
+                        <button type="button" onClick="{{ r.onRevoke }}" style="min-height:44px;padding:0 16px;border-radius:8px;border:0;background:#B3251E;color:#fff;font-size:15px;font-weight:600;cursor:pointer" style-hover="background:#8E1D17">Revoke</button>
+                        <button type="button" onClick="{{ r.onKeep }}" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap" style-hover="background:#EFF1F3">Keep sign-off</button>
+                      </div>
+                    </td></tr>
+                  </sc-if>
+                  <sc-if value="{{ r.hasFail }}">
+                    <tr><td colspan="{{ colsAll }}" style="padding:0 8px 8px">
+                      <p role="alert" style="margin:0;display:flex;gap:9px;align-items:center;padding:10px 12px 10px 14px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0;font-size:16px;line-height:1.45;color:#343A42">
+                        <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+                        <span style="flex:1;min-width:0;text-wrap:pretty">{{ r.failText }}</span>
+                        <button type="button" onClick="{{ r.onRetry }}" style="flex:none;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer" style-hover="background:#EFF1F3">Try again</button>
+                      </p>
+                    </td></tr>
+                  </sc-if>
+                </sc-for>
+              </tbody>
+            </sc-for>
+          </table>
+        </sc-if>
+
+        <sc-if value="{{ isOne }}" hint-placeholder-val="{{ false }}">
+          <table style="width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums">
+            <caption style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">{{ caption }}</caption>
+            <thead>
+              <tr>
+                <th scope="col" style="text-align:left;vertical-align:bottom;padding:14px;font-size:13px;font-weight:600;color:#636B75;width:320px">Student</th>
+                <th scope="col" style="text-align:left;vertical-align:bottom;padding:14px 12px;font-weight:400">
+                  <span style="display:block;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#636B75">{{ one.label }}: {{ one.name }}</span>
+                  <span style="display:block;margin-top:4px;font-size:18px;font-weight:600;line-height:1.35;color:#101419;text-wrap:pretty">{{ one.full }}</span>
+                  <span style="display:flex;gap:10px;margin-top:4px;font-size:13px"><span style="color:#636B75">{{ one.date }}</span><span style="font-weight:700;color:{{ one.stateColor }}">{{ one.stateWord }}</span></span>
+                </th>
+                <th scope="col" style="text-align:left;vertical-align:bottom;padding:14px 14px 14px 8px;font-size:13px;font-weight:600;color:#636B75;width:170px">Log</th>
+              </tr>
+            </thead>
+            <sc-for list="{{ bands }}" as="b" hint-placeholder-count="3">
+              <tbody>
+                <tr>
+                  <th scope="rowgroup" colspan="3" style="text-align:left;padding:18px 14px 8px;border-top:1px solid #E3E6EA;background:#F7F8F9;font-weight:400">
+                    <span style="display:flex;align-items:baseline;gap:10px">
+                      <sc-if value="{{ b.isNum }}"><span style="font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;line-height:1;letter-spacing:-.02em;color:#A04806">{{ b.big }}</span></sc-if>
+                      <span style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;letter-spacing:-.01em;color:{{ b.color }}">{{ b.label }}</span>
+                      <span style="font-size:14px;color:#636B75">{{ b.count }}</span>
+                    </span>
+                  </th>
+                </tr>
+                <sc-for list="{{ b.rows }}" as="r" hint-placeholder-count="3">
+                  <tr>
+                    <th scope="row" style="text-align:left;padding:8px 14px;border-top:1px solid #E3E6EA;font-weight:400;vertical-align:middle">
+                      <a href="#" style="display:block;font-size:16px;font-weight:600;line-height:1.3;color:#101419;text-decoration:none;overflow-wrap:anywhere;filter:{{ blurCss }}" style-hover="text-decoration:underline">{{ r.name }}</a>
+                      <span style="display:block;font-size:13px;font-weight:{{ r.behindWeight }};color:{{ r.behindColor }}">{{ r.behindWords }}</span>
+                    </th>
+                    <td style="padding:5px 12px;border-top:1px solid #E3E6EA;vertical-align:middle">
+                      <sc-if value="{{ r.one.isDue }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 0 0 12px;min-height:52px;border-radius:8px;background:#F6EDE6"><span style="font-size:15px;font-weight:700;color:#A04806">Due, not signed off</span><button type="button" aria-label="{{ r.one.aSign }}" onClick="{{ r.one.onSign }}" style="min-height:44px;min-width:120px;padding:0 18px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:16px;font-weight:600;color:#1F3A6E;cursor:pointer;white-space:nowrap" style-hover="background:#F4F5F8;border-color:#1F3A6E">Sign off</button></div></sc-if>
+                      <sc-if value="{{ r.one.isNotDue }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 0 0 12px;min-height:52px"><span style="font-size:15px;color:#636B75">Not due yet</span><button type="button" aria-label="{{ r.one.aSign }}" onClick="{{ r.one.onSign }}" style="min-height:44px;min-width:120px;padding:0 18px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:16px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap" style-hover="background:#EFF1F3">Sign off</button></div></sc-if>
+                      <sc-if value="{{ r.one.isBusy }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 0 0 12px;min-height:52px;border-radius:8px;background:{{ r.one.busyBg }}"><span style="font-size:15px;font-weight:700;color:{{ r.one.busyColor }}">{{ r.one.busyWordLong }}</span><button type="button" disabled="" aria-label="{{ r.one.aSign }}" style="min-height:44px;min-width:120px;padding:0 18px;border-radius:8px;border:1px solid #DDE1E6;background:#EFF1F3;font-size:16px;font-weight:600;color:#4B535C;white-space:nowrap;opacity:.75">Signing off…</button></div></sc-if>
+                      <sc-if value="{{ r.one.isSettled }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 0 0 12px;min-height:52px"><span style="font-size:15px;color:#343A42"><strong style="font-weight:700;color:#0F5C3A">Signed off</strong> <span style="filter:{{ blurCss }}">{{ r.one.date }}</span></span><button type="button" aria-label="{{ r.one.aRevoke }}" onClick="{{ r.one.onAsk }}" style="min-height:44px;padding:0 14px;border-radius:8px;border:0;background:none;font-size:15px;font-weight:600;color:#4B535C;text-decoration:underline;text-underline-offset:3px;cursor:pointer" style-hover="color:#8E1D17">Revoke</button></div></sc-if>
+                      <sc-if value="{{ r.one.isRecent }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 0 0 12px;min-height:52px;border-radius:8px;background:#F1F6F4"><span style="font-size:15px;font-weight:700;color:#0F5C3A">Signed off today</span><button type="button" aria-label="{{ r.one.aUndo }}" onClick="{{ r.one.onUndo }}" style="min-height:44px;padding:0 14px;border:0;background:none;font-size:15px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Undo</button></div></sc-if>
+                      <sc-if value="{{ r.one.isConfirm }}"><div style="display:flex;align-items:center;padding:0 12px;min-height:52px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#FBF1F0;font-size:15px;font-weight:700;color:#8E1D17">Revoke this sign-off?</div></sc-if>
+                    </td>
+                    <td style="padding:6px 14px 6px 8px;border-top:1px solid #E3E6EA;vertical-align:middle;font-size:14px;line-height:1.3;color:{{ r.logColor }};font-weight:{{ r.logWeight }}"><span style="filter:{{ blurCss }}">{{ r.log }}</span></td>
+                  </tr>
+                  <sc-if value="{{ r.hasConfirm }}">
+                    <tr><td colspan="3" style="padding:0 8px 8px">
+                      <div style="display:flex;align-items:center;gap:11px;flex-wrap:wrap;padding:10px 12px 10px 16px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#FBF1F0">
+                        <p style="margin:0;flex:1;min-width:0;font-size:15px;line-height:1.4;color:#8E1D17;text-wrap:pretty">{{ r.confirmText }}</p>
+                        <button type="button" onClick="{{ r.onRevoke }}" style="min-height:44px;padding:0 16px;border-radius:8px;border:0;background:#B3251E;color:#fff;font-size:15px;font-weight:600;cursor:pointer" style-hover="background:#8E1D17">Revoke</button>
+                        <button type="button" onClick="{{ r.onKeep }}" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap" style-hover="background:#EFF1F3">Keep sign-off</button>
+                      </div>
+                    </td></tr>
+                  </sc-if>
+                  <sc-if value="{{ r.hasFail }}">
+                    <tr><td colspan="3" style="padding:0 8px 8px">
+                      <p role="alert" style="margin:0;display:flex;gap:9px;align-items:center;padding:10px 12px 10px 14px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0;font-size:16px;line-height:1.45;color:#343A42">
+                        <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+                        <span style="flex:1;min-width:0;text-wrap:pretty">{{ r.failText }}</span>
+                        <button type="button" onClick="{{ r.onRetry }}" style="flex:none;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer" style-hover="background:#EFF1F3">Try again</button>
+                      </p>
+                    </td></tr>
+                  </sc-if>
+                </sc-for>
+              </tbody>
+            </sc-for>
+          </table>
+        </sc-if>
+      </div>
+    </sc-if>
+  </main>
+</div>
+</sc-if>
+
+<sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="{{ frameLabel }}" style="width:390px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9;font-family:'Public Sans',system-ui,sans-serif">
+  <header style="background:#fff;border-bottom:1px solid #E3E6EA">
+    <div style="display:flex;align-items:center;gap:9px;padding:10px 16px">
+      <img src="assets/crest-nwetss.png" alt="" style="width:26px;height:26px;object-fit:contain;flex:none">
+      <a href="#" style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none">Leaving Cert Practical</a>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 16px 11px">
+      <span style="font-size:14px;color:#4B535C">Katelyn Hanlon</span>
+      <div style="display:flex;align-items:center;gap:10px;flex:none">
+        <a href="#" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Change password</a>
+        <button type="button" style="min-height:44px;padding:0 12px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer">Sign out</button>
+      </div>
+    </div>
+  </header>
+  <main style="padding:22px 16px 40px">
+    <a href="#" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">My classes</a>
+    <h1 style="margin:8px 0 0;font-family:'Space Grotesk',sans-serif;font-size:27px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">{{ className }}</h1>
+    <p style="margin:6px 0 0;font-size:15px;color:#4B535C">{{ classSub }}</p>
+    <nav aria-label="Class sections" style="display:flex;gap:16px;margin-top:16px;border-bottom:1px solid #E3E6EA">
+      <a href="#" style="display:flex;align-items:center;min-height:44px;padding:0 2px;margin-bottom:-1px;border-bottom:2px solid transparent;font-size:15px;font-weight:600;color:#4B535C;text-decoration:none">Students</a>
+      <a href="#" style="display:flex;align-items:center;min-height:44px;padding:0 2px;margin-bottom:-1px;border-bottom:2px solid transparent;font-size:15px;font-weight:600;color:#4B535C;text-decoration:none">Component</a>
+      <a href="#" aria-current="page" style="display:flex;align-items:center;min-height:44px;padding:0 2px;margin-bottom:-1px;border-bottom:2px solid #1F3A6E;font-size:15px;font-weight:600;color:#1F3A6E;text-decoration:none">Progress</a>
+    </nav>
+
+    <sc-if value="{{ isError }}" hint-placeholder-val="{{ false }}">
+      <section role="alert" aria-live="polite" style="margin-top:22px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;border-radius:10px;background:#FBF1F0;padding:15px 16px;display:flex;flex-direction:column;gap:7px">
+        <div style="display:flex;align-items:center;gap:9px">
+          <span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span>
+          <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;letter-spacing:-.015em;color:#8E1D17">Can't reach the service</h2>
+        </div>
+        <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42">Check your connection and try again in a moment.</p>
+        <a href="#" style="align-self:flex-start;display:inline-flex;align-items:center;min-height:44px;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Try again</a>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ hasEmpty }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:22px;background:#fff;border:1px solid #DDE1E6;border-radius:10px;padding:18px 16px;display:flex;flex-direction:column;gap:12px">
+        <h2 style="margin:0;font-size:17px;font-weight:600;color:#101419">{{ emptyHead }}</h2>
+        <p style="margin:0;font-size:16px;line-height:1.5;color:#4B535C;text-wrap:pretty">{{ emptyBody }}</p>
+        <a href="#" style="align-self:flex-start;display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid #DDE1E6;border-radius:8px;background:#fff;font-size:15px;font-weight:600;color:#343A42;text-decoration:none">{{ emptyAction }}</a>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showGrid }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-top:20px;display:flex;flex-direction:column;gap:4px">
+        <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419;text-wrap:balance">{{ summaryHead }}</h2>
+        <p style="margin:0;font-size:15px;line-height:1.45;color:#4B535C;text-wrap:pretty">{{ summarySub }}</p>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button type="button" role="switch" aria-checked="{{ hideStr }}" onClick="{{ toggleHide }}" style="display:flex;align-items:center;gap:10px;min-height:44px;padding:0 14px 0 10px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;cursor:pointer;font-size:15px;font-weight:600;color:#343A42">
+          <span aria-hidden="true" style="position:relative;width:36px;height:20px;border-radius:99px;background:{{ trackBg }};flex:none"><span style="position:absolute;top:2px;left:{{ knobLeft }};width:16px;height:16px;border-radius:99px;background:#fff;transition:left 160ms cubic-bezier(.2,.7,.3,1)"></span></span>
+          Hide names
+        </button>
+        <sc-if value="{{ showResort }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ resort }}" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer">{{ resortLabel }}</button></sc-if>
+      </div>
+      <sc-if value="{{ hasNotice }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px;padding:14px 16px;border:1px solid #DDE1E6;border-radius:10px;background:#fff">
+          <p style="margin:0;font-size:16px;line-height:1.5;color:#343A42;text-wrap:pretty">{{ noticeText }}</p>
+          <sc-if value="{{ noticeLink }}"><a href="#" style="align-self:flex-start;display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid #DDE1E6;border-radius:8px;background:#fff;font-size:15px;font-weight:600;color:#343A42;text-decoration:none">Go to the Component tab</a></sc-if>
+        </div>
+      </sc-if>
+
+      <nav aria-label="Checkpoint view" style="margin-top:16px">
+        <ul style="list-style:none;margin:0;padding:0;display:flex;gap:6px">
+          <sc-for list="{{ picks }}" as="p" hint-placeholder-count="7">
+            <li style="flex:{{ p.flex }};display:flex;min-width:0">
+              <sc-if value="{{ p.isLink }}"><a href="{{ p.href }}" onClick="{{ p.onClick }}" aria-current="{{ p.current }}" aria-label="{{ p.aName }}" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:6px;border:{{ p.border }};background:{{ p.bg }};font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:{{ p.numColor }};text-decoration:none">{{ p.tiny }}</a></sc-if>
+              <sc-if value="{{ p.isNone }}"><span aria-label="{{ p.aName }}" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:6px;border:1px dashed #DDE1E6;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:#9AA2AC">{{ p.tiny }}</span></sc-if>
+            </li>
+          </sc-for>
+        </ul>
+      </nav>
+      <div style="margin-top:10px;padding:12px 14px;border-radius:8px;background:#fff;border:1px solid #DDE1E6">
+        <sc-if value="{{ isOne }}" hint-placeholder-val="{{ true }}">
+          <p style="margin:0;display:flex;gap:10px;flex-wrap:wrap;font-size:13px"><span style="font-family:'Space Mono',monospace;font-weight:700;color:#636B75">{{ one.label }}</span><span style="color:#636B75">{{ one.date }}</span><span style="font-weight:700;color:{{ one.stateColor }}">{{ one.stateWord }}</span></p>
+          <p style="margin:5px 0 0;font-size:16px;font-weight:600;line-height:1.4;color:#101419;text-wrap:pretty">{{ one.full }}</p>
+        </sc-if>
+        <sc-if value="{{ isAll }}" hint-placeholder-val="{{ false }}">
+          <p style="margin:0;font-size:15px;line-height:1.45;color:#343A42">All checkpoints. Pick a stage number to sign off.</p>
+        </sc-if>
+      </div>
+
+      <sc-for list="{{ bands }}" as="b" hint-placeholder-count="3">
+        <section style="margin-top:20px">
+          <h3 style="margin:0;display:flex;align-items:baseline;gap:9px">
+            <sc-if value="{{ b.isNum }}"><span style="font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;line-height:1;letter-spacing:-.02em;color:#A04806">{{ b.big }}</span></sc-if>
+            <span style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;color:{{ b.color }}">{{ b.label }}</span>
+            <span style="font-size:14px;font-weight:400;color:#636B75">{{ b.count }}</span>
+          </h3>
+          <ul style="list-style:none;margin:10px 0 0;padding:0;background:#fff;border:1px solid #DDE1E6;border-radius:10px;overflow:hidden">
+            <sc-for list="{{ b.rows }}" as="r" hint-placeholder-count="3">
+              <li style="padding:10px 12px 10px 14px;border-top:{{ r.topBorder }}">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                    <a href="#" style="font-size:16px;font-weight:600;line-height:1.3;color:#101419;text-decoration:none;overflow-wrap:anywhere;filter:{{ blurCss }}">{{ r.name }}</a>
+                    <span style="font-size:13px;font-weight:{{ r.behindWeight }};color:{{ r.behindColor }}">{{ r.behindWords }}</span>
+                    <span style="font-size:13px;color:{{ r.logColor }};font-weight:{{ r.logWeight }};filter:{{ blurCss }}">{{ r.log }}</span>
+                    <sc-if value="{{ r.showMissing }}"><span style="font-size:13px;color:#343A42">{{ r.missingText }}</span></sc-if>
+                  </div>
+                  <sc-if value="{{ isOne }}">
+                    <div style="flex:none;width:128px;display:flex;flex-direction:column;align-items:stretch;gap:3px">
+                      <sc-if value="{{ r.one.isDue }}"><span style="font-size:12px;font-weight:700;color:#A04806">Due</span><button type="button" aria-label="{{ r.one.aSign }}" onClick="{{ r.one.onSign }}" style="min-height:44px;border-radius:8px;border:1px solid #DDE1E6;background:#F6EDE6;font-size:15px;font-weight:600;color:#1F3A6E;cursor:pointer">Sign off</button></sc-if>
+                      <sc-if value="{{ r.one.isNotDue }}"><span style="font-size:12px;color:#636B75">Not due yet</span><button type="button" aria-label="{{ r.one.aSign }}" onClick="{{ r.one.onSign }}" style="min-height:44px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer">Sign off</button></sc-if>
+                      <sc-if value="{{ r.one.isBusy }}"><span style="font-size:12px;font-weight:700;color:{{ r.one.busyColor }}">{{ r.one.busyWord }}</span><button type="button" disabled="" aria-label="{{ r.one.aSign }}" style="min-height:44px;border-radius:8px;border:1px solid #DDE1E6;background:#EFF1F3;font-size:15px;font-weight:600;color:#4B535C;opacity:.75">Signing off…</button></sc-if>
+                      <sc-if value="{{ r.one.isSettled }}"><span style="font-size:12px;line-height:1.3;font-weight:700;color:#0F5C3A">Signed off <span style="font-weight:400;color:#343A42;filter:{{ blurCss }}">{{ r.one.date }}</span></span><button type="button" aria-label="{{ r.one.aRevoke }}" onClick="{{ r.one.onAsk }}" style="min-height:44px;border-radius:8px;border:0;background:none;font-size:15px;font-weight:600;color:#4B535C;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Revoke</button></sc-if>
+                      <sc-if value="{{ r.one.isRecent }}"><span style="font-size:12px;font-weight:700;color:#0F5C3A">Signed off today</span><button type="button" aria-label="{{ r.one.aUndo }}" onClick="{{ r.one.onUndo }}" style="min-height:44px;border-radius:8px;border:0;background:#F1F6F4;font-size:15px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Undo</button></sc-if>
+                      <sc-if value="{{ r.one.isConfirm }}"><span style="display:flex;align-items:center;justify-content:center;min-height:62px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#FBF1F0;font-size:14px;font-weight:700;color:#8E1D17">Revoke?</span></sc-if>
+                    </div>
+                  </sc-if>
+                </div>
+                <sc-if value="{{ r.hasConfirm }}">
+                  <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#FBF1F0">
+                    <p style="margin:0;font-size:15px;line-height:1.4;color:#8E1D17;text-wrap:pretty">{{ r.confirmText }}</p>
+                    <div style="display:flex;gap:8px">
+                      <button type="button" onClick="{{ r.onRevoke }}" style="flex:1;min-height:44px;border-radius:8px;border:0;background:#B3251E;color:#fff;font-size:15px;font-weight:600;cursor:pointer">Revoke</button>
+                      <button type="button" onClick="{{ r.onKeep }}" style="flex:1;min-height:44px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer">Keep sign-off</button>
+                    </div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ r.hasFail }}">
+                  <div role="alert" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;padding:12px 13px;border-radius:10px;border:1px solid rgba(179,37,30,.3);border-left:4px solid #B3251E;background:#FBF1F0">
+                    <p style="margin:0;display:flex;gap:9px;align-items:flex-start;font-size:16px;line-height:1.45;color:#343A42"><span aria-hidden="true" style="flex:none;margin-top:2px;width:20px;height:20px;border-radius:99px;background:#B3251E;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:20px">!</span><span style="text-wrap:pretty">{{ r.failText }}</span></p>
+                    <button type="button" onClick="{{ r.onRetry }}" style="align-self:flex-start;min-height:44px;padding:0 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer">Try again</button>
+                  </div>
+                </sc-if>
+              </li>
+            </sc-for>
+          </ul>
+        </section>
+      </sc-for>
+    </sc-if>
+  </main>
+</div>
+</sc-if>
+
+<sc-if value="{{ showNotes }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;flex-direction:column;gap:4px;max-width:{{ noteWidth }}">
+    <sc-if value="{{ hasCut }}"><p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;color:#5C6470">{{ cutNote }}</p></sc-if>
+    <sc-if value="{{ hasAnnounce }}"><p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;line-height:1.5;color:#5C6470">Screen reader hears: “{{ announce }}”</p></sc-if>
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1160,&quot;height&quot;:900},&quot;width&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[1140,390],&quot;default&quot;:1140,&quot;tsType&quot;:&quot;number&quot;},&quot;scenario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;midyear&quot;,&quot;nothingDue&quot;,&quot;noDates&quot;,&quot;noComponent&quot;,&quot;noStudents&quot;,&quot;allDone&quot;,&quot;business&quot;,&quot;error&quot;],&quot;default&quot;:&quot;midyear&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;stage&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;preset&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;startAt&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:0,&quot;tsType&quot;:&quot;number&quot;},&quot;limit&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:0,&quot;tsType&quot;:&quot;number&quot;},&quot;hide&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;frameLabel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const BIO = [
+  { k: '1', label: 'Stage 1', name: 'Initial Response to the Investigation Brief', short: 'Initial ideas', full: 'Initial ideas discussed with the teacher', date: '2 Oct 2026' },
+  { k: '2', label: 'Stage 2', name: 'Background Research', short: 'Investigative log', full: 'Investigative log shared with the teacher', date: '6 Nov 2026' },
+  { k: '3', label: 'Stage 3', name: 'Designing and Planning the Experiment', short: 'Plan discussed', full: 'Plan discussed with the teacher (feasibility and safety)', date: '11 Dec 2026' },
+  { k: '4', label: 'Stage 4', name: 'Conducting the Experiment', short: 'Experiment carried out', full: 'Experiment carried out under supervision, in line with the research and planning already shared', date: '12 Feb 2027' },
+  { k: '5', label: 'Stage 5', name: 'Data Analysis and Conclusions', short: 'Data analysis', full: 'Data analysis shared with the teacher', date: '19 Mar 2027' },
+  { k: '6', label: 'Stage 6', name: 'Finalising the Biology in Practice Investigation Report', short: 'Final report', full: 'Final report submitted to the teacher', date: '30 Apr 2027' }
+];
+const BUS = [
+  { k: '1', label: 'Stage 1', name: 'Getting Started', short: 'Initial ideas', full: 'Initial ideas discussed with the teacher', date: '9 Oct 2026' },
+  { k: '2', label: 'Stage 2', name: 'Developing a question to research', short: 'Research question', full: 'Research question discussed with the teacher', date: '20 Nov 2026' },
+  { k: '3', label: 'Stage 3', name: 'Developing a project plan', short: 'Project plan', full: 'Project plan shared with the teacher', date: '5 Feb 2027' },
+  { k: '4', label: 'Stage 4', name: 'Identifying sources and gathering information and data', short: 'Research shared', full: 'Research shared when the teacher asks', date: '12 Mar 2027' },
+  { k: '5', label: 'Stage 5', name: 'Analysis and evaluation', short: 'Analysis and evaluation', full: 'Analysis and evaluation shared with the teacher', date: '16 Apr 2027' },
+  { k: '6', label: 'Stage 6', name: 'Applying learning and drawing conclusions', none: true, date: '7 May 2027' },
+  { k: 'R', label: 'Report', name: 'Compilation of the final report', short: 'Final report', full: 'Final report submitted for review and authentication', date: '21 May 2027' }
+];
+const SIGN_DATES = {
+  '1': ['29 Sep 2026', '1 Oct 2026', '2 Oct 2026', '6 Oct 2026'],
+  '2': ['3 Nov 2026', '5 Nov 2026', '6 Nov 2026', '10 Nov 2026'],
+  '3': ['8 Dec 2026', '10 Dec 2026', '11 Dec 2026', '15 Dec 2026'],
+  '4': ['14 Jan 2027', '19 Jan 2027', '21 Jan 2027']
+};
+const BUS_DATES = { '1': ['7 Oct 2026', '9 Oct 2026', '13 Oct 2026'], '2': ['17 Nov 2026', '20 Nov 2026', '24 Nov 2026'], '3': ['20 Jan 2027', '22 Jan 2027'] };
+// Sample content. [first, surname, due checkpoints missing, signed next stage early, days since last log entry (null = none)]
+const RAW = [
+  ['Jack', 'Doyle', '123', 0, 24], ['Ciara', 'Walsh', '123', 0, null],
+  ['Oisín', 'Brennan', '23', 0, 19], ['Róisín', 'Ó Súilleabháin-Mac Giolla Phádraig Nolan', '23', 0, 11], ['Liam', 'Kavanagh', '13', 0, 6],
+  ['Sadhbh', 'Farrell', '3', 0, null], ['Darragh', 'Kelly', '3', 0, 21], ['Cian', 'Murphy', '3', 0, 14], ['Eoin', 'Quinn', '2', 0, 9],
+  ['Emma', 'Nolan', '3', 0, 8], ['Conor', 'Lynch', '3', 0, 5], ['Grace', 'Daly', '3', 0, 3], ['Seán', 'Power', '1', 0, 2], ['Ava', 'Reilly', '3', 0, 0],
+  ['Aoife', 'Byrne', '', 1, 1], ['Niamh', 'Ryan', '', 1, 0], ['Sophie', 'Okonkwo', '', 0, 4], ['Fionn', 'Gallagher', '', 0, 7],
+  ['Méabh', 'Collins', '', 1, 2], ['Tadhg', 'Moran', '', 0, 12], ['Aaron', 'Kennedy', '', 0, 3], ['Chloe', 'Byrne', '', 0, 1],
+  ['Rían', 'Fitzpatrick', '', 0, 6], ['Lucy', 'Hayes', '', 1, 0], ['Ella', 'Brady', '', 0, 2], ['Adam', 'Sheridan', '', 0, 5],
+  ['Zara', 'Hussain', '', 0, 9], ['Dylan', 'McCarthy', '', 0, 4], ['Ruth', 'Keane', '', 0, 1], ['Jamie', 'Foley', '', 0, 15]
+];
+const STUDENTS = RAW.map((r, i) => ({ id: i, first: r[0], last: r[1], name: r[0] + ' ' + r[1], missing: r[2], early: !!r[3], days: r[4] }));
+
+function cfgFor(sc) {
+  const bio = { cls: '6A Biology', sub: 'Biology, year 6, 2026/27', stages: BIO, today: '25 Jan 2027' };
+  if (sc === 'business') return { cls: '6B Business', sub: 'Business, year 6, 2026/27', stages: BUS, due: ['1', '2'], today: '25 Jan 2027' };
+  if (sc === 'nothingDue') return { ...bio, due: [], today: '25 Sep 2026' };
+  if (sc === 'noDates') return { ...bio, due: [], noDates: true, today: '25 Sep 2026' };
+  if (sc === 'allDone') return { ...bio, due: ['1', '2', '3'], allDone: true };
+  return { ...bio, due: ['1', '2', '3'] };
+}
+function baseSigned(sc) {
+  const m = {};
+  STUDENTS.forEach((s, i) => {
+    if (sc === 'business') {
+      ['1', '2'].forEach(k => { if (!s.missing.includes(k)) m[i + '-' + k] = BUS_DATES[k][i % 3]; });
+      if (s.early) m[i + '-3'] = BUS_DATES['3'][i % 2];
+    } else if (sc === 'nothingDue' || sc === 'noDates') {
+      if (i === 14 || i === 15) m[i + '-1'] = '22 Sep 2026';
+    } else {
+      ['1', '2', '3'].forEach(k => { if (sc === 'allDone' || !s.missing.includes(k)) m[i + '-' + k] = SIGN_DATES[k][i % SIGN_DATES[k].length]; });
+      if (s.early) m[i + '-4'] = SIGN_DATES['4'][i % 3];
+    }
+  });
+  return m;
+}
+function logWords(d) {
+  if (d === null) return 'No entries yet';
+  if (d === 0) return 'Last entry today';
+  if (d === 1) return 'Last entry yesterday';
+  return 'Last entry ' + d + ' days ago';
+}
+function listStages(ks) {
+  const n = ks.map(k => k === 'R' ? 'the report' : k);
+  if (n.length === 1) return 'Stage ' + n[0];
+  return 'Stages ' + n.slice(0, -1).join(', ') + ' and ' + n[n.length - 1];
+}
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const p = props || {};
+    const sc = p.scenario || 'midyear';
+    const cfg = cfgFor(sc);
+    const signed = baseSigned(sc);
+    const checks = cfg.stages.filter(s => !s.none);
+    this.sc = sc; this.cfg = cfg; this.checks = checks;
+    const order = this.sortIds(signed);
+    const sb = {}; STUDENTS.forEach(s => { sb[s.id] = this.behindOf(s.id, signed); });
+    const st = { signed, recent: {}, busy: {}, failed: null, confirm: null, order, sortBehind: sb, changes: 0, hide: !!p.hide, announce: '' };
+    const wide = (p.width || 1140) > 600;
+    const latestDue = cfg.due.length ? cfg.due[cfg.due.length - 1] : checks[0].k;
+    st.stage = p.stage ? String(p.stage) : (wide ? 'all' : latestDue);
+    String(p.preset || '').split(',').filter(Boolean).forEach(tok => {
+      const [type, id, k] = tok.split(':'); const key = id + '-' + k; const s = checks.find(c => c.k === k); const stu = STUDENTS[+id];
+      if (type === 'busy') st.busy[key] = true;
+      if (type === 'after') { st.signed[key] = cfg.today; st.recent[key] = true; st.changes++; st.announce = 'Signed off: ' + s.full + ', for ' + stu.name + '.'; }
+      if (type === 'confirm') st.confirm = key;
+      if (type === 'revoked') { delete st.signed[key]; st.changes++; st.announce = 'Sign-off revoked: ' + s.full + ', for ' + stu.name + '. It stays in the record.'; }
+      if (type === 'failed') { st.failed = key; st.announce = 'Couldn’t sign off ' + s.full + ' for ' + stu.name + '. Nothing changed.'; }
+    });
+    this.state = st;
+  }
+  isDue(k) { return this.cfg.due.includes(k); }
+  behindOf(id, signed) { return this.cfg.due.filter(k => !signed[id + '-' + k]).length; }
+  sortIds(signed) {
+    return STUDENTS.slice().sort((a, b) => {
+      const d = this.behindOf(b.id, signed) - this.behindOf(a.id, signed);
+      if (d) return d;
+      const da = a.days === null ? 1e9 : a.days, db = b.days === null ? 1e9 : b.days;
+      if (db - da) return db - da;
+      return a.last.localeCompare(b.last, 'en-IE');
+    }).map(s => s.id);
+  }
+  signOff(stu, s) {
+    const k = stu.id + '-' + s.k;
+    this.setState(p => ({ busy: { ...p.busy, [k]: true }, confirm: null, failed: p.failed === k ? null : p.failed }));
+    clearTimeout(this['t' + k]);
+    this['t' + k] = setTimeout(() => this.setState(p => {
+      const busy = { ...p.busy }; delete busy[k];
+      return { busy, signed: { ...p.signed, [k]: this.cfg.today }, recent: { ...p.recent, [k]: true }, changes: p.changes + 1, announce: 'Signed off: ' + s.full + ', for ' + stu.name + '.' };
+    }), 450);
+  }
+  revoke(stu, s, undo) {
+    const k = stu.id + '-' + s.k;
+    this.setState(p => {
+      const signed = { ...p.signed }; delete signed[k];
+      const recent = { ...p.recent }; delete recent[k];
+      return { signed, recent, confirm: null, changes: p.changes + 1, announce: (undo ? 'Sign-off undone: ' : 'Sign-off revoked: ') + s.full + ', for ' + stu.name + '. It stays in the record.' };
+    });
+  }
+
+  renderVals() {
+    const p = this.props || {};
+    const cfg = this.cfg, sc = this.sc, checks = this.checks;
+    const { signed, recent, busy, confirm, failed, hide, order, sortBehind, stage } = this.state;
+    const wide = (p.width || 1140) > 600;
+    const stateOf = s => this.isDue(s.k) ? { w: 'Due', c: '#A04806' } : (cfg.noDates ? { w: 'No date', c: '#636B75' } : { w: 'Not due yet', c: '#636B75' });
+    const dateOf = s => cfg.noDates ? 'No date set' : s.date;
+    const go = k => e => { if (e && e.preventDefault) e.preventDefault(); this.setState({ stage: k }); };
+
+    const cols = checks.map(s => ({ ...s, stateWord: stateOf(s).w === 'Not due yet' ? 'Not due' : stateOf(s).w, stateColor: stateOf(s).c, href: '?stage=' + s.k, onOpen: go(s.k) }));
+    const picks = [{ k: 'all', isLink: true, label: 'All', short: 'All stages', date: 'Every checkpoint', stateWord: '', tiny: 'All', aName: 'All stages', flex: '1.3' }]
+      .concat(cfg.stages.map(s => s.none
+        ? { k: s.k, isNone: true, label: s.label, date: dateOf(s), tiny: s.k, aName: s.label + ', no checkpoint', flex: '1' }
+        : { k: s.k, isLink: true, label: s.label, short: s.short, date: dateOf(s), stateWord: stateOf(s).w, stateColor: stateOf(s).c, tiny: s.k === 'R' ? 'R' : s.k, aName: s.label + ', ' + s.short + ', ' + dateOf(s) + ', ' + stateOf(s).w.toLowerCase(), flex: '1' }))
+      .map(x => {
+        const cur = stage === x.k;
+        return { ...x, current: cur ? 'true' : undefined, href: x.k === 'all' ? '?stage=all' : '?stage=' + x.k, onClick: go(x.k),
+          border: cur ? '2px solid #1F3A6E' : '1px solid #DDE1E6', bg: cur ? '#F4F5F8' : '#fff', labelColor: cur ? '#1F3A6E' : '#636B75',
+          numColor: cur ? '#1F3A6E' : (x.stateWord === 'Due' ? '#A04806' : '#4B535C') };
+      });
+    const oneS = checks.find(s => s.k === stage);
+    const one = oneS ? { ...oneS, date: dateOf(oneS), stateWord: stateOf(oneS).w, stateColor: stateOf(oneS).c } : { label: '', name: '', full: '', date: '', stateWord: '', stateColor: '#636B75' };
+
+    let ids = order;
+    const startAt = Number(p.startAt) || 0, limit = Number(p.limit) || ids.length;
+    ids = ids.slice(startAt, startAt + limit);
+    const mkCell = (stu, s) => {
+      const k = stu.id + '-' + s.k;
+      const isSigned = !!signed[k], isBusy = !!busy[k], isConfirm = confirm === k, isRecent = isSigned && !!recent[k] && !isConfirm && !isBusy;
+      const due = this.isDue(s.k);
+      return {
+        k: s.k, date: signed[k], isBusy, isConfirm, isRecent,
+        isSettled: isSigned && !isRecent && !isConfirm && !isBusy,
+        isDue: !isSigned && !isBusy && due, isNotDue: !isSigned && !isBusy && !due,
+        busyWord: due ? 'Due' : 'Not due', busyWordLong: due ? 'Due, not signed off' : 'Not due yet', busyColor: due ? '#A04806' : '#636B75', busyBg: due ? '#F6EDE6' : 'transparent',
+        aSign: 'Sign off ' + s.full + ' for ' + stu.name,
+        aRevoke: 'Revoke sign-off of ' + s.full + ' for ' + stu.name,
+        aUndo: 'Undo sign-off of ' + s.full + ' for ' + stu.name,
+        onSign: () => this.signOff(stu, s), onAsk: () => this.setState({ confirm: k, failed: null }), onUndo: () => this.revoke(stu, s, true)
+      };
+    };
+    const rows = ids.map((id, idx) => {
+      const stu = STUDENTS[id];
+      const behind = this.behindOf(id, signed);
+      const cells = checks.map(s => mkCell(stu, s));
+      const cS = checks.find(s => confirm === id + '-' + s.k);
+      const fS = checks.find(s => failed === id + '-' + s.k);
+      const stale = stu.days === null || stu.days >= 14;
+      const miss = cfg.due.filter(k => !signed[id + '-' + k]);
+      return {
+        id, name: stu.name, behind,
+        behindWords: behind ? 'Behind by ' + behind : 'Up to date',
+        behindColor: behind ? '#A04806' : '#4B535C', behindWeight: behind ? 700 : 400,
+        cells, one: oneS ? mkCell(stu, oneS) : {},
+        log: logWords(stu.days), logColor: stale ? '#101419' : '#4B535C', logWeight: stale ? 600 : 400,
+        showMissing: stage === 'all' && miss.length > 0,
+        missingText: 'Not signed off: ' + listStages(miss),
+        hasConfirm: !!cS,
+        confirmText: cS ? 'Revoke the sign-off of “' + cS.full + '” for ' + stu.name + '? It stays in the record as revoked by you.' : '',
+        onRevoke: () => cS && this.revoke(stu, cS, false), onKeep: () => this.setState({ confirm: null }),
+        hasFail: !!fS,
+        failText: fS ? 'Couldn’t sign off “' + fS.full + '” for ' + stu.name + '. Nothing changed. Check your connection and try again.' : '',
+        onRetry: () => fS && this.signOff(stu, fS),
+        sortB: sortBehind[id]
+      };
+    });
+    const bm = {};
+    rows.forEach(r => { (bm[r.sortB] = bm[r.sortB] || []).push(r); });
+    const total = {}; order.forEach(id => { total[sortBehind[id]] = (total[sortBehind[id]] || 0) + 1; });
+    const bands = Object.keys(bm).map(Number).sort((a, b) => b - a).map(b => ({
+      isNum: b > 0, big: String(b),
+      label: b ? (b === 1 ? 'checkpoint behind' : 'checkpoints behind') : 'Up to date',
+      color: b ? '#A04806' : '#101419',
+      count: total[b] + (total[b] === 1 ? ' student' : ' students'),
+      rows: bm[b].map((r, i) => ({ ...r, topBorder: i ? '1px solid #E3E6EA' : '0' }))
+    }));
+
+    const nBehind = order.filter(id => this.behindOf(id, signed) > 0).length;
+    let summaryHead, summarySub, hasNotice = false, noticeText = '', noticeLink = false;
+    if (cfg.noDates) {
+      summaryHead = 'No stage dates yet'; summarySub = 'Nothing can be due until the stages have dates.';
+      hasNotice = true; noticeLink = true; noticeText = 'Set the stage dates on the Component tab and each checkpoint becomes due once its date passes. You can still sign off early when a student shows you their work.';
+    } else if (!cfg.due.length) {
+      summaryHead = 'Nothing is due yet'; summarySub = 'Stage 1’s checkpoint is due on ' + cfg.stages[0].date + '.';
+      hasNotice = true; noticeText = 'You can sign off a checkpoint early when a student shows you their work. It counts once its date passes.';
+    } else if (nBehind === 0) {
+      summaryHead = 'All 30 students are up to date'; summarySub = 'Every checkpoint due so far (' + listStages(cfg.due) + ') is signed off. Stage 4’s is next, on 12 Feb 2027.';
+    } else {
+      summaryHead = nBehind + ' of 30 students are behind';
+      summarySub = listStages(cfg.due) + (cfg.due.length > 1 ? ' are' : ' is') + ' due. Furthest behind first.' + (sc === 'business' ? ' Stage 6 has no checkpoint.' : '');
+    }
+    const empty = sc === 'noComponent'
+      ? { h: 'Nothing to track yet.', b: '6A Biology doesn’t have a component set up, so there are no checkpoints to sign off. Set one up on the class’s Component tab.', a: 'Go to the Component tab' }
+      : { h: 'No students yet.', b: 'Students appear here once you approve them. Share the join code from the Students tab, then approve their requests.', a: 'Go to the Students tab' };
+
+    return {
+      isWide: wide, isNarrow: !wide,
+      frameLabel: p.frameLabel || 'Progress · ' + (wide ? 1140 : 390),
+      className: cfg.cls, classSub: cfg.sub,
+      isError: sc === 'error', hasEmpty: sc === 'noComponent' || sc === 'noStudents',
+      emptyHead: empty.h, emptyBody: empty.b, emptyAction: empty.a,
+      showGrid: !['error', 'noComponent', 'noStudents'].includes(sc),
+      summaryHead, summarySub, hasNotice, noticeText, noticeLink,
+      picks, pickCount: picks.length,
+      isAll: stage === 'all', isOne: stage !== 'all', one,
+      cols, colsAll: String(cols.length + 2),
+      caption: 'Checkpoint sign-offs for ' + cfg.cls + ', grouped by how many due checkpoints each student is behind',
+      bands,
+      showResort: this.state.changes > 0,
+      resortLabel: 'Re-sort (' + this.state.changes + (this.state.changes === 1 ? ' change)' : ' changes)'),
+      resort: () => this.setState(q => {
+        const sb = {}; STUDENTS.forEach(s => { sb[s.id] = this.behindOf(s.id, q.signed); });
+        return { order: this.sortIds(q.signed), sortBehind: sb, changes: 0, recent: {} };
+      }),
+      hideStr: String(hide), toggleHide: () => this.setState(q => ({ hide: !q.hide })),
+      trackBg: hide ? '#1F3A6E' : '#636B75', knobLeft: hide ? '18px' : '2px', blurCss: hide ? 'blur(7px)' : 'none',
+      showNotes: p.notes !== false,
+      noteWidth: wide ? '1140px' : '390px',
+      hasCut: limit < order.length, cutNote: 'Cut to ' + ids.length + ' of 30 students; the rest as the full grid.',
+      hasAnnounce: !!this.state.announce, announce: this.state.announce
+    };
+  }
+}
+</script>
+</body>
+</html>

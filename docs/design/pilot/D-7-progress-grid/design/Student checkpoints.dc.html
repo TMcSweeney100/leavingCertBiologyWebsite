@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Public Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:#1F3A6E}
+  a:hover{color:#16294E}
+  button{font:inherit;touch-action:manipulation}
+  button:focus-visible,a:focus-visible{outline:2px solid #1F3A6E;outline-offset:2px}
+</style>
+</helmet>
+<div style="display:flex;flex-direction:column;gap:10px">
+<sc-if value="{{ isWide }}" hint-placeholder-val="{{ true }}">
+<div data-screen-label="{{ frameLabel }}" style="width:1140px;background:#F7F8F9;border:1px solid #DDE1E6;border-radius:10px;overflow:hidden;font-family:'Public Sans',system-ui,sans-serif">
+  <header style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px;background:#fff;border-bottom:1px solid #E3E6EA">
+    <div style="display:flex;align-items:center;gap:11px;min-width:0">
+      <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+      <a href="#" style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none;white-space:nowrap">Leaving Cert Practical</a>
+      <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+      <span style="font-size:14px;color:#4B535C;white-space:nowrap">North Wicklow ETSS</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;flex:none">
+      <span style="font-size:14px;color:#343A42;white-space:nowrap">Katelyn Hanlon</span>
+      <a href="#" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+      <button type="button" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap">Sign out</button>
+    </div>
+  </header>
+  <main style="padding:32px 28px 56px;max-width:916px;margin:0 auto">
+    <nav aria-label="Back to class" style="display:flex;gap:20px;flex-wrap:wrap">
+      <a href="#" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">6A Biology, Progress</a>
+      <a href="#" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">6A Biology, Students</a>
+    </nav>
+    <h1 style="margin:10px 0 0;font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">Cian Murphy</h1>
+    <p style="margin:6px 0 0;font-size:16px;color:#4B535C"><span style="font-family:'Space Mono',monospace;font-size:14px">cian.murphy</span> · Biology in Practice Investigation, 2027</p>
+
+    <section aria-labelledby="cp-h" style="margin-top:28px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:20px">
+        <h2 id="cp-h" style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">Checkpoints</h2>
+        <p style="margin:0;display:flex;align-items:baseline;gap:9px">
+          <sc-if value="{{ isBehind }}"><span style="font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;line-height:1;letter-spacing:-.02em;color:#A04806">{{ behind }}</span></sc-if>
+          <span style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:{{ behindColor }}">{{ behindLabel }}</span>
+        </p>
+      </div>
+      <p style="margin:4px 0 0;font-size:15px;color:#4B535C">Stages 1 to 3 are due. Only you can sign these off.</p>
+      <ul style="list-style:none;margin:12px 0 0;padding:0;background:#fff;border:1px solid #DDE1E6;border-radius:10px;overflow:hidden">
+        <sc-for list="{{ items }}" as="it" hint-placeholder-count="6">
+          <li style="padding:14px 18px;border-top:{{ it.topBorder }};background:{{ it.rowBg }}">
+            <div style="display:grid;grid-template-columns:200px minmax(0,1fr) 170px;gap:20px;align-items:center">
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#636B75">{{ it.label }}</span>
+                <span style="font-size:14px;font-weight:600;line-height:1.3;color:#101419">{{ it.name }}</span>
+                <span style="font-size:13px;color:#636B75">{{ it.date }} <span style="font-weight:700;color:{{ it.stateColor }}">{{ it.stateWord }}</span></span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+                <p style="margin:0;font-size:16px;line-height:1.45;color:#101419;text-wrap:pretty">{{ it.full }}</p>
+                <sc-if value="{{ it.hasHistory }}"><p style="margin:0;font-size:14px;line-height:1.4;color:#4B535C">{{ it.history }}</p></sc-if>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:stretch;gap:3px">
+                <sc-if value="{{ it.canSign }}"><button type="button" aria-label="{{ it.aSign }}" onClick="{{ it.onSign }}" style="min-height:44px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:{{ it.signColor }};cursor:pointer" style-hover="background:#F4F5F8;border-color:#1F3A6E">Sign off</button></sc-if>
+                <sc-if value="{{ it.isBusy }}"><button type="button" disabled="" aria-label="{{ it.aSign }}" style="min-height:44px;border-radius:8px;border:1px solid #DDE1E6;background:#EFF1F3;font-size:15px;font-weight:600;color:#4B535C;opacity:.75">Signing off…</button></sc-if>
+                <sc-if value="{{ it.isSigned }}"><span style="font-size:14px;color:#343A42"><strong style="font-weight:700;color:#0F5C3A">Signed off</strong> {{ it.signedDate }}</span><button type="button" aria-label="{{ it.aRevoke }}" onClick="{{ it.onAsk }}" style="align-self:flex-start;min-height:32px;padding:0;border:0;background:none;font-size:14px;font-weight:600;color:#4B535C;text-decoration:underline;text-underline-offset:3px;cursor:pointer" style-hover="color:#8E1D17">Revoke</button></sc-if>
+                <sc-if value="{{ it.isRecent }}"><span style="font-size:14px;font-weight:700;color:#0F5C3A">Signed off today</span><button type="button" aria-label="{{ it.aUndo }}" onClick="{{ it.onUndo }}" style="align-self:flex-start;min-height:32px;padding:0;border:0;background:none;font-size:14px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Undo</button></sc-if>
+              </div>
+            </div>
+            <sc-if value="{{ it.isConfirm }}">
+              <div style="margin-top:12px;display:flex;align-items:center;gap:11px;flex-wrap:wrap;padding:10px 12px 10px 16px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#FBF1F0">
+                <p style="margin:0;flex:1;min-width:0;font-size:15px;line-height:1.4;color:#8E1D17">Revoke this sign-off for Cian Murphy? It stays in the record as revoked by you.</p>
+                <button type="button" onClick="{{ it.onRevoke }}" style="min-height:44px;padding:0 16px;border-radius:8px;border:0;background:#B3251E;color:#fff;font-size:15px;font-weight:600;cursor:pointer" style-hover="background:#8E1D17">Revoke</button>
+                <button type="button" onClick="{{ keep }}" style="min-height:44px;padding:0 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap" style-hover="background:#EFF1F3">Keep sign-off</button>
+              </div>
+            </sc-if>
+          </li>
+        </sc-for>
+      </ul>
+    </section>
+
+    <section aria-labelledby="log-h" style="margin-top:32px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:20px">
+        <h2 id="log-h" style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">Log</h2>
+        <p style="margin:0;font-size:15px;color:#4B535C">Last entry 14 days ago. 5 entries; Cian has shared 3 with you.</p>
+      </div>
+      <div style="margin-top:12px;display:flex;align-items:center;gap:10px"><span style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#636B75">Log list as D-6, frame 2l</span><span style="flex:1;height:1px;background:#E3E6EA"></span></div>
+    </section>
+  </main>
+</div>
+</sc-if>
+
+<sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="{{ frameLabel }}" style="width:390px;background:#F7F8F9;border:1px solid #DDE1E6;border-radius:10px;overflow:hidden;font-family:'Public Sans',system-ui,sans-serif">
+  <div style="background:#fff;border-bottom:1px solid #E3E6EA">
+    <div style="display:flex;align-items:center;gap:9px;padding:10px 16px">
+      <img src="assets/crest-nwetss.png" alt="" style="width:26px;height:26px;object-fit:contain;flex:none">
+      <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;letter-spacing:-.025em;color:#101419;white-space:nowrap">Leaving Cert Practical</span>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px 11px">
+      <span style="font-size:14px;color:#4B535C">Katelyn Hanlon</span>
+      <span style="display:flex;align-items:center;gap:10px;flex:none">
+        <a href="#" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Change password</a>
+        <a href="#" style="display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border:1px solid #DDE1E6;border-radius:8px;background:#fff;font-size:14px;font-weight:600;color:#343A42;text-decoration:none">Sign out</a>
+      </span>
+    </div>
+  </div>
+  <div style="padding:24px 16px 32px">
+    <nav aria-label="Back to class" style="display:flex;gap:18px;flex-wrap:wrap">
+      <a href="#" style="display:inline-flex;align-items:center;min-height:44px;font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Progress</a>
+      <a href="#" style="display:inline-flex;align-items:center;min-height:44px;font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">Students</a>
+    </nav>
+    <h1 style="margin:4px 0 0;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">Cian Murphy</h1>
+    <p style="margin:6px 0 0;font-size:15px;color:#4B535C"><span style="font-family:'Space Mono',monospace;font-size:13px">cian.murphy</span> · 6A Biology</p>
+    <section aria-labelledby="cp-h-n" style="margin-top:22px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+        <h2 id="cp-h-n" style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;letter-spacing:-.02em;color:#101419">Checkpoints</h2>
+        <p style="margin:0;display:flex;align-items:baseline;gap:7px">
+          <sc-if value="{{ isBehind }}"><span style="font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;line-height:1;color:#A04806">{{ behind }}</span></sc-if>
+          <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:{{ behindColor }}">{{ behindLabel }}</span>
+        </p>
+      </div>
+      <ul style="list-style:none;margin:12px 0 0;padding:0;background:#fff;border:1px solid #DDE1E6;border-radius:10px;overflow:hidden">
+        <sc-for list="{{ items }}" as="it" hint-placeholder-count="6">
+          <li style="padding:13px 14px;border-top:{{ it.topBorder }};background:{{ it.rowBg }};display:flex;flex-direction:column;gap:6px">
+            <p style="margin:0;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;font-size:13px"><span style="font-family:'Space Mono',monospace;font-weight:700;color:#636B75">{{ it.label }}</span><span style="color:#636B75">{{ it.date }}</span><span style="font-weight:700;color:{{ it.stateColor }}">{{ it.stateWord }}</span></p>
+            <p style="margin:0;font-size:16px;line-height:1.45;color:#101419;text-wrap:pretty">{{ it.full }}</p>
+            <sc-if value="{{ it.hasHistory }}"><p style="margin:0;font-size:14px;line-height:1.4;color:#4B535C">{{ it.history }}</p></sc-if>
+            <sc-if value="{{ it.canSign }}"><button type="button" aria-label="{{ it.aSign }}" onClick="{{ it.onSign }}" style="margin-top:2px;min-height:44px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:{{ it.signColor }};cursor:pointer">Sign off</button></sc-if>
+            <sc-if value="{{ it.isBusy }}"><button type="button" disabled="" aria-label="{{ it.aSign }}" style="margin-top:2px;min-height:44px;border-radius:8px;border:1px solid #DDE1E6;background:#EFF1F3;font-size:15px;font-weight:600;color:#4B535C;opacity:.75">Signing off…</button></sc-if>
+            <sc-if value="{{ it.isSigned }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font-size:14px;color:#343A42"><strong style="color:#0F5C3A">Signed off</strong> {{ it.signedDate }}</span><button type="button" aria-label="{{ it.aRevoke }}" onClick="{{ it.onAsk }}" style="min-height:44px;padding:0 12px;border:0;background:none;font-size:15px;font-weight:600;color:#4B535C;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Revoke</button></div></sc-if>
+            <sc-if value="{{ it.isRecent }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font-size:14px;font-weight:700;color:#0F5C3A">Signed off today</span><button type="button" aria-label="{{ it.aUndo }}" onClick="{{ it.onUndo }}" style="min-height:44px;padding:0 12px;border:0;background:none;font-size:15px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Undo</button></div></sc-if>
+            <sc-if value="{{ it.isConfirm }}">
+              <div style="display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#FBF1F0">
+                <p style="margin:0;font-size:15px;line-height:1.4;color:#8E1D17">Revoke this sign-off for Cian Murphy? It stays in the record as revoked by you.</p>
+                <div style="display:flex;gap:8px">
+                  <button type="button" onClick="{{ it.onRevoke }}" style="flex:1;min-height:44px;border-radius:8px;border:0;background:#B3251E;color:#fff;font-size:15px;font-weight:600;cursor:pointer">Revoke</button>
+                  <button type="button" onClick="{{ keep }}" style="flex:1;min-height:44px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer">Keep sign-off</button>
+                </div>
+              </div>
+            </sc-if>
+          </li>
+        </sc-for>
+      </ul>
+    </section>
+    <section aria-labelledby="log-h-n" style="margin-top:26px">
+      <h2 id="log-h-n" style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;letter-spacing:-.02em;color:#101419">Log</h2>
+      <p style="margin:4px 0 0;font-size:15px;color:#4B535C">Last entry 14 days ago. 5 entries; Cian has shared 3 with you.</p>
+      <div style="margin-top:12px;display:flex;align-items:center;gap:10px"><span style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#636B75">Log list as D-6, 2l</span><span style="flex:1;height:1px;background:#E3E6EA"></span></div>
+    </section>
+  </div>
+</div>
+</sc-if>
+<sc-if value="{{ hasAnnounce }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;color:#5C6470">Screen reader hears: “{{ announce }}”</p></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1160,&quot;height&quot;:900},&quot;width&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[1140,390],&quot;default&quot;:1140,&quot;tsType&quot;:&quot;number&quot;},&quot;preset&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;frameLabel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const STAGES = [
+  { k: '1', label: 'Stage 1', name: 'Initial Response to the Investigation Brief', full: 'Initial ideas discussed with the teacher', date: '2 Oct 2026', due: true },
+  { k: '2', label: 'Stage 2', name: 'Background Research', full: 'Investigative log shared with the teacher', date: '6 Nov 2026', due: true },
+  { k: '3', label: 'Stage 3', name: 'Designing and Planning the Experiment', full: 'Plan discussed with the teacher (feasibility and safety)', date: '11 Dec 2026', due: true },
+  { k: '4', label: 'Stage 4', name: 'Conducting the Experiment', full: 'Experiment carried out under supervision, in line with the research and planning already shared', date: '12 Feb 2027', due: false },
+  { k: '5', label: 'Stage 5', name: 'Data Analysis and Conclusions', full: 'Data analysis shared with the teacher', date: '19 Mar 2027', due: false },
+  { k: '6', label: 'Stage 6', name: 'Finalising the Biology in Practice Investigation Report', full: 'Final report submitted to the teacher', date: '30 Apr 2027', due: false }
+];
+const NAME = 'Cian Murphy';
+const TODAY = '25 Jan 2027';
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const p = props || {};
+    const st = { signed: { '1': '6 Oct 2026', '2': '10 Nov 2026' }, recent: {}, busy: {}, confirm: null, announce: '',
+      history: { '3': 'Signed off on 10 Dec 2026, revoked on 12 Dec 2026 by Katelyn Hanlon.' } };
+    String(p.preset || '').split(',').filter(Boolean).forEach(t => {
+      const [type, k] = t.split(':'); const s = STAGES.find(x => x.k === k);
+      if (type === 'confirm') st.confirm = k;
+      if (type === 'busy') st.busy[k] = true;
+      if (type === 'after') { st.signed[k] = TODAY; st.recent[k] = true; st.announce = 'Signed off: ' + s.full + ', for ' + NAME + '.'; }
+    });
+    this.state = st;
+  }
+  renderVals() {
+    const p = this.props || {};
+    const { signed, recent, busy, confirm, history } = this.state;
+    const wide = (p.width || 1140) > 600;
+    const behind = STAGES.filter(s => s.due && !signed[s.k]).length;
+    const items = STAGES.map((s, i) => {
+      const isSigned = !!signed[s.k], isBusy = !!busy[s.k], isRec = isSigned && !!recent[s.k];
+      return {
+        ...s, topBorder: i ? '1px solid #E3E6EA' : '0',
+        rowBg: !isSigned && !isBusy && s.due ? '#FCF8F5' : '#fff',
+        stateWord: isSigned ? '' : (s.due ? 'Due, not signed off' : 'Not due yet'),
+        stateColor: s.due ? '#A04806' : '#636B75',
+        canSign: !isSigned && !isBusy, isBusy, isSigned: isSigned && !isRec, isRecent: isRec,
+        signColor: s.due ? '#1F3A6E' : '#343A42',
+        signedDate: signed[s.k], isConfirm: confirm === s.k && isSigned,
+        hasHistory: !!history[s.k], history: history[s.k],
+        aSign: 'Sign off ' + s.full + ' for ' + NAME,
+        aRevoke: 'Revoke sign-off of ' + s.full + ' for ' + NAME,
+        aUndo: 'Undo sign-off of ' + s.full + ' for ' + NAME,
+        onSign: () => {
+          this.setState(q => ({ busy: { ...q.busy, [s.k]: true } }));
+          setTimeout(() => this.setState(q => { const b = { ...q.busy }; delete b[s.k]; return { busy: b, signed: { ...q.signed, [s.k]: TODAY }, recent: { ...q.recent, [s.k]: true }, announce: 'Signed off: ' + s.full + ', for ' + NAME + '.' }; }), 450);
+        },
+        onAsk: () => this.setState({ confirm: s.k }),
+        onUndo: () => this.drop(s, 'Sign-off undone: '),
+        onRevoke: () => this.drop(s, 'Sign-off revoked: ')
+      };
+    });
+    return {
+      isWide: wide, isNarrow: !wide, frameLabel: p.frameLabel || 'Student view · ' + (wide ? 1140 : 390),
+      items, behind: String(behind), isBehind: behind > 0,
+      behindLabel: behind ? (behind === 1 ? 'checkpoint behind' : 'checkpoints behind') : 'Up to date',
+      behindColor: behind ? '#A04806' : '#101419',
+      keep: () => this.setState({ confirm: null }),
+      hasAnnounce: !!this.state.announce, announce: this.state.announce
+    };
+  }
+  drop(s, prefix) {
+    this.setState(q => {
+      const signed = { ...q.signed }, recent = { ...q.recent }; const was = signed[s.k];
+      delete signed[s.k]; delete recent[s.k];
+      return { signed, recent, confirm: null, history: { ...q.history, [s.k]: 'Signed off on ' + was + ', revoked on ' + TODAY + ' by Katelyn Hanlon.' }, announce: prefix + s.full + ', for ' + NAME + '. It stays in the record.' };
+    });
+  }
+}
+</script>
+</body>
+</html>

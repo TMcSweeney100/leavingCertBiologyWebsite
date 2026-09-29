@@ -310,8 +310,8 @@ This is what Claude Design needs to design against: every page, who sees it, wha
 | `/teach/classes/new` | 1D | "My classes" link; subject, name, year group, academic year, level (optional) | Create · Cancel | Validation (the error panel, and each invalid row marked with its message) |
 | `/teach/classes/[id]` (Students tab) | 1D | "My classes" link; section tabs (Students current; Component and Progress shown disabled until P2/P4); join code on a navy card with expiry and a copy button; pending requests with username and "asked …"; approved students | Copy code ("Copied") · New code · Turn joining off (confirm in place) · Approve · Decline · Remove (confirm in place) · Issue reset code (inline in that row, shown once, 24-hour expiry, Hide code, warns hiding can't be undone) | No students; nothing waiting; code off (R27) |
 | `/teach/classes/[id]/component` | 2D | No component yet: choose the brief (subject + exam year). Component set: stage date for each stage, the completion date, my own items per stage | Create component · Set/change dates · Add, edit, retire my items | Date after completion date (named error); out-of-order dates (warning, allowed); brief's completion date changed (warning) |
-| `/teach/classes/[id]/progress` | 4A | Grid: students × checkpoints, sign-off state and date, due markers, "behind by N", days since last log entry; furthest behind first | Sign off · Revoke | No component; nothing due yet; no approved students |
-| `/teach/classes/[id]/students/[studentId]` | 3C / 4B | One student: their log in the teacher projection (hidden entries show kind and date only), their checkpoints | Sign off/revoke (4B) | Hidden entries; no entries |
+| `/teach/classes/[id]/progress` | 4A, pack D-7 | An answer line ("14 of 30 students are behind"); a stage picker (All stages, or one checkpoint, in the URL as `?stage=all\|1…6\|R`; default All at 1140, the latest due stage at 390); students grouped into bands by how many due checkpoints they're behind, furthest behind first, then longest since their last log entry, then surname; per student: behind by N, each checkpoint's state (Not due yet / Due / Signed off with its date) and last log entry. A table at 1140, a list per band at 390. | Sign off (one click) · Undo (a sign-off made this visit, until Re-sort or reload) · Revoke (confirmed in place) · Re-sort (N changes) · Hide names (blurs names, dates, log lines and counts; remembered per browser) | No component; no stage dates; nothing due yet; no approved students; everyone up to date; a failed sign-off (alert under the row, Try again) |
+| `/teach/classes/[id]/students/[studentId]` | 3C / 4B, packs D-6 and D-7 | Back links to the class's Progress and Students tabs; **Checkpoints** first (behind by N; each checkpoint's stage, date, state and full text; each revoked sign-off as "Signed off on …, revoked on … by …"); then their log in the teacher projection (hidden entries show kind and dates only) | Sign off · Undo · Revoke (confirmed in place) | Hidden entries; no entries; nothing signed off yet |
 
 **School leader page**
 
@@ -337,7 +337,7 @@ This is what Claude Design needs to design against: every page, who sees it, wha
 | D-4 Timeline | `/home` list, week, month, add-item | Phase 2F |
 | D-5 Teacher component setup | `/teach/classes/[id]/component` | Phase 2D |
 | D-6 Log | student log list, entry form, entry history; teacher student view | Phase 3 |
-| D-7 Progress grid | `/teach/classes/[id]/progress` | Phase 4 |
+| D-7 Progress grid | `/teach/classes/[id]/progress` | Phase 4 — arrived 28 Sep 2026, docs/design/pilot/D-7-progress-grid/ (direction 1b "Bands") |
 | D-8 School overview | `/school` | Phase 5 |
 | D-9 Writing tools | sources, AI use, checker | Phase 6 |
 

@@ -1,0 +1,34 @@
+/* Pack D-7 — progress grid and sign-offs. Additions only, on top of D-1 to D-6.
+   No --bipi-* value is changed. Contrast is the WCAG 2.x ratio, measured against
+   #FFFFFF unless noted. Text pairs need 4.5:1. Tints carry no meaning of their own:
+   every cell state is also a word ("Due", "Not due yet", "Signed off"). */
+
+:root {
+  /* ── Cell state: "Due, not signed off" ─────────────────────────────────────
+     This is pending work in the brief's sense (§5): something the teacher still has
+     to do. So it takes attention amber rather than a new hue. Both are aliases, named
+     so the grid can change them without touching the pending-request badge. */
+  --app-due: #A04806;               /* = --app-attention. 6.13:1 on white; 5.31:1 on
+                                       --app-due-tint; 5.77:1 on --app-ground (band row) */
+  --app-due-tint: #F6EDE6;          /* = --app-attention-tint. Due cell ground.
+                                       Navy "Sign off" on it 9.62:1 */
+  --app-due-row: #FCF8F5;           /* NEW. The ground of a due row on the student view.
+                                       Ink 17.50:1, amber 5.81:1, muted 5.11:1 */
+
+  /* ── Cell state: "Signed off" ──────────────────────────────────────────────
+     The D-3 "done" green: a signed-off checkpoint is a settled fact. */
+  --app-signed: #0F5C3A;            /* = --app-done. 8.04:1 on white; 7.36:1 on the ground */
+  --app-signed-recent: #F1F6F4;     /* = --app-done-ground. Cell signed off in this session,
+                                       the one that still offers Undo. Navy Undo on it 10.18:1;
+                                       body on it 10.51:1 */
+
+  /* ── Behind-by band heading (the page's one memorable thing) ───────────── */
+  --text-app-behind: 36px;          /* Space Grotesk 700, line-height 1. Amber.
+                                       32px at 390 (band heading), 30px on the student view
+                                       at 390. Large text, so 3:1 would do; it gets 5.77:1 */
+
+  /* ── Hide names (projector) ───────────────────────────────────────────── */
+  --app-hide-blur: 7px;             /* filter: blur() on names, dates and log lines.
+                                       Enough that a name can't be read from the back of
+                                       a room at 1140 on a projector; tested at 16px/600 */
+}
