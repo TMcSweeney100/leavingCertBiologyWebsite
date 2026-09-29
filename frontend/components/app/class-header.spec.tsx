@@ -13,7 +13,12 @@ describe("ClassHeader", () => {
     expect(screen.getByRole("link", { name: "Component" })).toHaveAttribute("aria-current", "page");
     expect(screen.getByRole("link", { name: "Students" })).toHaveAttribute("href", "/teach/classes/c1");
     expect(tabs).toHaveTextContent("Progress");
-    expect(screen.queryByRole("link", { name: "Progress" })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Progress" })).toHaveAttribute("href", "/teach/classes/c1/progress");
+  });
+
+  it("marks Progress current on the Progress tab (pack D-7)", () => {
+    render(<ClassHeader detail={detail} current="progress" />);
+    expect(screen.getByRole("link", { name: "Progress" })).toHaveAttribute("aria-current", "page");
   });
 
   it("links back to my classes", () => {

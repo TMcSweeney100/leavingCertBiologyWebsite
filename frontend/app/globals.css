@@ -89,6 +89,7 @@
      student component page. Additions only; no --bipi-* value touched. */
   --color-app-now: var(--app-now);
   --color-app-done: var(--app-done);
+  --color-app-signed: var(--app-signed);
   --color-app-done-ground: var(--app-done-ground);
   --color-app-done-ink: var(--app-done-ink);
   --shadow-app-now-lift: var(--app-now-lift);
@@ -102,6 +103,12 @@
   --color-app-kind-ai-tint: var(--app-kind-ai-tint);
   --color-app-private-ground: var(--app-private-ground);
   --color-app-switch-off: var(--app-switch-off);
+
+  /* Pack D-7 (docs/design/pilot/D-7-progress-grid/tokens.css) — progress grid cell states. */
+  --color-app-due: var(--app-due);
+  --color-app-due-tint: var(--app-due-tint);
+  --color-app-due-row: var(--app-due-row);
+  --color-app-signed-recent: var(--app-signed-recent);
 }
 
 @theme {
@@ -123,6 +130,8 @@
   --text-app-code-lg:   68px;   /* join code on the navy card, laptop: read from the back row */
   --text-app-countdown:    48px; /* pack D-4 — /home countdown band, laptop */
   --text-app-countdown-sm: 34px; /* pack D-4 — /home countdown band, phone */
+  --text-app-behind:    36px; /* pack D-7 — band numeral, laptop */
+  --text-app-behind-sm: 32px; /* pack D-7 — band numeral, phone */
 
   /* BiPi type scale — named font-size steps, added per docs/IMPLEMENTATION_PLAN.md §4.4.
      One entry per distinct pixel value the design uses: reuse an existing step (extending
@@ -273,7 +282,7 @@
      the same kind of fact, and the page uses green for nothing else. */
   --app-now: var(--app-ink);                              /* 18.48:1; white on it 18.48:1 */
   --app-now-lift: 0 6px 20px rgba(16, 20, 25, .08);        /* the one shadow in the app */
-  --app-done: var(--app-approved);                         /* 8.04:1; on --app-done-ground 7.36:1 */
+  --app-done:var(--app-approved);                         /* 8.04:1; on --app-done-ground 7.36:1 */
   --app-done-ground: var(--app-approved-tint);
   --app-done-ink: #2C5C4A;                                  /* 7.19:1; on --app-done-ground 6.58:1 */
 
@@ -306,6 +315,15 @@
   --app-kind-ai-tint: #F7EEF4;
   --app-private-ground: #F7F8F9;     /* hidden rows and cards; ink 17.38:1, muted 5.08:1 */
   --app-switch-off: #636B75;         /* switch track when off; 5.40:1 on white */
+
+  /* Pack D-7 — progress grid. "Due, not signed off" is pending work, so it is attention amber (aliases, named
+     so the grid can change them without touching the pending badge). A signed-off checkpoint is a settled fact: done green. */
+  --app-due: var(--app-attention);       /* 6.13:1 on white; 5.31:1 on --app-due-tint; 5.77:1 on --app-ground */
+  --app-due-tint: var(--app-attention-tint); /* navy "Sign off" on it 9.62:1 */
+  --app-due-row: #FCF8F5;                /* due row on the student view; ink 17.50:1, amber 5.81:1, muted 5.11:1 */
+  --app-signed: var(--app-done);         /* 8.04:1 on white; 7.36:1 on --app-done-ground */
+  --app-signed-recent: var(--app-done-ground); /* a cell signed off this visit (offers Undo); navy on it 10.18:1 */
+  --app-hide-blur: 7px;                  /* Hide names: unreadable from the back of a room at 1140 on a projector */
 
   /* shadcn semantic variables — mapped onto the BiPi tokens above so every primitive
      (Card, Badge, Progress, Collapsible, Table, Button) inherits the BiPi palette. */
@@ -539,5 +557,13 @@
       overflow: visible !important;
       opacity: 1 !important;
     }
+  }
+}
+
+/* Pack D-7, plan P4-16 and P4-28: Hide names blurs whatever a component marks data-private (names, dates, log
+   lines, counts). Visual only: accessible names are untouched. In a layer so a utility can still override it. */
+@layer components {
+  .app-hide-names [data-private] {
+    filter: blur(var(--app-hide-blur));
   }
 }

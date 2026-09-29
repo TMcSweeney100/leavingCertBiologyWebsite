@@ -12,6 +12,7 @@ import ie.coursework.components.adapter.persistence.BriefRepository;
 import ie.coursework.components.adapter.persistence.ComponentRepository;
 import ie.coursework.components.adapter.persistence.ItemTickRepository;
 import ie.coursework.components.adapter.persistence.TeacherItemRepository;
+import ie.coursework.components.adapter.persistence.SignoffRepository;
 import ie.coursework.components.adapter.persistence.TemplateRepository;
 import ie.coursework.components.domain.ComponentInstance;
 import ie.coursework.identity.domain.Actor;
@@ -36,7 +37,7 @@ class ComponentServiceOwnedTest {
     private final ComponentRepository components = mock(ComponentRepository.class);
     private final ComponentService service = new ComponentService(classes, mock(ClassGroupRepository.class),
             mock(SubjectRepository.class), mock(BriefRepository.class), mock(TemplateRepository.class), components,
-            mock(TeacherItemRepository.class), mock(ItemTickRepository.class), Clock.systemUTC());
+            mock(TeacherItemRepository.class), mock(ItemTickRepository.class), mock(SignoffRepository.class), Clock.systemUTC());
 
     private final UUID teacher = UUID.randomUUID();
     private final Actor actor = new Actor(teacher, List.of(new RoleGrant(UUID.randomUUID(), "School A", "SA", Role.TEACHER)));

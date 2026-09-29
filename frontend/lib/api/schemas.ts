@@ -129,7 +129,7 @@ export const teacherComponentSchema = z.object({
 export type TeacherComponent = z.infer<typeof teacherComponentSchema>;
 
 // Mirrors ComponentViews.StudentComponent (plan 2E).
-export const checkpointStateSchema = z.enum(["NOT_DUE", "DUE"]);
+export const checkpointStateSchema = z.enum(["NOT_DUE", "DUE", "SIGNED_OFF"]);
 export const studentStageSchema = z.object({
   id: z.string(),
   ordinal: z.number(),
@@ -141,7 +141,7 @@ export const studentStageSchema = z.object({
   hoursGroup: z.string().nullable(),
   supervised: z.boolean(),
   dueDate: z.string().nullable(),
-  checkpoint: z.object({ text: z.string(), state: checkpointStateSchema }).nullable(),
+  checkpoint: z.object({ text: z.string(), state: checkpointStateSchema, signedOffOn: z.string().nullable() }).nullable(),
   items: z.array(z.object({ id: z.string(), text: z.string(), dueDate: z.string().nullable(), done: z.boolean(), doneOn: z.string().nullable() })),
   prompts: z.array(z.object({ heading: z.string().nullable(), text: z.string() })),
 });
@@ -300,3 +300,55 @@ export const teacherStudentLogSchema = z.object({
   studentId: z.string(), firstName: z.string(), lastName: z.string(), componentId: z.string(), entries: z.array(teacherEntrySchema),
 });
 export type TeacherStudentLog = z.infer<typeof teacherStudentLogSchema>;
+
+// Phase 4 — mirrors progress/application/ProgressViews.
+export const progressCellSchema = z.object({ checkpointId: z.string(), state: checkpointStateSchema, signedOffOn: z.string().nullable() });
+export type ProgressCell = z.infer<typeof progressCellSchema>;
+
+export const gridStageSchema = z.object({
+  stageId: z.string(),
+  ordinal: z.number(),
+  label: z.string().nullable(),
+  name: z.string(),
+  dueDate: z.string().nullable(),
+  checkpoint: z.object({ id: z.string(), text: z.string() }).nullable(),
+});
+export type GridStage = z.infer<typeof gridStageSchema>;
+
+export const progressStudentSchema = z.object({
+  studentId: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  behindBy: z.number(),
+  lastLogActivityOn: z.string().nullable(),
+  daysSinceLastLogActivity: z.number().nullable(),
+  cells: z.array(progressCellSchema),
+});
+export type ProgressStudent = z.infer<typeof progressStudentSchema>;
+
+export const progressGridSchema = z.object({
+  componentId: z.string(),
+  classId: z.string(),
+  className: z.string(),
+  today: z.string(),
+  stages: z.array(gridStageSchema),
+  students: z.array(progressStudentSchema),
+});
+export type ProgressGrid = z.infer<typeof progressGridSchema>;
+
+export const studentCheckpointsSchema = z.object({
+  studentId: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  today: z.string(),
+  behindBy: z.number(),
+  lastLogActivityOn: z.string().nullable(),
+  daysSinceLastLogActivity: z.number().nullable(),
+  stages: z.array(gridStageSchema.extend({
+    checkpoint: z.object({ id: z.string(), text: z.string() }),
+    state: checkpointStateSchema,
+    signedOffOn: z.string().nullable(),
+    history: z.array(z.object({ signedOffOn: z.string(), revokedOn: z.string(), revokedBy: z.string() })),
+  })),
+});
+export type StudentCheckpoints = z.infer<typeof studentCheckpointsSchema>;

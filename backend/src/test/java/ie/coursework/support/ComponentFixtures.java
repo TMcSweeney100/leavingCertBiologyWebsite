@@ -36,6 +36,16 @@ public class ComponentFixtures {
                 """, UUID.class, secCode, ordinal);
     }
 
+    /** The checkpoint in a brief's stage (each stage has at most one, design §7.3). */
+    public UUID checkpointId(String secCode, int stageOrdinal) {
+        return jdbc.queryForObject("""
+                SELECT c.id FROM template_checkpoint c
+                JOIN template_stage s ON s.id = c.stage_id
+                JOIN annual_brief b ON b.template_version_id = s.version_id
+                WHERE b.sec_code = ? AND s.ordinal = ?
+                """, UUID.class, secCode, stageOrdinal);
+    }
+
     public void stageDate(UUID componentId, UUID stageId, LocalDate date) {
         jdbc.update("INSERT INTO instance_stage_date (instance_id, template_stage_id, due_date) VALUES (?, ?, ?)",
                 componentId, stageId, date);

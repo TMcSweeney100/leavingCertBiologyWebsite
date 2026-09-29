@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#E6E8EC;font-family:'Public Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:#1F3A6E}
+  a:hover{color:#16294E}
+  input,button,select{font:inherit}
+  button{touch-action:manipulation}
+  input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #1F3A6E;outline-offset:2px}
+</style>
+</helmet>
+
+<section style="width:max-content;padding:56px 56px 32px;display:flex;flex-direction:column;gap:22px">
+  <div style="max-width:900px;display:flex;flex-direction:column;gap:13px">
+    <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.08em;color:#5C6470">Pack D-7 · progress grid · rough directions · direction 2e Navy</p>
+    <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">Progress grid: three directions at 1140</h1>
+    <p style="margin:0;font-size:16px;line-height:1.55;color:#343A42;text-wrap:pretty">Same 30-student Biology class in all three (Stages 1–3 due, 4–6 not due; today is 25 Jan 2027). The three differ on where the boldness sits and how the checkpoint text is reached. All three are live: sign off, revoke, undo, re-sort and <strong style="font-weight:600">Hide names</strong> work, and share one state, so a change in one shows in the others.</p>
+    <p style="margin:0;font-size:15px;line-height:1.55;color:#4B535C;text-wrap:pretty">Common to all: one click signs off and the cell changes in place; rows never move until the teacher presses <strong style="font-weight:600">Re-sort</strong>; revoke confirms in a strip under the row; <strong style="font-weight:600">Hide names</strong> blurs names and dates for the projector. Student names and stage dates are sample content.</p>
+    <p aria-live="polite" style="margin:0;min-height:24px;font-size:15px;color:#0F5C3A;font-weight:600">{{ announce }}</p>
+  </div>
+</section>
+
+<section style="width:max-content;padding:0 56px 96px;display:flex;flex-direction:column;gap:18px">
+  <div style="display:flex;gap:36px;align-items:flex-start">
+
+    <!-- ============ 1a LEDGER ============ -->
+    <div id="1a" style="display:flex;flex-direction:column;gap:12px;width:1140px">
+      <div style="display:flex;align-items:baseline;gap:12px">
+        <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;padding:3px 8px;border-radius:6px;background:#101419;color:#fff">1a</span>
+        <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:25px;font-weight:700;letter-spacing:-.025em;color:#101419">Ledger</h2>
+      </div>
+      <p style="margin:0;max-width:900px;font-size:15px;line-height:1.5;color:#4B535C;text-wrap:pretty">A plain data table. The boldness is a <strong style="font-weight:600">Behind by</strong> column of large numerals right after the name. Each cell is one large button. Column headers are short (stage number, the checkpoint's opening words, date, due state); the full text is in a checkpoint key above the table, and each short phrase links to its line.</p>
+      <div data-screen-label="1a Ledger · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+        <header style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px;background:#fff;border-bottom:1px solid #E3E6EA">
+          <div style="display:flex;align-items:center;gap:11px;min-width:0">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <a href="#" style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none;white-space:nowrap">Leaving Cert Practical</a>
+            <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+            <span style="font-size:14px;color:#4B535C;white-space:nowrap">North Wicklow ETSS</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex:none">
+            <span style="font-size:14px;color:#343A42;white-space:nowrap">Katelyn Hanlon</span>
+            <a href="#" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+            <button type="button" style="padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap">Sign out</button>
+          </div>
+        </header>
+        <main style="padding:32px 28px 56px">
+          <a href="#" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">My classes</a>
+          <h1 style="margin:10px 0 0;font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">6A Biology</h1>
+          <p style="margin:6px 0 0;font-size:16px;color:#4B535C">Biology, year 6, 2026/27</p>
+          <nav aria-label="Class sections" style="display:flex;gap:24px;margin-top:20px;border-bottom:1px solid #E3E6EA">
+            <a href="#" style="padding:10px 2px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#4B535C;text-decoration:none">Students</a>
+            <a href="#" style="padding:10px 2px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#4B535C;text-decoration:none">Component</a>
+            <a href="#" aria-current="page" style="padding:10px 2px;border-bottom:2px solid #1F3A6E;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:none">Progress</a>
+          </nav>
+
+          <div style="margin-top:24px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">{{ summaryHead }}</h2>
+              <p style="margin:0;font-size:16px;color:#4B535C">Stages 1 to 3 are due. Furthest behind first.</p>
+            </div>
+            <button type="button" role="switch" aria-checked="{{ hideStr }}" onClick="{{ toggleHide }}" style="display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 14px 8px 10px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;cursor:pointer;font-size:15px;font-weight:600;color:#343A42" style-hover="background:#EFF1F3">
+              <span aria-hidden="true" style="position:relative;width:36px;height:20px;border-radius:99px;background:{{ trackBg }};flex:none"><span style="position:absolute;top:2px;left:{{ knobLeft }};width:16px;height:16px;border-radius:99px;background:#fff;transition:left 160ms cubic-bezier(.2,.7,.3,1)"></span></span>
+              Hide names
+            </button>
+          </div>
+
+          <div style="margin-top:16px;border:1px solid #DDE1E6;border-radius:10px;background:#fff;padding:14px 18px;display:flex;flex-direction:column;gap:8px">
+            <p style="margin:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#636B75">Checkpoints</p>
+            <ol style="margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px 24px">
+              <sc-for list="{{ stages }}" as="s" hint-placeholder-count="6">
+                <li id="{{ s.keyId }}" style="display:flex;gap:8px;font-size:14px;line-height:1.4;color:#343A42"><span style="flex:none;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#101419">{{ s.n }}</span><span>{{ s.full }}</span></li>
+              </sc-for>
+            </ol>
+          </div>
+
+          <sc-if value="{{ showResort }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:12px;display:flex;align-items:center;gap:14px;padding:10px 12px 10px 16px;border-radius:10px;border:1px solid #DDE1E6;background:#fff">
+              <p style="margin:0;flex:1;font-size:15px;color:#343A42">{{ resortText }}</p>
+              <button type="button" onClick="{{ resort }}" style="padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer" style-hover="background:#EFF1F3">Re-sort</button>
+            </div>
+          </sc-if>
+
+          <div style="margin-top:12px;border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums">
+              <caption style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Checkpoint sign-offs for 6A Biology</caption>
+              <thead>
+                <tr>
+                  <th scope="col" style="text-align:left;vertical-align:bottom;padding:12px 14px;font-size:13px;font-weight:600;color:#636B75;width:210px">Student</th>
+                  <th scope="col" style="text-align:left;vertical-align:bottom;padding:12px 8px;font-size:13px;font-weight:600;color:#636B75;width:92px">Behind by</th>
+                  <sc-for list="{{ stages }}" as="s" hint-placeholder-count="6">
+                    <th scope="col" style="text-align:left;vertical-align:bottom;padding:10px 6px;font-weight:400">
+                      <span style="display:block;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#636B75">Stage {{ s.n }}</span>
+                      <a href="#{{ s.keyId }}" style="display:block;font-size:14px;font-weight:600;line-height:1.25;color:#101419;text-decoration:underline;text-decoration-color:#C9D0D8;text-underline-offset:3px">{{ s.short }}</a>
+                      <span style="display:block;margin-top:3px;font-size:12px;color:#636B75">{{ s.date }}</span>
+                      <span style="display:block;font-size:12px;font-weight:700;color:{{ s.stateColor }}">{{ s.stateWord }}</span>
+                    </th>
+                  </sc-for>
+                  <th scope="col" style="text-align:left;vertical-align:bottom;padding:12px 14px 12px 10px;font-size:13px;font-weight:600;color:#636B75;width:128px">Log</th>
+                </tr>
+              </thead>
+              <sc-for list="{{ rows }}" as="r" hint-placeholder-count="10">
+                <tbody>
+                  <tr>
+                    <th scope="row" style="text-align:left;padding:8px 14px;border-top:1px solid #E3E6EA;font-weight:400;vertical-align:middle">
+                      <a href="#" style="display:block;font-size:16px;font-weight:600;line-height:1.3;color:#101419;text-decoration:none;overflow-wrap:anywhere;filter:{{ blurCss }}" style-hover="text-decoration:underline">{{ r.name }}</a>
+                    </th>
+                    <td style="padding:6px 8px;border-top:1px solid #E3E6EA;vertical-align:middle">
+                      <sc-if value="{{ r.isBehind }}"><span style="display:flex;align-items:baseline;gap:5px;color:#A04806"><span style="font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;line-height:1;letter-spacing:-.02em">{{ r.behind }}</span><span style="font-size:13px;font-weight:600">behind</span></span></sc-if>
+                      <sc-if value="{{ r.upToDate }}"><span style="font-size:14px;color:#4B535C">Up to date</span></sc-if>
+                    </td>
+                    <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="6">
+                      <td style="padding:4px 3px;border-top:1px solid #E3E6EA;vertical-align:middle">
+                        <sc-if value="{{ c.isDue }}"><button type="button" aria-label="{{ c.aSign }}" onClick="{{ c.onSign }}" style="width:100%;min-height:50px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding:5px 9px;border-radius:6px;border:1px solid rgba(160,72,6,.32);background:#F6EDE6;cursor:pointer;text-align:left" style-hover="border-color:#A04806"><span style="font-size:12px;font-weight:700;color:#A04806">Due</span><span style="font-size:14px;font-weight:600;color:#1F3A6E">Sign off</span></button></sc-if>
+                        <sc-if value="{{ c.isNotDue }}"><button type="button" aria-label="{{ c.aSign }}" onClick="{{ c.onSign }}" style="width:100%;min-height:50px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding:5px 9px;border-radius:6px;border:1px solid #E3E6EA;background:#fff;cursor:pointer;text-align:left" style-hover="border-color:#C9D0D8;background:#F7F8F9"><span style="font-size:12px;color:#636B75">Not due yet</span><span style="font-size:14px;font-weight:600;color:#343A42">Sign off</span></button></sc-if>
+                        <sc-if value="{{ c.isBusy }}"><button type="button" disabled="" aria-label="{{ c.aSign }}" style="width:100%;min-height:50px;display:flex;align-items:center;padding:5px 9px;border-radius:6px;border:1px solid #E3E6EA;background:#EFF1F3;text-align:left;font-size:13px;color:#4B535C">Signing off…</button></sc-if>
+                        <sc-if value="{{ c.isSettled }}"><button type="button" aria-label="{{ c.aRevoke }}" onClick="{{ c.onAsk }}" style="width:100%;min-height:50px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding:5px 9px;border-radius:6px;border:1px solid transparent;background:#fff;cursor:pointer;text-align:left" style-hover="border-color:#DDE1E6"><span style="font-size:12px;font-weight:700;color:#0F5C3A">Signed off</span><span style="font-size:13px;color:#343A42;filter:{{ blurCss }}">{{ c.date }}</span></button></sc-if>
+                        <sc-if value="{{ c.isRecent }}"><div style="min-height:50px;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:5px 9px;border-radius:6px;background:#EEF4F0"><span style="font-size:12px;font-weight:700;color:#0F5C3A">Signed off today</span><button type="button" aria-label="{{ c.aUndo }}" onClick="{{ c.onUndo }}" style="align-self:flex-start;padding:0;border:0;background:none;font-size:13px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Undo</button></div></sc-if>
+                        <sc-if value="{{ c.isConfirm }}"><div style="min-height:50px;display:flex;flex-direction:column;justify-content:center;padding:5px 9px;border-radius:6px;border:1px solid rgba(179,37,30,.4);background:#FBF1F0"><span style="font-size:12px;font-weight:700;color:#8E1D17">Revoke?</span><span style="font-size:12px;color:#343A42">See below</span></div></sc-if>
+                      </td>
+                    </sc-for>
+                    <td style="padding:6px 14px 6px 10px;border-top:1px solid #E3E6EA;vertical-align:middle;font-size:14px;line-height:1.3;color:{{ r.logColor }};font-weight:{{ r.logWeight }}"><span style="filter:{{ blurCss }}">{{ r.log }}</span></td>
+                  </tr>
+                  <sc-if value="{{ r.hasConfirm }}">
+                    <tr>
+                      <td colspan="9" style="padding:0 8px 8px">
+                        <div style="display:flex;align-items:center;gap:11px;flex-wrap:wrap;padding:11px 14px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#FBF1F0">
+                          <p style="margin:0;flex:1;min-width:0;font-size:15px;line-height:1.4;color:#8E1D17">{{ r.confirmText }}</p>
+                          <button type="button" onClick="{{ r.onRevoke }}" style="padding:10px 14px;border-radius:8px;border:0;background:#B3251E;color:#fff;font-size:15px;font-weight:600;cursor:pointer" style-hover="background:#8E1D17">Revoke</button>
+                          <button type="button" onClick="{{ r.onKeep }}" style="padding:10px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap" style-hover="background:#EFF1F3">Keep sign-off</button>
+                        </div>
+                      </td>
+                    </tr>
+                  </sc-if>
+                </tbody>
+              </sc-for>
+            </table>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ============ 1b BANDS ============ -->
+    <div id="1b" style="display:flex;flex-direction:column;gap:12px;width:1140px">
+      <div style="display:flex;align-items:baseline;gap:12px">
+        <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;padding:3px 8px;border-radius:6px;background:#101419;color:#fff">1b</span>
+        <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:25px;font-weight:700;letter-spacing:-.025em;color:#101419">Bands</h2>
+      </div>
+      <p style="margin:0;max-width:900px;font-size:15px;line-height:1.5;color:#4B535C;text-wrap:pretty">The same table cut into row groups by behind-by number. The boldness is each band's heading: a large numeral and how many students share it, so "who needs me" reads as three short lists. Headers are buttons: pressing one pins that checkpoint's full text in a strip above the table (keyboard and touch, not hover). Denser single-line cells.</p>
+      <div data-screen-label="1b Bands · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+        <header style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px;background:#fff;border-bottom:1px solid #E3E6EA">
+          <div style="display:flex;align-items:center;gap:11px;min-width:0">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <a href="#" style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none;white-space:nowrap">Leaving Cert Practical</a>
+            <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+            <span style="font-size:14px;color:#4B535C;white-space:nowrap">North Wicklow ETSS</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex:none">
+            <span style="font-size:14px;color:#343A42;white-space:nowrap">Katelyn Hanlon</span>
+            <a href="#" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+            <button type="button" style="padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap">Sign out</button>
+          </div>
+        </header>
+        <main style="padding:32px 28px 56px">
+          <a href="#" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">My classes</a>
+          <h1 style="margin:10px 0 0;font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">6A Biology</h1>
+          <p style="margin:6px 0 0;font-size:16px;color:#4B535C">Biology, year 6, 2026/27</p>
+          <nav aria-label="Class sections" style="display:flex;gap:24px;margin-top:20px;border-bottom:1px solid #E3E6EA">
+            <a href="#" style="padding:10px 2px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#4B535C;text-decoration:none">Students</a>
+            <a href="#" style="padding:10px 2px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#4B535C;text-decoration:none">Component</a>
+            <a href="#" aria-current="page" style="padding:10px 2px;border-bottom:2px solid #1F3A6E;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:none">Progress</a>
+          </nav>
+          <div style="margin-top:24px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">{{ summaryHead }}</h2>
+              <p style="margin:0;font-size:16px;color:#4B535C">Stages 1 to 3 are due. Furthest behind first.</p>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center">
+              <sc-if value="{{ showResort }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ resort }}" style="min-height:44px;padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer" style-hover="background:#EFF1F3">{{ resortShort }}</button></sc-if>
+              <button type="button" role="switch" aria-checked="{{ hideStr }}" onClick="{{ toggleHide }}" style="display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 14px 8px 10px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;cursor:pointer;font-size:15px;font-weight:600;color:#343A42" style-hover="background:#EFF1F3">
+                <span aria-hidden="true" style="position:relative;width:36px;height:20px;border-radius:99px;background:{{ trackBg }};flex:none"><span style="position:absolute;top:2px;left:{{ knobLeft }};width:16px;height:16px;border-radius:99px;background:#fff;transition:left 160ms cubic-bezier(.2,.7,.3,1)"></span></span>
+                Hide names
+              </button>
+            </div>
+          </div>
+          <div style="margin-top:16px;display:flex;align-items:baseline;gap:12px;padding:12px 16px;border-radius:10px;border:1px solid #DDE1E6;background:#fff;min-height:48px">
+            <span style="flex:none;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#636B75">Stage {{ pinned.n }} · {{ pinned.date }} · {{ pinned.stateWord }}</span>
+            <span style="font-size:16px;color:#101419">{{ pinned.full }}</span>
+          </div>
+          <div style="margin-top:12px;border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums">
+              <caption style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Checkpoint sign-offs for 6A Biology, grouped by how far behind</caption>
+              <thead>
+                <tr>
+                  <th scope="col" style="text-align:left;vertical-align:bottom;padding:10px 14px;font-size:13px;font-weight:600;color:#636B75;width:250px">Student</th>
+                  <sc-for list="{{ stages }}" as="s" hint-placeholder-count="6">
+                    <th scope="col" style="text-align:left;vertical-align:bottom;padding:6px 4px;font-weight:400">
+                      <button type="button" aria-pressed="{{ s.pinnedStr }}" onClick="{{ s.onPin }}" style="width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:6px 8px;border-radius:6px;border:1px solid {{ s.pinBorder }};background:{{ s.pinBg }};cursor:pointer;text-align:left" style-hover="border-color:#C9D0D8">
+                        <span style="font-size:14px;font-weight:600;color:#101419;line-height:1.25"><span style="font-family:'Space Mono',monospace;font-size:13px;margin-right:4px">{{ s.n }}</span>{{ s.short }}</span>
+                        <span style="font-size:12px;color:#636B75">{{ s.date }} · <span style="font-weight:700;color:{{ s.stateColor }}">{{ s.stateWord }}</span></span>
+                      </button>
+                    </th>
+                  </sc-for>
+                  <th scope="col" style="text-align:left;vertical-align:bottom;padding:10px 14px 10px 8px;font-size:13px;font-weight:600;color:#636B75;width:128px">Log</th>
+                </tr>
+              </thead>
+              <sc-for list="{{ bands }}" as="b" hint-placeholder-count="3">
+                <tbody>
+                  <tr>
+                    <th scope="rowgroup" colspan="8" style="text-align:left;padding:18px 14px 8px;border-top:1px solid #E3E6EA;background:#F7F8F9;font-weight:400">
+                      <span style="display:flex;align-items:baseline;gap:10px">
+                        <span style="font-family:'Space Grotesk',sans-serif;font-size:34px;font-weight:700;line-height:1;letter-spacing:-.02em;color:{{ b.color }}">{{ b.big }}</span>
+                        <span style="font-size:16px;font-weight:600;color:{{ b.color }}">{{ b.label }}</span>
+                        <span style="font-size:14px;color:#636B75">{{ b.count }}</span>
+                      </span>
+                    </th>
+                  </tr>
+                  <sc-for list="{{ b.rows }}" as="r" hint-placeholder-count="3">
+                    <tr>
+                      <th scope="row" style="text-align:left;padding:6px 14px;border-top:1px solid #E3E6EA;font-weight:400;vertical-align:middle">
+                        <a href="#" style="display:block;font-size:16px;font-weight:600;line-height:1.3;color:#101419;text-decoration:none;overflow-wrap:anywhere;filter:{{ blurCss }}" style-hover="text-decoration:underline">{{ r.name }}</a>
+                        <span style="display:block;font-size:13px;color:{{ r.behindColor }}">{{ r.behindWords }}</span>
+                      </th>
+                      <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="6">
+                        <td style="padding:4px 4px;border-top:1px solid #E3E6EA;vertical-align:middle">
+                          <sc-if value="{{ c.isDue }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 0 0 8px;min-height:40px;border-radius:6px;background:#F6EDE6"><span style="font-size:13px;font-weight:700;color:#A04806">Due</span><button type="button" aria-label="{{ c.aSign }}" onClick="{{ c.onSign }}" style="min-height:36px;padding:6px 9px;border-radius:6px;border:1px solid #DDE1E6;background:#fff;font-size:13px;font-weight:600;color:#1F3A6E;cursor:pointer;white-space:nowrap" style-hover="background:#F4F5F8">Sign off</button></div></sc-if>
+                          <sc-if value="{{ c.isNotDue }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 0 0 8px;min-height:40px"><span style="font-size:13px;color:#636B75">Not due</span><button type="button" aria-label="{{ c.aSign }}" onClick="{{ c.onSign }}" style="min-height:36px;padding:6px 9px;border-radius:6px;border:1px solid #DDE1E6;background:#fff;font-size:13px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap" style-hover="background:#EFF1F3">Sign off</button></div></sc-if>
+                          <sc-if value="{{ c.isBusy }}"><div style="display:flex;align-items:center;padding:0 8px;min-height:40px;font-size:13px;color:#4B535C">Signing off…</div></sc-if>
+                          <sc-if value="{{ c.isSettled }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 0 0 8px;min-height:40px"><span style="font-size:13px;line-height:1.25;color:#0F5C3A;font-weight:700">Signed off<span style="display:block;font-weight:400;color:#343A42;filter:{{ blurCss }}">{{ c.date }}</span></span><button type="button" aria-label="{{ c.aRevoke }}" onClick="{{ c.onAsk }}" style="min-height:36px;padding:6px 7px;border-radius:6px;border:0;background:none;font-size:13px;font-weight:600;color:#4B535C;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Revoke</button></div></sc-if>
+                          <sc-if value="{{ c.isRecent }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 0 0 8px;min-height:40px;border-radius:6px;background:#EEF4F0"><span style="font-size:13px;font-weight:700;color:#0F5C3A;line-height:1.25">Signed off<span style="display:block;font-weight:400">today</span></span><button type="button" aria-label="{{ c.aUndo }}" onClick="{{ c.onUndo }}" style="min-height:36px;padding:6px 7px;border:0;background:none;font-size:13px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Undo</button></div></sc-if>
+                          <sc-if value="{{ c.isConfirm }}"><div style="display:flex;align-items:center;padding:0 8px;min-height:40px;border-radius:6px;border:1px solid rgba(179,37,30,.4);background:#FBF1F0;font-size:13px;font-weight:700;color:#8E1D17">Revoke?</div></sc-if>
+                        </td>
+                      </sc-for>
+                      <td style="padding:6px 14px 6px 8px;border-top:1px solid #E3E6EA;vertical-align:middle;font-size:14px;line-height:1.3;color:{{ r.logColor }};font-weight:{{ r.logWeight }}"><span style="filter:{{ blurCss }}">{{ r.log }}</span></td>
+                    </tr>
+                    <sc-if value="{{ r.hasConfirm }}">
+                      <tr>
+                        <td colspan="8" style="padding:0 8px 8px">
+                          <div style="display:flex;align-items:center;gap:11px;flex-wrap:wrap;padding:11px 14px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#FBF1F0">
+                            <p style="margin:0;flex:1;min-width:0;font-size:15px;line-height:1.4;color:#8E1D17">{{ r.confirmText }}</p>
+                            <button type="button" onClick="{{ r.onRevoke }}" style="padding:10px 14px;border-radius:8px;border:0;background:#B3251E;color:#fff;font-size:15px;font-weight:600;cursor:pointer" style-hover="background:#8E1D17">Revoke</button>
+                            <button type="button" onClick="{{ r.onKeep }}" style="padding:10px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap" style-hover="background:#EFF1F3">Keep sign-off</button>
+                          </div>
+                        </td>
+                      </tr>
+                    </sc-if>
+                  </sc-for>
+                </tbody>
+              </sc-for>
+            </table>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ============ 1c DUE FIRST ============ -->
+    <div id="1c" style="display:flex;flex-direction:column;gap:12px;width:1140px">
+      <div style="display:flex;align-items:baseline;gap:12px">
+        <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;padding:3px 8px;border-radius:6px;background:#101419;color:#fff">1c</span>
+        <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:25px;font-weight:700;letter-spacing:-.025em;color:#101419">Due first</h2>
+      </div>
+      <p style="margin:0;max-width:900px;font-size:15px;line-height:1.5;color:#4B535C;text-wrap:pretty">Columns split in two groups. Due checkpoints get wide columns with their <strong style="font-weight:600">full text in the header</strong>, so nothing needs a key; not-due ones are narrow and quiet. The boldness is a solid amber number block at the start of each row (the pending-count badge from D-2, reused), with "Up to date" in plain words for zero.</p>
+      <div data-screen-label="1c Due first · 1140" style="width:1140px;border:1px solid #CFD4DA;border-radius:6px;overflow:hidden;background:#F7F8F9">
+        <header style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px;background:#fff;border-bottom:1px solid #E3E6EA">
+          <div style="display:flex;align-items:center;gap:11px;min-width:0">
+            <img src="assets/crest-nwetss.png" alt="" style="width:30px;height:30px;object-fit:contain;flex:none">
+            <a href="#" style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101419;text-decoration:none;white-space:nowrap">Leaving Cert Practical</a>
+            <span aria-hidden="true" style="width:1px;height:20px;background:#DDE1E6;flex:none"></span>
+            <span style="font-size:14px;color:#4B535C;white-space:nowrap">North Wicklow ETSS</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex:none">
+            <span style="font-size:14px;color:#343A42;white-space:nowrap">Katelyn Hanlon</span>
+            <a href="#" style="font-size:14px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;white-space:nowrap">Change password</a>
+            <button type="button" style="padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:14px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap">Sign out</button>
+          </div>
+        </header>
+        <main style="padding:32px 28px 56px">
+          <a href="#" style="font-size:15px;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px">My classes</a>
+          <h1 style="margin:10px 0 0;font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.06;color:#101419">6A Biology</h1>
+          <p style="margin:6px 0 0;font-size:16px;color:#4B535C">Biology, year 6, 2026/27</p>
+          <nav aria-label="Class sections" style="display:flex;gap:24px;margin-top:20px;border-bottom:1px solid #E3E6EA">
+            <a href="#" style="padding:10px 2px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#4B535C;text-decoration:none">Students</a>
+            <a href="#" style="padding:10px 2px;border-bottom:2px solid transparent;font-size:16px;font-weight:600;color:#4B535C;text-decoration:none">Component</a>
+            <a href="#" aria-current="page" style="padding:10px 2px;border-bottom:2px solid #1F3A6E;font-size:16px;font-weight:600;color:#1F3A6E;text-decoration:none">Progress</a>
+          </nav>
+          <div style="margin-top:24px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#101419">{{ summaryHead }}</h2>
+              <p style="margin:0;font-size:16px;color:#4B535C">Furthest behind first, then longest since a log entry.</p>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center">
+              <sc-if value="{{ showResort }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ resort }}" style="min-height:44px;padding:9px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer" style-hover="background:#EFF1F3">{{ resortShort }}</button></sc-if>
+              <button type="button" role="switch" aria-checked="{{ hideStr }}" onClick="{{ toggleHide }}" style="display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 14px 8px 10px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;cursor:pointer;font-size:15px;font-weight:600;color:#343A42" style-hover="background:#EFF1F3">
+                <span aria-hidden="true" style="position:relative;width:36px;height:20px;border-radius:99px;background:{{ trackBg }};flex:none"><span style="position:absolute;top:2px;left:{{ knobLeft }};width:16px;height:16px;border-radius:99px;background:#fff;transition:left 160ms cubic-bezier(.2,.7,.3,1)"></span></span>
+                Hide names
+              </button>
+            </div>
+          </div>
+          <div style="margin-top:16px;border:1px solid #DDE1E6;border-radius:10px;background:#fff;overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;table-layout:fixed">
+              <caption style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Checkpoint sign-offs for 6A Biology</caption>
+              <colgroup><col style="width:64px"><col style="width:196px"><col style="width:152px"><col style="width:152px"><col style="width:152px"><col style="width:84px"><col style="width:84px"><col style="width:84px"><col style="width:114px"></colgroup>
+              <thead>
+                <tr>
+                  <td colspan="2" style="border-bottom:1px solid #E3E6EA"></td>
+                  <th scope="colgroup" colspan="3" style="text-align:left;padding:10px 8px 6px;border-bottom:1px solid #E3E6EA;border-left:1px solid #E3E6EA;font-size:13px;font-weight:700;color:#A04806">Due now</th>
+                  <th scope="colgroup" colspan="3" style="text-align:left;padding:10px 8px 6px;border-bottom:1px solid #E3E6EA;border-left:1px solid #E3E6EA;font-size:13px;font-weight:600;color:#636B75">Not due yet</th>
+                  <td style="border-bottom:1px solid #E3E6EA;border-left:1px solid #E3E6EA"></td>
+                </tr>
+                <tr>
+                  <th scope="col" style="text-align:left;vertical-align:bottom;padding:10px 8px 10px 14px;font-size:13px;font-weight:600;color:#636B75">Behind</th>
+                  <th scope="col" style="text-align:left;vertical-align:bottom;padding:10px 8px;font-size:13px;font-weight:600;color:#636B75">Student</th>
+                  <sc-for list="{{ dueStages }}" as="s" hint-placeholder-count="3">
+                    <th scope="col" style="text-align:left;vertical-align:bottom;padding:10px 8px;font-weight:400;border-left:1px solid #E3E6EA">
+                      <span style="display:block;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#636B75">Stage {{ s.n }} · {{ s.date }}</span>
+                      <span style="display:block;margin-top:2px;font-size:13px;font-weight:600;line-height:1.3;color:#101419;text-wrap:pretty">{{ s.full }}</span>
+                    </th>
+                  </sc-for>
+                  <sc-for list="{{ laterStages }}" as="s" hint-placeholder-count="3">
+                    <th scope="col" style="text-align:left;vertical-align:bottom;padding:10px 6px;font-weight:400;border-left:1px solid #E3E6EA">
+                      <span style="display:block;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#636B75">Stage {{ s.n }}</span>
+                      <span style="display:block;font-size:12px;color:#636B75">{{ s.date }}</span>
+                      <button type="button" aria-expanded="{{ s.openStr }}" onClick="{{ s.onOpen }}" style="margin-top:2px;padding:2px 0;border:0;background:none;font-size:13px;font-weight:600;line-height:1.25;color:#343A42;text-align:left;cursor:pointer;text-decoration:underline;text-decoration-color:#C9D0D8;text-underline-offset:3px">{{ s.short }}</button>
+                    </th>
+                  </sc-for>
+                  <th scope="col" style="text-align:left;vertical-align:bottom;padding:10px 14px 10px 8px;font-size:13px;font-weight:600;color:#636B75;border-left:1px solid #E3E6EA">Log</th>
+                </tr>
+                <sc-if value="{{ laterOpen }}" hint-placeholder-val="{{ false }}">
+                  <tr><td colspan="9" style="padding:10px 14px;background:#F7F8F9;border-top:1px solid #E3E6EA;font-size:15px;color:#101419"><span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#636B75;margin-right:10px">Stage {{ openLater.n }} · {{ openLater.date }}</span>{{ openLater.full }}</td></tr>
+                </sc-if>
+              </thead>
+              <sc-for list="{{ rows }}" as="r" hint-placeholder-count="10">
+                <tbody>
+                  <tr>
+                    <td style="padding:6px 6px 6px 14px;border-top:1px solid #E3E6EA;vertical-align:middle">
+                      <sc-if value="{{ r.isBehind }}"><span style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:8px;background:#A04806;color:#fff;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700"><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Behind by </span>{{ r.behind }}</span></sc-if>
+                      <sc-if value="{{ r.upToDate }}"><span style="display:block;font-size:12px;line-height:1.2;color:#0F5C3A;font-weight:600">Up to date</span></sc-if>
+                    </td>
+                    <th scope="row" style="text-align:left;padding:6px 8px;border-top:1px solid #E3E6EA;font-weight:400;vertical-align:middle">
+                      <a href="#" style="display:block;font-size:16px;font-weight:600;line-height:1.3;color:#101419;text-decoration:none;overflow-wrap:anywhere;filter:{{ blurCss }}" style-hover="text-decoration:underline">{{ r.name }}</a>
+                    </th>
+                    <sc-for list="{{ r.dueCells }}" as="c" hint-placeholder-count="3">
+                      <td style="padding:5px 8px;border-top:1px solid #E3E6EA;border-left:1px solid #E3E6EA;vertical-align:middle">
+                        <sc-if value="{{ c.isDue }}"><button type="button" aria-label="{{ c.aSign }}" onClick="{{ c.onSign }}" style="width:100%;min-height:40px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 10px;border-radius:8px;border:1px solid #1F3A6E;background:#fff;cursor:pointer" style-hover="background:#F4F5F8"><span style="font-size:13px;font-weight:700;color:#A04806">Due</span><span style="font-size:15px;font-weight:600;color:#1F3A6E">Sign off</span></button></sc-if>
+                        <sc-if value="{{ c.isBusy }}"><span style="display:flex;align-items:center;min-height:40px;font-size:14px;color:#4B535C">Signing off…</span></sc-if>
+                        <sc-if value="{{ c.isSettled }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:6px;min-height:40px"><span style="font-size:13px;line-height:1.25;font-weight:700;color:#0F5C3A">Signed off<span style="display:block;font-weight:400;color:#343A42;filter:{{ blurCss }}">{{ c.date }}</span></span><button type="button" aria-label="{{ c.aRevoke }}" onClick="{{ c.onAsk }}" style="min-height:32px;padding:4px 6px;border:0;background:none;font-size:13px;font-weight:600;color:#4B535C;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Revoke</button></div></sc-if>
+                        <sc-if value="{{ c.isRecent }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:6px;min-height:40px;padding:0 0 0 8px;border-radius:8px;background:#EEF4F0"><span style="font-size:13px;font-weight:700;color:#0F5C3A">Signed off today</span><button type="button" aria-label="{{ c.aUndo }}" onClick="{{ c.onUndo }}" style="min-height:32px;padding:4px 8px;border:0;background:none;font-size:13px;font-weight:600;color:#1F3A6E;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Undo</button></div></sc-if>
+                        <sc-if value="{{ c.isConfirm }}"><span style="display:flex;align-items:center;min-height:40px;padding:0 10px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#FBF1F0;font-size:13px;font-weight:700;color:#8E1D17">Revoke? See below</span></sc-if>
+                      </td>
+                    </sc-for>
+                    <sc-for list="{{ r.laterCells }}" as="c" hint-placeholder-count="3">
+                      <td style="padding:5px 6px;border-top:1px solid #E3E6EA;border-left:1px solid #E3E6EA;vertical-align:middle">
+                        <sc-if value="{{ c.isNotDue }}"><button type="button" aria-label="{{ c.aSign }}" onClick="{{ c.onSign }}" style="width:100%;min-height:40px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:3px 6px;border-radius:6px;border:1px solid transparent;background:none;cursor:pointer;text-align:left" style-hover="border-color:#DDE1E6"><span style="font-size:12px;color:#636B75">Not due</span><span style="font-size:13px;font-weight:600;color:#343A42;text-decoration:underline;text-underline-offset:3px">Sign off</span></button></sc-if>
+                        <sc-if value="{{ c.isBusy }}"><span style="font-size:12px;color:#4B535C">Signing off…</span></sc-if>
+                        <sc-if value="{{ c.isSettled }}"><button type="button" aria-label="{{ c.aRevoke }}" onClick="{{ c.onAsk }}" style="width:100%;min-height:40px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:3px 6px;border-radius:6px;border:1px solid transparent;background:none;cursor:pointer;text-align:left" style-hover="border-color:#DDE1E6"><span style="font-size:12px;font-weight:700;color:#0F5C3A">Signed off</span><span style="font-size:12px;color:#343A42;filter:{{ blurCss }}">{{ c.date }}</span></button></sc-if>
+                        <sc-if value="{{ c.isRecent }}"><div style="display:flex;flex-direction:column;padding:3px 6px;border-radius:6px;background:#EEF4F0"><span style="font-size:12px;font-weight:700;color:#0F5C3A">Signed off today</span><button type="button" aria-label="{{ c.aUndo }}" onClick="{{ c.onUndo }}" style="align-self:flex-start;padding:0;border:0;background:none;font-size:12px;font-weight:600;color:#1F3A6E;text-decoration:underline;cursor:pointer">Undo</button></div></sc-if>
+                        <sc-if value="{{ c.isConfirm }}"><span style="font-size:12px;font-weight:700;color:#8E1D17">Revoke?</span></sc-if>
+                      </td>
+                    </sc-for>
+                    <td style="padding:6px 14px 6px 8px;border-top:1px solid #E3E6EA;border-left:1px solid #E3E6EA;vertical-align:middle;font-size:13px;line-height:1.3;color:{{ r.logColor }};font-weight:{{ r.logWeight }}"><span style="filter:{{ blurCss }}">{{ r.log }}</span></td>
+                  </tr>
+                  <sc-if value="{{ r.hasConfirm }}">
+                    <tr>
+                      <td colspan="9" style="padding:0 8px 8px">
+                        <div style="display:flex;align-items:center;gap:11px;flex-wrap:wrap;padding:11px 14px;border-radius:8px;border:1px solid rgba(179,37,30,.4);background:#FBF1F0">
+                          <p style="margin:0;flex:1;min-width:0;font-size:15px;line-height:1.4;color:#8E1D17">{{ r.confirmText }}</p>
+                          <button type="button" onClick="{{ r.onRevoke }}" style="padding:10px 14px;border-radius:8px;border:0;background:#B3251E;color:#fff;font-size:15px;font-weight:600;cursor:pointer" style-hover="background:#8E1D17">Revoke</button>
+                          <button type="button" onClick="{{ r.onKeep }}" style="padding:10px 14px;border-radius:8px;border:1px solid #DDE1E6;background:#fff;font-size:15px;font-weight:600;color:#343A42;cursor:pointer;white-space:nowrap" style-hover="background:#EFF1F3">Keep sign-off</button>
+                        </div>
+                      </td>
+                    </tr>
+                  </sc-if>
+                </tbody>
+              </sc-for>
+            </table>
+          </div>
+        </main>
+      </div>
+    </div>
+
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const TODAY = '25 Jan 2027';
+const STAGES = [
+  { n: 1, short: 'Initial ideas', full: 'Initial ideas discussed with the teacher', date: '2 Oct 2026', due: true },
+  { n: 2, short: 'Investigative log', full: 'Investigative log shared with the teacher', date: '6 Nov 2026', due: true },
+  { n: 3, short: 'Plan discussed', full: 'Plan discussed with the teacher (feasibility and safety)', date: '11 Dec 2026', due: true },
+  { n: 4, short: 'Experiment carried out', full: 'Experiment carried out under supervision, in line with the research and planning already shared', date: '12 Feb 2027', due: false },
+  { n: 5, short: 'Data analysis', full: 'Data analysis shared with the teacher', date: '19 Mar 2027', due: false },
+  { n: 6, short: 'Final report', full: 'Final report submitted to the teacher', date: '30 Apr 2027', due: false }
+];
+const DATES = {
+  1: ['29 Sep 2026', '1 Oct 2026', '2 Oct 2026', '6 Oct 2026'],
+  2: ['3 Nov 2026', '5 Nov 2026', '6 Nov 2026', '10 Nov 2026'],
+  3: ['8 Dec 2026', '10 Dec 2026', '11 Dec 2026', '15 Dec 2026'],
+  4: ['14 Jan 2027', '19 Jan 2027', '21 Jan 2027']
+};
+// [first, surname, missing due stages, signed Stage 4 early, days since last log entry (null = none)]
+const RAW = [
+  ['Jack', 'Doyle', '123', 0, 24], ['Ciara', 'Walsh', '123', 0, null],
+  ['Oisín', 'Brennan', '23', 0, 19], ['Róisín', 'Ó Súilleabháin-Mac Giolla Phádraig Nolan', '23', 0, 11], ['Liam', 'Kavanagh', '13', 0, 6],
+  ['Sadhbh', 'Farrell', '3', 0, null], ['Darragh', 'Kelly', '3', 0, 21], ['Cian', 'Murphy', '3', 0, 14], ['Eoin', 'Quinn', '2', 0, 9],
+  ['Emma', 'Nolan', '3', 0, 8], ['Conor', 'Lynch', '3', 0, 5], ['Grace', 'Daly', '3', 0, 3], ['Seán', 'Power', '1', 0, 2], ['Ava', 'Reilly', '3', 0, 0],
+  ['Aoife', 'Byrne', '', 1, 1], ['Niamh', 'Ryan', '', 1, 0], ['Sophie', 'Okonkwo', '', 0, 4], ['Fionn', 'Gallagher', '', 0, 7],
+  ['Méabh', 'Collins', '', 1, 2], ['Tadhg', 'Moran', '', 0, 12], ['Aaron', 'Kennedy', '', 0, 3], ['Chloe', 'Byrne', '', 0, 1],
+  ['Rían', 'Fitzpatrick', '', 0, 6], ['Lucy', 'Hayes', '', 1, 0], ['Ella', 'Brady', '', 0, 2], ['Adam', 'Sheridan', '', 0, 5],
+  ['Zara', 'Hussain', '', 0, 9], ['Dylan', 'McCarthy', '', 0, 4], ['Ruth', 'Keane', '', 0, 1], ['Jamie', 'Foley', '', 0, 15]
+];
+const STUDENTS = RAW.map((r, i) => ({ id: i, first: r[0], last: r[1], name: r[0] + ' ' + r[1], missing: r[2], early: !!r[3], days: r[4] }));
+
+function initialSigned() {
+  const m = {};
+  STUDENTS.forEach((s, i) => {
+    [1, 2, 3].forEach(n => { if (!s.missing.includes(String(n))) m[i + '-' + n] = DATES[n][i % DATES[n].length]; });
+    if (s.early) m[i + '-4'] = DATES[4][i % 3];
+  });
+  return m;
+}
+function logWords(d) {
+  if (d === null) return 'No entries yet';
+  if (d === 0) return 'Last entry today';
+  if (d === 1) return 'Last entry yesterday';
+  return 'Last entry ' + d + ' days ago';
+}
+
+class Component extends DCLogic {
+  state = { signed: initialSigned(), recent: {}, busy: {}, confirm: null, order: null, changes: 0, hide: false, announce: '', pin: 3, openLater: null };
+
+  behindOf(id, signed) { return STAGES.filter(s => s.due && !signed[id + '-' + s.n]).length; }
+  sortIds(signed) {
+    return STUDENTS.slice().sort((a, b) => {
+      const d = this.behindOf(b.id, signed) - this.behindOf(a.id, signed);
+      if (d) return d;
+      const da = a.days === null ? 1e9 : a.days, db = b.days === null ? 1e9 : b.days;
+      if (db - da) return db - da;
+      return a.last.localeCompare(b.last, 'en-IE');
+    }).map(s => s.id);
+  }
+  signOff(st, s) {
+    const k = st.id + '-' + s.n;
+    this.setState(p => ({ busy: { ...p.busy, [k]: true }, confirm: null }));
+    setTimeout(() => this.setState(p => {
+      const busy = { ...p.busy }; delete busy[k];
+      return { busy, signed: { ...p.signed, [k]: TODAY }, recent: { ...p.recent, [k]: true }, changes: p.changes + 1, announce: 'Signed off: ' + s.full + ', for ' + st.name + '.' };
+    }), 450);
+  }
+  revoke(st, s, viaUndo) {
+    const k = st.id + '-' + s.n;
+    this.setState(p => {
+      const signed = { ...p.signed }; delete signed[k];
+      const recent = { ...p.recent }; delete recent[k];
+      return { signed, recent, confirm: null, changes: p.changes + 1, announce: (viaUndo ? 'Sign-off undone: ' : 'Sign-off revoked: ') + s.full + ', for ' + st.name + '. Still in the record.' };
+    });
+  }
+
+  renderVals() {
+    const { signed, recent, busy, confirm, hide } = this.state;
+    const order = this.state.order || this.sortIds(initialSigned());
+    if (!this._sb0) { const s0 = initialSigned(); this._sb0 = {}; STUDENTS.forEach(s => { this._sb0[s.id] = this.behindOf(s.id, s0); }); }
+    const sortBehind = this.state.sortBehind || this._sb0;
+    const stages = STAGES.map(s => ({
+      ...s, keyId: 'cp-' + s.n,
+      stateWord: s.due ? 'Due' : 'Not due yet',
+      stateColor: s.due ? '#A04806' : '#636B75',
+      pinnedStr: String(this.state.pin === s.n), pinBorder: this.state.pin === s.n ? '#1F3A6E' : 'transparent', pinBg: this.state.pin === s.n ? '#F4F5F8' : 'transparent',
+      onPin: () => this.setState({ pin: s.n }),
+      openStr: String(this.state.openLater === s.n),
+      onOpen: () => this.setState(p => ({ openLater: p.openLater === s.n ? null : s.n }))
+    }));
+    const rows = order.map(id => {
+      const st = STUDENTS[id];
+      const behind = this.behindOf(id, signed);
+      const cells = STAGES.map(s => {
+        const k = id + '-' + s.n;
+        const isSigned = !!signed[k], isBusy = !!busy[k], isConfirm = confirm === k, isRecent = isSigned && !!recent[k] && !isConfirm;
+        return {
+          n: s.n, date: signed[k],
+          isBusy, isConfirm, isRecent,
+          isSettled: isSigned && !isRecent && !isConfirm && !isBusy,
+          isDue: !isSigned && !isBusy && s.due,
+          isNotDue: !isSigned && !isBusy && !s.due,
+          aSign: 'Sign off ' + s.full + ' for ' + st.name,
+          aRevoke: 'Revoke sign-off of ' + s.full + ' for ' + st.name,
+          aUndo: 'Undo sign-off of ' + s.full + ' for ' + st.name,
+          onSign: () => this.signOff(st, s),
+          onAsk: () => this.setState({ confirm: k }),
+          onUndo: () => this.revoke(st, s, true)
+        };
+      });
+      const cStage = STAGES.find(s => confirm === id + '-' + s.n);
+      const stale = st.days === null || st.days >= 14;
+      return {
+        id, name: st.name, behind, isBehind: behind > 0, upToDate: behind === 0,
+        behindWords: behind ? 'Behind by ' + behind : 'Up to date',
+        behindColor: behind ? '#A04806' : '#4B535C',
+        cells, dueCells: cells.filter(c => STAGES[c.n - 1].due), laterCells: cells.filter(c => !STAGES[c.n - 1].due),
+        log: logWords(st.days), logColor: stale ? '#101419' : '#4B535C', logWeight: stale ? 600 : 400,
+        hasConfirm: !!cStage,
+        confirmText: cStage ? 'Revoke the sign-off of “' + cStage.full + '” for ' + st.name + '? It stays in the record as revoked.' : '',
+        onRevoke: () => cStage && this.revoke(st, cStage, false),
+        onKeep: () => this.setState({ confirm: null }),
+        sortB: sortBehind[id] !== undefined ? sortBehind[id] : behind
+      };
+    });
+    const bandsMap = {};
+    rows.forEach(r => { (bandsMap[r.sortB] = bandsMap[r.sortB] || []).push(r); });
+    const bands = Object.keys(bandsMap).map(Number).sort((a, b) => b - a).map(b => ({
+      big: b ? String(b) : '0',
+      label: b ? (b === 1 ? 'checkpoint behind' : 'checkpoints behind') : 'Up to date',
+      color: b ? '#A04806' : '#0F5C3A',
+      count: bandsMap[b].length + (bandsMap[b].length === 1 ? ' student' : ' students'),
+      rows: bandsMap[b]
+    }));
+    const nBehind = rows.filter(r => r.isBehind).length;
+    const pinned = stages.find(s => s.n === this.state.pin);
+    const ol = stages.find(s => s.n === this.state.openLater);
+    return {
+      stages, dueStages: stages.filter(s => s.due), laterStages: stages.filter(s => !s.due),
+      rows, bands, pinned,
+      laterOpen: !!ol, openLater: ol || stages[3],
+      summaryHead: nBehind + ' of 30 students are behind',
+      announce: this.state.announce,
+      showResort: this.state.changes > 0,
+      resortText: this.state.changes + (this.state.changes === 1 ? ' change' : ' changes') + ' since this list was sorted. Rows stay where they are while you work.',
+      resortShort: 'Re-sort (' + this.state.changes + (this.state.changes === 1 ? ' change)' : ' changes)'),
+      resort: () => this.setState(p => {
+        const sb = {}; STUDENTS.forEach(s => { sb[s.id] = this.behindOf(s.id, p.signed); });
+        return { order: this.sortIds(p.signed), sortBehind: sb, changes: 0, recent: {} };
+      }),
+      hideStr: String(hide),
+      toggleHide: () => this.setState(p => ({ hide: !p.hide })),
+      trackBg: hide ? '#1F3A6E' : '#9AA2AC',
+      knobLeft: hide ? '18px' : '2px',
+      blurCss: hide ? 'blur(7px)' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>

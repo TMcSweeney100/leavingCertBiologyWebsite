@@ -44,10 +44,12 @@ class StudentComponentViewTest extends PostgresIntegrationTest {
 
     private UUID component;
     private UUID draftItem;
+    private UUID approvedStudent;
 
     @BeforeEach
     void component() {
         ClassFixtures.World world = fixtures.world();
+        approvedStudent = world.approvedStudent();
         component = components.component(world.class1(), world.teacher1(), BIO);
         components.stageDate(component, components.stageId(BIO, 3), LocalDate.of(2026, 9, 25));
         components.stageDate(component, components.stageId(BIO, 4), LocalDate.of(2026, 10, 16));
@@ -111,6 +113,19 @@ class StudentComponentViewTest extends PostgresIntegrationTest {
                         .value(org.hamcrest.Matchers.contains("2026-10-12")));
         student.put("/api/v1/components/" + component + "/teacher-items/" + item + "/tick", "{\"done\":false}")
                 .andExpect(jsonPath("$.doneOn").value(nullValue()));
+    }
+
+    @Test
+    void aSignedOffCheckpointSaysSoWithItsDublinDate() throws Exception {
+        UUID stage3 = components.checkpointId(BIO, 3);
+        new ApiSession(mockMvc).login(ClassFixtures.TEACHER1, TestAccounts.PASSWORD)
+                .put("/api/v1/components/" + component + "/students/" + approvedStudent + "/checkpoints/" + stage3 + "/signoff",
+                        "{\"signedOff\":true}")
+                .andExpect(status().isOk());
+        student().get("/api/v1/components/" + component)
+                .andExpect(jsonPath("$.stages[2].checkpoint.state").value("SIGNED_OFF"))
+                .andExpect(jsonPath("$.stages[2].checkpoint.signedOffOn").value("2026-10-12"))
+                .andExpect(jsonPath("$.stages[3].checkpoint.signedOffOn").value(nullValue()));
     }
 
     private ApiSession student() throws Exception {

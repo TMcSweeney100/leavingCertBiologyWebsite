@@ -17,7 +17,7 @@ const DATE = "font-mono text-app-help text-app-grey";
  * hid something they'd shown before (Q3), when. Never its content, which the API doesn't send.
  * Pack D-6 words it as the student's choice: "Made private by Aoife", "Private entry".
  */
-export function TeacherLog({ log }: { log: TeacherStudentLog }) {
+export function TeacherLog({ log, activity }: { log: TeacherStudentLog; activity?: string }) {
   if (log.entries.length === 0) {
     return (
       <div className={`${card} mt-6 flex flex-col gap-2 p-5`}>
@@ -33,7 +33,7 @@ export function TeacherLog({ log }: { log: TeacherStudentLog }) {
     <section className="mt-6 flex flex-col gap-3">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4">
         <h2 className={sectionTitle}>Log</h2>
-        <p className="text-app-small text-app-grey">{`${log.entries.length} ${log.entries.length === 1 ? "entry" : "entries"}. ${log.firstName} has shared ${shared} with you.`}</p>
+        <p className="text-app-small text-app-grey">{`${activity ? `${activity} ` : ""}${log.entries.length} ${log.entries.length === 1 ? "entry" : "entries"}. ${log.firstName} has shared ${shared} with you.`}</p>
       </div>
       <ul aria-label="Log entries" className={`${card} divide-y divide-app-line overflow-hidden`}>
         {log.entries.map((e) =>

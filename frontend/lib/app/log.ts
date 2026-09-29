@@ -50,11 +50,13 @@ export function dayMonth(isoDate: string): string {
   return DAY_MONTH.format(new Date(`${isoDate}T00:00:00Z`));
 }
 
-/** FR-24e: said in words at the moment of writing. */
-export function visibilityLine(visible: boolean, today: string): string {
+const HIDDEN_NOUN: Record<EntryKind, string> = { NOTE: "a note", SOURCE: "a source", AI_USE: "an AI use entry" };
+
+/** FR-24e: said in words at the moment of writing, and everything the teacher sees of a hidden entry (plan P4-2). */
+export function visibilityLine(visible: boolean, today: string, kind: EntryKind): string {
   return visible
     ? "Your teacher can read this."
-    : `Only you can read this. Your teacher sees that you made an entry on ${dayMonth(today)}.`;
+    : `Only you can read this. Your teacher sees that you made ${HIDDEN_NOUN[kind]} on ${dayMonth(today)}, how many times you edit it and when, and the date you hid it, but never what it says.`;
 }
 
 /** The whole first line of a note, or the title of anything else. The list wraps it; `entryTitle` cuts it for names. */

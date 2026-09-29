@@ -5,7 +5,7 @@ import { formatCalendarDate, hoursLabel } from "@/lib/app/component-setup";
 import { ItemTick } from "./item-tick";
 import { card, eyebrow, lead } from "./styles";
 
-const CHECKPOINT_WORD = { NOT_DUE: "Not due yet", DUE: "Not signed off yet" } as const;
+const CHECKPOINT_WORD = { NOT_DUE: "Not due yet", DUE: "Not signed off yet", SIGNED_OFF: "Signed off" } as const;
 
 type Stage = StudentComponent["stages"][number];
 
@@ -32,6 +32,7 @@ export function StageCard({
   onToggle: (id: string) => void;
 }) {
   const checkpointDue = s.checkpoint?.state === "DUE";
+  const signedOff = s.checkpoint?.state === "SIGNED_OFF";
   const isCurrent = state === "current";
 
   return (
@@ -63,13 +64,17 @@ export function StageCard({
               {[hoursLabel(s, allStages), s.supervised ? "Done in supervised class time" : ""].filter(Boolean).join(" · ")}
             </p>
             {s.checkpoint && (
-              <div className={`flex flex-col gap-0.5 rounded-app-inner p-3 ${checkpointDue ? "bg-app-attention-tint" : "bg-app-inset"}`}>
-                <span className={eyebrow}>Checkpoint · {CHECKPOINT_WORD[s.checkpoint.state]}</span>
+              <div className={`flex flex-col gap-0.5 rounded-app-inner p-3 ${checkpointDue ? "bg-app-attention-tint" : signedOff ? "border-l-[3px] border-l-app-signed bg-app-done-ground" : "bg-app-inset"}`}>
+                <span className={`${eyebrow} ${signedOff ? "text-app-signed" : ""}`}>Checkpoint · {CHECKPOINT_WORD[s.checkpoint.state]}</span>
                 <span className="text-app-base text-app-ink">{s.checkpoint.text}</span>
                 {checkpointDue && (
                   <span className="text-app-small text-app-grey">{"Your teacher signs this off. Bring it up in your next class."}</span>
                 )}
-                <span className="text-app-small text-app-grey">Only your teacher can sign this off.</span>
+                {signedOff && s.checkpoint.signedOffOn ? (
+                  <span className="text-app-small text-app-signed">{`Your teacher signed this off on ${formatCalendarDate(s.checkpoint.signedOffOn)}.`}</span>
+                ) : (
+                  <span className="text-app-small text-app-grey">Only your teacher can sign this off.</span>
+                )}
               </div>
             )}
             {s.items.length > 0 && (

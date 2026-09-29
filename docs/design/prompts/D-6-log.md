@@ -126,7 +126,7 @@ Teacher, `/teach/classes/[id]/students/[studentId]`:
 
 ## What I want back
 
-1. Two or three rough directions for the log list at 390px.
+1. Two or three rough directions for the log list.
 2. After I choose: every state above, at 390px and 1140px where it makes sense (at least 2, 4, 7, 8 and 13 at both), plus the error panel.
 3. `tokens.css` additions only (a hidden-entry treatment, if you add one), with measured contrast ratios.
 4. `NOTES.md` on the brief's §8 template, with exact copy and your answers to the three questions above, answering every open question.

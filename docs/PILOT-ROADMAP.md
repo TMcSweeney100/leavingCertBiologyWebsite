@@ -58,7 +58,7 @@ Detailed plans so far:
 | | 2F Personal items and timeline | written 16 Sep 2026 | **built 18 Sep 2026**; `make verify` and `make e2e` green (348 backend tests; 114 `node:test`, 130 Vitest specs; e2e clean on laptop and phone, axe clean); `PersonalItemPrivacyTest` proves no teacher, leader or other student reaches a student's personal items through any endpoint, with a mutation-and-revert bite test; **Task 7 restyle from D-4 built 22 Sep 2026** (`pilot/2f-restyle-d4`, see HANDOFF) | **Gate P2** |
 | | 2G Phase 2 follow-ups (Part A, plan pilot-3-the-log) | written 27 Sep 2026 | **built 27 Sep 2026, merged into `pilotMain`**; `make verify` green (355 backend tests; 140 `node:test`, 185 Vitest specs) and `make e2e` green (10/10, laptop and phone, axe clean); fresh-context self-review of the whole branch found no critical or important issues; `docs/changes/pilot-2g-phase2-follow-ups.md` | Part A gate |
 | 3 The log | 3A–3C (Part B of plan pilot-3-the-log) | written 27 Sep 2026 | **built 28 Sep 2026; 3A–3C merged into `pilotMain` (`1034d14`), the D-6 restyle (`pilot/3b-restyle-d6`) merged locally 28 Sep 2026, not pushed**; `make verify` green (428 backend tests; 144 `node:test`, 206 Vitest specs, lint/types/build clean) and `make e2e` green (16/16, laptop and phone, axe clean on every new page); `LogEntriesTest`, `LogScopeTest` and `TeacherLogProjectionTest` (with its bite test) cover Gate P3's code items. `/self-review` was run in a fresh session (Tim, 28 Sep 2026); `docs/changes/pilot-3-the-log.md` is committed. Task B15 (restyle from D-6) built as `pilot/3b-restyle-d6`: `make e2e` green 16/16, 215 Vitest specs. Undo on Hide/Show, per-source-type Title messages and per-field error links deliberately not built (see HANDOFF). Waiting on: Tim's push, and a changes doc for the restyle if wanted | **Gate P3** |
-| 4 Teacher grid | 4A–4B | to write | — | **Gate P4 = pilot can start** |
+| 4 Teacher grid | 4A–4B | written 28 Sep 2026 | **built 29 Sep 2026 on `pilot/4-teacher-grid`, not merged or pushed**; `make verify` green (458 backend tests; 158 `node:test`, 238 Vitest specs) and `make e2e` green (24 passed, laptop and phone, axe clean); `SignoffScopeTest` proves the sign-off scope with bite tests. Still open: the deployed-stack timing (Tim), the readiness plan, `/self-review`, `docs/changes/pilot-4-teacher-grid.md` | **Gate P4 = pilot can start** |
 | 5 School leader view | 5A | to write | — | Gate P5 |
 | 6 Writing tools | 6A–6C | to write | — | Gate P6 |
 | Readiness | R1–R9 | §9 | — | **Go-live gate** |
@@ -121,6 +121,13 @@ From design §11, plus the ones this roadmap adds (H1–H4).
 | Q4 | How long is pilot data kept? | Go-live |
 | Q5 | Who drafts the data processing agreement and privacy notice? | Go-live. **Start this now.** It's calendar-bound, not code-bound (design §1.1). |
 | Q7 | If the 2028 briefs are late, does a 5th-year pilot wait? | 5th-year go-live |
+
+### Phase 3 questions (from the log build; answered 28 Sep 2026)
+
+- **(a) Hidden-entry wording:** answered, make the student-facing copy say everything the teacher sees (plan P4-2). Nothing changed in the API.
+- **(b) `VALIDATION_FAILED` instead of `MALFORMED_REQUEST` for a wrong value in well-formed JSON:** answered, keep it (plan P4-3).
+
+(Both are also in §8.3.)
 
 ### Phase 2 questions (from the 2A–2F plans, 16 Sep 2026)
 
@@ -310,8 +317,8 @@ This is what Claude Design needs to design against: every page, who sees it, wha
 | `/teach/classes/new` | 1D | "My classes" link; subject, name, year group, academic year, level (optional) | Create · Cancel | Validation (the error panel, and each invalid row marked with its message) |
 | `/teach/classes/[id]` (Students tab) | 1D | "My classes" link; section tabs (Students current; Component and Progress shown disabled until P2/P4); join code on a navy card with expiry and a copy button; pending requests with username and "asked …"; approved students | Copy code ("Copied") · New code · Turn joining off (confirm in place) · Approve · Decline · Remove (confirm in place) · Issue reset code (inline in that row, shown once, 24-hour expiry, Hide code, warns hiding can't be undone) | No students; nothing waiting; code off (R27) |
 | `/teach/classes/[id]/component` | 2D | No component yet: choose the brief (subject + exam year). Component set: stage date for each stage, the completion date, my own items per stage | Create component · Set/change dates · Add, edit, retire my items | Date after completion date (named error); out-of-order dates (warning, allowed); brief's completion date changed (warning) |
-| `/teach/classes/[id]/progress` | 4A | Grid: students × checkpoints, sign-off state and date, due markers, "behind by N", days since last log entry; furthest behind first | Sign off · Revoke | No component; nothing due yet; no approved students |
-| `/teach/classes/[id]/students/[studentId]` | 3C / 4B | One student: their log in the teacher projection (hidden entries show kind and date only), their checkpoints | Sign off/revoke (4B) | Hidden entries; no entries |
+| `/teach/classes/[id]/progress` | 4A, pack D-7 | An answer line ("14 of 30 students are behind"); a stage picker (All stages, or one checkpoint, in the URL as `?stage=all\|1…6\|R`; default All at 1140, the latest due stage at 390); students grouped into bands by how many due checkpoints they're behind, furthest behind first, then longest since their last log entry, then surname; per student: behind by N, each checkpoint's state (Not due yet / Due / Signed off with its date) and last log entry. A table at 1140, a list per band at 390. | Sign off (one click) · Undo (a sign-off made this visit, until Re-sort or reload) · Revoke (confirmed in place) · Re-sort (N changes) · Hide names (blurs names, dates, log lines and counts; remembered per browser) | No component; no stage dates; nothing due yet; no approved students; everyone up to date; a failed sign-off (alert under the row, Try again) |
+| `/teach/classes/[id]/students/[studentId]` | 3C / 4B, packs D-6 and D-7 | Back links to the class's Progress and Students tabs; **Checkpoints** first (behind by N; each checkpoint's stage, date, state and full text; each revoked sign-off as "Signed off on …, revoked on … by …"); then their log in the teacher projection (hidden entries show kind and dates only) | Sign off · Undo · Revoke (confirmed in place) | Hidden entries; no entries; nothing signed off yet |
 
 **School leader page**
 
@@ -337,7 +344,7 @@ This is what Claude Design needs to design against: every page, who sees it, wha
 | D-4 Timeline | `/home` list, week, month, add-item | Phase 2F |
 | D-5 Teacher component setup | `/teach/classes/[id]/component` | Phase 2D |
 | D-6 Log | student log list, entry form, entry history; teacher student view | Phase 3 |
-| D-7 Progress grid | `/teach/classes/[id]/progress` | Phase 4 |
+| D-7 Progress grid | `/teach/classes/[id]/progress` | Phase 4 — arrived 28 Sep 2026, docs/design/pilot/D-7-progress-grid/ (direction 1b "Bands") |
 | D-8 School overview | `/school` | Phase 5 |
 | D-9 Writing tools | sources, AI use, checker | Phase 6 |
 
@@ -383,7 +390,7 @@ All under `/api/v1`. JSON, camelCase. Errors are RFC 9457 problem details with a
 |---|---|
 | 2 | **Built (2D):** `GET /briefs?subjectCode=&examYear=` (published briefs for a subject, exam year optional) · `POST /classes/{id}/components` (create from a brief; `COMPONENT_ALREADY_EXISTS` if the class already has one) · `PUT /components/{id}/stage-dates` (batch save; `COMPLETION_DATE_EXCEEDED` on any date after the brief's completion date, named by stage) · `POST /components/{id}/teacher-items` · `PATCH /components/{id}/teacher-items/{itemId}` · `DELETE /components/{id}/teacher-items/{itemId}` (retires, never deletes); `GET /classes/{id}` already carries `componentId`. **Built (2E):** `GET /components/{id}` (role-shaped; `view: "TEACHER"` or `"STUDENT"`, controller returns `Object`, §10) now also builds the approved student's page — stages with dates, checkpoint states, items, prompts, sections, mark bands, brief rules, `today` as a Dublin calendar date — scoped by `ComponentRepository.findForApprovedStudent` · `PUT /components/{id}/teacher-items/{itemId}/tick` (`{ "done": true|false }`, idempotent; only the approved student themself) · `GET /me/components` (a student's own components for navigation: `classId` (added 2F Task 7, D-4, so the frontend can join a class to its component without matching on the teacher-set, non-unique class name), subject and completion date). **Built (2F):** `GET /me/timeline?from=&to=` (merged stage dates, dated active teacher items and personal items for the signed-in student, one ordered list, range capped at 100 days: `VALIDATION_FAILED` beyond that or if `to` is before `from`) · `GET /me/personal-items` (the student's own items) · `POST /me/personal-items` (add; optional `classId` label, must be a class the student has joined) · `PATCH /me/personal-items/{id}` (edit; re-checks the class label only when it's actually changing) · `DELETE /me/personal-items/{id}` (delete). All five are owner-only: any id that isn't the caller's own is `NOT_FOUND`, never `FORBIDDEN`. |
 | 3 | **Built (B6):** `GET\|POST /components/{id}/log` · `GET /log/{entryId}` (entry and history) · `POST /log/{entryId}/revisions` · `PUT /log/{entryId}/visibility` · `GET /components/{id}/students/{studentId}/log` (teacher projection, B11) |
-| 4 | `GET /components/{id}/progress` · `POST /components/{id}/students/{studentId}/signoffs` · `POST /signoffs/{id}/revoke` |
+| 4 | **Built (Phase 4):** `GET /components/{id}/progress` (the grid: stages, approved students sorted furthest behind first, one cell per checkpoint) · `GET /components/{id}/students/{studentId}/checkpoints` (one student's checkpoints, with revoked sign-offs; plan P4-10) · `PUT /components/{id}/students/{studentId}/checkpoints/{checkpointId}/signoff` with `{"signedOff": true\|false}` (idempotent; undo and revoke are `false`; plan P4-6). All three start with `ComponentService.requireOwned`; an unapproved student or a checkpoint outside the brief's version is 404. |
 | 5 | `GET /schools/{schoolId}/overview?yearGroup=&academicYear=` |
 | 6 | `GET /components/{id}/references` · `GET /components/{id}/ai-use/appendix` |
 
@@ -508,9 +515,9 @@ Results in `docs/HANDOFF.md`. 151 backend tests pass (schema through the complet
 
 **Status, 28 Sep 2026:** 3A–3C built and merged into `pilotMain` (Part B of plan `2026-09-27-pilot-3-the-log.md`). The D-6 restyle (`pilot/3b-restyle-d6`) is merged locally too; nothing is pushed yet. Fresh-session `/self-review` was run and the changes doc is committed.
 
-**Phase 3 open questions for Tim (not decided):**
-- (a) Hidden entries show the teacher the kind, revision count and last-edited time, but the student-facing copy only promises "sees that you made an entry on <date>". Either make the copy honest or trim `HiddenEntry`'s `editedAt`/`revisionCount`.
-- (b) The global `ProblemDetailsAdvice` changed: a wrong value in well-formed JSON is now `VALIDATION_FAILED` with a `fieldErrors` entry instead of `MALFORMED_REQUEST`. It affects every endpoint and needs Tim's explicit OK.
+**Phase 3 questions for Tim (a and b answered 28 Sep 2026):**
+- (a) **Answered 28 Sep 2026 (Tim): make the copy honest** (plan P4-2). The student-facing wording now says everything the teacher sees; the API is unchanged. Hidden entries show the teacher the kind, revision count and last-edited time.
+- (b) **Answered 28 Sep 2026 (Tim): keep it** (plan P4-3). The global `ProblemDetailsAdvice` change stands: a wrong value in well-formed JSON is `VALIDATION_FAILED` with a `fieldErrors` entry instead of `MALFORMED_REQUEST`. Nothing in the frontend reads `MALFORMED_REQUEST`.
 - (c) *Fixed after code review:* the visibility toggle's accessible name is now its visible text ("Hide from your teacher"); the entry title moved to `aria-describedby`, and showing a hidden entry warns that its earlier versions become readable.
 
 | Milestone | Tasks (outline) |
@@ -531,7 +538,9 @@ Results in `docs/HANDOFF.md`. 151 backend tests pass (schema through the complet
 
 **Goal:** a teacher finds who's behind without asking around. **Passing this gate means the pilot can start** (design §3 cut line).
 
-**Before the plan:** D-7 requested.
+**Before the plan:** D-7 requested (arrived 28 Sep 2026).
+
+**Status, 29 Sep 2026:** built on `pilot/4-teacher-grid` (plan `2026-09-28-pilot-4-teacher-grid.md`, spec `2026-09-28-pilot-4-teacher-grid-design.md`), not merged or pushed. `make verify` and `make e2e` green; the deployed-stack timing is Tim's; the go-live readiness items are a separate plan. Details in `docs/HANDOFF.md`.
 
 | Milestone | Tasks (outline) |
 |---|---|
@@ -539,9 +548,11 @@ Results in `docs/HANDOFF.md`. 151 backend tests pass (schema through the complet
 | **4B Sign-offs** | Sign off and revoke, audited. From the grid and from the student view. |
 
 **Gate P4 — pilot can start**
-- [ ] `make verify` and `make e2e` green; journey extended: teacher signs off a checkpoint and the student moves up the grid; revoke puts them back; the student's component page shows the checkpoint state
+- [x] `make verify` and `make e2e` green; journey extended: teacher signs off a checkpoint and the student moves down the grid (less behind; furthest behind is first); revoke puts them back; the student's component page shows the checkpoint state
 - [ ] A 30-student × 7-checkpoint grid renders in under a second on the deployed stack (seeded by a test fixture script)
 - [ ] Every readiness item marked "before go-live" in §9 is done, or Tim has explicitly accepted it as a risk
+
+**Next, before Phase 5 (Tim, 28 Sep 2026): the student says a checkpoint is ready for sign-off**, shown on the grid as a fourth cell state (spec P4-7).
 
 ### 8.5 Phase 5 — School leader view
 

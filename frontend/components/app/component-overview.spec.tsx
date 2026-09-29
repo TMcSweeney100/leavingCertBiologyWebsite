@@ -14,7 +14,7 @@ import { ComponentOverview } from "./component-overview";
 const stage = (n: number, dueDate: string | null, extra: Partial<StudentComponent["stages"][number]> = {}) => ({
   id: `s${n}`, ordinal: n, label: `Stage ${n}`, name: `Stage name ${n}`, description: `What stage ${n} is.`,
   hoursMin: 1, hoursMax: 2, hoursGroup: null, supervised: false, dueDate,
-  checkpoint: { text: `Checkpoint ${n}`, state: "NOT_DUE" as const }, items: [], prompts: [], ...extra,
+  checkpoint: { text: `Checkpoint ${n}`, state: "NOT_DUE" as const, signedOffOn: null }, items: [], prompts: [], ...extra,
 });
 
 const component = (overrides: Partial<StudentComponent> = {}): StudentComponent => ({
@@ -29,7 +29,7 @@ const component = (overrides: Partial<StudentComponent> = {}): StudentComponent 
   processNote: "Nor is it intended to present the stages as a rigid or linear process.",
   today: "2026-10-12",
   stages: [
-    stage(3, "2026-09-25", { checkpoint: { text: "Plan discussed with the teacher (feasibility and safety)", state: "DUE" } }),
+    stage(3, "2026-09-25", { checkpoint: { text: "Plan discussed with the teacher (feasibility and safety)", state: "DUE", signedOffOn: null } }),
     stage(4, "2026-10-16", { items: [{ id: "i1", text: "Book a re-run slot", dueDate: null, done: true, doneOn: "2026-10-01" }], prompts: [{ heading: "Data analysis may include", text: "calculations and/or graphs" }] }),
     stage(5, null),
   ],

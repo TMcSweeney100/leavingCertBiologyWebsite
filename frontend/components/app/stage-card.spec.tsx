@@ -45,7 +45,7 @@ describe("StageCard", () => {
   });
 
   it("shows a passed checkpoint without blame, and marks it apart from a done stage", () => {
-    const stage = { ...baseStage, checkpoint: { text: "Plan discussed with the teacher", state: "DUE" as const } };
+    const stage = { ...baseStage, checkpoint: { text: "Plan discussed with the teacher", state: "DUE" as const, signedOffOn: null } };
     render(<StageCard componentId="k1" stage={stage} allStages={[stage]} state="current" open={true} onToggle={vi.fn()} />);
     expect(screen.getByText("Plan discussed with the teacher")).toBeInTheDocument();
     expect(screen.getByText(/Not signed off yet/)).toBeInTheDocument();
@@ -55,9 +55,17 @@ describe("StageCard", () => {
   });
 
   it("a checkpoint not yet due carries no blame message", () => {
-    const stage = { ...baseStage, checkpoint: { text: "Plan discussed with the teacher", state: "NOT_DUE" as const } };
+    const stage = { ...baseStage, checkpoint: { text: "Plan discussed with the teacher", state: "NOT_DUE" as const, signedOffOn: null } };
     render(<StageCard componentId="k1" stage={stage} allStages={[stage]} state="current" open={true} onToggle={vi.fn()} />);
     expect(screen.getByText(/Not due yet/)).toBeInTheDocument();
+    expect(screen.queryByText(/Bring it up in your next class/)).not.toBeInTheDocument();
+  });
+
+  it("says the teacher signed a checkpoint off, with the date, and drops the nudge", () => {
+    const stage = { ...baseStage, checkpoint: { text: "Plan discussed with the teacher", state: "SIGNED_OFF" as const, signedOffOn: "2027-01-21" } };
+    render(<StageCard componentId="k1" stage={stage} allStages={[stage]} state="current" open={true} onToggle={vi.fn()} />);
+    expect(screen.getByText("Checkpoint · Signed off")).toBeInTheDocument();
+    expect(screen.getByText("Your teacher signed this off on 21 Jan 2027.")).toBeInTheDocument();
     expect(screen.queryByText(/Bring it up in your next class/)).not.toBeInTheDocument();
   });
 });

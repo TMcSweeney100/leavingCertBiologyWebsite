@@ -202,7 +202,7 @@ export function LogEntryForm(props: Props) {
           </label>
           <p aria-live="polite" className="flex items-start gap-2 text-app-small text-app-copy">
             {visible ? <Eye aria-hidden className="mt-0.5 size-4 flex-none" /> : <EyeOff aria-hidden className="mt-0.5 size-4 flex-none" />}
-            <span>{visible ? visibilityLine(true, props.today) : <><strong className="text-app-ink">Only you can read this.</strong>{visibilityLine(false, props.today).replace("Only you can read this.", "")}</>}</span>
+            <span>{visible ? visibilityLine(true, props.today, kind) : <><strong className="text-app-ink">Only you can read this.</strong>{visibilityLine(false, props.today, kind).replace("Only you can read this.", "")}</>}</span>
           </p>
         </div>
       ) : (

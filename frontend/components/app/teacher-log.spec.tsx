@@ -59,6 +59,11 @@ describe("TeacherLog", () => {
     expect(screen.getByText("3 entries. Cian has shared 1 with you.")).toBeInTheDocument();
   });
 
+  it("puts the activity line before the entry count", () => {
+    render(<TeacherLog log={log} activity="Last entry 14 days ago." />);
+    expect(screen.getByText("Last entry 14 days ago. 3 entries. Cian has shared 1 with you.")).toBeInTheDocument();
+  });
+
   it("says when the student hasn't written anything", () => {
     render(<TeacherLog log={{ ...log, entries: [] }} />);
     expect(screen.getByText("Cian hasn't written any log entries yet.")).toBeInTheDocument();

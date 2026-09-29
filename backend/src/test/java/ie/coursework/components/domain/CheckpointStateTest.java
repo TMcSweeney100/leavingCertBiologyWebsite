@@ -11,17 +11,24 @@ class CheckpointStateTest {
 
     @Test
     void notDueOnOrBeforeTheStagesDate() {
-        assertThat(CheckpointState.at(STAGE_DATE, STAGE_DATE.minusDays(3))).isEqualTo(CheckpointState.NOT_DUE);
-        assertThat(CheckpointState.at(STAGE_DATE, STAGE_DATE)).isEqualTo(CheckpointState.NOT_DUE);
+        assertThat(CheckpointState.at(STAGE_DATE, STAGE_DATE.minusDays(3), false)).isEqualTo(CheckpointState.NOT_DUE);
+        assertThat(CheckpointState.at(STAGE_DATE, STAGE_DATE, false)).isEqualTo(CheckpointState.NOT_DUE);
     }
 
     @Test
     void dueFromTheDayAfter() {
-        assertThat(CheckpointState.at(STAGE_DATE, STAGE_DATE.plusDays(1))).isEqualTo(CheckpointState.DUE);
+        assertThat(CheckpointState.at(STAGE_DATE, STAGE_DATE.plusDays(1), false)).isEqualTo(CheckpointState.DUE);
     }
 
     @Test
     void neverDueWithoutADate() {
-        assertThat(CheckpointState.at(null, LocalDate.of(2030, 1, 1))).isEqualTo(CheckpointState.NOT_DUE);
+        assertThat(CheckpointState.at(null, LocalDate.of(2030, 1, 1), false)).isEqualTo(CheckpointState.NOT_DUE);
+    }
+
+    @Test
+    void signedOffWheneverItWasSignedOffEarlyLateOrUndated() {
+        assertThat(CheckpointState.at(STAGE_DATE, STAGE_DATE.minusDays(10), true)).isEqualTo(CheckpointState.SIGNED_OFF);
+        assertThat(CheckpointState.at(STAGE_DATE, STAGE_DATE.plusDays(10), true)).isEqualTo(CheckpointState.SIGNED_OFF);
+        assertThat(CheckpointState.at(null, STAGE_DATE, true)).isEqualTo(CheckpointState.SIGNED_OFF);
     }
 }
