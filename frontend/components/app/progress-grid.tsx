@@ -56,22 +56,28 @@ export function ProgressGrid({ grid, basePath, laptopStage, phoneStage, hideName
     return (
       <CheckpointCell layout={layoutKind} cell={st.cells[index]}
         names={{ sign: signName(stage.checkpoint.text, name), undo: undoName(stage.checkpoint.text, name), revoke: revokeName(stage.checkpoint.text, name) }}
-        busy={s.busy?.key === key ? s.busy.action : null} recent={s.recent.has(key)} confirming={s.confirming === key}
+        busy={s.busy.get(key) ?? null} recent={s.recent.has(key)} confirming={s.confirming === key}
         onSign={() => s.signOff(t)} onUndo={() => s.undo(t)} onAsk={() => s.askRevoke(t)} />
     );
   }
 
-  /** The revoke question or the failure for this student's row, if either belongs to it. */
+  /** The revoke question and any failures in this student's row. */
   function aside(st: ProgressStudent) {
     const asking = stages.find((stage) => s.confirming === targetKey(target(st, stage)));
-    const failed = s.failed && s.failed.target.student.studentId === st.studentId ? s.failed : null;
-    if (asking) {
-      const t = target(st, asking);
-      return <RevokeStrip question={revokeQuestion(asking.checkpoint.text, fullName(st), "grid")} text={asking.checkpoint.text} name={fullName(st)}
-        busy={s.busy?.key === targetKey(t)} onRevoke={() => s.revoke(t)} onKeep={s.keep} />;
-    }
-    if (failed) return <SignoffAlert message={failSentence(failed.action, failed.target.checkpoint.text, fullName(st))} name={fullName(st)} onRetry={s.retry} />;
-    return null;
+    const failures = [...s.failed].filter(([, f]) => f.target.student.studentId === st.studentId);
+    if (!asking && failures.length === 0) return null;
+    const t = asking && target(st, asking);
+    return (
+      <div className="flex flex-col gap-2">
+        {asking && t && (
+          <RevokeStrip question={revokeQuestion(asking.checkpoint.text, fullName(st), "grid")} text={asking.checkpoint.text} name={fullName(st)}
+            busy={s.busy.has(targetKey(t))} onRevoke={() => s.revoke(t)} onKeep={s.keep} />
+        )}
+        {failures.map(([key, f]) => (
+          <SignoffAlert key={key} message={failSentence(f.action, f.target.checkpoint.text, fullName(st))} name={fullName(st)} onRetry={() => s.retry(key)} />
+        ))}
+      </div>
+    );
   }
 
   const oneLaptop = stages.findIndex((stage) => stageKey(stage) === laptopStage);

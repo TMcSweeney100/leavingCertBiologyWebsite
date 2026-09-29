@@ -27,7 +27,7 @@ export function StudentCheckpoints({ componentId, data }: { componentId: string;
         {data.stages.map((st) => {
           const t = { student: data, checkpoint: st.checkpoint };
           const key = targetKey(t);
-          const failed = s.failed && targetKey(s.failed.target) === key ? s.failed : null;
+          const failed = s.failed.get(key);
           return (
             <li key={st.stageId} className={`flex flex-col gap-3 p-4 ${st.state === "DUE" ? "bg-app-due-row" : ""}`}>
               <div className="grid gap-3 lg:grid-cols-[200px_1fr_auto] lg:items-start">
@@ -39,7 +39,7 @@ export function StudentCheckpoints({ componentId, data }: { componentId: string;
                 <p className="text-app-base text-app-ink">{st.checkpoint.text}</p>
                 <CheckpointCell layout="one" cell={{ checkpointId: st.checkpoint.id, state: st.state, signedOffOn: st.signedOffOn }}
                   names={{ sign: signName(st.checkpoint.text, name), undo: undoName(st.checkpoint.text, name), revoke: revokeName(st.checkpoint.text, name) }}
-                  busy={s.busy?.key === key ? s.busy.action : null} recent={s.recent.has(key)} confirming={s.confirming === key}
+                  busy={s.busy.get(key) ?? null} recent={s.recent.has(key)} confirming={s.confirming === key}
                   onSign={() => s.signOff(t)} onUndo={() => s.undo(t)} onAsk={() => s.askRevoke(t)} />
               </div>
               {st.history.map((h, i) => (
@@ -49,9 +49,9 @@ export function StudentCheckpoints({ componentId, data }: { componentId: string;
               ))}
               {s.confirming === key && (
                 <RevokeStrip question={revokeQuestion(st.checkpoint.text, name, "student")} text={st.checkpoint.text} name={name}
-                  busy={s.busy?.key === key} onRevoke={() => s.revoke(t)} onKeep={s.keep} />
+                  busy={s.busy.has(key)} onRevoke={() => s.revoke(t)} onKeep={s.keep} />
               )}
-              {failed && <SignoffAlert message={failSentence(failed.action, st.checkpoint.text, name)} name={name} onRetry={s.retry} />}
+              {failed && <SignoffAlert message={failSentence(failed.action, st.checkpoint.text, name)} name={name} onRetry={() => s.retry(key)} />}
             </li>
           );
         })}

@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -112,6 +112,28 @@ describe("ProgressGrid", () => {
     await userEvent.click(table().getByRole("button", { name: `Keep sign-off of ${INITIAL} for Cian Murphy` }));
     await userEvent.click(table().getByRole("button", { name: `Sign off ${LOG} for Aoife Byrne` }));
     expect(within(table().getByRole("alert")).getByText("Aoife Byrne")).toHaveAttribute("data-private");
+  });
+
+  it("two quick sign-offs each stay busy until their own answer, and a failure survives the next click", async () => {
+    const answers: Array<{ resolve: (v: unknown) => void; reject: (e: unknown) => void }> = [];
+    vi.mocked(api.send).mockImplementation(() => new Promise((resolve, reject) => { answers.push({ resolve, reject }); }));
+    render(<ProgressGrid grid={START} {...props} />);
+    const aoife = () => table().getByRole("button", { name: `Sign off ${LOG} for Aoife Byrne` });
+    const cian = () => table().getByRole("button", { name: `Sign off ${LOG} for Cian Murphy` });
+
+    await userEvent.click(aoife());
+    await userEvent.click(cian());
+    expect(aoife()).toBeDisabled();
+    expect(aoife()).toHaveTextContent("Signing off…");
+    expect(cian()).toBeDisabled();
+
+    await act(async () => answers[0].reject(new Error("offline")));
+    expect(cian()).toBeDisabled(); // its request is still out
+    expect(table().getByRole("alert")).toHaveTextContent("for Aoife Byrne");
+
+    await act(async () => answers[1].resolve({ checkpointId: "c2", state: "SIGNED_OFF", signedOffOn: "2026-12-14" }));
+    expect(table().getByRole("alert")).toHaveTextContent("for Aoife Byrne"); // Cian's success doesn't clear Aoife's failure
+    expect(screen.getByRole("button", { name: "Re-sort (1 change)" })).toBeInTheDocument();
   });
 
   it("a one-stage view shows the full checkpoint and a Sign off per student", () => {
