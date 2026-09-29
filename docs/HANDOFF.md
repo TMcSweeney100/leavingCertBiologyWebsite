@@ -4,7 +4,7 @@ Rewritten at the end of every session: where things stand, what's half-done, wha
 
 **Standing rule (16 Sep 2026):** `docs/ARCHITECTURE.md` describes the code as built. When a session changes anything it describes (a filter, a pattern, an env var, a file's job), it fixes that section in the same commit, and at the end of the session checks it for anything else the session made false. A wrong map is worse than none.
 
-## Where things are (29 Sep 2026: Phase 4 is built on `pilot/4-teacher-grid`, not merged, not pushed)
+## Where things are (29 Sep 2026: Phase 4 is merged into `pilotMain` locally, not pushed)
 
 - **Phase 4 (plan `docs/superpowers/plans/2026-09-28-pilot-4-teacher-grid.md`, spec `docs/superpowers/specs/2026-09-28-pilot-4-teacher-grid-design.md`) is built.** `V12` adds `checkpoint_signoff` (append-only by trigger, one live sign-off per student and checkpoint by partial unique index). A new `progress` package serves three endpoints: the grid, one student's checkpoints, and an idempotent sign-off `PUT`. The frontend is built straight to pack D-7 (direction 1b "Bands"): the Progress tab, the stage picker, Re-sort, Undo/Revoke, Hide names (a cookie), the student page's Checkpoints section above the log, and the signed-off state on the student's stage card. The Phase 3 wording fix (P4-2) is in. How it works: `docs/ARCHITECTURE.md` §4, §5, §6, §10.
 - **Verification, 29 Sep 2026** (`make verify && make e2e`, both exit 0): 458 backend tests, 0 failures; 158 `node:test`, 0 failures; 42 Vitest files, 238 specs; lint, types and build clean. `make e2e` 24 passed (12 on `laptop`, 12 on `phone`), including the Phase 4 journey with axe.
