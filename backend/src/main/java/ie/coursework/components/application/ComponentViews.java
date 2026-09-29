@@ -37,7 +37,7 @@ public final class ComponentViews {
             LocalDate completionDate, int wordLimit, String wordsNotCounted, int imageLimit, String imageNote,
             List<RuleView> rules) {}
 
-    public record CheckpointView(String text, CheckpointState state) {}
+    public record CheckpointView(String text, CheckpointState state, LocalDate signedOffOn) {}
 
     public record StudentItem(UUID id, String text, LocalDate dueDate, boolean done, LocalDate doneOn) {}
 

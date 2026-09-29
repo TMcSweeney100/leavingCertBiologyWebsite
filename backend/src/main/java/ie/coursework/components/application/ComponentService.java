@@ -8,6 +8,7 @@ import ie.coursework.components.adapter.persistence.BriefRepository;
 import ie.coursework.components.adapter.persistence.ComponentRepository;
 import ie.coursework.components.adapter.persistence.ItemTickRepository;
 import ie.coursework.components.adapter.persistence.TeacherItemRepository;
+import ie.coursework.components.adapter.persistence.SignoffRepository;
 import ie.coursework.components.adapter.persistence.TemplateRepository;
 import ie.coursework.components.application.ComponentViews.BriefDetail;
 import ie.coursework.components.application.ComponentViews.BriefSummary;
@@ -32,6 +33,7 @@ import ie.coursework.components.domain.CompletionDates;
 import ie.coursework.components.domain.ComponentInstance;
 import ie.coursework.components.domain.DatedStage;
 import ie.coursework.components.domain.CheckpointState;
+import ie.coursework.components.domain.Signoff;
 import ie.coursework.components.domain.DublinDate;
 import ie.coursework.components.domain.StageOrder;
 import ie.coursework.components.domain.TeacherItem;
@@ -73,11 +75,12 @@ public class ComponentService {
     private final ComponentRepository components;
     private final TeacherItemRepository items;
     private final ItemTickRepository ticks;
+    private final SignoffRepository signoffs;
     private final Clock clock;
 
     public ComponentService(ClassService classes, ClassGroupRepository classGroups, SubjectRepository subjects,
             BriefRepository briefs, TemplateRepository templates, ComponentRepository components,
-            TeacherItemRepository items, ItemTickRepository ticks, Clock clock) {
+            TeacherItemRepository items, ItemTickRepository ticks, SignoffRepository signoffs, Clock clock) {
         this.classes = classes;
         this.classGroups = classGroups;
         this.subjects = subjects;
@@ -86,6 +89,7 @@ public class ComponentService {
         this.components = components;
         this.items = items;
         this.ticks = ticks;
+        this.signoffs = signoffs;
         this.clock = clock;
     }
 
@@ -129,8 +133,10 @@ public class ComponentService {
         ClassGroup group = classGroups.findById(component.classId()).orElseThrow();
         LocalDate today = DublinDate.today(clock);
         Map<UUID, LocalDate> dates = components.stageDates(component.id());
-        Map<UUID, String> checkpoints = templates.checkpoints(brief.versionId()).stream()
-                .collect(Collectors.toMap(TemplateCheckpoint::stageId, TemplateCheckpoint::text, (first, later) -> first));
+        Map<UUID, TemplateCheckpoint> checkpoints = templates.checkpoints(brief.versionId()).stream()
+                .collect(Collectors.toMap(TemplateCheckpoint::stageId, c -> c, (first, later) -> first));
+        Map<UUID, Instant> signedOff = signoffs.forStudent(component.id(), actor.userId()).stream()
+                .filter(Signoff::live).collect(Collectors.toMap(Signoff::checkpointId, Signoff::signedOffAt));
         Map<UUID, List<PromptView>> prompts = templates.prompts(brief.versionId()).stream()
                 .collect(Collectors.groupingBy(TemplatePrompt::stageId, LinkedHashMap::new,
                         Collectors.mapping(p -> new PromptView(p.heading(), p.text()), Collectors.toList())));
@@ -144,10 +150,12 @@ public class ComponentService {
 
         List<StudentStage> stages = templates.stages(brief.versionId()).stream().map(s -> {
             LocalDate due = dates.get(s.id());
-            String checkpoint = checkpoints.get(s.id());
+            TemplateCheckpoint checkpoint = checkpoints.get(s.id());
+            Instant at = checkpoint == null ? null : signedOff.get(checkpoint.id());
             return new StudentStage(s.id(), s.ordinal(), s.label(), s.name(), s.description(), s.hoursMin(), s.hoursMax(),
                     s.hoursGroup(), s.supervised(), due,
-                    checkpoint == null ? null : new CheckpointView(checkpoint, CheckpointState.at(due, today, false)),
+                    checkpoint == null ? null : new CheckpointView(checkpoint.text(), CheckpointState.at(due, today, at != null),
+                            at == null ? null : DublinDate.of(at)),
                     items.getOrDefault(s.id(), List.of()), prompts.getOrDefault(s.id(), List.of()));
         }).toList();
 

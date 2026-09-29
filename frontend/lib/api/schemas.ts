@@ -129,7 +129,7 @@ export const teacherComponentSchema = z.object({
 export type TeacherComponent = z.infer<typeof teacherComponentSchema>;
 
 // Mirrors ComponentViews.StudentComponent (plan 2E).
-export const checkpointStateSchema = z.enum(["NOT_DUE", "DUE"]);
+export const checkpointStateSchema = z.enum(["NOT_DUE", "DUE", "SIGNED_OFF"]);
 export const studentStageSchema = z.object({
   id: z.string(),
   ordinal: z.number(),
@@ -141,7 +141,7 @@ export const studentStageSchema = z.object({
   hoursGroup: z.string().nullable(),
   supervised: z.boolean(),
   dueDate: z.string().nullable(),
-  checkpoint: z.object({ text: z.string(), state: checkpointStateSchema }).nullable(),
+  checkpoint: z.object({ text: z.string(), state: checkpointStateSchema, signedOffOn: z.string().nullable() }).nullable(),
   items: z.array(z.object({ id: z.string(), text: z.string(), dueDate: z.string().nullable(), done: z.boolean(), doneOn: z.string().nullable() })),
   prompts: z.array(z.object({ heading: z.string().nullable(), text: z.string() })),
 });

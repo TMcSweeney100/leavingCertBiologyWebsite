@@ -89,6 +89,7 @@
      student component page. Additions only; no --bipi-* value touched. */
   --color-app-now: var(--app-now);
   --color-app-done: var(--app-done);
+  --color-app-signed: var(--app-signed);
   --color-app-done-ground: var(--app-done-ground);
   --color-app-done-ink: var(--app-done-ink);
   --shadow-app-now-lift: var(--app-now-lift);
@@ -273,6 +274,7 @@
      the same kind of fact, and the page uses green for nothing else. */
   --app-now: var(--app-ink);                              /* 18.48:1; white on it 18.48:1 */
   --app-now-lift: 0 6px 20px rgba(16, 20, 25, .08);        /* the one shadow in the app */
+  --app-signed: var(--app-done);
   --app-done: var(--app-approved);                         /* 8.04:1; on --app-done-ground 7.36:1 */
   --app-done-ground: var(--app-approved-tint);
   --app-done-ink: #2C5C4A;                                  /* 7.19:1; on --app-done-ground 6.58:1 */
