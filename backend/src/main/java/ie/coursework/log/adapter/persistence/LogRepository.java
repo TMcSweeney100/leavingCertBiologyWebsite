@@ -24,7 +24,7 @@ import tools.jackson.databind.ObjectMapper;
  * Design §6.6. {@code list}, {@code findOwn}, {@code hiddenAt} and {@code visibleHistory} take the student and
  * filter by them. {@code revisions(entryId)}, {@code addRevision} and {@code setVisibility} are keyed by entry id
  * alone: they are called only after LogService.own() has proved the caller owns that entry, and must never be
- * reached with an id that hasn't been through it. Only TeacherLogProjection's caller reads another student's
+ * reached with an id that hasn't been through it. Only TeacherLogProjection's caller and ProgressService ({@code lastActivity}) read another student's
  * rows, and only after ComponentService has proved the teacher owns the class.
  */
 @Repository
@@ -130,6 +130,24 @@ public class LogRepository {
                             .add(revision(rs, 0));
                 });
         return history;
+    }
+
+    /**
+     * Each student's newest log activity in a component: the latest revision of any entry, hidden ones included
+     * (plan P4-9). Read by ProgressService, after ComponentService has proved the teacher owns the class.
+     */
+    public Map<UUID, Instant> lastActivity(UUID componentId) {
+        Map<UUID, Instant> last = new LinkedHashMap<>();
+        jdbc.sql("""
+                SELECT e.student_user_id, max(r.created_at) AS last_at
+                FROM log_entry e JOIN log_entry_revision r ON r.entry_id = e.id
+                WHERE e.instance_id = :component
+                GROUP BY e.student_user_id
+                """).param("component", componentId)
+                .query(rs -> {
+                    last.put(rs.getObject("student_user_id", UUID.class), rs.getObject("last_at", OffsetDateTime.class).toInstant());
+                });
+        return last;
     }
 
     private void insertRevision(UUID entryId, int number, String body, EntryFields fields, Instant now) {
