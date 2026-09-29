@@ -1,5 +1,7 @@
 package ie.coursework.progress.application;
 
+import ie.coursework.audit.AuditEventType;
+import ie.coursework.audit.AuditLog;
 import ie.coursework.classes.adapter.persistence.ClassGroupRepository;
 import ie.coursework.classes.adapter.persistence.EnrolmentRepository;
 import ie.coursework.classes.adapter.persistence.EnrolmentRepository.Member;
@@ -34,6 +36,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -57,11 +60,12 @@ public class ProgressService {
     private final EnrolmentRepository enrolments;
     private final SignoffRepository signoffs;
     private final LogRepository log;
+    private final AuditLog audit;
     private final Clock clock;
 
     public ProgressService(ComponentService componentService, ComponentRepository components, BriefRepository briefs,
             TemplateRepository templates, ClassGroupRepository classGroups, EnrolmentRepository enrolments,
-            SignoffRepository signoffs, LogRepository log, Clock clock) {
+            SignoffRepository signoffs, LogRepository log, AuditLog audit, Clock clock) {
         this.componentService = componentService;
         this.components = components;
         this.briefs = briefs;
@@ -70,6 +74,7 @@ public class ProgressService {
         this.enrolments = enrolments;
         this.signoffs = signoffs;
         this.log = log;
+        this.audit = audit;
         this.clock = clock;
     }
 
@@ -118,6 +123,34 @@ public class ProgressService {
         return new StudentCheckpoints(member.studentId(), member.firstName(), member.lastName(), today,
                 Standing.behindBy(stages.stream().map(StudentStage::state).toList()),
                 last == null ? null : DublinDate.of(last), Standing.daysSince(last, today), stages);
+    }
+
+    /**
+     * Idempotent (plan P4-6): signing off what's already signed off, or revoking what isn't, changes nothing and writes
+     * no audit event. Undo and Revoke are the same call (P4-17).
+     */
+    @Transactional
+    public Cell setSignoff(Actor actor, UUID componentId, UUID studentId, UUID checkpointId, boolean signedOff) {
+        ComponentInstance component = componentService.requireOwned(actor, componentId);
+        approvedMember(component, studentId);
+        Brief brief = briefs.findPublished(component.briefId()).orElseThrow(() -> new IllegalStateException("brief missing"));
+        TemplateCheckpoint checkpoint = templates.checkpointInVersion(checkpointId, brief.versionId())
+                .orElseThrow(ProgressService::notFound);
+
+        Instant now = clock.instant();
+        Map<String, Object> details = Map.of("componentId", component.id(), "studentId", studentId, "checkpointId", checkpointId);
+        Optional<UUID> changed = signedOff
+                ? signoffs.signOff(component.id(), studentId, checkpointId, actor.userId(), now)
+                : signoffs.revoke(component.id(), studentId, checkpointId, actor.userId(), now);
+        changed.ifPresent(id -> audit.record(actor.userId(),
+                signedOff ? AuditEventType.CHECKPOINT_SIGNED_OFF : AuditEventType.CHECKPOINT_SIGNOFF_REVOKED,
+                "checkpoint_signoff", id, details));
+
+        Instant live = signoffs.forStudent(component.id(), studentId).stream()
+                .filter(s -> s.live() && s.checkpointId().equals(checkpointId)).map(Signoff::signedOffAt).findFirst().orElse(null);
+        LocalDate due = components.stageDates(component.id()).get(checkpoint.stageId());
+        LocalDate today = DublinDate.today(clock);
+        return new Cell(checkpointId, CheckpointState.at(due, today, live != null), live == null ? null : DublinDate.of(live));
     }
 
     Member approvedMember(ComponentInstance component, UUID studentId) {

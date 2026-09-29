@@ -2,11 +2,15 @@ package ie.coursework.progress.adapter.web;
 
 import ie.coursework.identity.domain.Actor;
 import ie.coursework.progress.application.ProgressService;
+import ie.coursework.progress.application.ProgressViews.Cell;
 import ie.coursework.progress.application.ProgressViews.Grid;
 import ie.coursework.progress.application.ProgressViews.StudentCheckpoints;
+import jakarta.validation.Valid;
 import java.util.UUID;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,5 +33,11 @@ public class ProgressController {
     @GetMapping("/students/{studentId}/checkpoints")
     StudentCheckpoints student(Actor actor, @PathVariable UUID componentId, @PathVariable UUID studentId) {
         return progress.student(actor, componentId, studentId);
+    }
+
+    @PutMapping("/students/{studentId}/checkpoints/{checkpointId}/signoff")
+    Cell signoff(Actor actor, @PathVariable UUID componentId, @PathVariable UUID studentId, @PathVariable UUID checkpointId,
+            @Valid @RequestBody SignoffRequest body) {
+        return progress.setSignoff(actor, componentId, studentId, checkpointId, body.signedOff());
     }
 }
