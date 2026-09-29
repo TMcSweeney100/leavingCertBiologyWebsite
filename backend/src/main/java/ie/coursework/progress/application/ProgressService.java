@@ -22,6 +22,9 @@ import ie.coursework.progress.application.ProgressViews.CheckpointRef;
 import ie.coursework.progress.application.ProgressViews.Grid;
 import ie.coursework.progress.application.ProgressViews.GridStage;
 import ie.coursework.progress.application.ProgressViews.GridStudent;
+import ie.coursework.progress.application.ProgressViews.PastSignoff;
+import ie.coursework.progress.application.ProgressViews.StudentCheckpoints;
+import ie.coursework.progress.application.ProgressViews.StudentStage;
 import ie.coursework.progress.domain.Standing;
 import ie.coursework.shared.error.DomainException;
 import ie.coursework.shared.error.ErrorCode;
@@ -90,6 +93,36 @@ public class ProgressService {
 
         return new Grid(component.id(), component.classId(), classGroups.findById(component.classId()).orElseThrow().name(),
                 today, stages, students);
+    }
+
+    /** One student's checkpoints with every revoked sign-off (pack D-7's student view). An unapproved student is 404. */
+    @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
+    public StudentCheckpoints student(Actor actor, UUID componentId, UUID studentId) {
+        ComponentInstance component = componentService.requireOwned(actor, componentId);
+        Member member = approvedMember(component, studentId);
+        LocalDate today = DublinDate.today(clock);
+        Map<UUID, List<Signoff>> byCheckpoint = signoffs.forStudent(component.id(), studentId).stream()
+                .collect(Collectors.groupingBy(Signoff::checkpointId));
+
+        List<StudentStage> stages = stages(component).stream().filter(s -> s.checkpoint() != null).map(s -> {
+            List<Signoff> rows = byCheckpoint.getOrDefault(s.checkpoint().id(), List.of());
+            Instant live = rows.stream().filter(Signoff::live).map(Signoff::signedOffAt).findFirst().orElse(null);
+            Cell cell = cell(s, live, today);
+            List<PastSignoff> history = rows.stream().filter(r -> !r.live())
+                    .map(r -> new PastSignoff(DublinDate.of(r.signedOffAt()), DublinDate.of(r.revokedAt()), r.revokedBy())).toList();
+            return new StudentStage(s.stageId(), s.ordinal(), s.label(), s.name(), s.dueDate(), s.checkpoint(),
+                    cell.state(), cell.signedOffOn(), history);
+        }).toList();
+
+        Instant last = log.lastActivity(component.id()).get(studentId);
+        return new StudentCheckpoints(member.studentId(), member.firstName(), member.lastName(), today,
+                Standing.behindBy(stages.stream().map(StudentStage::state).toList()),
+                last == null ? null : DublinDate.of(last), Standing.daysSince(last, today), stages);
+    }
+
+    Member approvedMember(ComponentInstance component, UUID studentId) {
+        return approved(component).stream().filter(m -> m.studentId().equals(studentId)).findFirst()
+                .orElseThrow(ProgressService::notFound);
     }
 
     List<GridStage> stages(ComponentInstance component) {

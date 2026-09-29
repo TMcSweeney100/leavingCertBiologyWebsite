@@ -3,6 +3,7 @@ package ie.coursework.progress.adapter.web;
 import ie.coursework.identity.domain.Actor;
 import ie.coursework.progress.application.ProgressService;
 import ie.coursework.progress.application.ProgressViews.Grid;
+import ie.coursework.progress.application.ProgressViews.StudentCheckpoints;
 import java.util.UUID;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,5 +24,10 @@ public class ProgressController {
     @GetMapping("/progress")
     Grid grid(Actor actor, @PathVariable UUID componentId) {
         return progress.grid(actor, componentId);
+    }
+
+    @GetMapping("/students/{studentId}/checkpoints")
+    StudentCheckpoints student(Actor actor, @PathVariable UUID componentId, @PathVariable UUID studentId) {
+        return progress.student(actor, componentId, studentId);
     }
 }
