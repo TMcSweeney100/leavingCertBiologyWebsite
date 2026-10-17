@@ -5,11 +5,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import ie.coursework.audit.AuditLog;
 import ie.coursework.classes.adapter.persistence.ClassGroupRepository;
 import ie.coursework.classes.adapter.persistence.SubjectRepository;
 import ie.coursework.classes.application.ClassService;
 import ie.coursework.components.adapter.persistence.BriefRepository;
 import ie.coursework.components.adapter.persistence.ComponentRepository;
+import ie.coursework.components.adapter.persistence.DocumentLinkRepository;
 import ie.coursework.components.adapter.persistence.ItemTickRepository;
 import ie.coursework.components.adapter.persistence.TeacherItemRepository;
 import ie.coursework.components.adapter.persistence.SignoffRepository;
@@ -37,7 +39,8 @@ class ComponentServiceOwnedTest {
     private final ComponentRepository components = mock(ComponentRepository.class);
     private final ComponentService service = new ComponentService(classes, mock(ClassGroupRepository.class),
             mock(SubjectRepository.class), mock(BriefRepository.class), mock(TemplateRepository.class), components,
-            mock(TeacherItemRepository.class), mock(ItemTickRepository.class), mock(SignoffRepository.class), Clock.systemUTC());
+            mock(TeacherItemRepository.class), mock(ItemTickRepository.class), mock(SignoffRepository.class),
+            mock(DocumentLinkRepository.class), mock(AuditLog.class), Clock.systemUTC());
 
     private final UUID teacher = UUID.randomUUID();
     private final Actor actor = new Actor(teacher, List.of(new RoleGrant(UUID.randomUUID(), "School A", "SA", Role.TEACHER)));

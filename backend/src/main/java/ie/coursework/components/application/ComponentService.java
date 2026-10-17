@@ -1,11 +1,14 @@
 package ie.coursework.components.application;
 
+import ie.coursework.audit.AuditEventType;
+import ie.coursework.audit.AuditLog;
 import ie.coursework.classes.adapter.persistence.ClassGroupRepository;
 import ie.coursework.classes.adapter.persistence.SubjectRepository;
 import ie.coursework.classes.application.ClassService;
 import ie.coursework.classes.domain.ClassGroup;
 import ie.coursework.components.adapter.persistence.BriefRepository;
 import ie.coursework.components.adapter.persistence.ComponentRepository;
+import ie.coursework.components.adapter.persistence.DocumentLinkRepository;
 import ie.coursework.components.adapter.persistence.ItemTickRepository;
 import ie.coursework.components.adapter.persistence.TeacherItemRepository;
 import ie.coursework.components.adapter.persistence.SignoffRepository;
@@ -15,6 +18,7 @@ import ie.coursework.components.application.ComponentViews.BriefSummary;
 import ie.coursework.components.application.ComponentViews.CheckpointView;
 import ie.coursework.components.application.ComponentViews.ComponentView;
 import ie.coursework.components.application.ComponentViews.DateWarning;
+import ie.coursework.components.application.ComponentViews.DocumentLinkView;
 import ie.coursework.components.application.ComponentViews.MarkBandView;
 import ie.coursework.components.application.ComponentViews.MyComponent;
 import ie.coursework.components.application.ComponentViews.PromptView;
@@ -34,6 +38,7 @@ import ie.coursework.components.domain.ComponentInstance;
 import ie.coursework.components.domain.DatedStage;
 import ie.coursework.components.domain.CheckpointState;
 import ie.coursework.components.domain.Signoff;
+import ie.coursework.components.domain.DocumentLink;
 import ie.coursework.components.domain.DublinDate;
 import ie.coursework.components.domain.StageOrder;
 import ie.coursework.components.domain.TeacherItem;
@@ -45,6 +50,7 @@ import ie.coursework.identity.domain.Role;
 import ie.coursework.shared.error.DomainException;
 import ie.coursework.shared.error.ErrorCode;
 import ie.coursework.shared.error.FieldError;
+import ie.coursework.shared.link.HttpsLink;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -52,6 +58,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -76,11 +83,14 @@ public class ComponentService {
     private final TeacherItemRepository items;
     private final ItemTickRepository ticks;
     private final SignoffRepository signoffs;
+    private final DocumentLinkRepository links;
+    private final AuditLog audit;
     private final Clock clock;
 
     public ComponentService(ClassService classes, ClassGroupRepository classGroups, SubjectRepository subjects,
             BriefRepository briefs, TemplateRepository templates, ComponentRepository components,
-            TeacherItemRepository items, ItemTickRepository ticks, SignoffRepository signoffs, Clock clock) {
+            TeacherItemRepository items, ItemTickRepository ticks, SignoffRepository signoffs,
+            DocumentLinkRepository links, AuditLog audit, Clock clock) {
         this.classes = classes;
         this.classGroups = classGroups;
         this.subjects = subjects;
@@ -90,7 +100,35 @@ public class ComponentService {
         this.items = items;
         this.ticks = ticks;
         this.signoffs = signoffs;
+        this.links = links;
+        this.audit = audit;
         this.clock = clock;
+    }
+
+    /** FR-38-39: an approved student's link to their work. Stored, never fetched. The same link again changes nothing (R-19). */
+    @Transactional
+    public DocumentLinkView setDocumentLink(Actor actor, UUID componentId, String url) {
+        ComponentInstance component = components.findForApprovedStudent(componentId, actor.userId())
+                .orElseThrow(ComponentService::notFound);
+        String stripped = url == null ? "" : url.strip();
+        if (!HttpsLink.valid(stripped) || stripped.length() > 2000) {
+            throw new DomainException(ErrorCode.VALIDATION_FAILED, "That isn't an https link.",
+                    List.of(new FieldError("url", "must be a link starting https://")));
+        }
+        Optional<DocumentLink> current = links.current(component.id(), actor.userId());
+        if (current.isPresent() && current.get().url().equals(stripped)) {
+            return view(current.get());
+        }
+        Instant now = clock.instant();
+        links.add(component.id(), actor.userId(), stripped, now);
+        // Ids only: the link itself points at student work (ARCHITECTURE section 5, audit details).
+        audit.record(actor.userId(), AuditEventType.DOCUMENT_LINK_SET, "component_instance", component.id(),
+                Map.of("componentId", component.id()));
+        return view(new DocumentLink(stripped, now));
+    }
+
+    static DocumentLinkView view(DocumentLink link) {
+        return new DocumentLinkView(link.url(), DublinDate.of(link.setAt()));
     }
 
     /** Briefs are published SEC content: any signed-in user may list them. */

@@ -13,6 +13,8 @@ public final class ComponentViews {
     public record BriefSummary(UUID id, String subjectCode, int examYear, String secCode, String title,
             String topicTitle, LocalDate completionDate) {}
 
+    public record DocumentLinkView(String url, LocalDate setOn) {}
+
     public record TeacherItemView(UUID id, String text, LocalDate dueDate) {}
 
     public record SetupStage(UUID id, int ordinal, String label, String name, Integer hoursMin, Integer hoursMax,
