@@ -17,8 +17,8 @@ A diff that fits in one sentence skips step 2.
 
 | # | Slug | Feature | Status |
 |---|---|---|---|
-| 1 | `ready-for-signoff` | The student says a checkpoint is ready; the teacher gets a queue | planned: docs/superpowers/plans/2026-10-17-ready-for-signoff.md |
-| 2 | `document-link` | The student attaches a link to their report; the teacher opens it from the grid | folded into ready-for-signoff |
+| 1 | `ready-for-signoff` | The student says a checkpoint is ready; the teacher gets a queue | built on `pilot/ready-for-signoff`, not merged: self-review, changes doc and PR still to do; D-10 restyle waits for the pack (plan: docs/superpowers/plans/2026-10-17-ready-for-signoff.md) |
+| 2 | `document-link` | The student attaches a link to their report; the teacher opens it from the grid | folded into ready-for-signoff (built on the same branch, not merged) |
 
 ### 1. Ready for sign-off (`ready-for-signoff`)
 
