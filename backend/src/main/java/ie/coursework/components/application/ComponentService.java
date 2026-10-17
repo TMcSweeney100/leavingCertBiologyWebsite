@@ -132,7 +132,7 @@ public class ComponentService {
         return view(new DocumentLink(stripped, now));
     }
 
-    static DocumentLinkView view(DocumentLink link) {
+    public static DocumentLinkView view(DocumentLink link) {
         return new DocumentLinkView(link.url(), DublinDate.of(link.setAt()));
     }
 

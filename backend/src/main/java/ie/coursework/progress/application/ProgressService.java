@@ -11,13 +11,18 @@ import ie.coursework.components.adapter.persistence.ComponentRepository;
 import ie.coursework.components.adapter.persistence.SignoffRepository;
 import ie.coursework.components.adapter.persistence.SignoffRequestRepository;
 import ie.coursework.components.adapter.persistence.TemplateRepository;
+import ie.coursework.components.adapter.persistence.DocumentLinkRepository;
 import ie.coursework.components.application.ComponentService;
+import ie.coursework.components.application.ComponentViews.OpenRequestView;
+import ie.coursework.components.application.RequestViews;
 import ie.coursework.components.domain.Brief;
 import ie.coursework.components.domain.CheckpointState;
 import ie.coursework.components.domain.ComponentInstance;
+import ie.coursework.components.domain.DocumentLink;
 import ie.coursework.components.domain.DublinDate;
 import ie.coursework.components.domain.RequestOutcome;
 import ie.coursework.components.domain.Signoff;
+import ie.coursework.components.domain.SignoffRequest;
 import ie.coursework.components.domain.TemplateCheckpoint;
 import ie.coursework.identity.domain.Actor;
 import ie.coursework.log.adapter.persistence.LogRepository;
@@ -29,6 +34,7 @@ import ie.coursework.progress.application.ProgressViews.GridStudent;
 import ie.coursework.progress.application.ProgressViews.PastSignoff;
 import ie.coursework.progress.application.ProgressViews.StudentCheckpoints;
 import ie.coursework.progress.application.ProgressViews.StudentStage;
+import ie.coursework.progress.application.ProgressViews.WaitingRequest;
 import ie.coursework.progress.domain.Standing;
 import ie.coursework.shared.error.DomainException;
 import ie.coursework.shared.error.ErrorCode;
@@ -39,6 +45,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -62,13 +69,14 @@ public class ProgressService {
     private final EnrolmentRepository enrolments;
     private final SignoffRepository signoffs;
     private final SignoffRequestRepository requests;
+    private final DocumentLinkRepository links;
     private final LogRepository log;
     private final AuditLog audit;
     private final Clock clock;
 
     public ProgressService(ComponentService componentService, ComponentRepository components, BriefRepository briefs,
             TemplateRepository templates, ClassGroupRepository classGroups, EnrolmentRepository enrolments,
-            SignoffRepository signoffs, SignoffRequestRepository requests, LogRepository log, AuditLog audit, Clock clock) {
+            SignoffRepository signoffs, SignoffRequestRepository requests, DocumentLinkRepository links, LogRepository log, AuditLog audit, Clock clock) {
         this.componentService = componentService;
         this.components = components;
         this.briefs = briefs;
@@ -77,6 +85,7 @@ public class ProgressService {
         this.enrolments = enrolments;
         this.signoffs = signoffs;
         this.requests = requests;
+        this.links = links;
         this.log = log;
         this.audit = audit;
         this.clock = clock;
@@ -90,18 +99,33 @@ public class ProgressService {
         Map<String, Instant> live = signoffs.live(component.id()).stream()
                 .collect(Collectors.toMap(s -> key(s.studentId(), s.checkpointId()), Signoff::signedOffAt));
         Map<UUID, Instant> activity = log.lastActivity(component.id());
+        List<SignoffRequest> open = requests.open(component.id());
+        Set<String> ready = open.stream().map(r -> key(r.studentId(), r.checkpointId())).collect(Collectors.toSet());
+        Map<UUID, DocumentLink> linkByStudent = links.currentFor(component.id());
+        List<Member> members = approved(component);
 
-        List<GridStudent> students = approved(component).stream().map(m -> {
+        List<GridStudent> students = members.stream().map(m -> {
             List<Cell> cells = stages.stream().filter(s -> s.checkpoint() != null)
-                    .map(s -> cell(s, live.get(key(m.studentId(), s.checkpoint().id())), today)).toList();
+                    .map(s -> cell(s, live.get(key(m.studentId(), s.checkpoint().id())),
+                            ready.contains(key(m.studentId(), s.checkpoint().id())), today)).toList();
             Instant last = activity.get(m.studentId());
             return new GridStudent(m.studentId(), m.firstName(), m.lastName(),
                     Standing.behindBy(cells.stream().map(Cell::state).toList()),
-                    last == null ? null : DublinDate.of(last), Standing.daysSince(last, today), cells);
+                    last == null ? null : DublinDate.of(last), Standing.daysSince(last, today), cells,
+                    Optional.ofNullable(linkByStudent.get(m.studentId())).map(ComponentService::view).orElse(null));
         }).sorted(Comparator.comparing(ProgressService::standing, Standing.ORDER)).toList();
 
+        Map<UUID, Member> byId = members.stream().collect(Collectors.toMap(Member::studentId, m -> m));
+        Map<UUID, String> texts = stages.stream().filter(s -> s.checkpoint() != null)
+                .collect(Collectors.toMap(s -> s.checkpoint().id(), s -> s.checkpoint().text()));
+        List<WaitingRequest> waiting = open.stream().filter(r -> byId.containsKey(r.studentId())).map(r -> {
+            Member m = byId.get(r.studentId());
+            return new WaitingRequest(r.studentId(), m.firstName(), m.lastName(), r.checkpointId(), texts.get(r.checkpointId()),
+                    DublinDate.of(r.askedAt()), r.studentNote());
+        }).toList();
+
         return new Grid(component.id(), component.classId(), classGroups.findById(component.classId()).orElseThrow().name(),
-                today, stages, students);
+                today, stages, students, waiting);
     }
 
     /** One student's checkpoints with every revoked sign-off (pack D-7's student view). An unapproved student is 404. */
@@ -113,20 +137,26 @@ public class ProgressService {
         Map<UUID, List<Signoff>> byCheckpoint = signoffs.forStudent(component.id(), studentId).stream()
                 .collect(Collectors.groupingBy(Signoff::checkpointId));
 
+        Map<UUID, List<SignoffRequest>> requestsByCheckpoint = requests.forStudent(component.id(), studentId).stream()
+                .collect(Collectors.groupingBy(SignoffRequest::checkpointId));
+
         List<StudentStage> stages = stages(component).stream().filter(s -> s.checkpoint() != null).map(s -> {
+            List<SignoffRequest> asked = requestsByCheckpoint.getOrDefault(s.checkpoint().id(), List.of());
+            OpenRequestView request = RequestViews.open(asked);
             List<Signoff> rows = byCheckpoint.getOrDefault(s.checkpoint().id(), List.of());
             Instant live = rows.stream().filter(Signoff::live).map(Signoff::signedOffAt).findFirst().orElse(null);
-            Cell cell = cell(s, live, today);
+            Cell cell = cell(s, live, request != null, today);
             List<PastSignoff> history = rows.stream().filter(r -> !r.live())
                     .map(r -> new PastSignoff(DublinDate.of(r.signedOffAt()), DublinDate.of(r.revokedAt()), r.revokedBy())).toList();
             return new StudentStage(s.stageId(), s.ordinal(), s.label(), s.name(), s.dueDate(), s.checkpoint(),
-                    cell.state(), cell.signedOffOn(), history);
+                    cell.state(), cell.signedOffOn(), history, request, RequestViews.answers(asked));
         }).toList();
 
         Instant last = log.lastActivity(component.id()).get(studentId);
         return new StudentCheckpoints(member.studentId(), member.firstName(), member.lastName(), today,
                 Standing.behindBy(stages.stream().map(StudentStage::state).toList()),
-                last == null ? null : DublinDate.of(last), Standing.daysSince(last, today), stages);
+                last == null ? null : DublinDate.of(last), Standing.daysSince(last, today), stages,
+                links.current(component.id(), studentId).map(ComponentService::view).orElse(null));
     }
 
     /**
@@ -213,8 +243,8 @@ public class ProgressService {
         return enrolments.membersOf(component.classId()).stream().filter(m -> m.status() == EnrolmentStatus.APPROVED).toList();
     }
 
-    static Cell cell(GridStage stage, Instant signedOffAt, LocalDate today) {
-        return new Cell(stage.checkpoint().id(), CheckpointState.at(stage.dueDate(), today, signedOffAt != null, false),
+    static Cell cell(GridStage stage, Instant signedOffAt, boolean ready, LocalDate today) {
+        return new Cell(stage.checkpoint().id(), CheckpointState.at(stage.dueDate(), today, signedOffAt != null, ready),
                 signedOffAt == null ? null : DublinDate.of(signedOffAt));
     }
 
