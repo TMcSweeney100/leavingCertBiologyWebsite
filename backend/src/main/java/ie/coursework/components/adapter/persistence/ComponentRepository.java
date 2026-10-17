@@ -93,4 +93,15 @@ public class ComponentRepository {
                 """).param("id", componentId).param("stage", stageId).param("due", due, Types.DATE)
                 .param("now", Timestamps.utc(now)).update());
     }
+
+    /** Whether this class asks for a link before a student can ask for sign-off (ready-for-signoff R-6). */
+    public boolean requiresLink(UUID componentId) {
+        return jdbc.sql("SELECT require_link_for_signoff FROM component_instance WHERE id = :id")
+                .param("id", componentId).query(Boolean.class).single();
+    }
+
+    public void setRequireLink(UUID componentId, boolean required) {
+        jdbc.sql("UPDATE component_instance SET require_link_for_signoff = :required WHERE id = :id")
+                .param("id", componentId).param("required", required).update();
+    }
 }
