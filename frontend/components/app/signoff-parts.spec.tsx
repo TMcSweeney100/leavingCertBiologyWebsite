@@ -68,3 +68,22 @@ describe("RevokeStrip and SignoffAlert", () => {
     expect(onRetry).toHaveBeenCalled();
   });
 });
+
+describe("CheckpointCell, Ready", () => {
+  const href = "/teach/classes/k1/students/s1#checkpoint-cp1";
+  const readyCell = { checkpointId: "cp1", state: "READY" as const, signedOffOn: null };
+  const readyNames = { ...names, review: "Review X for A" };
+
+  it("a Ready cell in the grid is a link to review, not a sign-off button", () => {
+    render(<CheckpointCell {...base} names={readyNames} layout="grid" cell={readyCell} reviewHref={href} />);
+    expect(screen.getByRole("link", { name: "Review X for A" })).toHaveAttribute("href", href);
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(screen.getByText("Ready")).toBeInTheDocument();
+  });
+
+  it("outside the grid a Ready cell says so in words, with no button", () => {
+    render(<CheckpointCell {...base} names={readyNames} layout="one" cell={readyCell} />);
+    expect(screen.getByText("Ready for sign-off")).toBeInTheDocument();
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  });
+});

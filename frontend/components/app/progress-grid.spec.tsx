@@ -43,6 +43,16 @@ beforeEach(() => {
 });
 
 describe("ProgressGrid", () => {
+  it("shows each student's work link beside their name, and a Ready cell opens the review", () => {
+    const withLink = grid([
+      { ...row("a", "Aoife", "Byrne", 1, "DUE", 3), documentLink: { url: "https://docs.example.com/aoife", setOn: "2026-12-01" },
+        cells: [{ checkpointId: "c1", state: "READY" as const, signedOffOn: null }, { checkpointId: "c2", state: "DUE" as const, signedOffOn: null }] },
+    ]);
+    render(<ProgressGrid grid={withLink} {...props} />);
+    expect(table().getByRole("link", { name: "Open Aoife Byrne's work (opens in a new tab)" })).toHaveAttribute("href", "https://docs.example.com/aoife");
+    expect(table().getByRole("link", { name: `Review ${INITIAL} for Aoife Byrne` })).toHaveAttribute("href", "/teach/classes/cl1/students/a#checkpoint-c1");
+  });
+
   it("answers first, then groups students into bands, furthest behind first", () => {
     render(<ProgressGrid grid={START} {...props} />);
     expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent("2 of 2 students are behind");

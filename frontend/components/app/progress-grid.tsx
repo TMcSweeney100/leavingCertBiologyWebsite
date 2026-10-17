@@ -12,8 +12,12 @@ import {
 
 import { Button, buttonVariants } from "@/components/ui/button";
 
+import { checkpointAnchor, reviewName } from "@/lib/app/ready";
+
 import { CheckpointCell, RevokeStrip, SignoffAlert } from "./signoff-parts";
 import { StagePicker } from "./stage-picker";
+import { WaitingQueue } from "./waiting-queue";
+import { WorkLink } from "./work-link";
 import { card, eyebrow, sectionTitle } from "./styles";
 import { targetKey, useSignoffs, type SignoffTarget } from "./use-signoffs";
 
@@ -55,7 +59,9 @@ export function ProgressGrid({ grid, basePath, laptopStage, phoneStage, hideName
     const name = fullName(st);
     return (
       <CheckpointCell layout={layoutKind} cell={st.cells[index]}
-        names={{ sign: signName(stage.checkpoint.text, name), undo: undoName(stage.checkpoint.text, name), revoke: revokeName(stage.checkpoint.text, name) }}
+        names={{ sign: signName(stage.checkpoint.text, name), undo: undoName(stage.checkpoint.text, name), revoke: revokeName(stage.checkpoint.text, name),
+          review: reviewName(stage.checkpoint.text, name) }}
+        reviewHref={`/teach/classes/${grid.classId}/students/${st.studentId}#${checkpointAnchor(stage.checkpoint.id)}`}
         busy={s.busy.get(key) ?? null} recent={s.recent.has(key)} confirming={s.confirming === key}
         onSign={() => s.signOff(t)} onUndo={() => s.undo(t)} onAsk={() => s.askRevoke(t)} />
     );
@@ -85,6 +91,7 @@ export function ProgressGrid({ grid, basePath, laptopStage, phoneStage, hideName
 
   return (
     <div className={hidden ? "app-hide-names" : undefined}>
+      <WaitingQueue classId={grid.classId} today={grid.today} waiting={grid.waiting} />
       <div className="mt-7 flex flex-wrap items-end justify-between gap-4">
         <Answer grid={grid} />
         <div className="flex flex-wrap items-center gap-3">
@@ -148,6 +155,7 @@ export function ProgressGrid({ grid, basePath, laptopStage, phoneStage, hideName
                             <th scope="row" className="px-4 py-2 text-left align-top font-normal">
                               <Link href={`/teach/classes/${grid.classId}/students/${st.studentId}`} data-private
                                 className="block font-semibold text-app-accent underline underline-offset-3 break-words">{fullName(st)}</Link>
+                              {st.documentLink && <WorkLink url={st.documentLink.url} name={fullName(st)} />}
                               <span className="block text-app-small text-app-grey">{behindWords(st.behindBy)}</span>
                             </th>
                             {oneLaptop < 0
@@ -195,6 +203,7 @@ export function ProgressGrid({ grid, basePath, laptopStage, phoneStage, hideName
                     <div className="flex flex-col gap-0.5">
                       <Link href={`/teach/classes/${grid.classId}/students/${st.studentId}`} data-private
                         className="font-semibold text-app-accent underline underline-offset-3 break-words">{fullName(st)}</Link>
+                      {st.documentLink && <WorkLink url={st.documentLink.url} name={fullName(st)} />}
                       <span className="text-app-small text-app-grey">{behindWords(st.behindBy)}</span>
                       <span data-private className={`text-app-small ${isQuiet(st.daysSinceLastLogActivity) ? "font-semibold text-app-ink" : "text-app-grey"}`}>
                         {lastEntryWords(st.daysSinceLastLogActivity)}
