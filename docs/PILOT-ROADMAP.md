@@ -1,7 +1,7 @@
 # Coursework Pilot — Roadmap
 
 **Date:** 15 September 2026
-**Status:** Draft for review. Nothing in here is built yet.
+**Status:** Frozen 17 Oct 2026. Phases 1–4 are built and merged into `pilotMain`. New work is tracked in `docs/BACKLOG.md`. The decisions (§2), page inventory (§6) and API catalogue (§7) still hold; Phases 5–6 and the readiness track are parked, not planned.
 **Implements:** `docs/PILOT-DESIGN.md`. Where this roadmap and the design disagree, the design wins; raise the conflict rather than picking one.
 **Who reads this:** Claude Code sessions doing the build, and Tim reviewing it.
 
