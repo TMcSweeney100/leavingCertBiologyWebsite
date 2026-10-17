@@ -12,6 +12,7 @@ import ie.coursework.components.adapter.persistence.DocumentLinkRepository;
 import ie.coursework.components.adapter.persistence.ItemTickRepository;
 import ie.coursework.components.adapter.persistence.TeacherItemRepository;
 import ie.coursework.components.adapter.persistence.SignoffRepository;
+import ie.coursework.components.adapter.persistence.SignoffRequestRepository;
 import ie.coursework.components.adapter.persistence.TemplateRepository;
 import ie.coursework.components.application.ComponentViews.BriefDetail;
 import ie.coursework.components.application.ComponentViews.BriefSummary;
@@ -21,6 +22,7 @@ import ie.coursework.components.application.ComponentViews.DateWarning;
 import ie.coursework.components.application.ComponentViews.DocumentLinkView;
 import ie.coursework.components.application.ComponentViews.MarkBandView;
 import ie.coursework.components.application.ComponentViews.MyComponent;
+import ie.coursework.components.application.ComponentViews.OpenRequestView;
 import ie.coursework.components.application.ComponentViews.PromptView;
 import ie.coursework.components.application.ComponentViews.RuleView;
 import ie.coursework.components.application.ComponentViews.SectionView;
@@ -38,6 +40,7 @@ import ie.coursework.components.domain.ComponentInstance;
 import ie.coursework.components.domain.DatedStage;
 import ie.coursework.components.domain.CheckpointState;
 import ie.coursework.components.domain.Signoff;
+import ie.coursework.components.domain.SignoffRequest;
 import ie.coursework.components.domain.DocumentLink;
 import ie.coursework.components.domain.DublinDate;
 import ie.coursework.components.domain.StageOrder;
@@ -84,13 +87,14 @@ public class ComponentService {
     private final ItemTickRepository ticks;
     private final SignoffRepository signoffs;
     private final DocumentLinkRepository links;
+    private final SignoffRequestRepository requests;
     private final AuditLog audit;
     private final Clock clock;
 
     public ComponentService(ClassService classes, ClassGroupRepository classGroups, SubjectRepository subjects,
             BriefRepository briefs, TemplateRepository templates, ComponentRepository components,
             TeacherItemRepository items, ItemTickRepository ticks, SignoffRepository signoffs,
-            DocumentLinkRepository links, AuditLog audit, Clock clock) {
+            DocumentLinkRepository links, SignoffRequestRepository requests, AuditLog audit, Clock clock) {
         this.classes = classes;
         this.classGroups = classGroups;
         this.subjects = subjects;
@@ -101,6 +105,7 @@ public class ComponentService {
         this.ticks = ticks;
         this.signoffs = signoffs;
         this.links = links;
+        this.requests = requests;
         this.audit = audit;
         this.clock = clock;
     }
@@ -175,6 +180,8 @@ public class ComponentService {
                 .collect(Collectors.toMap(TemplateCheckpoint::stageId, c -> c, (first, later) -> first));
         Map<UUID, Instant> signedOff = signoffs.forStudent(component.id(), actor.userId()).stream()
                 .filter(Signoff::live).collect(Collectors.toMap(Signoff::checkpointId, Signoff::signedOffAt));
+        Map<UUID, List<SignoffRequest>> requested = requests.forStudent(component.id(), actor.userId()).stream()
+                .collect(Collectors.groupingBy(SignoffRequest::checkpointId));
         Map<UUID, List<PromptView>> prompts = templates.prompts(brief.versionId()).stream()
                 .collect(Collectors.groupingBy(TemplatePrompt::stageId, LinkedHashMap::new,
                         Collectors.mapping(p -> new PromptView(p.heading(), p.text()), Collectors.toList())));
@@ -190,10 +197,13 @@ public class ComponentService {
             LocalDate due = dates.get(s.id());
             TemplateCheckpoint checkpoint = checkpoints.get(s.id());
             Instant at = checkpoint == null ? null : signedOff.get(checkpoint.id());
+            List<SignoffRequest> rows = checkpoint == null ? List.of() : requested.getOrDefault(checkpoint.id(), List.of());
+            OpenRequestView open = RequestViews.open(rows);
             return new StudentStage(s.id(), s.ordinal(), s.label(), s.name(), s.description(), s.hoursMin(), s.hoursMax(),
                     s.hoursGroup(), s.supervised(), due,
-                    checkpoint == null ? null : new CheckpointView(checkpoint.text(), CheckpointState.at(due, today, at != null, false),
-                            at == null ? null : DublinDate.of(at)),
+                    checkpoint == null ? null : new CheckpointView(checkpoint.id(), checkpoint.text(),
+                            CheckpointState.at(due, today, at != null, open != null), at == null ? null : DublinDate.of(at),
+                            open, RequestViews.answers(rows)),
                     items.getOrDefault(s.id(), List.of()), prompts.getOrDefault(s.id(), List.of()));
         }).toList();
 
@@ -209,7 +219,9 @@ public class ComponentService {
                 templates.sections(brief.versionId()).stream()
                         .map(x -> new SectionView(x.label(), x.name(), x.suggestedWords(), x.indicativeContent(), x.stageIds())).toList(),
                 templates.bands(brief.versionId()).stream()
-                        .map(b -> new MarkBandView(b.label(), b.name(), b.marks(), b.wholeReport(), b.criteria(), b.sectionLabels())).toList());
+                        .map(b -> new MarkBandView(b.label(), b.name(), b.marks(), b.wholeReport(), b.criteria(), b.sectionLabels())).toList(),
+                components.requiresLink(component.id()),
+                links.current(component.id(), actor.userId()).map(ComponentService::view).orElse(null));
     }
 
     @Transactional
