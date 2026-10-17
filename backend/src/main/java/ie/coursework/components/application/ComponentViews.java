@@ -30,8 +30,8 @@ public final class ComponentViews {
     }
 
     public record TeacherComponent(String view, UUID id, UUID classId, String className, String subjectCode,
-            String subjectName, BriefSummary brief, List<SetupStage> stages, List<DateWarning> warnings)
-            implements ComponentView {}
+            String subjectName, BriefSummary brief, List<SetupStage> stages, List<DateWarning> warnings,
+            boolean requireLink) implements ComponentView {}
 
     public record RuleView(String key, String value) {}
 

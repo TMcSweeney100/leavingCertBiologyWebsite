@@ -59,6 +59,11 @@ public class ComponentController {
         return components.setStageDates(actor, componentId, body.dates());
     }
 
+    @PutMapping("/components/{componentId}/settings")
+    TeacherComponent setSettings(Actor actor, @PathVariable UUID componentId, @Valid @RequestBody ComponentSettingsRequest body) {
+        return components.setSettings(actor, componentId, body.requireLink());
+    }
+
     @PostMapping("/components/{componentId}/teacher-items")
     @ResponseStatus(HttpStatus.CREATED)
     TeacherItemView addItem(Actor actor, @PathVariable UUID componentId, @Valid @RequestBody TeacherItemRequest body) {

@@ -212,6 +212,13 @@ public class ComponentService {
                         .map(b -> new MarkBandView(b.label(), b.name(), b.marks(), b.wholeReport(), b.criteria(), b.sectionLabels())).toList());
     }
 
+    @Transactional
+    public TeacherComponent setSettings(Actor actor, UUID componentId, boolean requireLink) {
+        Owned owned = owned(actor, componentId);
+        components.setRequireLink(owned.component().id(), requireLink);
+        return teacherView(owned);
+    }
+
     /** Replaces the class's stage dates (plan 2D P2-24, P2-25). */
     @Transactional
     public TeacherComponent setStageDates(Actor actor, UUID componentId, List<StageDateInput> input) {
@@ -332,7 +339,8 @@ public class ComponentService {
 
         return new TeacherComponent("TEACHER", owned.component().id(), owned.group().id(), owned.group().name(),
                 brief.subjectCode(), subjects.findById(owned.group().subjectId()).orElseThrow().name(),
-                summary(brief), setup, warnings(setup, brief.completionDate()));
+                summary(brief), setup, warnings(setup, brief.completionDate()),
+                components.requiresLink(owned.component().id()));
     }
 
     private static List<DateWarning> warnings(List<SetupStage> stages, LocalDate completion) {
