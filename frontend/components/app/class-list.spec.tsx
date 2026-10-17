@@ -28,4 +28,10 @@ describe("ClassList", () => {
     render(<ClassList classes={[summary]} />);
     expect(screen.getByRole("listitem")).toHaveTextContent("Biology · Year 6 · 2026/27 · Higher");
   });
+
+  it("shows a waiting badge only for classes with requests", () => {
+    render(<ClassList classes={[{ ...summary, id: "k1", name: "6A" }, { ...summary, id: "k2", name: "6B" }]} waiting={{ k1: 3 }} />);
+    expect(screen.getByText("3 waiting for sign-off")).toBeInTheDocument();
+    expect(screen.getAllByText(/waiting for sign-off/)).toHaveLength(1);
+  });
 });
