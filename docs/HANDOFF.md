@@ -13,7 +13,24 @@ Rewritten at the end of every session: where things stand, what's half-done, wha
 - **Still to do, in order:** `/self-review` against `pilotMain` in a fresh session, then `write-changes` (`docs/changes/ready-for-signoff.md`, deliberately not written yet), then Tim opens the PR into `pilotMain`. The gate also asks that each check in `SignoffRequestScopeTest` be bitten once by hand (plan Task 12 Step 2).
 
 ### Tim: confirm or change decisions R-9 to R-22 (made while writing the plan)
-R-9 Ready is its own state and is not counted as behind. R-10 A Ready cell links to the student's page; it isn't a Sign off button. R-11 A grid sign-off answers an open request as Accepted, no note. R-12 Revoking a sign-off leaves the Accepted request in history; the student can ask again. R-13 Asking twice is idempotent. R-14 Asking for a signed-off checkpoint is `409 CHECKPOINT_ALREADY_SIGNED_OFF`. R-15 Withdrawing or answering with nothing open is `409 SIGNOFF_REQUEST_NOT_OPEN`. R-16 History shows answered requests only, newest first; withdrawn ones are kept but not shown. R-17 Notes: student 280, teacher 500, optional. R-18 A student can replace but not remove their link. R-19 Setting the same link again makes no new row. R-20 The pack is called D-10. R-21 The waiting count is its own endpoint. R-22 The backup line is quoted from p. 3 of the 2027 briefs.
+These were my calls while writing the plan, not yours. Say which to change.
+
+| # | What happens | Why it matters to you |
+|---|---|---|
+| R-9 | A checkpoint a student has asked about shows as **Ready**, and is **not** counted as behind. | Students waiting on you don't appear among the ones you have to chase. A "Not yet" puts them straight back to behind. |
+| R-10 | A Ready cell on the grid is a **link to the student's page**, not a Sign off button. | You look at the work before accepting. Due and Not due yet cells keep one-click Sign off. |
+| R-11 | Signing off from the grid while a request is open **answers it as Accepted**, with no note. | The request doesn't linger in your queue after you've signed off. |
+| R-12 | Revoking a sign-off leaves the earlier Accepted request in the history. The student can ask again. | History is never rewritten. |
+| R-13 | Asking twice (double-click, two tabs) makes one request. | No duplicate queue entries. |
+| R-14 | Asking for an already signed-off checkpoint is refused (`409 CHECKPOINT_ALREADY_SIGNED_OFF`). | |
+| R-15 | Withdrawing or answering when nothing is open is refused (`409 SIGNOFF_REQUEST_NOT_OPEN`). | The other side got there first; the page refreshes to show what happened. |
+| R-16 | History shows **answered** requests only, newest first. Withdrawn ones are kept in the database but not shown. | Withdrawn requests are noise to both of you. |
+| R-17 | Student note up to 280 characters, teacher note up to 500, both optional. | |
+| R-18 | A student can **replace** their link but not **remove** it. | Removing would need a "no link" record and a rule for classes that require a link. |
+| R-19 | Setting the same link again makes no new record. | |
+| R-20 | The design pack is called **D-10** (D-8 and D-9 were already taken). | |
+| R-21 | The waiting count on `/teach` comes from its own endpoint. | `classes` can't read `components` tables without a dependency cycle. |
+| R-22 | The backup reminder is quoted word for word from p. 3 of the 2027 briefs, and a test checks it. | |
 
 ### Known small things (found by task reviews; for Tim and self-review, none fixed)
 1. `SignoffRequestService.ask` calls `.orElseThrow()` after the idempotent insert; if the teacher answers in the gap between the insert and the re-read, it would 500.
