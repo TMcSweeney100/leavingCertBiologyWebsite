@@ -5,7 +5,7 @@ import { formatCalendarDate, hoursLabel } from "@/lib/app/component-setup";
 import { ItemTick } from "./item-tick";
 import { card, eyebrow, lead } from "./styles";
 
-const CHECKPOINT_WORD = { NOT_DUE: "Not due yet", DUE: "Not signed off yet", SIGNED_OFF: "Signed off" } as const;
+const CHECKPOINT_WORD = { NOT_DUE: "Not due yet", DUE: "Not signed off yet", READY: "Waiting for your teacher", SIGNED_OFF: "Signed off" } as const;
 
 type Stage = StudentComponent["stages"][number];
 

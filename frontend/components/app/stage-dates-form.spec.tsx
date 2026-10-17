@@ -28,6 +28,7 @@ const component = (overrides: Partial<TeacherComponent> = {}): TeacherComponent 
   brief: { id: "b1", subjectCode: "BIOLOGY", examYear: 2027, secCode: "2027L025C2EL", title: "Biology in Practice Investigation", topicTitle: null, completionDate: "2027-02-26" },
   stages: [stage(3, "2026-09-25"), stage(4, null), stage(5, null), stage(6, null)],
   warnings: [],
+  requireLink: false,
   ...overrides,
 });
 

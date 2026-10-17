@@ -115,6 +115,23 @@ export const dateWarningSchema = z.object({
 });
 export type DateWarning = z.infer<typeof dateWarningSchema>;
 
+// Ready-for-signoff: mirrors ComponentViews.DocumentLinkView, OpenRequestView, AnswerView and ProgressViews.
+export const documentLinkSchema = z.object({ url: z.string(), setOn: z.string() });
+export const openRequestSchema = z.object({ askedOn: z.string(), note: z.string().nullable() });
+export const requestOutcomeSchema = z.enum(["ACCEPTED", "NOT_YET"]);
+export const answerSchema = z.object({
+  askedOn: z.string(), note: z.string().nullable(), outcome: requestOutcomeSchema, answeredOn: z.string(), teacherNote: z.string().nullable(),
+});
+export const waitingRequestSchema = z.object({
+  studentId: z.string(), firstName: z.string(), lastName: z.string(), checkpointId: z.string(), checkpointText: z.string(),
+  askedOn: z.string(), note: z.string().nullable(),
+});
+export const waitingCountSchema = z.object({ classId: z.string(), waiting: z.number() });
+export type DocumentLink = z.infer<typeof documentLinkSchema>;
+export type OpenRequest = z.infer<typeof openRequestSchema>;
+export type Answer = z.infer<typeof answerSchema>;
+export type WaitingRequest = z.infer<typeof waitingRequestSchema>;
+
 export const teacherComponentSchema = z.object({
   view: z.literal("TEACHER"),
   id: z.string(),
@@ -125,11 +142,12 @@ export const teacherComponentSchema = z.object({
   brief: briefSummarySchema,
   stages: z.array(setupStageSchema),
   warnings: z.array(dateWarningSchema),
+  requireLink: z.boolean(),
 });
 export type TeacherComponent = z.infer<typeof teacherComponentSchema>;
 
 // Mirrors ComponentViews.StudentComponent (plan 2E).
-export const checkpointStateSchema = z.enum(["NOT_DUE", "DUE", "SIGNED_OFF"]);
+export const checkpointStateSchema = z.enum(["NOT_DUE", "DUE", "READY", "SIGNED_OFF"]);
 export const studentStageSchema = z.object({
   id: z.string(),
   ordinal: z.number(),
@@ -141,7 +159,10 @@ export const studentStageSchema = z.object({
   hoursGroup: z.string().nullable(),
   supervised: z.boolean(),
   dueDate: z.string().nullable(),
-  checkpoint: z.object({ text: z.string(), state: checkpointStateSchema, signedOffOn: z.string().nullable() }).nullable(),
+  checkpoint: z.object({
+    id: z.string(), text: z.string(), state: checkpointStateSchema, signedOffOn: z.string().nullable(),
+    request: openRequestSchema.nullable(), answers: z.array(answerSchema),
+  }).nullable(),
   items: z.array(z.object({ id: z.string(), text: z.string(), dueDate: z.string().nullable(), done: z.boolean(), doneOn: z.string().nullable() })),
   prompts: z.array(z.object({ heading: z.string().nullable(), text: z.string() })),
 });
@@ -179,6 +200,8 @@ export const studentComponentSchema = z.object({
     label: z.string().nullable(), name: z.string().nullable(), marks: z.number(), wholeReport: z.boolean(),
     criteria: z.array(z.string()), sectionLabels: z.array(z.string()),
   })),
+  requireLink: z.boolean(),
+  documentLink: documentLinkSchema.nullable(),
 });
 export type StudentComponent = z.infer<typeof studentComponentSchema>;
 
@@ -323,6 +346,7 @@ export const progressStudentSchema = z.object({
   lastLogActivityOn: z.string().nullable(),
   daysSinceLastLogActivity: z.number().nullable(),
   cells: z.array(progressCellSchema),
+  documentLink: documentLinkSchema.nullable(),
 });
 export type ProgressStudent = z.infer<typeof progressStudentSchema>;
 
@@ -333,6 +357,7 @@ export const progressGridSchema = z.object({
   today: z.string(),
   stages: z.array(gridStageSchema),
   students: z.array(progressStudentSchema),
+  waiting: z.array(waitingRequestSchema),
 });
 export type ProgressGrid = z.infer<typeof progressGridSchema>;
 
@@ -349,6 +374,9 @@ export const studentCheckpointsSchema = z.object({
     state: checkpointStateSchema,
     signedOffOn: z.string().nullable(),
     history: z.array(z.object({ signedOffOn: z.string(), revokedOn: z.string(), revokedBy: z.string() })),
+    request: openRequestSchema.nullable(),
+    answers: z.array(answerSchema),
   })),
+  documentLink: documentLinkSchema.nullable(),
 });
 export type StudentCheckpoints = z.infer<typeof studentCheckpointsSchema>;

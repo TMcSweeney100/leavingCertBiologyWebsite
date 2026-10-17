@@ -18,6 +18,7 @@ const INITIAL = "Initial ideas discussed with the teacher";
 const LOG = "Investigative log shared with the teacher";
 const row = (id: string, first: string, last: string, behindBy: number, s1: "DUE" | "SIGNED_OFF", days: number | null) => ({
   studentId: id, firstName: first, lastName: last, behindBy, lastLogActivityOn: null, daysSinceLastLogActivity: days,
+  documentLink: null,
   cells: [
     { checkpointId: "c1", state: s1, signedOffOn: s1 === "SIGNED_OFF" ? "2026-10-02" : null },
     { checkpointId: "c2", state: "DUE" as const, signedOffOn: null },
@@ -29,7 +30,7 @@ const grid = (students: Grid["students"]): Grid => ({
     { stageId: "s1", ordinal: 1, label: "Stage 1", name: "Initial", dueDate: "2026-10-02", checkpoint: { id: "c1", text: INITIAL } },
     { stageId: "s2", ordinal: 2, label: "Stage 2", name: "Research", dueDate: "2026-11-06", checkpoint: { id: "c2", text: LOG } },
   ],
-  students,
+  students, waiting: [],
 });
 const START = grid([row("a", "Aoife", "Byrne", 2, "DUE", 20), row("c", "Cian", "Murphy", 1, "SIGNED_OFF", 3)]);
 const props = { basePath: "/teach/classes/cl1/progress", laptopStage: "all", phoneStage: "2", hideNames: false };

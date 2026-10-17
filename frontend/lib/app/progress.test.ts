@@ -11,11 +11,11 @@ const stage = (ordinal: number, dueDate: string | null, text: string | null, lab
   stageId: `s${ordinal}`, ordinal, label, name: `Name ${ordinal}`, dueDate, checkpoint: text ? { id: `c${ordinal}`, text } : null,
 });
 const student = (id: string, behindBy: number, states: ProgressStudent["cells"][number]["state"][], days: number | null = 3): ProgressStudent => ({
-  studentId: id, firstName: "Aoife", lastName: id, behindBy, lastLogActivityOn: null, daysSinceLastLogActivity: days,
+  studentId: id, firstName: "Aoife", lastName: id, behindBy, lastLogActivityOn: null, daysSinceLastLogActivity: days, documentLink: null,
   cells: states.map((state, i) => ({ checkpointId: `c${i + 1}`, state, signedOffOn: state === "SIGNED_OFF" ? "2026-10-02" : null })),
 });
 const grid = (stages: GridStage[], students: ProgressStudent[], today = "2026-12-14"): ProgressGrid => ({
-  componentId: "k", classId: "cl", className: "6A Biology", today, stages, students,
+  componentId: "k", classId: "cl", className: "6A Biology", today, stages, students, waiting: [],
 });
 const BIO = [
   stage(1, "2026-10-02", "Initial ideas discussed with the teacher"),

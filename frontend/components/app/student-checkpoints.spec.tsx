@@ -17,13 +17,13 @@ const INITIAL = "Initial ideas discussed with the teacher";
 const LOG = "Investigative log shared with the teacher";
 const data = {
   studentId: "s1", firstName: "Cian", lastName: "Murphy", today: "2026-12-14", behindBy: 1,
-  lastLogActivityOn: "2026-11-30", daysSinceLastLogActivity: 14,
+  lastLogActivityOn: "2026-11-30", daysSinceLastLogActivity: 14, documentLink: null,
   stages: [
     { stageId: "a", ordinal: 1, label: "Stage 1", name: "Initial Response", dueDate: "2026-10-02", checkpoint: { id: "c1", text: INITIAL },
-      state: "SIGNED_OFF" as const, signedOffOn: "2026-10-06",
+      state: "SIGNED_OFF" as const, signedOffOn: "2026-10-06", request: null, answers: [],
       history: [{ signedOffOn: "2026-10-03", revokedOn: "2026-10-04", revokedBy: "Katelyn Hanlon" }] },
     { stageId: "b", ordinal: 2, label: "Stage 2", name: "Background Research", dueDate: "2026-11-06", checkpoint: { id: "c2", text: LOG },
-      state: "DUE" as const, signedOffOn: null, history: [] },
+      state: "DUE" as const, signedOffOn: null, history: [], request: null, answers: [] },
   ],
 };
 
