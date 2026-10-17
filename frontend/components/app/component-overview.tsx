@@ -2,6 +2,7 @@ import type { StudentComponent } from "@/lib/api/schemas";
 import { progress } from "@/lib/app/component-progress";
 import { formatCalendarDate } from "@/lib/app/component-setup";
 
+import { DocumentLinkCard } from "./document-link-card";
 import { StagesSection } from "./stages-section";
 import { card, eyebrow, lead, sectionTitle } from "./styles";
 
@@ -44,6 +45,8 @@ export function ComponentOverview({ component }: { component: StudentComponent }
           <p className="font-mono text-app-h1 font-bold text-app-ink tabular-nums lg:text-right lg:text-app-h1-lg">{p.countdown}</p>
         )}
       </section>
+
+      <DocumentLinkCard componentId={component.id} link={component.documentLink} requireLink={component.requireLink} />
 
       <p className={lead}>
         {`Stage dates are your class's plan, set by your teacher. The SEC's completion date is ${completion}: your finished coursework must be with your teacher by then.`}
