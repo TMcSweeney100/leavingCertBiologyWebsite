@@ -154,7 +154,7 @@ public class ComponentService {
             Instant at = checkpoint == null ? null : signedOff.get(checkpoint.id());
             return new StudentStage(s.id(), s.ordinal(), s.label(), s.name(), s.description(), s.hoursMin(), s.hoursMax(),
                     s.hoursGroup(), s.supervised(), due,
-                    checkpoint == null ? null : new CheckpointView(checkpoint.text(), CheckpointState.at(due, today, at != null),
+                    checkpoint == null ? null : new CheckpointView(checkpoint.text(), CheckpointState.at(due, today, at != null, false),
                             at == null ? null : DublinDate.of(at)),
                     items.getOrDefault(s.id(), List.of()), prompts.getOrDefault(s.id(), List.of()));
         }).toList();

@@ -15,7 +15,7 @@ class DueBoundaryTest {
 
     private static CheckpointState at(String utc, LocalDate stageDate) {
         LocalDate today = DublinDate.today(Clock.fixed(Instant.parse(utc), ZoneOffset.UTC));
-        return CheckpointState.at(stageDate, today, false);
+        return CheckpointState.at(stageDate, today, false, false);
     }
 
     @Test

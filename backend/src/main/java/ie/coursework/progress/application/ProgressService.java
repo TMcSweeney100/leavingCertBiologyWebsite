@@ -150,7 +150,7 @@ public class ProgressService {
                 .filter(s -> s.live() && s.checkpointId().equals(checkpointId)).map(Signoff::signedOffAt).findFirst().orElse(null);
         LocalDate due = components.stageDates(component.id()).get(checkpoint.stageId());
         LocalDate today = DublinDate.today(clock);
-        return new Cell(checkpointId, CheckpointState.at(due, today, live != null), live == null ? null : DublinDate.of(live));
+        return new Cell(checkpointId, CheckpointState.at(due, today, live != null, false), live == null ? null : DublinDate.of(live));
     }
 
     Member approvedMember(ComponentInstance component, UUID studentId) {
@@ -175,7 +175,7 @@ public class ProgressService {
     }
 
     static Cell cell(GridStage stage, Instant signedOffAt, LocalDate today) {
-        return new Cell(stage.checkpoint().id(), CheckpointState.at(stage.dueDate(), today, signedOffAt != null),
+        return new Cell(stage.checkpoint().id(), CheckpointState.at(stage.dueDate(), today, signedOffAt != null, false),
                 signedOffAt == null ? null : DublinDate.of(signedOffAt));
     }
 

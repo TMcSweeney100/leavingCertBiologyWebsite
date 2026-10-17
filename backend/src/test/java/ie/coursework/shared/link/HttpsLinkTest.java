@@ -1,4 +1,4 @@
-package ie.coursework.log.domain;
+package ie.coursework.shared.link;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

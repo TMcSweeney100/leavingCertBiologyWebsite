@@ -1,6 +1,7 @@
 package ie.coursework.log.domain;
 
 import ie.coursework.shared.error.FieldError;
+import ie.coursework.shared.link.HttpsLink;
 import java.util.ArrayList;
 import java.util.List;
 

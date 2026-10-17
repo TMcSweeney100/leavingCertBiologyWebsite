@@ -7,28 +7,25 @@ import org.junit.jupiter.api.Test;
 
 class CheckpointStateTest {
 
-    private static final LocalDate STAGE_DATE = LocalDate.of(2026, 9, 25);
+    private static final LocalDate TODAY = LocalDate.of(2027, 3, 3);
 
     @Test
-    void notDueOnOrBeforeTheStagesDate() {
-        assertThat(CheckpointState.at(STAGE_DATE, STAGE_DATE.minusDays(3), false)).isEqualTo(CheckpointState.NOT_DUE);
-        assertThat(CheckpointState.at(STAGE_DATE, STAGE_DATE, false)).isEqualTo(CheckpointState.NOT_DUE);
+    void aSignOffSettlesItWhateverTheDateOrRequest() {
+        assertThat(CheckpointState.at(TODAY.minusDays(9), TODAY, true, true)).isEqualTo(CheckpointState.SIGNED_OFF);
+        assertThat(CheckpointState.at(null, TODAY, true, false)).isEqualTo(CheckpointState.SIGNED_OFF);
     }
 
     @Test
-    void dueFromTheDayAfter() {
-        assertThat(CheckpointState.at(STAGE_DATE, STAGE_DATE.plusDays(1), false)).isEqualTo(CheckpointState.DUE);
+    void anOpenRequestIsReadyBeforeOrAfterTheDate() {
+        assertThat(CheckpointState.at(TODAY.minusDays(1), TODAY, false, true)).isEqualTo(CheckpointState.READY);
+        assertThat(CheckpointState.at(TODAY.plusDays(5), TODAY, false, true)).isEqualTo(CheckpointState.READY);
+        assertThat(CheckpointState.at(null, TODAY, false, true)).isEqualTo(CheckpointState.READY);
     }
 
     @Test
-    void neverDueWithoutADate() {
-        assertThat(CheckpointState.at(null, LocalDate.of(2030, 1, 1), false)).isEqualTo(CheckpointState.NOT_DUE);
-    }
-
-    @Test
-    void signedOffWheneverItWasSignedOffEarlyLateOrUndated() {
-        assertThat(CheckpointState.at(STAGE_DATE, STAGE_DATE.minusDays(10), true)).isEqualTo(CheckpointState.SIGNED_OFF);
-        assertThat(CheckpointState.at(STAGE_DATE, STAGE_DATE.plusDays(10), true)).isEqualTo(CheckpointState.SIGNED_OFF);
-        assertThat(CheckpointState.at(null, STAGE_DATE, true)).isEqualTo(CheckpointState.SIGNED_OFF);
+    void withoutEitherItIsDueOnceTheDateHasPassed() {
+        assertThat(CheckpointState.at(TODAY.minusDays(1), TODAY, false, false)).isEqualTo(CheckpointState.DUE);
+        assertThat(CheckpointState.at(TODAY, TODAY, false, false)).isEqualTo(CheckpointState.NOT_DUE);
+        assertThat(CheckpointState.at(null, TODAY, false, false)).isEqualTo(CheckpointState.NOT_DUE);
     }
 }

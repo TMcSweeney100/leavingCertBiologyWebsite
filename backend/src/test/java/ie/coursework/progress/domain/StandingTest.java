@@ -19,6 +19,11 @@ class StandingTest {
     }
 
     @Test
+    void aReadyCheckpointIsNotBehind() { // decision R-9
+        assertThat(Standing.behindBy(List.of(CheckpointState.READY, CheckpointState.DUE, CheckpointState.SIGNED_OFF))).isEqualTo(1);
+    }
+
+    @Test
     void daysSinceIsCountedInDublinDaysAndNullWithoutActivity() {
         LocalDate today = LocalDate.of(2026, 10, 21);
         // 23:30 UTC on 20 Oct is 00:30 on 21 Oct in Dublin (summer time): today, not yesterday.
