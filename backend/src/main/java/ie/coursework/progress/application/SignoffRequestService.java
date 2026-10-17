@@ -14,10 +14,13 @@ import ie.coursework.components.domain.ComponentInstance;
 import ie.coursework.components.domain.DublinDate;
 import ie.coursework.components.domain.SignoffRequest;
 import ie.coursework.identity.domain.Actor;
+import ie.coursework.identity.domain.Role;
+import ie.coursework.progress.application.ProgressViews.WaitingCount;
 import ie.coursework.shared.error.DomainException;
 import ie.coursework.shared.error.ErrorCode;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -80,6 +83,16 @@ public class SignoffRequestService {
                 .orElseThrow(() -> new DomainException(ErrorCode.SIGNOFF_REQUEST_NOT_OPEN, "Your teacher has already answered this."));
         audit.record(actor.userId(), AuditEventType.SIGNOFF_REQUEST_WITHDRAWN, "signoff_request", id,
                 Map.of("componentId", component.id(), "checkpointId", checkpointId));
+    }
+
+    /** R-21: the badge on each class card at /teach. Only a teacher has classes; anyone else is 404, as for /classes. */
+    @Transactional(readOnly = true)
+    public List<WaitingCount> waiting(Actor actor) {
+        if (!actor.holds(Role.TEACHER)) {
+            throw ProgressService.notFound();
+        }
+        return requests.waitingByClass(actor.userId()).entrySet().stream()
+                .map(e -> new WaitingCount(e.getKey(), e.getValue())).toList();
     }
 
     private ComponentInstance scoped(Actor actor, UUID componentId, UUID checkpointId) {

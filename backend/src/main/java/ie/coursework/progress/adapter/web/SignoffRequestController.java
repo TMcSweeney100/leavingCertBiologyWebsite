@@ -4,10 +4,13 @@ import ie.coursework.components.application.ComponentViews.OpenRequestView;
 import ie.coursework.identity.domain.Actor;
 import ie.coursework.progress.application.SignoffRequestService;
 import jakarta.validation.Valid;
+import ie.coursework.progress.application.ProgressViews.WaitingCount;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,5 +41,10 @@ public class SignoffRequestController {
     ResponseEntity<Void> withdraw(Actor actor, @PathVariable UUID componentId, @PathVariable UUID checkpointId) {
         requests.withdraw(actor, componentId, checkpointId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/signoff-requests/waiting")
+    List<WaitingCount> waiting(Actor actor) {
+        return requests.waiting(actor);
     }
 }

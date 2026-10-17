@@ -13,6 +13,9 @@ public final class ProgressViews {
 
     private ProgressViews() {}
 
+    /** R-21: open sign-off requests waiting in one class, for the badge on the teacher's class list. */
+    public record WaitingCount(UUID classId, int waiting) {}
+
     public record CheckpointRef(UUID id, String text) {}
 
     /** Every stage in order; {@code checkpoint} is null where there's nothing to sign off (Business Stage 6). */
