@@ -2,8 +2,11 @@
 
 import type { StudentCheckpoints as Data } from "@/lib/api/schemas";
 import { formatCalendarDate } from "@/lib/app/component-setup";
+import { checkpointAnchor, reviewName } from "@/lib/app/ready";
 import { bandHeading, failSentence, fullName, revokeName, revokeQuestion, signName, stageLabel, undoName } from "@/lib/app/progress";
 
+import { RequestHistory } from "./request-history";
+import { RequestReview } from "./request-review";
 import { CheckpointCell, RevokeStrip, SignoffAlert } from "./signoff-parts";
 import { card, eyebrow, sectionTitle } from "./styles";
 import { targetKey, useSignoffs } from "./use-signoffs";
@@ -29,7 +32,7 @@ export function StudentCheckpoints({ componentId, data }: { componentId: string;
           const key = targetKey(t);
           const failed = s.failed.get(key);
           return (
-            <li key={st.stageId} className={`flex flex-col gap-3 p-4 ${st.state === "DUE" ? "bg-app-due-row" : ""}`}>
+            <li key={st.stageId} id={checkpointAnchor(st.checkpoint.id)} className={`flex scroll-mt-20 flex-col gap-3 p-4 ${st.state === "DUE" ? "bg-app-due-row" : ""}`}>
               <div className="grid gap-3 lg:grid-cols-[200px_1fr_auto] lg:items-start">
                 <div className="flex flex-col gap-0.5">
                   <span className={`${eyebrow} text-app-grey`}>{stageLabel(st)}</span>
@@ -38,7 +41,7 @@ export function StudentCheckpoints({ componentId, data }: { componentId: string;
                 </div>
                 <p className="text-app-base text-app-ink">{st.checkpoint.text}</p>
                 <CheckpointCell layout="one" cell={{ checkpointId: st.checkpoint.id, state: st.state, signedOffOn: st.signedOffOn }}
-                  names={{ sign: signName(st.checkpoint.text, name), undo: undoName(st.checkpoint.text, name), revoke: revokeName(st.checkpoint.text, name) }}
+                  names={{ sign: signName(st.checkpoint.text, name), undo: undoName(st.checkpoint.text, name), revoke: revokeName(st.checkpoint.text, name), review: reviewName(st.checkpoint.text, name) }}
                   busy={s.busy.get(key) ?? null} recent={s.recent.has(key)} confirming={s.confirming === key}
                   onSign={() => s.signOff(t)} onUndo={() => s.undo(t)} onAsk={() => s.askRevoke(t)} />
               </div>
@@ -47,6 +50,11 @@ export function StudentCheckpoints({ componentId, data }: { componentId: string;
                   {`Signed off on ${formatCalendarDate(h.signedOffOn)}, revoked on ${formatCalendarDate(h.revokedOn)} by ${h.revokedBy}.`}
                 </p>
               ))}
+              {st.request && (
+                <RequestReview componentId={componentId} studentId={data.studentId} name={name} text={st.checkpoint.text}
+                  checkpointId={st.checkpoint.id} request={st.request} link={data.documentLink} />
+              )}
+              <RequestHistory answers={st.answers} studentLabel="Their note" />
               {s.confirming === key && (
                 <RevokeStrip question={revokeQuestion(st.checkpoint.text, name, "student")} text={st.checkpoint.text} name={name}
                   busy={s.busy.has(key)} onRevoke={() => s.revoke(t)} onKeep={s.keep} />
