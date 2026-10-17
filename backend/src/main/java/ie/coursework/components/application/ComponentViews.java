@@ -15,6 +15,8 @@ public final class ComponentViews {
 
     public record DocumentLinkView(String url, LocalDate setOn) {}
 
+    public record OpenRequestView(LocalDate askedOn, String note) {}
+
     public record TeacherItemView(UUID id, String text, LocalDate dueDate) {}
 
     public record SetupStage(UUID id, int ordinal, String label, String name, Integer hoursMin, Integer hoursMax,
