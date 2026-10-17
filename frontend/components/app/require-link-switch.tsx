@@ -16,6 +16,7 @@ export function RequireLinkSwitch({ componentId, requireLink }: { componentId: s
   const [error, setError] = useState(false);
 
   async function change(next: boolean) {
+    if (busy) return;
     setOn(next);
     setBusy(true);
     setError(false);
@@ -35,7 +36,7 @@ export function RequireLinkSwitch({ componentId, requireLink }: { componentId: s
       <label className="flex min-h-11 items-center justify-between gap-4 text-app-base font-semibold text-app-ink">
         Require a link to their work before students ask for sign-off
         <span className="relative inline-flex h-7 w-12 flex-none">
-          <input type="checkbox" role="switch" checked={on} disabled={busy} onChange={(e) => void change(e.target.checked)}
+          <input type="checkbox" role="switch" checked={on} aria-disabled={busy} onChange={(e) => void change(e.target.checked)}
             className="peer absolute inset-0 z-10 m-0 size-full cursor-pointer appearance-none rounded-full outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" />
           <span aria-hidden className="absolute inset-0 rounded-full bg-app-switch-off transition-colors duration-[var(--app-duration)] motion-reduce:transition-none peer-checked:bg-app-accent" />
           <span aria-hidden className="absolute top-0.5 left-0.5 size-6 rounded-full bg-app-surface transition-transform duration-[var(--app-duration)] motion-reduce:transition-none peer-checked:translate-x-5" />

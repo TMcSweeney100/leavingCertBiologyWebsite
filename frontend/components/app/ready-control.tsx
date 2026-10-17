@@ -24,12 +24,15 @@ export function ReadyControl({ componentId, checkpoint: c, link, requireLink }:
   const [announcement, setAnnouncement] = useState("");
   const alertRef = useRef<HTMLParagraphElement>(null);
   const noteRef = useRef<HTMLTextAreaElement>(null);
+  const statusRef = useRef<HTMLDivElement>(null);
   const latest = c.answers[0];
   const blocked = requireLink && link === null;
 
   // Refs are null until React has rendered the new state, so focus moves in effects, not in the handlers.
   useEffect(() => { if (open) noteRef.current?.focus(); }, [open]);
   useEffect(() => { if (error) alertRef.current?.focus(); }, [error]);
+  // Send and Withdraw unmount the button that had focus; park it on the box that now shows the new status.
+  useEffect(() => { if (announcement) statusRef.current?.focus(); }, [announcement]);
 
   async function act(run: () => Promise<unknown>, done: string, failed: string) {
     setBusy(true);
@@ -53,7 +56,7 @@ export function ReadyControl({ componentId, checkpoint: c, link, requireLink }:
     "Request withdrawn.", "Couldn't withdraw it. Check your connection and try again.");
 
   return (
-    <div className="flex flex-col gap-2">
+    <div ref={statusRef} tabIndex={-1} className="flex flex-col gap-2 outline-none">
       {c.state === "READY" && c.request ? (
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex flex-col gap-0.5">

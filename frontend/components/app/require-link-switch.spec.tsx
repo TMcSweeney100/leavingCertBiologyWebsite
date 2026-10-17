@@ -29,4 +29,17 @@ describe("RequireLinkSwitch (ready-for-signoff R-6, R-7)", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("Couldn't save the setting.");
     expect(screen.getByRole("switch")).not.toBeChecked();
   });
+
+  it("stays focusable while saving and ignores a second click", async () => {
+    let finish: (v: unknown) => void = () => {};
+    send.mockReturnValue(new Promise((r) => { finish = r; }));
+    render(<RequireLinkSwitch componentId="c1" requireLink={false} />);
+    const sw = screen.getByRole("switch");
+    await userEvent.click(sw);
+    expect(sw).not.toBeDisabled();
+    expect(sw).toHaveAttribute("aria-disabled", "true");
+    await userEvent.click(sw);
+    expect(send).toHaveBeenCalledTimes(1);
+    finish({});
+  });
 });

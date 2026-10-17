@@ -37,6 +37,19 @@ describe("ReadyControl", () => {
     expect(screen.getByRole("textbox", { name: "Note for your teacher (optional)" })).toHaveFocus();
   });
 
+  it("keeps focus inside the control after Send and after Withdraw", async () => {
+    send.mockResolvedValue({ askedOn: "2027-03-03", note: "" });
+    const { container, unmount } = render(<ReadyControl componentId="c1" checkpoint={cp()} link={null} requireLink={false} />);
+    await userEvent.click(screen.getByRole("button", { name: /^Ready for sign-off/ }));
+    await userEvent.click(screen.getByRole("button", { name: "Send" }));
+    expect(container.firstElementChild).toHaveFocus();
+    unmount();
+    sendNoContent.mockResolvedValue(undefined);
+    const second = render(<ReadyControl componentId="c1" checkpoint={cp({ state: "READY", request: { askedOn: "2027-11-03", note: "" } })} link={null} requireLink={false} />);
+    await userEvent.click(screen.getByRole("button", { name: /^Withdraw request/ }));
+    expect(second.container.firstElementChild).toHaveFocus();
+  });
+
   it("won't send without a link when the class requires one", async () => {
     render(<ReadyControl componentId="c1" checkpoint={cp()} link={null} requireLink />);
     await userEvent.click(screen.getByRole("button", { name: /^Ready for sign-off/ }));
