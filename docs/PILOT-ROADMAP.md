@@ -302,7 +302,7 @@ This is what Claude Design needs to design against: every page, who sees it, wha
 |---|---|---|---|---|
 | `/home` | 1D | My classes with status (Pending approval / Approved) | Join a class | No classes yet; all pending |
 | `/home` | 2F, restyled 2F Task 7 (D-4) | **Timeline**: a countdown band for the next thing due ("Next up"), then chronological list, week view, month view, across every approved class. Items are stage dates, dated teacher items and my own items, labelled by subject, with days remaining and distinguished by a marker shape plus a word. A calendar aside (month grid, dot per day with something due, completion dates by subject) can be shown or hidden at 1140; it's absent at 390. | Switch list/week/month · Show/hide calendar · Add my own item · Edit/delete my own item | No classes yet ("Nothing here yet.", Join a class and Add my own item); no components yet (still shows my own items); nothing in range; pending-only classes |
-| `/components/[id]` | 2E | Stages with the teacher's dates and current stage; each checkpoint's state; teacher items to tick; prompts; report sections; rules; mark bands; the process note | Tick/untick a teacher item (labelled self-reported) | Before the first stage; after completion date; no dates set yet by teacher |
+| `/components/[id]` | 2E | Stages with the teacher's dates and current stage; each checkpoint's state; teacher items to tick; prompts; report sections; rules; mark bands; the process note. Also a **Your work** card: the current link to the report, Change, and the SEC brief's backup line (FR-38–40). Each checkpoint shows Ready for sign-off (optional note) · Waiting, with Withdraw · Not yet with the teacher's note and Ask again · the answered history. | Tick/untick a teacher item (labelled self-reported) | Before the first stage; after completion date; no dates set yet by teacher |
 | `/components/[id]/log` | 3B | My entries newest first, each with kind, date, "edited" marker, who can read it | New entry (note/source/AI use as note until P6) · Hide/show one tap · Edit | Empty log; hidden entries |
 | `/components/[id]/log/new`, `/components/[id]/log/[entryId]`, `/components/[id]/log/[entryId]/revise` (added by D-6) | 3B | Entry form with the plain-words visibility line (FR-24e); entry detail with revision history | Save · Save new revision · Toggle visibility | Validation; https-only links |
 | `/components/[id]/sources` | 6B | Source entries, formatted in-text citation and reference-list entry | Add source · Copy citation · Copy reference list | No sources |
@@ -313,12 +313,12 @@ This is what Claude Design needs to design against: every page, who sees it, wha
 
 | Route | Phase | Shows | Actions | States |
 |---|---|---|---|---|
-| `/teach` | 1D | My classes as cards with a subject edge bar: name, then subject · year · academic year · level, and an amber pending-request badge only when above zero (API order, not sorted by pending) | Create class | No classes (a card with the sentence and Create class) |
+| `/teach` | 1D | My classes as cards with a subject edge bar: name, then subject · year · academic year · level, and an amber pending-request badge only when above zero (API order, not sorted by pending). Also a **N waiting for sign-off** badge per class. | Create class | No classes (a card with the sentence and Create class) |
 | `/teach/classes/new` | 1D | "My classes" link; subject, name, year group, academic year, level (optional) | Create · Cancel | Validation (the error panel, and each invalid row marked with its message) |
 | `/teach/classes/[id]` (Students tab) | 1D | "My classes" link; section tabs (Students current; Component and Progress shown disabled until P2/P4); join code on a navy card with expiry and a copy button; pending requests with username and "asked …"; approved students | Copy code ("Copied") · New code · Turn joining off (confirm in place) · Approve · Decline · Remove (confirm in place) · Issue reset code (inline in that row, shown once, 24-hour expiry, Hide code, warns hiding can't be undone) | No students; nothing waiting; code off (R27) |
-| `/teach/classes/[id]/component` | 2D | No component yet: choose the brief (subject + exam year). Component set: stage date for each stage, the completion date, my own items per stage | Create component · Set/change dates · Add, edit, retire my items | Date after completion date (named error); out-of-order dates (warning, allowed); brief's completion date changed (warning) |
-| `/teach/classes/[id]/progress` | 4A, pack D-7 | An answer line ("14 of 30 students are behind"); a stage picker (All stages, or one checkpoint, in the URL as `?stage=all\|1…6\|R`; default All at 1140, the latest due stage at 390); students grouped into bands by how many due checkpoints they're behind, furthest behind first, then longest since their last log entry, then surname; per student: behind by N, each checkpoint's state (Not due yet / Due / Signed off with its date) and last log entry. A table at 1140, a list per band at 390. | Sign off (one click) · Undo (a sign-off made this visit, until Re-sort or reload) · Revoke (confirmed in place) · Re-sort (N changes) · Hide names (blurs names, dates, log lines and counts; remembered per browser) | No component; no stage dates; nothing due yet; no approved students; everyone up to date; a failed sign-off (alert under the row, Try again) |
-| `/teach/classes/[id]/students/[studentId]` | 3C / 4B, packs D-6 and D-7 | Back links to the class's Progress and Students tabs; **Checkpoints** first (behind by N; each checkpoint's stage, date, state and full text; each revoked sign-off as "Signed off on …, revoked on … by …"); then their log in the teacher projection (hidden entries show kind and dates only) | Sign off · Undo · Revoke (confirmed in place) | Hidden entries; no entries; nothing signed off yet |
+| `/teach/classes/[id]/component` | 2D | No component yet: choose the brief (subject + exam year). Component set: stage date for each stage, the completion date, my own items per stage. Also a switch: Require a link to their work before students ask for sign-off (off by default). | Create component · Set/change dates · Add, edit, retire my items | Date after completion date (named error); out-of-order dates (warning, allowed); brief's completion date changed (warning) |
+| `/teach/classes/[id]/progress` | 4A, pack D-7 | An answer line ("14 of 30 students are behind"); a stage picker (All stages, or one checkpoint, in the URL as `?stage=all\|1…6\|R`; default All at 1140, the latest due stage at 390); students grouped into bands by how many due checkpoints they're behind, furthest behind first, then longest since their last log entry, then surname; per student: behind by N, each checkpoint's state (Not due yet / Due / Signed off with its date) and last log entry. A table at 1140, a list per band at 390. Also a queue above the grid, *N students waiting for you*, oldest request first, each opening the student page at that checkpoint; a fourth cell state, **Ready**, that links to the review; each row's work link. | Sign off (one click) · Undo (a sign-off made this visit, until Re-sort or reload) · Revoke (confirmed in place) · Re-sort (N changes) · Hide names (blurs names, dates, log lines and counts; remembered per browser) | No component; no stage dates; nothing due yet; no approved students; everyone up to date; a failed sign-off (alert under the row, Try again) |
+| `/teach/classes/[id]/students/[studentId]` | 3C / 4B, packs D-6 and D-7 | Back links to the class's Progress and Students tabs; **Checkpoints** first (behind by N; each checkpoint's stage, date, state and full text; each revoked sign-off as "Signed off on …, revoked on … by …"); then their log in the teacher projection (hidden entries show kind and dates only). Also the student's work link; on a checkpoint with an open request, the student's note and Accept / Not yet with an optional note; the answered history per checkpoint. | Sign off · Undo · Revoke (confirmed in place) | Hidden entries; no entries; nothing signed off yet |
 
 **School leader page**
 
@@ -347,6 +347,7 @@ This is what Claude Design needs to design against: every page, who sees it, wha
 | D-7 Progress grid | `/teach/classes/[id]/progress` | Phase 4 — arrived 28 Sep 2026, docs/design/pilot/D-7-progress-grid/ (direction 1b "Bands") |
 | D-8 School overview | `/school` | Phase 5 |
 | D-9 Writing tools | sources, AI use, checker | Phase 6 |
+| D-10 Ready for sign-off | the student's work link and Ready control, the teacher's queue, review panel and require-link switch | ready-for-signoff (backlog #1), restyle in Task 23 |
 
 ### 6.4 Route guard rules
 
@@ -393,6 +394,17 @@ All under `/api/v1`. JSON, camelCase. Errors are RFC 9457 problem details with a
 | 4 | **Built (Phase 4):** `GET /components/{id}/progress` (the grid: stages, approved students sorted furthest behind first, one cell per checkpoint) · `GET /components/{id}/students/{studentId}/checkpoints` (one student's checkpoints, with revoked sign-offs; plan P4-10) · `PUT /components/{id}/students/{studentId}/checkpoints/{checkpointId}/signoff` with `{"signedOff": true\|false}` (idempotent; undo and revoke are `false`; plan P4-6). All three start with `ComponentService.requireOwned`; an unapproved student or a checkpoint outside the brief's version is 404. |
 | 5 | `GET /schools/{schoolId}/overview?yearGroup=&academicYear=` |
 | 6 | `GET /components/{id}/references` · `GET /components/{id}/ai-use/appendix` |
+
+### Backlog: ready-for-signoff
+
+| Method | Path | Who | Body and result |
+|---|---|---|---|
+| PUT | `/api/v1/components/{id}/document-link` | Student (approved) | `{url}` → `{url, setOn}` |
+| PUT | `/api/v1/components/{id}/settings` | Class teacher | `{requireLink}` → teacher component view |
+| POST | `/api/v1/components/{id}/checkpoints/{checkpointId}/request` | Student (approved) | `{note?}` → `{askedOn, note}` (201) |
+| DELETE | `/api/v1/components/{id}/checkpoints/{checkpointId}/request` | Student (approved) | withdraw → 204 |
+| POST | `/api/v1/components/{id}/students/{studentId}/checkpoints/{checkpointId}/request/answer` | Class teacher | `{outcome: ACCEPTED|NOT_YET, note?}` → cell |
+| GET | `/api/v1/signoff-requests/waiting` | Teacher | `[{classId, waiting}]` |
 
 ---
 
