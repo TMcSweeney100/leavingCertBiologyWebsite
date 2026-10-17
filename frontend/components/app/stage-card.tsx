@@ -1,8 +1,9 @@
-import type { StudentComponent } from "@/lib/api/schemas";
+import type { DocumentLink, StudentComponent } from "@/lib/api/schemas";
 import { STAGE_STATE_STYLE, STAGE_STATE_WORD, type StageState } from "@/lib/app/component-progress";
 import { formatCalendarDate, hoursLabel } from "@/lib/app/component-setup";
 
 import { ItemTick } from "./item-tick";
+import { ReadyControl } from "./ready-control";
 import { card, eyebrow, lead } from "./styles";
 
 const CHECKPOINT_WORD = { NOT_DUE: "Not due yet", DUE: "Not signed off yet", READY: "Waiting for your teacher", SIGNED_OFF: "Signed off" } as const;
@@ -23,6 +24,8 @@ export function StageCard({
   state,
   open,
   onToggle,
+  link,
+  requireLink,
 }: {
   componentId: string;
   stage: Stage;
@@ -30,9 +33,12 @@ export function StageCard({
   state: StageState;
   open: boolean;
   onToggle: (id: string) => void;
+  link: DocumentLink | null;
+  requireLink: boolean;
 }) {
   const checkpointDue = s.checkpoint?.state === "DUE";
   const signedOff = s.checkpoint?.state === "SIGNED_OFF";
+  const ready = s.checkpoint?.state === "READY";
   const isCurrent = state === "current";
 
   return (
@@ -64,17 +70,13 @@ export function StageCard({
               {[hoursLabel(s, allStages), s.supervised ? "Done in supervised class time" : ""].filter(Boolean).join(" · ")}
             </p>
             {s.checkpoint && (
-              <div className={`flex flex-col gap-0.5 rounded-app-inner p-3 ${checkpointDue ? "bg-app-attention-tint" : signedOff ? "border-l-[3px] border-l-app-signed bg-app-done-ground" : "bg-app-inset"}`}>
+              <div className={`flex flex-col gap-1 rounded-app-inner p-3 ${checkpointDue ? "bg-app-attention-tint" : signedOff ? "border-l-[3px] border-l-app-signed bg-app-done-ground" : ready ? "bg-app-ready-tint" : "bg-app-inset"}`}>
                 <span className={`${eyebrow} ${signedOff ? "text-app-signed" : ""}`}>Checkpoint · {CHECKPOINT_WORD[s.checkpoint.state]}</span>
                 <span className="text-app-base text-app-ink">{s.checkpoint.text}</span>
-                {checkpointDue && (
-                  <span className="text-app-small text-app-grey">{"Your teacher signs this off. Bring it up in your next class."}</span>
-                )}
-                {signedOff && s.checkpoint.signedOffOn ? (
+                {signedOff && s.checkpoint.signedOffOn && (
                   <span className="text-app-small text-app-signed">{`Your teacher signed this off on ${formatCalendarDate(s.checkpoint.signedOffOn)}.`}</span>
-                ) : (
-                  <span className="text-app-small text-app-grey">Only your teacher can sign this off.</span>
                 )}
+                <ReadyControl componentId={componentId} checkpoint={s.checkpoint} link={link} requireLink={requireLink} />
               </div>
             )}
             {s.items.length > 0 && (

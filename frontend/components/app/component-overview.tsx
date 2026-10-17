@@ -60,7 +60,7 @@ export function ComponentOverview({ component }: { component: StudentComponent }
         {/* Keyed on the server's current stage: if it moves on (a date rolls past, a
             teacher edits dates) between loads, `router.refresh()` should snap the open
             stage to the new "now" rather than preserve whatever a stale re-render kept. */}
-        <StagesSection key={p.current?.id ?? "none"} componentId={component.id} stages={component.stages} states={p.states} initialOpenId={p.current?.id ?? null} />
+        <StagesSection key={p.current?.id ?? "none"} componentId={component.id} stages={component.stages} states={p.states} initialOpenId={p.current?.id ?? null} link={component.documentLink} requireLink={component.requireLink} />
       </section>
 
       <div className="flex flex-col gap-10 lg:grid lg:grid-cols-2 lg:gap-x-10 lg:gap-y-10">

@@ -108,6 +108,8 @@
   --color-app-due: var(--app-due);
   --color-app-due-tint: var(--app-due-tint);
   --color-app-due-row: var(--app-due-row);
+  --color-app-ready: var(--app-ready);
+  --color-app-ready-tint: var(--app-ready-tint);
   --color-app-signed-recent: var(--app-signed-recent);
 }
 
@@ -321,6 +323,8 @@
   --app-due: var(--app-attention);       /* 6.13:1 on white; 5.31:1 on --app-due-tint; 5.77:1 on --app-ground */
   --app-due-tint: var(--app-attention-tint); /* navy "Sign off" on it 9.62:1 */
   --app-due-row: #FCF8F5;                /* due row on the student view; ink 17.50:1, amber 5.81:1, muted 5.11:1 */
+  --app-ready: var(--app-accent);         /* Ready: navy, the teacher's turn; 11.12:1 on white */
+  --app-ready-tint: var(--app-accent-tint); /* Ready cell ground; navy on it 10.20:1 */
   --app-signed: var(--app-done);         /* 8.04:1 on white; 7.36:1 on --app-done-ground */
   --app-signed-recent: var(--app-done-ground); /* a cell signed off this visit (offers Undo); navy on it 10.18:1 */
   --app-hide-blur: 7px;                  /* Hide names: unreadable from the back of a room at 1140 on a projector */

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import type { StudentComponent } from "@/lib/api/schemas";
+import type { DocumentLink, StudentComponent } from "@/lib/api/schemas";
 import type { StageState } from "@/lib/app/component-progress";
 
 import { StageCard } from "./stage-card";
@@ -20,11 +20,15 @@ export function StagesSection({
   stages,
   states,
   initialOpenId,
+  link,
+  requireLink,
 }: {
   componentId: string;
   stages: ReadonlyArray<Stage>;
   states: Record<string, StageState>;
   initialOpenId: string | null;
+  link: DocumentLink | null;
+  requireLink: boolean;
 }) {
   const [openId, setOpenId] = useState<string | null>(initialOpenId);
   const ordered = [...stages].sort((a, b) => a.ordinal - b.ordinal);
@@ -54,6 +58,8 @@ export function StagesSection({
             state={states[s.id]}
             open={s.id === openId}
             onToggle={toggleRow}
+            link={link}
+            requireLink={requireLink}
           />
         ))}
       </div>
