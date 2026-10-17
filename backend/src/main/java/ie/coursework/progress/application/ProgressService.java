@@ -9,12 +9,14 @@ import ie.coursework.classes.domain.EnrolmentStatus;
 import ie.coursework.components.adapter.persistence.BriefRepository;
 import ie.coursework.components.adapter.persistence.ComponentRepository;
 import ie.coursework.components.adapter.persistence.SignoffRepository;
+import ie.coursework.components.adapter.persistence.SignoffRequestRepository;
 import ie.coursework.components.adapter.persistence.TemplateRepository;
 import ie.coursework.components.application.ComponentService;
 import ie.coursework.components.domain.Brief;
 import ie.coursework.components.domain.CheckpointState;
 import ie.coursework.components.domain.ComponentInstance;
 import ie.coursework.components.domain.DublinDate;
+import ie.coursework.components.domain.RequestOutcome;
 import ie.coursework.components.domain.Signoff;
 import ie.coursework.components.domain.TemplateCheckpoint;
 import ie.coursework.identity.domain.Actor;
@@ -59,13 +61,14 @@ public class ProgressService {
     private final ClassGroupRepository classGroups;
     private final EnrolmentRepository enrolments;
     private final SignoffRepository signoffs;
+    private final SignoffRequestRepository requests;
     private final LogRepository log;
     private final AuditLog audit;
     private final Clock clock;
 
     public ProgressService(ComponentService componentService, ComponentRepository components, BriefRepository briefs,
             TemplateRepository templates, ClassGroupRepository classGroups, EnrolmentRepository enrolments,
-            SignoffRepository signoffs, LogRepository log, AuditLog audit, Clock clock) {
+            SignoffRepository signoffs, SignoffRequestRepository requests, LogRepository log, AuditLog audit, Clock clock) {
         this.componentService = componentService;
         this.components = components;
         this.briefs = briefs;
@@ -73,6 +76,7 @@ public class ProgressService {
         this.classGroups = classGroups;
         this.enrolments = enrolments;
         this.signoffs = signoffs;
+        this.requests = requests;
         this.log = log;
         this.audit = audit;
         this.clock = clock;
@@ -146,11 +150,46 @@ public class ProgressService {
                 signedOff ? AuditEventType.CHECKPOINT_SIGNED_OFF : AuditEventType.CHECKPOINT_SIGNOFF_REVOKED,
                 "checkpoint_signoff", id, details));
 
+        if (signedOff && changed.isPresent()) {
+            requests.answer(component.id(), studentId, checkpointId, actor.userId(), RequestOutcome.ACCEPTED, null, now)
+                    .ifPresent(r -> audit.record(actor.userId(), AuditEventType.SIGNOFF_REQUEST_ANSWERED, "signoff_request", r,
+                            Map.of("componentId", component.id(), "studentId", studentId, "checkpointId", checkpointId,
+                                    "outcome", RequestOutcome.ACCEPTED.name())));
+        }
+        return currentCell(component, studentId, checkpointId);
+    }
+
+    /** R-1: answers the open request. ACCEPTED also signs off, in the same transaction. Nothing open is a 409 (R-15). */
+    @Transactional
+    public Cell answer(Actor actor, UUID componentId, UUID studentId, UUID checkpointId, RequestOutcome outcome, String note) {
+        ComponentInstance component = componentService.requireOwned(actor, componentId);
+        approvedMember(component, studentId);
+        Brief brief = briefs.findPublished(component.briefId()).orElseThrow(() -> new IllegalStateException("brief missing"));
+        templates.checkpointInVersion(checkpointId, brief.versionId()).orElseThrow(ProgressService::notFound);
+
+        Instant now = clock.instant();
+        UUID id = requests.answer(component.id(), studentId, checkpointId, actor.userId(), outcome,
+                        SignoffRequestService.blankToNull(note), now)
+                .orElseThrow(() -> new DomainException(ErrorCode.SIGNOFF_REQUEST_NOT_OPEN, "This request has been withdrawn or answered."));
+        audit.record(actor.userId(), AuditEventType.SIGNOFF_REQUEST_ANSWERED, "signoff_request", id,
+                Map.of("componentId", component.id(), "studentId", studentId, "checkpointId", checkpointId, "outcome", outcome.name()));
+        if (outcome == RequestOutcome.ACCEPTED) {
+            return setSignoff(actor, componentId, studentId, checkpointId, true);
+        }
+        return currentCell(component, studentId, checkpointId);
+    }
+
+    private Cell currentCell(ComponentInstance component, UUID studentId, UUID checkpointId) {
+        Brief brief = briefs.findPublished(component.briefId()).orElseThrow(() -> new IllegalStateException("brief missing"));
+        TemplateCheckpoint checkpoint = templates.checkpointInVersion(checkpointId, brief.versionId())
+                .orElseThrow(ProgressService::notFound);
         Instant live = signoffs.forStudent(component.id(), studentId).stream()
                 .filter(s -> s.live() && s.checkpointId().equals(checkpointId)).map(Signoff::signedOffAt).findFirst().orElse(null);
+        boolean ready = requests.forStudent(component.id(), studentId).stream()
+                .anyMatch(r -> r.open() && r.checkpointId().equals(checkpointId));
         LocalDate due = components.stageDates(component.id()).get(checkpoint.stageId());
         LocalDate today = DublinDate.today(clock);
-        return new Cell(checkpointId, CheckpointState.at(due, today, live != null, false), live == null ? null : DublinDate.of(live));
+        return new Cell(checkpointId, CheckpointState.at(due, today, live != null, ready), live == null ? null : DublinDate.of(live));
     }
 
     Member approvedMember(ComponentInstance component, UUID studentId) {

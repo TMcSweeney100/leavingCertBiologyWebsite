@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,5 +40,11 @@ public class ProgressController {
     Cell signoff(Actor actor, @PathVariable UUID componentId, @PathVariable UUID studentId, @PathVariable UUID checkpointId,
             @Valid @RequestBody SignoffRequest body) {
         return progress.setSignoff(actor, componentId, studentId, checkpointId, body.signedOff());
+    }
+
+    @PostMapping("/students/{studentId}/checkpoints/{checkpointId}/request/answer")
+    Cell answer(Actor actor, @PathVariable UUID componentId, @PathVariable UUID studentId, @PathVariable UUID checkpointId,
+            @Valid @RequestBody AnswerRequest body) {
+        return progress.answer(actor, componentId, studentId, checkpointId, body.outcome(), body.note());
     }
 }
