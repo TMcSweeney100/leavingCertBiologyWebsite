@@ -104,7 +104,7 @@ test("the teacher sees the badge and the queue, and says not yet", async ({ page
     .toHaveAttribute("href", "https://docs.google.com/document/d/e2e");
   await expectAccessible(teacher);
   await noSidewaysScroll(teacher);
-  await teacher.getByRole("textbox", { name: "Note to Aoife Byrne (optional)" }).fill("Say which idea you'll test.");
+  await teacher.getByRole("textbox", { name: "Note to Aoife (optional)" }).fill("Say which idea you'll test.");
   await teacher.getByRole("button", { name: `Not yet: ${INITIAL} for Aoife Byrne` }).click();
   await expect(teacher.getByRole("button", { name: "Full history (1 answer)" })).toBeVisible();
 });
@@ -123,7 +123,8 @@ test("the student reads the note and asks again; the teacher accepts; the studen
   await teacher.goto(`${R.classPath}/progress`);
   await teacher.getByRole("link", { name: `Review ${INITIAL} for Aoife Byrne` }).first().click();
   await teacher.getByRole("button", { name: `Accept ${INITIAL} for Aoife Byrne` }).click();
-  await expect(teacher.getByRole("button", { name: `Revoke sign-off of ${INITIAL} for Aoife Byrne` })).toBeVisible();
+  // Just signed off, so the cell offers Undo; Revoke comes after the page refreshes.
+  await expect(teacher.getByRole("button", { name: `Undo sign-off of ${INITIAL} for Aoife Byrne` }).first()).toBeVisible();
 
   s = await signInStudent(browser);
   await openStage1(s);

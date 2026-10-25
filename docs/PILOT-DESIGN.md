@@ -540,7 +540,7 @@ If the API is down, the proxy returns its own problem response rather than a bla
 
 | Layer | What |
 |---|---|
-| Domain (JUnit, no Spring) | The completion-date rule; "behind" and the leader-view counts; citation and AI-appendix formatting against the NCCA's example strings; the log revision rules |
+| Domain (JUnit, no Spring) | The completion-date rule; "behind" and the leader-view counts; AI-appendix formatting against the NCCA's example strings (citation formatting moved to `node:test`, `lib/app/citation.test.ts`: source-builder S-6, 25 Oct 2026); the log revision rules |
 | Database (Testcontainers, Postgres 18) | Both triggers (completion date, published-version structure); content migrations load; every checkpoint and prompt has a `source_ref`; each version's mark bands add up to `marks_total` |
 | Authorisation | One test class per role, written before the endpoints. Each tries to reach something out of scope: another teacher's class, another student's log, a hidden entry's body, a school the leader doesn't belong to, and any student's `personal_item` rows from a teacher or leader session. |
 | Frontend | The existing `node --test` suite for `lib/`; the word checker makes no network request; no class slug collides with an app route |

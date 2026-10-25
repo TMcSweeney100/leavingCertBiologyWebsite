@@ -4,6 +4,14 @@ Rewritten at the end of every session: where things stand, what's half-done, wha
 
 **Standing rule (16 Sep 2026):** `docs/ARCHITECTURE.md` describes the code as built. When a session changes anything it describes (a filter, a pattern, an env var, a file's job), it fixes that section in the same commit, and at the end of the session checks it for anything else the session made false. A wrong map is worse than none.
 
+## Source builder (25 Oct 2026): built on `pilot/source-builder`, not merged, not pushed
+
+- **Plan `docs/superpowers/plans/2026-10-25-source-builder.md` (Tasks 1-9) is built.** Students get a Sources tab (`/components/[id]/sources`) listing each logged source as an in-text citation and a reference, with Copy citation and Copy reference list, and the source form shows the same output live, flagging missing details. No backend change; `CitationExamplesSourcesTest` and the new `AppCopySourcesTest` case prove the NCCA strings are on their pages (each bitten once by hand).
+- **Verification:** `make verify` exit 0; `make e2e` 34 passed (17 on `laptop`, 17 on `phone`). Two steps in `ready-for-signoff.e2e.ts` were stale since the drawer commit `a3923b7` (the note box is named "Note to Aoife (optional)", and a fresh Accept shows Undo, not Revoke); fixed here.
+- **UI checklist:** done from code and specs, not by eye. Added `break-words` on references and `min-h-11` on "Open in log". `text-app-attention` on `--app-inset` is about 5.4:1 by calculation. Not checked in a browser: 390px layout, 200% zoom.
+- **Still to do:** `/self-review` in a fresh session, `write-changes` (`docs/changes/source-builder.md`), then Tim opens the PR into `pilotMain`.
+- **Tim: confirm S-6 to S-15** in the plan's second decisions table (TypeScript formatter, alphabetical order, plain-text copy, `dd/mm/yyyy`, per-type flags, tab placement, no design pack, preview not a live region, hidden sources included, the quoted NCCA sentence).
+
 ## Where things are (17 Oct 2026: ready-for-signoff is built on `pilot/ready-for-signoff`, not merged, not pushed)
 
 - **Plan `docs/superpowers/plans/2026-10-17-ready-for-signoff.md` (Tasks 1-22) is built.** A student sets one link to their work, marks a checkpoint Ready for sign-off with an optional note, and can withdraw until it's answered. The teacher sees a Ready cell and a waiting queue on Progress, a badge on each class at `/teach`, a require-link switch on the Component tab, and answers Accept or Not yet (with a note) on the student's page. Both sides keep the answered history. `V13` adds the tables; see `ARCHITECTURE.md` §4-§6 and §10. Backlog rows 1 and 2 (`document-link` was folded in) are marked built, not Done.
