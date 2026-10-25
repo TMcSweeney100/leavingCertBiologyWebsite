@@ -12,7 +12,7 @@ import { card, sectionTitle, textLink } from "./styles";
 
 type Source = { id: string; fields: SourceFields };
 
-
+/** Backlog #1, the reference builder (FR-29–31): the student's sources as a list to copy into the report. */
 export function SourceList({ componentId, sources }: { componentId: string; sources: Source[] }) {
   const [status, setStatus] = useState("");
   const list = referenceList(sources);

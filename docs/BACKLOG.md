@@ -18,7 +18,7 @@ A diff that fits in one sentence skips step 2.
 | # | Slug | Feature | Status |
 |---|---|---|---|
 | 1 | `source-builder` | The student's sources become a copyable in-text citation and reference list | built on `pilot/source-builder`, not merged: self-review, changes doc and PR still to do (plan: docs/superpowers/plans/2026-10-25-source-builder.md) |
-| 2 | `ai-use-record` | The student's AI uses become a reference entry and the report's AI appendix block | idea: check the fields against the SEC's Coursework Rules and Procedures first (`docs/PILOT-DESIGN.md` §6.7) |
+| 2 | `ai-use-record` | The student's AI uses become a reference entry and the report's AI appendix block | planned: docs/superpowers/plans/2026-10-25-ai-use-record.md; building on pilot/source-builder |
 
 ### 1. Source builder (`source-builder`)
 
@@ -35,7 +35,7 @@ A diff that fits in one sentence skips step 2.
 
 **Problem.** Students log AI uses (kind `AI_USE`, since Phase 3), but must still write the reference entry and the report's AI appendix by hand. Roadmap milestone 6A.
 
-**Before planning:** the `AI_USE` fields are already paired with SEC-RULES p. 34 in `LogFieldSourcesTest`; what's left to read is the shape of the appendix block the SEC wants in the report. Reuses the source builder's formatter pattern and Sources page.
+**Answered (25 Oct 2026, `docs/intent/ai-use-record.md`):** all three outputs (NCCA in-text citation and reference entry, SEC appendix table); everything on the Sources page with an "AI use" chip per AI entry and an appendix section below; the greyed "AI use" tab removed; four appendix columns, no new field; prompts and share link under each row.
 
 ## From Tim's testing
 
