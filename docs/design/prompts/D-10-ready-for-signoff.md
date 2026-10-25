@@ -16,7 +16,7 @@ I'm designing the **Ready for sign-off** flow for the Leaving Cert coursework ap
 
 This pack changes five existing pages and adds no new route: the student's component page (D-3), the teacher's Progress tab (D-7), the teacher's student page (D-6/D-7), the Component tab (D-5) and the `/teach` class card (D-2).
 
-**Student screens are mobile-first (390px first, then 1140px). Teacher screens are desktop-first (1140px first, then 390px)**, as in D-7.
+The designs should be desktop first but look good and usable on mobile too.
 
 Please give me **two or three rough directions** for the teacher's review panel at 1140px first. After I pick one, build every state below at **1140px and 390px**.
 

@@ -11,7 +11,7 @@ Two things that share a Next.js app:
 
 ## Read before planning or building pilot work
 
-1. `docs/PILOT-ROADMAP.md` — status board, decisions, pages, API, gates. Start at its §0.
+1. `docs/BACKLOG.md` — the current feature list and how a feature moves from idea to merge. `docs/PILOT-ROADMAP.md` is frozen since Phases 1–4 (17 Oct 2026); its decisions (§2), page inventory (§6) and API catalogue (§7) still hold.
 2. `docs/ARCHITECTURE.md` — how the code works as built: request path, auth, patterns, the add-a-feature recipe. Read the section for the layer you're touching instead of rediscovering it from the files. Keep it true in the same commit as any change it describes.
 3. `docs/HANDOFF.md` — where the last session stopped.
 4. The current milestone plan in `docs/superpowers/plans/`.
@@ -75,6 +75,7 @@ One slug across `docs/intent/`, the plan and `docs/changes/`: the plan's file na
 
 ## Frontend conventions (pilot app)
 
+- **shadcn/ui first.** The style is `base-nova` (Base UI, so `render={...}` not `asChild`). Before writing markup, check `components/ui/` and `npx shadcn@latest add <name>` (Textarea, Alert, Sheet, Separator, Label, Badge…). Restyle the generated file to the `--app-*` tokens and import `cn` from `@/lib/utils` (the CLI wants to add an npm `cn` package; remove it).
 - Tests: `lib/**/*.test.ts` run under `node --test` (existing convention); `**/*.spec.ts(x)` run under Vitest; `e2e/*.e2e.ts` under Playwright.
 - Component specs query by role and accessible name. Restyles from design handoffs must keep them passing (`docs/PILOT-ROADMAP.md` §6.3).
 - Server components call Spring through `lib/api/server.ts`; client components through `lib/api/client.ts`. Mutations happen from client components only.

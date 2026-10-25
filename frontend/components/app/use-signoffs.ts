@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { api } from "@/lib/api/client";
 import { progressCellSchema } from "@/lib/api/schemas";
+import { answerAnnouncement } from "@/lib/app/ready";
 import { doneSentence, fullName, type SignoffAction } from "@/lib/app/progress";
 
 export type SignoffTarget = {
@@ -29,7 +30,7 @@ export function useSignoffs(componentId: string) {
   const [announcement, setAnnouncement] = useState("");
   const [changes, setChanges] = useState(0);
 
-  async function run(target: SignoffTarget, action: SignoffAction) {
+  async function run(target: SignoffTarget, action: SignoffAction): Promise<boolean> {
     const key = targetKey(target);
     setBusy((prev) => new Map(prev).set(key, action));
     setFailed((prev) => without(prev, key));
@@ -47,18 +48,29 @@ export function useSignoffs(componentId: string) {
       setChanges((n) => n + 1);
       setAnnouncement(doneSentence(action, target.checkpoint.text, fullName(target.student)));
       router.refresh();
+      return true;
     } catch {
       // The alert under the row (role="alert") announces the failure itself.
       setFailed((prev) => new Map(prev).set(key, { target, action }));
+      return false;
     } finally {
       setBusy((prev) => without(prev, key));
     }
   }
 
+  /** An Accept on the review panel is a sign-off made this visit: it offers Undo like any other. A Not yet signs nothing. */
+  function noteAnswered(target: SignoffTarget, outcome: "ACCEPTED" | "NOT_YET") {
+    if (outcome === "ACCEPTED") {
+      setRecent((prev) => new Set(prev).add(targetKey(target)));
+      setChanges((n) => n + 1);
+    }
+    setAnnouncement(answerAnnouncement(outcome, target.checkpoint.text, fullName(target.student)));
+  }
+
   return {
-    busy, recent, confirming, failed, announcement, changes,
+    busy, recent, confirming, failed, announcement, changes, noteAnswered,
     signOff: (t: SignoffTarget) => run(t, "sign"),
-    undo: (t: SignoffTarget) => run(t, "undo"),
+    undo: (t: SignoffTarget) => run(t, "undo"), // resolves true once the revoke landed
     revoke: (t: SignoffTarget) => run(t, "revoke"),
     askRevoke: (t: SignoffTarget) => { setFailed((prev) => without(prev, targetKey(t))); setConfirming(targetKey(t)); },
     keep: () => setConfirming(null),

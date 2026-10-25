@@ -106,7 +106,7 @@ test("the teacher sees the badge and the queue, and says not yet", async ({ page
   await noSidewaysScroll(teacher);
   await teacher.getByRole("textbox", { name: "Note to Aoife Byrne (optional)" }).fill("Say which idea you'll test.");
   await teacher.getByRole("button", { name: `Not yet: ${INITIAL} for Aoife Byrne` }).click();
-  await expect(teacher.getByText("Earlier requests (1)")).toBeVisible();
+  await expect(teacher.getByRole("button", { name: "Full history (1 answer)" })).toBeVisible();
 });
 
 test("the student reads the note and asks again; the teacher accepts; the student sees it signed off", async ({ page: teacher, browser }) => {

@@ -110,6 +110,9 @@
   --color-app-due-row: var(--app-due-row);
   --color-app-ready: var(--app-ready);
   --color-app-ready-tint: var(--app-ready-tint);
+  --color-app-request-tint: var(--app-request-tint);
+  --color-app-request-rule: var(--app-request-rule);
+  --color-app-scrim: var(--app-scrim);
   --color-app-signed-recent: var(--app-signed-recent);
 }
 
@@ -324,6 +327,10 @@
   --app-due-tint: var(--app-attention-tint); /* navy "Sign off" on it 9.62:1 */
   --app-due-row: #FCF8F5;                /* due row on the student view; ink 17.50:1, amber 5.81:1, muted 5.11:1 */
   --app-ready: var(--app-accent);         /* Ready: navy, the teacher's turn; 11.12:1 on white */
+  --app-request-tint: #EAEFF7;      /* D-10 — the student's request block; navy 9.64:1, body 9.92:1 */
+  --app-request-rule: #CFD8E8;      /* hairline above "No link" inside the block */
+  --app-scrim: rgb(16 20 25 / .36); /* behind the history sheet */
+  --app-sheet-width: 520px;
   --app-ready-tint: var(--app-accent-tint); /* Ready cell ground; navy on it 10.20:1 */
   --app-signed: var(--app-done);         /* 8.04:1 on white; 7.36:1 on --app-done-ground */
   --app-signed-recent: var(--app-done-ground); /* a cell signed off this visit (offers Undo); navy on it 10.18:1 */
@@ -418,6 +425,12 @@
 
 .app-appear {
   animation: app-appear var(--app-duration) var(--app-ease);
+}
+
+/* Base UI's drawer overlay is absolutely positioned on iOS Safari and needs a positioned ancestor to cover the page.
+   The drawer portals into `.app-theme`, so that is the one to position; `body` is shared with the live BiPi schedule. */
+.app-theme {
+  position: relative;
 }
 
 @layer base {
