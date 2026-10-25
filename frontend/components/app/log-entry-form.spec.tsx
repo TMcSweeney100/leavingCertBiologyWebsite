@@ -136,4 +136,28 @@ describe("LogEntryForm", () => {
     expect(api.send).toHaveBeenCalledWith("POST", "/log/e1/revisions", { body: "v2", fields: null }, expect.anything());
     expect(push).toHaveBeenCalledWith("/components/k1/log/e1");
   });
+  it("starts on Source when the page asks for it", () => {
+    render(<LogEntryForm mode="create" componentId="k1" today="2027-03-03" kind="SOURCE" />);
+    expect(screen.getByRole("radio", { name: "Source" })).toBeChecked();
+  });
+
+  it("previews the source in the report's shape as it's typed, and flags what's missing", async () => {
+    render(<LogEntryForm mode="create" componentId="k1" today="2027-03-03" kind="SOURCE" />);
+    const preview = screen.getByRole("region", { name: "In your report" });
+    expect(preview).toHaveTextContent("Add a title to see how this source will look in your report.");
+    await userEvent.type(screen.getByRole("textbox", { name: "Title" }), "Inclusion");
+    await userEvent.type(screen.getByRole("textbox", { name: "Author (optional)" }), "McLeskey, J.");
+    await userEvent.type(screen.getByRole("textbox", { name: "Date or year published (optional)" }), "2013");
+    expect(preview).toHaveTextContent("(McLeskey, 2013)");
+    expect(preview).toHaveTextContent("McLeskey, J. (2013) Inclusion");
+    expect(preview).toHaveTextContent("Add the page, chapter or timestamp you used so a reader can check this source.");
+    await userEvent.type(screen.getByRole("textbox", { name: "Page, chapter, section or timestamp (optional)" }), "p. 57");
+    expect(preview).toHaveTextContent("(p. 57, McLeskey, 2013)");
+    expect(preview).not.toHaveTextContent("Add the page");
+  });
+
+  it("shows no preview for a note", () => {
+    render(<LogEntryForm mode="create" componentId="k1" today="2027-03-03" />);
+    expect(screen.queryByRole("region", { name: "In your report" })).not.toBeInTheDocument();
+  });
 });

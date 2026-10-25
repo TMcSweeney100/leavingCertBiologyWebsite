@@ -5,7 +5,7 @@ import { TEACHER, expectAccessible, phone, signInTeacher } from "./helpers";
 /**
  * Gate P3's journey (roadmap §8.3): a student logs a note, a source and an AI use and hides the note; the
  * teacher sees that the note exists but not its text; the student edits the source; the teacher sees
- * "Edited" and its history.
+ * "Edited" and its history. Then the Sources tab shows the source as a reference (source-builder).
  */
 const P3 = { className: "", student: "", password: "e2e-student-password" };
 const NOTE = "Pilot run went well, retest Tuesday";
@@ -106,6 +106,19 @@ test("the student logs a note, a source and an AI use, hides the note and edits 
     student.getByRole("button", { name: "Save new revision" }).click(),
   ]);
   await expect(student.getByRole("list", { name: "Revisions" }).getByRole("listitem")).toHaveCount(2);
+  await expectAccessible(student);
+});
+
+test("the student's Sources tab turns the edited source into a reference", async ({ browser }) => {
+  test.skip(!TEACHER.temporary, "E2E_TEACHER_PASSWORD not set");
+  const student = await phone(browser);
+  await signInStudent(student);
+  await student.getByRole("link", { name: /Biology/ }).click();
+  await student.getByRole("navigation", { name: "Component sections" }).getByRole("link", { name: "Sources" }).click();
+  const list = student.getByRole("list", { name: "References" });
+  await expect(list).toContainText("Titration technique demo (RTÉ), date not available, https://youtu.be/yCv4iyPqZKQ, Date accessed: 01/10/2026");
+  await expect(list).toContainText("(youtu.be/yCv4iyPqZKQ)");
+  await expect(list).toContainText("Add the page, chapter or timestamp you used so a reader can check this source.");
   await expectAccessible(student);
 });
 

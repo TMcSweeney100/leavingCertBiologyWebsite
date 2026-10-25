@@ -7,15 +7,17 @@ import { type FormEvent, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { api, ApiError } from "@/lib/api/client";
 import { type EntryKind, logEntryDetailSchema, type SourceType } from "@/lib/api/schemas";
+import { sourceFromForm } from "@/lib/app/citation";
 import { formatCalendarDate } from "@/lib/app/component-setup";
 import { counterText, FIELD_LABELS, isOnline, KIND_WORD, linkMessage, SOURCE_TYPES, visibilityLine } from "@/lib/app/log";
 
 import { ErrorPanel } from "./error-panel";
 import { Field, FieldGroup } from "./field";
+import { SourcePreview } from "./source-preview";
 
 type Values = Record<string, string>;
 type Props = { componentId: string; today: string } & (
-  | { mode: "create" }
+  | { mode: "create"; kind?: EntryKind }
   | { mode: "revise"; entryId: string; kind: EntryKind; body: string | null; fields: Record<string, string | null> | null;
       revisionCount: number; lastRevisedOn: string; visible: boolean }
 );
@@ -55,7 +57,7 @@ export function LogEntryForm(props: Props) {
   const revising = props.mode === "revise";
   const backTo = revising ? `/components/${props.componentId}/log/${props.entryId}` : `/components/${props.componentId}/log`;
   const initial = useRef<{ kind: EntryKind; body: string; values: Values }>(null);
-  const [kind, setKind] = useState<EntryKind>(revising ? props.kind : "NOTE");
+  const [kind, setKind] = useState<EntryKind>(revising ? props.kind : (props.kind ?? "NOTE"));
   const [body, setBody] = useState(revising ? (props.body ?? "") : "");
   const [values, setValues] = useState<Values>(() => {
     const start: Values = { type: "BOOK", dateAccessed: props.today, dateGenerated: props.today };
@@ -183,6 +185,7 @@ export function LogEntryForm(props: Props) {
             {["locator", "keyInformation", "relevance", "reflections"].map(input)}
             {bodyField}
           </FieldGroup>
+          <SourcePreview fields={sourceFromForm(values)} />
         </>
       ) : (
         <FieldGroup>
