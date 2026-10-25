@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { AppMain } from "@/components/app/app-main";
 import { ErrorPanel } from "@/components/app/error-panel";
 import { StudentCheckpoints } from "@/components/app/student-checkpoints";
+import { WorkLink } from "@/components/app/work-link";
 import { TeacherLog } from "@/components/app/teacher-log";
 import { backLink, card, pageTitle, sectionTitle } from "@/components/app/styles";
 import { classDetailSchema, studentCheckpointsSchema, teacherStudentLogSchema } from "@/lib/api/schemas";
@@ -55,6 +56,9 @@ export default async function StudentLogPage({ params }: { params: Promise<{ id:
         <>
           <h1 className={`mt-2.5 ${pageTitle}`}>{`${log.data.firstName} ${log.data.lastName}`}</h1>
           <p className="mt-1.5 text-app-base text-app-grey">{"You read the entries they share. Any they keep private show only the kind, the dates and how many times they were edited."}</p>
+          {checkpoints.ok && checkpoints.data.documentLink && (
+            <WorkLink url={checkpoints.data.documentLink.url} name={`${log.data.firstName} ${log.data.lastName}`} className="mt-1" />
+          )}
           {checkpoints.ok
             ? <StudentCheckpoints componentId={componentId} data={checkpoints.data} />
             : <div className="mt-6"><ErrorPanel error={checkpoints.error} /></div>}

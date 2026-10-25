@@ -4,7 +4,42 @@ Rewritten at the end of every session: where things stand, what's half-done, wha
 
 **Standing rule (16 Sep 2026):** `docs/ARCHITECTURE.md` describes the code as built. When a session changes anything it describes (a filter, a pattern, an env var, a file's job), it fixes that section in the same commit, and at the end of the session checks it for anything else the session made false. A wrong map is worse than none.
 
-## Where things are (29 Sep 2026: Phase 4 is merged into `pilotMain` locally, not pushed)
+## Where things are (17 Oct 2026: ready-for-signoff is built on `pilot/ready-for-signoff`, not merged, not pushed)
+
+- **Plan `docs/superpowers/plans/2026-10-17-ready-for-signoff.md` (Tasks 1-22) is built.** A student sets one link to their work, marks a checkpoint Ready for sign-off with an optional note, and can withdraw until it's answered. The teacher sees a Ready cell and a waiting queue on Progress, a badge on each class at `/teach`, a require-link switch on the Component tab, and answers Accept or Not yet (with a note) on the student's page. Both sides keep the answered history. `V13` adds the tables; see `ARCHITECTURE.md` §4-§6 and §10. Backlog rows 1 and 2 (`document-link` was folded in) are marked built, not Done.
+- **Verification, 17 Oct 2026** (`make verify && make e2e`, both exit 0): 508 backend tests, 0 failures; 163 `node:test`, 0 failures; 48 Vitest files, 274 specs; lint, types and build clean. `make e2e` 32 passed (16 on `laptop`, 16 on `phone`), including `ready-for-signoff.e2e.ts` with axe.
+- **UI checklist pass (Task 22 Step 1)** was done from the code and specs, not a browser. Fixed with tests: the require-link switch no longer drops keyboard focus while saving (`aria-disabled` instead of `disabled`), and `ReadyControl` keeps focus inside itself after Send and Withdraw. "Change link" is at least 44px tall and wider than 44px. **Not checked by eye:** any screenshot at 390 or 1140, 200% zoom, a long surname in the queue, contrast of the new `--app-ready*` tokens, `prefers-reduced-motion` (the switch has `motion-reduce:` classes; nothing else new animates), and Hide names looked at (the queue's names, dates and notes, the review panel's note and every `WorkLink` host are `data-private`, so they blur; confirmed from the markup only).
+- **Task 23 (restyle to D-10) waits for the pack** in `docs/design/pilot/D-10-ready-for-signoff/`. Until it arrives the Ready colours are provisional.
+- **Still to do, in order:** `/self-review` against `pilotMain` in a fresh session, then `write-changes` (`docs/changes/ready-for-signoff.md`, deliberately not written yet), then Tim opens the PR into `pilotMain`. The gate also asks that each check in `SignoffRequestScopeTest` be bitten once by hand (plan Task 12 Step 2).
+
+### Tim: confirm or change decisions R-9 to R-22 (made while writing the plan)
+These were my calls while writing the plan, not yours. Say which to change.
+
+| # | What happens | Why it matters to you |
+|---|---|---|
+| R-9 | A checkpoint a student has asked about shows as **Ready**, and is **not** counted as behind. | Students waiting on you don't appear among the ones you have to chase. A "Not yet" puts them straight back to behind. |
+| R-10 | A Ready cell on the grid is a **link to the student's page**, not a Sign off button. | You look at the work before accepting. Due and Not due yet cells keep one-click Sign off. |
+| R-11 | Signing off from the grid while a request is open **answers it as Accepted**, with no note. | The request doesn't linger in your queue after you've signed off. |
+| R-12 | Revoking a sign-off leaves the earlier Accepted request in the history. The student can ask again. | History is never rewritten. |
+| R-13 | Asking twice (double-click, two tabs) makes one request. | No duplicate queue entries. |
+| R-14 | Asking for an already signed-off checkpoint is refused (`409 CHECKPOINT_ALREADY_SIGNED_OFF`). | |
+| R-15 | Withdrawing or answering when nothing is open is refused (`409 SIGNOFF_REQUEST_NOT_OPEN`). | The other side got there first; the page refreshes to show what happened. |
+| R-16 | History shows **answered** requests only, newest first. Withdrawn ones are kept in the database but not shown. | Withdrawn requests are noise to both of you. |
+| R-17 | Student note up to 280 characters, teacher note up to 500, both optional. | |
+| R-18 | A student can **replace** their link but not **remove** it. | Removing would need a "no link" record and a rule for classes that require a link. |
+| R-19 | Setting the same link again makes no new record. | |
+| R-20 | The design pack is called **D-10** (D-8 and D-9 were already taken). | |
+| R-21 | The waiting count on `/teach` comes from its own endpoint. | `classes` can't read `components` tables without a dependency cycle. |
+| R-22 | The backup reminder is quoted word for word from p. 3 of the 2027 briefs, and a test checks it. | |
+
+### Known small things (found by task reviews; for Tim and self-review, none fixed)
+1. `SignoffRequestService.ask` calls `.orElseThrow()` after the idempotent insert; if the teacher answers in the gap between the insert and the re-read, it would 500.
+2. An ask racing a teacher sign-off can leave an open request on a SIGNED_OFF checkpoint, inflating the queue and the badge.
+3. The ask endpoint returns 201 even when it was idempotent and nothing was created.
+4. `HttpsLink` accepts userinfo (`https://user:pass@host`).
+5. The `BACKUP_ADVICE` text is duplicated in `AppCopySourcesTest` and `lib/app/ready.ts`; the test is what proves it's on the PDF page, so keep them in step.
+
+## Earlier state: Phase 4 (29 Sep 2026)
 
 - **Phase 4 (plan `docs/superpowers/plans/2026-09-28-pilot-4-teacher-grid.md`, spec `docs/superpowers/specs/2026-09-28-pilot-4-teacher-grid-design.md`) is built.** `V12` adds `checkpoint_signoff` (append-only by trigger, one live sign-off per student and checkpoint by partial unique index). A new `progress` package serves three endpoints: the grid, one student's checkpoints, and an idempotent sign-off `PUT`. The frontend is built straight to pack D-7 (direction 1b "Bands"): the Progress tab, the stage picker, Re-sort, Undo/Revoke, Hide names (a cookie), the student page's Checkpoints section above the log, and the signed-off state on the student's stage card. The Phase 3 wording fix (P4-2) is in. How it works: `docs/ARCHITECTURE.md` §4, §5, §6, §10.
 - **Verification, 29 Sep 2026** (`make verify && make e2e`, both exit 0): 458 backend tests, 0 failures; 158 `node:test`, 0 failures; 42 Vitest files, 238 specs; lint, types and build clean. `make e2e` 24 passed (12 on `laptop`, 12 on `phone`), including the Phase 4 journey with axe.

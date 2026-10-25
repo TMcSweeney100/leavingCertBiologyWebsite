@@ -18,6 +18,7 @@ const INITIAL = "Initial ideas discussed with the teacher";
 const LOG = "Investigative log shared with the teacher";
 const row = (id: string, first: string, last: string, behindBy: number, s1: "DUE" | "SIGNED_OFF", days: number | null) => ({
   studentId: id, firstName: first, lastName: last, behindBy, lastLogActivityOn: null, daysSinceLastLogActivity: days,
+  documentLink: null,
   cells: [
     { checkpointId: "c1", state: s1, signedOffOn: s1 === "SIGNED_OFF" ? "2026-10-02" : null },
     { checkpointId: "c2", state: "DUE" as const, signedOffOn: null },
@@ -29,7 +30,7 @@ const grid = (students: Grid["students"]): Grid => ({
     { stageId: "s1", ordinal: 1, label: "Stage 1", name: "Initial", dueDate: "2026-10-02", checkpoint: { id: "c1", text: INITIAL } },
     { stageId: "s2", ordinal: 2, label: "Stage 2", name: "Research", dueDate: "2026-11-06", checkpoint: { id: "c2", text: LOG } },
   ],
-  students,
+  students, waiting: [],
 });
 const START = grid([row("a", "Aoife", "Byrne", 2, "DUE", 20), row("c", "Cian", "Murphy", 1, "SIGNED_OFF", 3)]);
 const props = { basePath: "/teach/classes/cl1/progress", laptopStage: "all", phoneStage: "2", hideNames: false };
@@ -42,6 +43,16 @@ beforeEach(() => {
 });
 
 describe("ProgressGrid", () => {
+  it("shows each student's work link beside their name, and a Ready cell opens the review", () => {
+    const withLink = grid([
+      { ...row("a", "Aoife", "Byrne", 1, "DUE", 3), documentLink: { url: "https://docs.example.com/aoife", setOn: "2026-12-01" },
+        cells: [{ checkpointId: "c1", state: "READY" as const, signedOffOn: null }, { checkpointId: "c2", state: "DUE" as const, signedOffOn: null }] },
+    ]);
+    render(<ProgressGrid grid={withLink} {...props} />);
+    expect(table().getByRole("link", { name: "Open Aoife Byrne's work (opens in a new tab)" })).toHaveAttribute("href", "https://docs.example.com/aoife");
+    expect(table().getByRole("link", { name: `Review ${INITIAL} for Aoife Byrne` })).toHaveAttribute("href", "/teach/classes/cl1/students/a#checkpoint-c1");
+  });
+
   it("answers first, then groups students into bands, furthest behind first", () => {
     render(<ProgressGrid grid={START} {...props} />);
     expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent("2 of 2 students are behind");

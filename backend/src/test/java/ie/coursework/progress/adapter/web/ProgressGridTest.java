@@ -46,11 +46,12 @@ class ProgressGridTest extends PostgresIntegrationTest {
 
     private ClassFixtures.World world;
     private UUID component;
+    private UUID classmate;
 
     @BeforeEach
     void aClassWithTwoApprovedStudents() throws Exception {
         world = fixtures.world();
-        fixtures.classmate(world);
+        classmate = fixtures.classmate(world);
         component = components.component(world.class1(), world.teacher1(), BIO);
         components.stageDate(component, components.stageId(BIO, 1), LocalDate.of(2026, 9, 10));
         components.stageDate(component, components.stageId(BIO, 2), LocalDate.of(2026, 10, 1));
@@ -103,6 +104,32 @@ class ProgressGridTest extends PostgresIntegrationTest {
                 .andExpect(jsonPath("$.stages[5].checkpoint").value(nullValue()))
                 .andExpect(jsonPath("$.stages[6].label").value(nullValue()))
                 .andExpect(jsonPath("$.students.length()").value(0));
+    }
+
+    @Test
+    void aRequestIsReadyNotBehindAndJoinsTheQueueOldestFirst() throws Exception {
+        UUID cp1 = components.checkpointId(BIO, 1);
+        UUID cp2 = components.checkpointId(BIO, 2);
+        as(ClassFixtures.CLASSMATE)
+                .put("/api/v1/components/" + component + "/document-link", "{\"url\":\"https://docs.google.com/d/a\"}");
+        // Inserted directly: asked_at is fixed once written (V13's guard), so the order is set at insert time.
+        // The classmate is used because the approved student already has stage 1 signed off in the setup.
+        String insert = """
+                INSERT INTO signoff_request (instance_id, student_user_id, checkpoint_id, asked_at, student_note)
+                VALUES (?, ?, ?, now() - ?::interval, ?)
+                """;
+        jdbcTemplate.update(insert, component, classmate, cp2, "1 day", "second");
+        jdbcTemplate.update(insert, component, classmate, cp1, "0 days", "later");
+
+        as(ClassFixtures.TEACHER1).get("/api/v1/components/" + component + "/progress").andExpect(status().isOk())
+                .andExpect(jsonPath("$.waiting.length()").value(2))
+                .andExpect(jsonPath("$.waiting[0].checkpointId").value(cp2.toString()))
+                .andExpect(jsonPath("$.waiting[0].note").value("second"))
+                .andExpect(jsonPath("$.waiting[0].firstName").isNotEmpty())
+                .andExpect(jsonPath("$.students[?(@.studentId == '" + classmate + "')].cells[0].state").value("READY"))
+                .andExpect(jsonPath("$.students[?(@.studentId == '" + classmate + "')].behindBy").value(0))
+                .andExpect(jsonPath("$.students[?(@.studentId == '" + classmate + "')].documentLink.url")
+                        .value("https://docs.google.com/d/a"));
     }
 
     private ApiSession as(String username) throws Exception {

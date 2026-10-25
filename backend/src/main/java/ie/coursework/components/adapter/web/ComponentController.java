@@ -2,6 +2,7 @@ package ie.coursework.components.adapter.web;
 
 import ie.coursework.components.application.ComponentService;
 import ie.coursework.components.application.ComponentViews.BriefSummary;
+import ie.coursework.components.application.ComponentViews.DocumentLinkView;
 import ie.coursework.components.application.ComponentViews.StudentItem;
 import ie.coursework.components.application.ComponentViews.TeacherComponent;
 import ie.coursework.components.application.ComponentViews.TeacherItemView;
@@ -58,6 +59,11 @@ public class ComponentController {
         return components.setStageDates(actor, componentId, body.dates());
     }
 
+    @PutMapping("/components/{componentId}/settings")
+    TeacherComponent setSettings(Actor actor, @PathVariable UUID componentId, @Valid @RequestBody ComponentSettingsRequest body) {
+        return components.setSettings(actor, componentId, body.requireLink());
+    }
+
     @PostMapping("/components/{componentId}/teacher-items")
     @ResponseStatus(HttpStatus.CREATED)
     TeacherItemView addItem(Actor actor, @PathVariable UUID componentId, @Valid @RequestBody TeacherItemRequest body) {
@@ -74,6 +80,11 @@ public class ComponentController {
     ResponseEntity<Void> retireItem(Actor actor, @PathVariable UUID componentId, @PathVariable UUID itemId) {
         components.retireItem(actor, componentId, itemId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/components/{componentId}/document-link")
+    DocumentLinkView setDocumentLink(Actor actor, @PathVariable UUID componentId, @Valid @RequestBody DocumentLinkRequest body) {
+        return components.setDocumentLink(actor, componentId, body.url());
     }
 
     @PutMapping("/components/{componentId}/teacher-items/{itemId}/tick")

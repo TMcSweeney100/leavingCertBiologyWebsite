@@ -80,4 +80,22 @@ class StudentCheckpointsTest extends PostgresIntegrationTest {
                 .andExpect(jsonPath("$.stages[1].state").value("DUE"))
                 .andExpect(jsonPath("$.stages[1].history.length()").value(0));
     }
+
+    @Test
+    void eachCheckpointCarriesItsOpenRequestAndAnswersAndThePageTheLink() throws Exception {
+        ClassFixtures.World world = fixtures.world();
+        UUID component = components.component(world.class1(), world.teacher1(), BIO);
+        components.stageDate(component, components.stageId(BIO, 1), LocalDate.of(2026, 9, 10));
+        UUID cp1 = components.checkpointId(BIO, 1);
+        ApiSession student = new ApiSession(mockMvc).login(ClassFixtures.APPROVED_STUDENT, TestAccounts.PASSWORD);
+        student.put("/api/v1/components/" + component + "/document-link", "{\"url\":\"https://docs.google.com/d/a\"}");
+        student.post("/api/v1/components/" + component + "/checkpoints/" + cp1 + "/request", "{\"note\":\"page 2\"}");
+        new ApiSession(mockMvc).login(ClassFixtures.TEACHER1, TestAccounts.PASSWORD)
+                .get("/api/v1/components/" + component + "/students/" + world.approvedStudent() + "/checkpoints")
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.documentLink.url").value("https://docs.google.com/d/a"))
+                .andExpect(jsonPath("$.stages[0].state").value("READY"))
+                .andExpect(jsonPath("$.stages[0].request.note").value("page 2"))
+                .andExpect(jsonPath("$.stages[0].answers.length()").value(0));
+    }
 }

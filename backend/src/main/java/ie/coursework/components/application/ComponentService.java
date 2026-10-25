@@ -1,22 +1,28 @@
 package ie.coursework.components.application;
 
+import ie.coursework.audit.AuditEventType;
+import ie.coursework.audit.AuditLog;
 import ie.coursework.classes.adapter.persistence.ClassGroupRepository;
 import ie.coursework.classes.adapter.persistence.SubjectRepository;
 import ie.coursework.classes.application.ClassService;
 import ie.coursework.classes.domain.ClassGroup;
 import ie.coursework.components.adapter.persistence.BriefRepository;
 import ie.coursework.components.adapter.persistence.ComponentRepository;
+import ie.coursework.components.adapter.persistence.DocumentLinkRepository;
 import ie.coursework.components.adapter.persistence.ItemTickRepository;
 import ie.coursework.components.adapter.persistence.TeacherItemRepository;
 import ie.coursework.components.adapter.persistence.SignoffRepository;
+import ie.coursework.components.adapter.persistence.SignoffRequestRepository;
 import ie.coursework.components.adapter.persistence.TemplateRepository;
 import ie.coursework.components.application.ComponentViews.BriefDetail;
 import ie.coursework.components.application.ComponentViews.BriefSummary;
 import ie.coursework.components.application.ComponentViews.CheckpointView;
 import ie.coursework.components.application.ComponentViews.ComponentView;
 import ie.coursework.components.application.ComponentViews.DateWarning;
+import ie.coursework.components.application.ComponentViews.DocumentLinkView;
 import ie.coursework.components.application.ComponentViews.MarkBandView;
 import ie.coursework.components.application.ComponentViews.MyComponent;
+import ie.coursework.components.application.ComponentViews.OpenRequestView;
 import ie.coursework.components.application.ComponentViews.PromptView;
 import ie.coursework.components.application.ComponentViews.RuleView;
 import ie.coursework.components.application.ComponentViews.SectionView;
@@ -34,6 +40,8 @@ import ie.coursework.components.domain.ComponentInstance;
 import ie.coursework.components.domain.DatedStage;
 import ie.coursework.components.domain.CheckpointState;
 import ie.coursework.components.domain.Signoff;
+import ie.coursework.components.domain.SignoffRequest;
+import ie.coursework.components.domain.DocumentLink;
 import ie.coursework.components.domain.DublinDate;
 import ie.coursework.components.domain.StageOrder;
 import ie.coursework.components.domain.TeacherItem;
@@ -45,6 +53,7 @@ import ie.coursework.identity.domain.Role;
 import ie.coursework.shared.error.DomainException;
 import ie.coursework.shared.error.ErrorCode;
 import ie.coursework.shared.error.FieldError;
+import ie.coursework.shared.link.HttpsLink;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -52,6 +61,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -76,11 +86,15 @@ public class ComponentService {
     private final TeacherItemRepository items;
     private final ItemTickRepository ticks;
     private final SignoffRepository signoffs;
+    private final DocumentLinkRepository links;
+    private final SignoffRequestRepository requests;
+    private final AuditLog audit;
     private final Clock clock;
 
     public ComponentService(ClassService classes, ClassGroupRepository classGroups, SubjectRepository subjects,
             BriefRepository briefs, TemplateRepository templates, ComponentRepository components,
-            TeacherItemRepository items, ItemTickRepository ticks, SignoffRepository signoffs, Clock clock) {
+            TeacherItemRepository items, ItemTickRepository ticks, SignoffRepository signoffs,
+            DocumentLinkRepository links, SignoffRequestRepository requests, AuditLog audit, Clock clock) {
         this.classes = classes;
         this.classGroups = classGroups;
         this.subjects = subjects;
@@ -90,7 +104,36 @@ public class ComponentService {
         this.items = items;
         this.ticks = ticks;
         this.signoffs = signoffs;
+        this.links = links;
+        this.requests = requests;
+        this.audit = audit;
         this.clock = clock;
+    }
+
+    /** FR-38-39: an approved student's link to their work. Stored, never fetched. The same link again changes nothing (R-19). */
+    @Transactional
+    public DocumentLinkView setDocumentLink(Actor actor, UUID componentId, String url) {
+        ComponentInstance component = components.findForApprovedStudent(componentId, actor.userId())
+                .orElseThrow(ComponentService::notFound);
+        String stripped = url == null ? "" : url.strip();
+        if (!HttpsLink.valid(stripped) || stripped.length() > 2000) {
+            throw new DomainException(ErrorCode.VALIDATION_FAILED, "That isn't an https link.",
+                    List.of(new FieldError("url", "must be a link starting https://")));
+        }
+        Optional<DocumentLink> current = links.current(component.id(), actor.userId());
+        if (current.isPresent() && current.get().url().equals(stripped)) {
+            return view(current.get());
+        }
+        Instant now = clock.instant();
+        links.add(component.id(), actor.userId(), stripped, now);
+        // Ids only: the link itself points at student work (ARCHITECTURE section 5, audit details).
+        audit.record(actor.userId(), AuditEventType.DOCUMENT_LINK_SET, "component_instance", component.id(),
+                Map.of("componentId", component.id()));
+        return view(new DocumentLink(stripped, now));
+    }
+
+    public static DocumentLinkView view(DocumentLink link) {
+        return new DocumentLinkView(link.url(), DublinDate.of(link.setAt()));
     }
 
     /** Briefs are published SEC content: any signed-in user may list them. */
@@ -137,6 +180,8 @@ public class ComponentService {
                 .collect(Collectors.toMap(TemplateCheckpoint::stageId, c -> c, (first, later) -> first));
         Map<UUID, Instant> signedOff = signoffs.forStudent(component.id(), actor.userId()).stream()
                 .filter(Signoff::live).collect(Collectors.toMap(Signoff::checkpointId, Signoff::signedOffAt));
+        Map<UUID, List<SignoffRequest>> requested = requests.forStudent(component.id(), actor.userId()).stream()
+                .collect(Collectors.groupingBy(SignoffRequest::checkpointId));
         Map<UUID, List<PromptView>> prompts = templates.prompts(brief.versionId()).stream()
                 .collect(Collectors.groupingBy(TemplatePrompt::stageId, LinkedHashMap::new,
                         Collectors.mapping(p -> new PromptView(p.heading(), p.text()), Collectors.toList())));
@@ -152,10 +197,13 @@ public class ComponentService {
             LocalDate due = dates.get(s.id());
             TemplateCheckpoint checkpoint = checkpoints.get(s.id());
             Instant at = checkpoint == null ? null : signedOff.get(checkpoint.id());
+            List<SignoffRequest> rows = checkpoint == null ? List.of() : requested.getOrDefault(checkpoint.id(), List.of());
+            OpenRequestView open = RequestViews.open(rows);
             return new StudentStage(s.id(), s.ordinal(), s.label(), s.name(), s.description(), s.hoursMin(), s.hoursMax(),
                     s.hoursGroup(), s.supervised(), due,
-                    checkpoint == null ? null : new CheckpointView(checkpoint.text(), CheckpointState.at(due, today, at != null),
-                            at == null ? null : DublinDate.of(at)),
+                    checkpoint == null ? null : new CheckpointView(checkpoint.id(), checkpoint.text(),
+                            CheckpointState.at(due, today, at != null, open != null), at == null ? null : DublinDate.of(at),
+                            open, RequestViews.answers(rows)),
                     items.getOrDefault(s.id(), List.of()), prompts.getOrDefault(s.id(), List.of()));
         }).toList();
 
@@ -171,7 +219,16 @@ public class ComponentService {
                 templates.sections(brief.versionId()).stream()
                         .map(x -> new SectionView(x.label(), x.name(), x.suggestedWords(), x.indicativeContent(), x.stageIds())).toList(),
                 templates.bands(brief.versionId()).stream()
-                        .map(b -> new MarkBandView(b.label(), b.name(), b.marks(), b.wholeReport(), b.criteria(), b.sectionLabels())).toList());
+                        .map(b -> new MarkBandView(b.label(), b.name(), b.marks(), b.wholeReport(), b.criteria(), b.sectionLabels())).toList(),
+                components.requiresLink(component.id()),
+                links.current(component.id(), actor.userId()).map(ComponentService::view).orElse(null));
+    }
+
+    @Transactional
+    public TeacherComponent setSettings(Actor actor, UUID componentId, boolean requireLink) {
+        Owned owned = owned(actor, componentId);
+        components.setRequireLink(owned.component().id(), requireLink);
+        return teacherView(owned);
     }
 
     /** Replaces the class's stage dates (plan 2D P2-24, P2-25). */
@@ -294,7 +351,8 @@ public class ComponentService {
 
         return new TeacherComponent("TEACHER", owned.component().id(), owned.group().id(), owned.group().name(),
                 brief.subjectCode(), subjects.findById(owned.group().subjectId()).orElseThrow().name(),
-                summary(brief), setup, warnings(setup, brief.completionDate()));
+                summary(brief), setup, warnings(setup, brief.completionDate()),
+                components.requiresLink(owned.component().id()));
     }
 
     private static List<DateWarning> warnings(List<SetupStage> stages, LocalDate completion) {

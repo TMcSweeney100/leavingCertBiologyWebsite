@@ -93,7 +93,7 @@ Some of these are MUSTs in the functional spec. Each is deferred, not dropped.
 |---|---|
 | Suggested stage dates worked out from indicative hours (FR-47) | Needs class time per week and a school calendar. Teachers type their own dates, as on the BiPi site. |
 | School leaders opening an individual student's record (FR-64) | Counts are enough for the purchase conversation, and it's the most sensitive screen in the product. |
-| Coursework document links (FR-38–40) | Students write little of the report in 5th year. |
+| ~~Coursework document links (FR-38–40)~~ — pulled forward by ready-for-signoff, 17 Oct 2026 (R-4) | Students write little of the report in 5th year. |
 | Supervised session scheduling (FR-61) | Needed at stage 4, in the autumn. |
 | Teachers renaming stages or adding stages of their own (part of FR-48) | Keeps stage names national, which the leader view depends on. Teachers can add dated items inside a stage instead. |
 | Pushed class deadlines and revision recommendations (FR-55–60) | The rest of the weekly loop is the next release (D2). |

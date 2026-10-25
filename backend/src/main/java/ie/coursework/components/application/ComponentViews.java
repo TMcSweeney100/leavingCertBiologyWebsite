@@ -1,6 +1,7 @@
 package ie.coursework.components.application;
 
 import ie.coursework.components.domain.CheckpointState;
+import ie.coursework.components.domain.RequestOutcome;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -12,6 +13,10 @@ public final class ComponentViews {
 
     public record BriefSummary(UUID id, String subjectCode, int examYear, String secCode, String title,
             String topicTitle, LocalDate completionDate) {}
+
+    public record DocumentLinkView(String url, LocalDate setOn) {}
+
+    public record OpenRequestView(LocalDate askedOn, String note) {}
 
     public record TeacherItemView(UUID id, String text, LocalDate dueDate) {}
 
@@ -28,8 +33,8 @@ public final class ComponentViews {
     }
 
     public record TeacherComponent(String view, UUID id, UUID classId, String className, String subjectCode,
-            String subjectName, BriefSummary brief, List<SetupStage> stages, List<DateWarning> warnings)
-            implements ComponentView {}
+            String subjectName, BriefSummary brief, List<SetupStage> stages, List<DateWarning> warnings,
+            boolean requireLink) implements ComponentView {}
 
     public record RuleView(String key, String value) {}
 
@@ -37,7 +42,10 @@ public final class ComponentViews {
             LocalDate completionDate, int wordLimit, String wordsNotCounted, int imageLimit, String imageNote,
             List<RuleView> rules) {}
 
-    public record CheckpointView(String text, CheckpointState state, LocalDate signedOffOn) {}
+    public record AnswerView(LocalDate askedOn, String note, RequestOutcome outcome, LocalDate answeredOn, String teacherNote) {}
+
+    public record CheckpointView(UUID id, String text, CheckpointState state, LocalDate signedOffOn, OpenRequestView request,
+            List<AnswerView> answers) {}
 
     public record StudentItem(UUID id, String text, LocalDate dueDate, boolean done, LocalDate doneOn) {}
 
@@ -54,7 +62,8 @@ public final class ComponentViews {
     /** What an approved student sees (design §8.3). Nothing about other students, and no teacher warnings. */
     public record StudentComponent(String view, UUID id, String className, String subjectCode, String subjectName,
             int weightingPercent, int marksTotal, BriefDetail brief, String processNote, LocalDate today,
-            List<StudentStage> stages, List<SectionView> sections, List<MarkBandView> markBands) implements ComponentView {}
+            List<StudentStage> stages, List<SectionView> sections, List<MarkBandView> markBands, boolean requireLink,
+            DocumentLinkView documentLink) implements ComponentView {}
 
     public record MyComponent(UUID componentId, UUID classId, String className, String subjectCode, String subjectName,
             String briefTitle, LocalDate completionDate) {}

@@ -45,10 +45,11 @@ class StudentComponentViewTest extends PostgresIntegrationTest {
     private UUID component;
     private UUID draftItem;
     private UUID approvedStudent;
+    private ClassFixtures.World world;
 
     @BeforeEach
     void component() {
-        ClassFixtures.World world = fixtures.world();
+        world = fixtures.world();
         approvedStudent = world.approvedStudent();
         component = components.component(world.class1(), world.teacher1(), BIO);
         components.stageDate(component, components.stageId(BIO, 3), LocalDate.of(2026, 9, 25));
@@ -126,6 +127,34 @@ class StudentComponentViewTest extends PostgresIntegrationTest {
                 .andExpect(jsonPath("$.stages[2].checkpoint.state").value("SIGNED_OFF"))
                 .andExpect(jsonPath("$.stages[2].checkpoint.signedOffOn").value("2026-10-12"))
                 .andExpect(jsonPath("$.stages[3].checkpoint.signedOffOn").value(nullValue()));
+    }
+
+    @Test
+    void eachCheckpointCarriesItsIdItsOpenRequestAndItsAnswers() throws Exception {
+        UUID cp1 = components.checkpointId(BIO, 1);
+        ApiSession student = student();
+        student.post("/api/v1/components/" + component + "/checkpoints/" + cp1 + "/request", "{\"note\":\"page 2\"}");
+        jdbcTemplate.update("""
+                UPDATE signoff_request SET answered_by_user_id = ?, answered_at = now(), outcome = 'NOT_YET', teacher_note = 'add a hypothesis'
+                """, world.teacher1());
+        student.post("/api/v1/components/" + component + "/checkpoints/" + cp1 + "/request", "{\"note\":\"added it\"}");
+
+        student.get("/api/v1/components/" + component).andExpect(status().isOk())
+                .andExpect(jsonPath("$.requireLink").value(false))
+                .andExpect(jsonPath("$.documentLink").value(nullValue()))
+                .andExpect(jsonPath("$.stages[0].checkpoint.id").value(cp1.toString()))
+                .andExpect(jsonPath("$.stages[0].checkpoint.state").value("READY"))
+                .andExpect(jsonPath("$.stages[0].checkpoint.request.note").value("added it"))
+                .andExpect(jsonPath("$.stages[0].checkpoint.answers[0].outcome").value("NOT_YET"))
+                .andExpect(jsonPath("$.stages[0].checkpoint.answers[0].teacherNote").value("add a hypothesis"))
+                .andExpect(jsonPath("$.stages[0].checkpoint.answers[0].note").value("page 2"));
+    }
+
+    @Test
+    void theCurrentLinkIsOnThePage() throws Exception {
+        ApiSession student = student();
+        student.put("/api/v1/components/" + component + "/document-link", "{\"url\":\"https://docs.google.com/d/a\"}");
+        student.get("/api/v1/components/" + component).andExpect(jsonPath("$.documentLink.url").value("https://docs.google.com/d/a"));
     }
 
     private ApiSession student() throws Exception {

@@ -1,4 +1,6 @@
 import type { ProgressCell } from "@/lib/api/schemas";
+import Link from "next/link";
+
 import { formatCalendarDate } from "@/lib/app/component-setup";
 import { keepName, revokeName, type SignoffAction } from "@/lib/app/progress";
 
@@ -10,7 +12,8 @@ const GRID_BUTTON = "flex min-h-12 w-full flex-col items-start justify-center ga
 type CellProps = {
   layout: "grid" | "one";
   cell: ProgressCell;
-  names: { sign: string; undo: string; revoke: string };
+  names: { sign: string; undo: string; revoke: string; review?: string };
+  reviewHref?: string;
   busy: SignoffAction | null;
   recent: boolean;
   confirming: boolean;
@@ -24,7 +27,7 @@ type CellProps = {
  * one-stage view or on the student page the state is words beside a separate button. Every button's name says
  * the checkpoint and the student, because thirty buttons called "Sign off" would be useless to a screen reader.
  */
-export function CheckpointCell({ layout, cell, names, busy, recent, confirming, onSign, onUndo, onAsk }: CellProps) {
+export function CheckpointCell({ layout, cell, names, busy, recent, confirming, reviewHref, onSign, onUndo, onAsk }: CellProps) {
   const date = cell.signedOffOn ? <span data-private>{formatCalendarDate(cell.signedOffOn)}</span> : null;
 
   if (confirming) {
@@ -40,6 +43,17 @@ export function CheckpointCell({ layout, cell, names, busy, recent, confirming, 
         <Button type="button" variant="link" aria-label={names.undo} disabled={busy !== null} onClick={onUndo}
           className="min-h-11 px-1">{busy === "undo" ? BUSY.undo : "Undo"}</Button>
       </div>
+    );
+  }
+
+  if (cell.state === "READY") {
+    return layout === "grid" && reviewHref ? (
+      <Link href={reviewHref} aria-label={names.review} className={`${GRID_BUTTON} bg-app-ready-tint hover:bg-app-accent-tint`}>
+        <span className="text-app-small font-semibold text-app-ready">Ready</span>
+        <span className="text-app-small font-semibold text-app-accent underline underline-offset-3">Review</span>
+      </Link>
+    ) : (
+      <span className="text-app-small font-semibold text-app-ready">Ready for sign-off</span>
     );
   }
 

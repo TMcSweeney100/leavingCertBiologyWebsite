@@ -5,6 +5,7 @@ import { AppMain } from "@/components/app/app-main";
 import { ClassHeader } from "@/components/app/class-header";
 import { CreateComponentForm } from "@/components/app/create-component-form";
 import { ErrorPanel } from "@/components/app/error-panel";
+import { RequireLinkSwitch } from "@/components/app/require-link-switch";
 import { StageDatesForm } from "@/components/app/stage-dates-form";
 import { briefSummarySchema, classDetailSchema, teacherComponentSchema } from "@/lib/api/schemas";
 import { serverApi } from "@/lib/api/server";
@@ -44,7 +45,10 @@ export default async function ClassComponentPage({ params }: { params: Promise<{
       ) : (
         // The year view needs today's Dublin date; deriving it on the server keeps it off the
         // client's clock, the same rule the student pages follow.
-        <StageDatesForm component={body.data} today={toIsoDate(dublinToday())} />
+        <>
+          <RequireLinkSwitch componentId={body.data.id} requireLink={body.data.requireLink} />
+          <StageDatesForm component={body.data} today={toIsoDate(dublinToday())} />
+        </>
       )}
     </AppMain>
   );

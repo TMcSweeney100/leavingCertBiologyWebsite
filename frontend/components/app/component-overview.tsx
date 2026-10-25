@@ -2,6 +2,7 @@ import type { StudentComponent } from "@/lib/api/schemas";
 import { progress } from "@/lib/app/component-progress";
 import { formatCalendarDate } from "@/lib/app/component-setup";
 
+import { DocumentLinkCard } from "./document-link-card";
 import { StagesSection } from "./stages-section";
 import { card, eyebrow, lead, sectionTitle } from "./styles";
 
@@ -45,6 +46,8 @@ export function ComponentOverview({ component }: { component: StudentComponent }
         )}
       </section>
 
+      <DocumentLinkCard componentId={component.id} link={component.documentLink} requireLink={component.requireLink} />
+
       <p className={lead}>
         {`Stage dates are your class's plan, set by your teacher. The SEC's completion date is ${completion}: your finished coursework must be with your teacher by then.`}
       </p>
@@ -57,7 +60,7 @@ export function ComponentOverview({ component }: { component: StudentComponent }
         {/* Keyed on the server's current stage: if it moves on (a date rolls past, a
             teacher edits dates) between loads, `router.refresh()` should snap the open
             stage to the new "now" rather than preserve whatever a stale re-render kept. */}
-        <StagesSection key={p.current?.id ?? "none"} componentId={component.id} stages={component.stages} states={p.states} initialOpenId={p.current?.id ?? null} />
+        <StagesSection key={p.current?.id ?? "none"} componentId={component.id} stages={component.stages} states={p.states} initialOpenId={p.current?.id ?? null} link={component.documentLink} requireLink={component.requireLink} />
       </section>
 
       <div className="flex flex-col gap-10 lg:grid lg:grid-cols-2 lg:gap-x-10 lg:gap-y-10">

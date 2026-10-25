@@ -20,13 +20,13 @@ const states = { s1: "done", s2: "current", s3: "undated" } as const;
 
 describe("StagesSection", () => {
   it("opens only the current stage to start with", () => {
-    render(<StagesSection componentId="k1" stages={stages} states={states} initialOpenId="s2" />);
+    render(<StagesSection componentId="k1" stages={stages} states={states} initialOpenId="s2" link={null} requireLink={false} />);
     expect(document.getElementById("stage-s1-panel")).toHaveAttribute("aria-hidden", "true");
     expect(document.getElementById("stage-s2-panel")).toHaveAttribute("aria-hidden", "false");
   });
 
   it("opening a different stage closes the one that was open", async () => {
-    render(<StagesSection componentId="k1" stages={stages} states={states} initialOpenId="s2" />);
+    render(<StagesSection componentId="k1" stages={stages} states={states} initialOpenId="s2" link={null} requireLink={false} />);
     const rows = within(screen.getByTestId("stage-list"));
     await userEvent.click(rows.getByRole("button", { name: /Stage 1 · Stage name 1/ }));
     expect(document.getElementById("stage-s1-panel")).toHaveAttribute("aria-hidden", "false");
@@ -34,14 +34,14 @@ describe("StagesSection", () => {
   });
 
   it("closing the open stage by tapping it again leaves nothing open", async () => {
-    render(<StagesSection componentId="k1" stages={stages} states={states} initialOpenId="s2" />);
+    render(<StagesSection componentId="k1" stages={stages} states={states} initialOpenId="s2" link={null} requireLink={false} />);
     const rows = within(screen.getByTestId("stage-list"));
     await userEvent.click(rows.getByRole("button", { name: /Stage 2 · Stage name 2/ }));
     expect(document.getElementById("stage-s2-panel")).toHaveAttribute("aria-hidden", "true");
   });
 
   it("the strip navigator opens the tapped stage", async () => {
-    render(<StagesSection componentId="k1" stages={stages} states={states} initialOpenId="s2" />);
+    render(<StagesSection componentId="k1" stages={stages} states={states} initialOpenId="s2" link={null} requireLink={false} />);
     await userEvent.click(screen.getByRole("button", { name: /Stage 1, Done/ }));
     expect(document.getElementById("stage-s1-panel")).toHaveAttribute("aria-hidden", "false");
   });

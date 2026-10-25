@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
 import type { ClassSummary } from "@/lib/api/schemas";
+import { waitingBadge } from "@/lib/app/ready";
 
 import { card, pageTitle } from "./styles";
 import { subjectEdge } from "./subject";
@@ -12,7 +13,7 @@ const LEVEL = { HIGHER: "Higher", ORDINARY: "Ordinary", MIXED: "Mixed" } as cons
  * Roadmap §6.2 `/teach`: my classes with subject, name, year group, academic year, pending count.
  * Pack D-2: the amber badge appears only when requests are waiting, so the eye lands on those rows.
  */
-export function ClassList({ classes }: { classes: ClassSummary[] }) {
+export function ClassList({ classes, waiting = {} }: { classes: ClassSummary[]; waiting?: Readonly<Record<string, number>> }) {
   const create = (
     <Link href="/teach/classes/new" className={buttonVariants({ size: "form" })}>
       Create class
@@ -52,6 +53,11 @@ export function ClassList({ classes }: { classes: ClassSummary[] }) {
                   {[c.subjectName, `Year ${c.yearGroup}`, c.academicYear, c.level && LEVEL[c.level]].filter(Boolean).join(" · ")}
                 </p>
               </div>
+              {(waiting[c.id] ?? 0) > 0 && (
+                <span className="inline-flex flex-none items-center self-start rounded-full bg-app-ready py-[7px] px-[13px] text-app-meta font-semibold text-app-on-accent tabular-nums lg:self-auto">
+                  {waitingBadge(waiting[c.id])}
+                </span>
+              )}
               {c.pendingCount > 0 && (
                 <span className="inline-flex flex-none items-center gap-2 self-start rounded-full bg-app-attention py-[7px] pr-[13px] pl-2.5 text-app-meta font-semibold text-app-on-accent tabular-nums lg:self-auto">
                   <span className="font-mono text-app-lead font-bold">{c.pendingCount}</span>{" "}

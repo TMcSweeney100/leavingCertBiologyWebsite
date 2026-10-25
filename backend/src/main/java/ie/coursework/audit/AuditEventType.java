@@ -1,6 +1,6 @@
 package ie.coursework.audit;
 
-/** Every event the app records. Sign-off events arrived in Phase 4 (Undo records a revoke). */
+/** Every event the app records. Sign-off events arrived in Phase 4 (Undo records a revoke). Ready-for-signoff events arrived with the backlog's first feature. */
 public enum AuditEventType {
     SCHOOL_CREATED,
     USER_CREATED,
@@ -13,5 +13,9 @@ public enum AuditEventType {
     JOIN_CODE_ROTATED,
     JOIN_CODE_DISABLED,
     CHECKPOINT_SIGNED_OFF,
-    CHECKPOINT_SIGNOFF_REVOKED
+    CHECKPOINT_SIGNOFF_REVOKED,
+    DOCUMENT_LINK_SET,
+    SIGNOFF_REQUESTED,
+    SIGNOFF_REQUEST_WITHDRAWN,
+    SIGNOFF_REQUEST_ANSWERED
 }
