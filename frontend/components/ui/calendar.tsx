@@ -1,7 +1,8 @@
 "use client"
 
-// shadcn's base-nova Calendar (react-day-picker), restyled for the pilot app: --app-* tokens, 44px day cells at every
-// width (plan date-picker-drawer C-20), the Button's focus outline, light only.
+// shadcn's base-nova Calendar (react-day-picker), restyled for the pilot app: --app-* tokens, day cells 44 x 48px,
+// 60 x 48px from sm: up (plan date-picker-drawer C-28), the selection azure (--app-pick, C-29), the Button's focus
+// outline, light only.
 
 import * as React from "react"
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
@@ -15,7 +16,7 @@ function Calendar({
   classNames,
   showOutsideDays = true,
   captionLayout = "label",
-  buttonVariant = "ghost",
+  buttonVariant = "outline",
   locale,
   formatters,
   components,
@@ -29,7 +30,7 @@ function Calendar({
     <DayPicker
       showOutsideDays={showOutsideDays}
       className={cn(
-        "group/calendar bg-app-surface p-2 [--cell-radius:var(--app-radius-inner)] [--cell-size:--spacing(11)]",
+        "group/calendar bg-app-surface [--cell-radius:var(--app-radius-inner)] [--cell-size:--spacing(11)] sm:[--cell-size:--spacing(15)]",
         className
       )}
       captionLayout={captionLayout}
@@ -40,55 +41,48 @@ function Calendar({
       }}
       classNames={{
         root: cn("w-fit", defaultClassNames.root),
-        months: cn("relative flex flex-col gap-4 md:flex-row", defaultClassNames.months),
-        month: cn("flex w-full flex-col gap-4", defaultClassNames.month),
-        nav: cn("absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1", defaultClassNames.nav),
+        months: cn("relative flex flex-col", defaultClassNames.months),
+        month: cn("flex w-full flex-col gap-1.5", defaultClassNames.month),
+        nav: cn("absolute top-0 right-0 flex items-center gap-2", defaultClassNames.nav),
         button_previous: cn(
           buttonVariants({ variant: buttonVariant }),
-          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
+          "size-11 p-0 select-none aria-disabled:opacity-40",
           defaultClassNames.button_previous
         ),
         button_next: cn(
           buttonVariants({ variant: buttonVariant }),
-          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
+          "size-11 p-0 select-none aria-disabled:opacity-40",
           defaultClassNames.button_next
         ),
-        month_caption: cn(
-          "flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)",
-          defaultClassNames.month_caption
-        ),
+        month_caption: cn("flex h-11 items-center", defaultClassNames.month_caption),
         dropdowns: cn(
           "flex h-(--cell-size) w-full items-center justify-center gap-1.5 text-app-small font-semibold",
           defaultClassNames.dropdowns
         ),
         dropdown_root: cn("relative rounded-(--cell-radius)", defaultClassNames.dropdown_root),
         dropdown: cn("absolute inset-0 bg-app-surface opacity-0", defaultClassNames.dropdown),
-        caption_label: cn(
-          "font-semibold text-app-ink select-none",
+        caption_label:
           captionLayout === "label"
-            ? "text-app-base"
-            : "flex items-center gap-1 rounded-(--cell-radius) text-app-small [&>svg]:size-3.5 [&>svg]:text-app-muted",
-          defaultClassNames.caption_label
-        ),
+            ? `font-heading text-app-title font-bold tracking-[-.015em] text-app-ink select-none ${defaultClassNames.caption_label}`
+            : cn(
+                "flex items-center gap-1 rounded-(--cell-radius) text-app-small font-semibold text-app-ink select-none [&>svg]:size-3.5 [&>svg]:text-app-muted",
+                defaultClassNames.caption_label
+              ),
         month_grid: cn("w-full border-collapse", defaultClassNames.month_grid),
-        weekdays: cn("flex", defaultClassNames.weekdays),
-        weekday: cn(
-          "flex-1 rounded-(--cell-radius) font-mono text-app-label font-bold text-app-muted select-none",
-          defaultClassNames.weekday
-        ),
-        week: cn("mt-1 flex w-full", defaultClassNames.week),
+        weekdays: cn("flex gap-2", defaultClassNames.weekdays),
+        weekday: `w-(--cell-size) flex-none font-mono text-app-label font-bold text-app-muted select-none ${defaultClassNames.weekday}`,
+        week: cn("mt-2 flex w-full gap-2", defaultClassNames.week),
         week_number_header: cn("w-(--cell-size) select-none", defaultClassNames.week_number_header),
         week_number: cn("text-app-label text-app-muted select-none", defaultClassNames.week_number),
         day: cn(
-          "group/day relative aspect-square h-full w-full rounded-(--cell-radius) p-0 text-center select-none",
+          "group/day relative h-12 w-(--cell-size) flex-none rounded-(--cell-radius) p-0 text-center select-none",
           defaultClassNames.day
         ),
         range_start: cn("rounded-l-(--cell-radius) bg-app-inset", defaultClassNames.range_start),
         range_middle: cn("rounded-none", defaultClassNames.range_middle),
         range_end: cn("rounded-r-(--cell-radius) bg-app-inset", defaultClassNames.range_end),
-        today: cn("rounded-(--cell-radius) font-bold text-app-ink [&_button]:bg-app-inset", defaultClassNames.today),
+        today: cn("", defaultClassNames.today),
         outside: cn("text-app-muted aria-selected:text-app-muted", defaultClassNames.outside),
-        disabled: cn("text-app-disabled", defaultClassNames.disabled),
         hidden: cn("invisible", defaultClassNames.hidden),
         ...classNames,
       }}
@@ -141,10 +135,11 @@ function CalendarDayButton({
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
       className={cn(
-        "relative isolate z-10 flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-0.5 border-0 text-app-base leading-none font-normal tabular-nums",
+        "group/day-button relative isolate z-10 flex size-full flex-col items-center justify-start gap-1 border-0 pt-1.5 text-app-base leading-5 font-normal tabular-nums",
         "group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:outline-2 group-data-[focused=true]/day:outline-offset-2 group-data-[focused=true]/day:outline-ring",
-        "data-[range-end=true]:bg-app-accent data-[range-end=true]:text-app-on-accent data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-app-inset data-[range-start=true]:bg-app-accent data-[range-start=true]:text-app-on-accent",
-        "data-[selected-single=true]:bg-app-accent data-[selected-single=true]:text-app-on-accent",
+        "data-[run=true]:bg-app-pick-tint data-[selected-single=true]:bg-app-pick data-[selected-single=true]:text-app-on-accent data-[selected-single=true]:hover:bg-app-pick-hover",
+        "aria-disabled:cursor-not-allowed aria-disabled:text-app-disabled aria-disabled:hover:bg-transparent aria-disabled:bg-[repeating-linear-gradient(135deg,var(--app-ground)_0_5px,var(--app-inset)_5px_6px)]",
+        "data-[end=true]:after:absolute data-[end=true]:after:inset-y-1 data-[end=true]:after:-right-[5px] data-[end=true]:after:w-[3px] data-[end=true]:after:rounded-sm data-[end=true]:after:bg-app-accent",
         defaultClassNames.day,
         className
       )}

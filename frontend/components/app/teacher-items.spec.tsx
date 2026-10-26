@@ -135,8 +135,11 @@ describe("TeacherItems", () => {
     await userEvent.type(screen.getByRole("textbox", { name: "Item" }), "Lab notebooks in");
     await userEvent.click(screen.getByLabelText("Date (optional)"));
     const dialog = await screen.findByRole("dialog", { name: "Choose the date for “Lab notebooks in”" });
+    // No date yet, so it opens on today's month, September; the arrow goes on to October.
+    await userEvent.click(within(dialog).getByRole("button", { name: "October 2026" }));
     expect(within(dialog).getByRole("button", { name: "Friday 16 October 2026: Stage 4" })).toBeInTheDocument();
     await userEvent.click(within(dialog).getByRole("button", { name: "Friday 23 October 2026" }));
+    await userEvent.click(within(dialog).getByRole("button", { name: "Use this date" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
     expect(screen.getByLabelText("Date (optional)")).toHaveValue("2026-10-23");
     await userEvent.click(screen.getByRole("button", { name: "Save item" }));

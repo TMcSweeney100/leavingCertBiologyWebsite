@@ -1,5 +1,6 @@
 "use client";
 
+import { CalendarDays } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useMemo, useState } from "react";
 
@@ -41,6 +42,10 @@ export function TeacherItems({
   const [busy, setBusy] = useState(false);
   const items = useMemo(() => letteredItems(stages), [stages]);
   const base = `/components/${componentId}/teacher-items`;
+  const editingItem = items.find((item) => item.id === editing);
+  const formEyebrow = editingItem
+    ? `Item ${editingItem.letter} · ${editingItem.stageLabel}`
+    : `New item · ${stages.find((s) => s.id === stageId)?.label ?? ""}`;
 
   async function run(action: () => Promise<unknown>, after: () => void) {
     setBusy(true);
@@ -101,6 +106,9 @@ export function TeacherItems({
           {(control) => (
             <DatePickerDrawer
               title={text.trim() ? `Choose the date for “${text.trim()}”` : "Choose the date for the new item"}
+              eyebrow={formEyebrow}
+              help="Nothing is saved until you press Save item."
+              picking={{ kind: "item" }}
               value={dueDate}
               marks={calendar.marks}
               completionDate={calendar.completionDate}
@@ -108,14 +116,17 @@ export function TeacherItems({
               onPick={setDueDate}
             >
               {(opener) => (
-                <input
-                  {...control}
-                  {...opener}
-                  type="date"
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
-                  className={`${control.className} cursor-pointer [&::-webkit-calendar-picker-indicator]:hidden`}
-                />
+                <span className="relative block">
+                  <input
+                    {...control}
+                    {...opener}
+                    type="date"
+                    value={dueDate}
+                    onChange={(e) => setDueDate(e.target.value)}
+                    className={`${control.className} cursor-pointer pr-10 [&::-webkit-calendar-picker-indicator]:hidden`}
+                  />
+                  <CalendarDays aria-hidden="true" className="pointer-events-none absolute top-1/2 right-0 size-[18px] -translate-y-1/2 text-app-accent" />
+                </span>
               )}
             </DatePickerDrawer>
           )}

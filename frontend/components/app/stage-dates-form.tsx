@@ -1,5 +1,6 @@
 "use client";
 
+import { CalendarDays } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FormEvent, Fragment, useEffect, useMemo, useState } from "react";
 
@@ -19,6 +20,7 @@ import { type DateMark, dateMarks } from "@/lib/app/date-marks";
 
 import { DatePickerDrawer } from "./date-picker-drawer";
 import { ErrorPanel } from "./error-panel";
+import { MarkTag } from "./mark-tag";
 import { Notice } from "./notice";
 import { lead, sectionTitle } from "./styles";
 import { TeacherItems } from "./teacher-items";
@@ -302,6 +304,9 @@ function StageDateRow({
   const label = stage.label ?? stage.name;
   const problem = refusal ?? movedMessage;
   const noteId = problem ? `${id}-note` : undefined;
+  // C-33: a date typed or picked but not saved yet is dashed, and the line under the box says so. Red wins.
+  const unsaved = !refusal && value !== "" && value !== (stage.dueDate ?? "");
+  const whenId = `${id}-when`;
   const tone = refusal
     ? "bg-app-error-tint shadow-[inset_2px_0_0_var(--app-error)]"
     : attention
@@ -340,6 +345,14 @@ function StageDateRow({
         <label htmlFor={id} className="sr-only">{`${label} date`}</label>
         <DatePickerDrawer
           title={`Choose the ${label} date`}
+          eyebrow={
+            <>
+              <MarkTag kind="stage" saved={!unsaved}>{`S${stage.ordinal}`}</MarkTag>
+              {stage.name}
+            </>
+          }
+          help="Nothing is saved until you press Save dates."
+          picking={{ kind: "stage", ordinal: stage.ordinal }}
           value={value}
           marks={marks}
           completionDate={max}
@@ -347,21 +360,30 @@ function StageDateRow({
           onPick={onChange}
         >
           {(opener) => (
-            <input
-              {...opener}
-              id={id}
-              type="date"
-              max={max}
-              value={value}
-              onChange={(e) => onChange(e.target.value)}
-              aria-invalid={refusal ? true : undefined}
-              aria-describedby={noteId}
-              className={`min-h-11 w-full cursor-pointer rounded-app-control border bg-app-surface px-3 py-2.5 text-app-base text-app-ink md:min-h-0 md:w-[176px] md:px-2.5 md:py-2 [&::-webkit-calendar-picker-indicator]:hidden ${inputBorder}`}
-            />
+            <span className="relative block md:inline-block">
+              <input
+                {...opener}
+                id={id}
+                type="date"
+                max={max}
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                aria-invalid={refusal ? true : undefined}
+                aria-describedby={noteId ?? (unsaved ? whenId : undefined)}
+                className={`min-h-11 w-full cursor-pointer rounded-app-control border bg-app-surface py-2.5 pr-10 pl-3 text-app-base text-app-ink hover:border-app-accent hover:bg-app-accent-tint md:min-h-0 md:w-[176px] md:py-2 md:pl-2.5 [&::-webkit-calendar-picker-indicator]:hidden ${unsaved ? "border-dashed border-app-accent" : inputBorder}`}
+              />
+              <CalendarDays aria-hidden="true" className="pointer-events-none absolute top-1/2 right-2.5 size-[18px] -translate-y-1/2 text-app-accent" />
+            </span>
           )}
         </DatePickerDrawer>
-        <span className={`text-app-small md:text-right ${refusal ? "text-app-error-hover" : "text-app-muted"}`}>
+        <span id={whenId} className={`text-app-small md:text-right ${refusal ? "text-app-error-hover" : "text-app-muted"}`}>
           {value ? weekdayDate(value) : "No date yet"}
+          {unsaved && (
+            <>
+              {" · "}
+              <strong className="font-semibold text-app-ink">not saved</strong>
+            </>
+          )}
         </span>
       </div>
     </div>

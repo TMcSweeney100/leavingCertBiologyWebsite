@@ -180,13 +180,22 @@ describe("StageDatesForm", () => {
     await typeDate("Stage 4 date", "2026-10-16");
     await userEvent.click(screen.getByLabelText("Stage 5 date"));
     const dialog = await screen.findByRole("dialog", { name: "Choose the Stage 5 date" });
-    expect(within(dialog).getByRole("button", { name: "Friday 16 October 2026: Stage 4 (not saved)" })).toBeInTheDocument();
+    // No date yet, so it opens on today's month, September; the arrow goes on to October.
     expect(within(dialog).getByRole("button", { name: "Friday 25 September 2026: Stage 3" })).toBeInTheDocument();
-    expect(within(dialog).getByRole("button", { name: "Friday 26 February 2027: the completion date" })).toBeInTheDocument();
+    await userEvent.click(within(dialog).getByRole("button", { name: "October 2026" }));
+    expect(within(dialog).getByRole("button", { name: "Friday 16 October 2026: Stage 4 (not saved)" })).toBeInTheDocument();
     await userEvent.click(within(dialog).getByRole("button", { name: "Friday 23 October 2026" }));
+    await userEvent.click(within(dialog).getByRole("button", { name: "Use this date" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
     expect(screen.getByLabelText("Stage 5 date")).toHaveValue("2026-10-23");
     expect(api.send).not.toHaveBeenCalled();
+  });
+
+  it("says on the row that a typed date isn't saved yet", async () => {
+    render5();
+    await typeDate("Stage 4 date", "2026-10-16");
+    expect(screen.getByLabelText("Stage 4 date")).toHaveAccessibleDescription("Fri 16 Oct 2026 · not saved");
+    expect(screen.getByLabelText("Stage 3 date")).not.toHaveAttribute("aria-describedby");
   });
 
   it("puts a date that isn't saved yet on the year view, dashed", async () => {
