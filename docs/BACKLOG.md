@@ -19,7 +19,7 @@ A diff that fits in one sentence skips step 2.
 |---|---|---|---|
 | 1 | `source-builder` | The student's sources become a copyable in-text citation and reference list | built on `pilot/source-builder`, not merged: self-review, changes doc and PR still to do (plan: docs/superpowers/plans/2026-10-25-source-builder.md) |
 | 2 | `ai-use-record` | The student's AI uses become a reference entry and the report's AI appendix block | built on `pilot/source-builder` with source-builder, not merged: self-review, changes doc and PR still to do (plan: docs/superpowers/plans/2026-10-25-ai-use-record.md) |
-| 3 | `date-picker-drawer` | Every date on the teacher's Component tab opens a right-hand calendar showing the component's other dates, saved or not | built on pilot/source-builder's working tree (uncommitted), not merged: self-review, changes doc and PR still to do (intent: docs/intent/date-picker-drawer.md; plan: docs/superpowers/plans/2026-10-25-date-picker-drawer.md) |
+| 3 | `date-picker-drawer` | Every date on the teacher's Component tab opens a right-hand calendar showing the component's other dates, saved or not | Part 1 built; Part 2 (pack D-11) built, not merged: self-review, changes doc and PR still to do (intent: docs/intent/date-picker-drawer.md; plan: docs/superpowers/plans/2026-10-25-date-picker-drawer.md) |
 
 ### 1. Source builder (`source-builder`)
 

@@ -181,8 +181,11 @@ export function DatePickerDrawer({
                 {readout.gaps.length > 0 && (
                   <p className="flex flex-wrap gap-x-3 gap-y-0.5">
                     {readout.gaps.map((g) => (
-                      <span key={g.rest}>
-                        <b className={`font-semibold ${g.run ? "text-app-pick" : "text-app-ink"}`}>{g.amount}</b> {g.rest}
+                      <span key={g.rest} className="inline-flex items-center gap-1.5">
+                        <MarkTag kind={g.mark.kind} saved={g.mark.saved}>{g.mark.short}</MarkTag>
+                        <span>
+                          <b className={`font-semibold ${g.run ? "text-app-pick" : "text-app-ink"}`}>{g.amount}</b> {g.rest}
+                        </span>
                       </span>
                     ))}
                   </p>

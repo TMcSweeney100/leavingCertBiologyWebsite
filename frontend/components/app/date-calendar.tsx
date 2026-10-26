@@ -9,6 +9,7 @@ import { type DateMark, dayName, isoToLocalDate, localDateToIso } from "@/lib/ap
 import { MarkTag } from "./mark-tag";
 
 const MONTH = new Intl.DateTimeFormat("en-IE", { month: "long", year: "numeric" });
+const WEEKDAY = new Intl.DateTimeFormat("en-IE", { weekday: "short" });
 const TODAY_DISC =
   "-mt-[3px] grid size-[26px] place-items-center rounded-full bg-app-today font-bold text-app-ink shadow-[inset_0_0_0_1.5px_var(--app-today-ring)]";
 
@@ -115,6 +116,7 @@ export function DateCalendar({
         labelPrevious: (m) => (m ? MONTH.format(m) : "No earlier month"),
         labelNext: (m) => (m ? MONTH.format(m) : "No later month"),
       }}
+      formatters={{ formatWeekdayName: (date) => WEEKDAY.format(date) }}
       components={{ DayButton: MarkedDay }}
       className="w-full"
     />

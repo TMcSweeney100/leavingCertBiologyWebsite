@@ -51,16 +51,17 @@ test("teacher sets up a Biology component", async ({ page: teacher }) => {
   await teacher.reload();
   await expect(teacher.getByLabel("Stage 4 date", { exact: true })).toHaveValue("2026-10-16");
 
-  // The date drawer (date-picker-drawer): a click on a date box opens it, an unsaved date shows on
-  // another stage's calendar, a pick fills the box, and focus comes back to the box. Put the dates back
-  // after, so the rest of the journey is unchanged.
+  // The date drawer (date-picker-drawer): a click on a date box opens it, a tap on a day reads the gap to an
+  // unsaved stage, Use this date fills the box, and focus comes back to the box. Put the dates back after,
+  // so the rest of the journey is unchanged.
   await teacher.getByLabel("Stage 5 date", { exact: true }).fill("2026-12-11");
   await teacher.getByLabel("Stage 6 date", { exact: true }).click();
   const drawer = teacher.getByRole("dialog", { name: "Choose the Stage 6 date" });
-  await expect(drawer.getByRole("button", { name: "Friday 11 December 2026: Stage 5 (not saved)" })).toBeVisible();
   await expect(drawer.getByRole("button", { name: "Friday 22 January 2027: Stage 6" })).toBeFocused();
   await expectAccessible(teacher);
   await drawer.getByRole("button", { name: "Friday 29 January 2027" }).click();
+  await expect(drawer).toContainText("7 weeks after Stage 5 (not saved)");
+  await drawer.getByRole("button", { name: "Use this date" }).click();
   await expect(drawer).toHaveCount(0);
   await expect(teacher.getByLabel("Stage 6 date", { exact: true })).toHaveValue("2027-01-29");
   await expect(teacher.getByLabel("Stage 6 date", { exact: true })).toBeFocused();

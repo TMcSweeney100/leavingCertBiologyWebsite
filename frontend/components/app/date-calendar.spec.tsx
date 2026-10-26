@@ -37,6 +37,7 @@ describe("DateCalendar", () => {
   it("shows one month, with arrows named for the month they go to", async () => {
     const { onMonth } = draw();
     expect(screen.getByRole("grid", { name: "October 2026" })).toBeInTheDocument();
+    for (const day of ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]) expect(screen.getByText(day)).toBeInTheDocument();
     expect(screen.queryByRole("grid", { name: "November 2026" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "No earlier month" })).toHaveAttribute("aria-disabled", "true");
     await userEvent.click(screen.getByRole("button", { name: "November 2026" }));
