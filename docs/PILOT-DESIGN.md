@@ -394,7 +394,7 @@ log_visibility_change (entry_id, visible, changed_at)
 
 **What they produce:**
 - **Sources:** an in-text citation and a reference-list entry, shaped like the NCCA's own examples. No formal referencing style is required, so none is enforced.
-- **AI use:** a reference-list entry and the appendix block for the report.
+- **AI use:** an in-text citation and a reference-list entry (NCCA Appendix 1), and the appendix block (SEC Appendix 2), on the Sources page (ai-use-record, 25 Oct 2026).
 
 The NCCA's example strings become the formatter's test fixtures.
 
@@ -540,7 +540,7 @@ If the API is down, the proxy returns its own problem response rather than a bla
 
 | Layer | What |
 |---|---|
-| Domain (JUnit, no Spring) | The completion-date rule; "behind" and the leader-view counts; AI-appendix formatting against the NCCA's example strings (citation formatting moved to `node:test`, `lib/app/citation.test.ts`: source-builder S-6, 25 Oct 2026); the log revision rules |
+| Domain (JUnit, no Spring) | The completion-date rule; "behind" and the leader-view counts; citation and AI-appendix formatting are `node:test` (`lib/app/citation.test.ts`, `lib/app/ai-appendix.test.ts`: source-builder S-6, ai-use-record A-7; 25 Oct 2026), with `CitationExamplesSourcesTest` proving the NCCA and SEC strings they quote are on their pages; the log revision rules |
 | Database (Testcontainers, Postgres 18) | Both triggers (completion date, published-version structure); content migrations load; every checkpoint and prompt has a `source_ref`; each version's mark bands add up to `marks_total` |
 | Authorisation | One test class per role, written before the endpoints. Each tries to reach something out of scope: another teacher's class, another student's log, a hidden entry's body, a school the leader doesn't belong to, and any student's `personal_item` rows from a teacher or leader session. |
 | Frontend | The existing `node --test` suite for `lib/`; the word checker makes no network request; no class slug collides with an app route |

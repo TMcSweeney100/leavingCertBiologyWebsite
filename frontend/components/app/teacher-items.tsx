@@ -7,7 +7,9 @@ import { Button } from "@/components/ui/button";
 import { api, ApiError } from "@/lib/api/client";
 import { teacherItemSchema } from "@/lib/api/schemas";
 import { formatCalendarDate, letteredItems, type StageLike } from "@/lib/app/component-setup";
+import type { DateMark } from "@/lib/app/date-marks";
 
+import { DatePickerDrawer } from "./date-picker-drawer";
 import { ErrorPanel } from "./error-panel";
 import { Field, FieldGroup } from "./field";
 import { lead, sectionTitle } from "./styles";
@@ -19,7 +21,16 @@ import { lead, sectionTitle } from "./styles";
  *
  * Items save one at a time, matching their endpoints: they are outside the stage-dates batch.
  */
-export function TeacherItems({ componentId, stages }: { componentId: string; stages: ReadonlyArray<StageLike> }) {
+export function TeacherItems({
+  componentId,
+  stages,
+  calendar,
+}: {
+  componentId: string;
+  stages: ReadonlyArray<StageLike>;
+  /** The stage form's marks (from its draft), so an item's calendar shows unsaved stage dates too. */
+  calendar: { marks: ReadonlyArray<DateMark>; completionDate: string; today: string };
+}) {
   const router = useRouter();
   const [editing, setEditing] = useState<string | "new" | null>(null);
   const [text, setText] = useState("");
@@ -87,7 +98,27 @@ export function TeacherItems({ componentId, stages }: { componentId: string; sta
           </Field>
         )}
         <Field id="item-date" label="Date (optional)" help="An item with no date keeps a letter, but stays off the line and the calendar.">
-          {(control) => <input {...control} type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />}
+          {(control) => (
+            <DatePickerDrawer
+              title={text.trim() ? `Choose the date for “${text.trim()}”` : "Choose the date for the new item"}
+              value={dueDate}
+              marks={calendar.marks}
+              completionDate={calendar.completionDate}
+              today={calendar.today}
+              onPick={setDueDate}
+            >
+              {(opener) => (
+                <input
+                  {...control}
+                  {...opener}
+                  type="date"
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                  className={`${control.className} cursor-pointer [&::-webkit-calendar-picker-indicator]:hidden`}
+                />
+              )}
+            </DatePickerDrawer>
+          )}
         </Field>
       </FieldGroup>
       <div className="flex flex-wrap gap-2">

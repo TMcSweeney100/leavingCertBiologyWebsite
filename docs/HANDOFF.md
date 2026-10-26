@@ -4,6 +4,24 @@ Rewritten at the end of every session: where things stand, what's half-done, wha
 
 **Standing rule (16 Sep 2026):** `docs/ARCHITECTURE.md` describes the code as built. When a session changes anything it describes (a filter, a pattern, an env var, a file's job), it fixes that section in the same commit, and at the end of the session checks it for anything else the session made false. A wrong map is worse than none.
 
+## Date picker drawer (25 Oct 2026): built on `pilot/source-builder`'s working tree, uncommitted, not merged
+
+- **Plan `docs/superpowers/plans/2026-10-25-date-picker-drawer.md` (Tasks 1-8) is built, uncommitted for Tim to review and push.** Task 0 (its own branch from `pilotMain`) was skipped at Tim's request, so the files sit next to the uncommitted AI-use record. Clicking any stage date box or the item form's date box opens a right-hand drawer (Alt+Down from the keyboard; typing still works) (`DatePickerDrawer` → `DateCalendar` → shadcn Calendar, react-day-picker pinned at 10.0.2) showing every stage date (unsaved ones dashed, "(not saved)" in the name), dated items, today and the completion date, with later days disabled. The year view reads the draft. No backend change.
+- **Deviation:** Playwright's `getByLabel` matches substrings and `aria-label`, so `getByLabel("Stage 6 date")` also found the drawer's title "Choose the Stage 6 date" and, before C-21, a separate trigger button. The 11 `getByLabel("Stage N date")` calls in `phase2`, `phase4` and `ready-for-signoff` e2e now pass `{ exact: true }`. C-9's "every e2e step keeps passing unchanged" was wrong.
+- **Not done from the plan:** `npm uninstall cn`. The npm `cn` package and `components/ui/dialog.tsx` (nothing imports it, created 17:31) came from an earlier `shadcn add dialog`; `dialog.tsx` imports `cn` from "cn" and uses `size="icon-sm"`, which Button doesn't have, so **`make verify` fails at typecheck on `dialog.tsx` until it is fixed or deleted.**
+- **Verification, with `dialog.tsx` moved aside for the run:** backend 542 tests, 0 failures; lint clean; typecheck clean; 207 `node:test`; 52 Vitest files, 324 specs; build clean; `make e2e` 34 passed (17 laptop, 17 phone), axe clean with the drawer open.
+- **UI checklist (Task 8 Step 4) not checked by eye:** 390/1140px drawer width, keyboard-only arrows across months, 200% zoom, crowded days, Chrome's hidden native icon. The e2e only proves the round trip and axe.
+- **Tim: confirm C-9 to C-20.** C-21 (no "Choose on calendar" button: clicking the date box opens the drawer) was Tim's call after review; the D-11 prompt is updated to match. **Not checked on a real phone:** that tapping the box opens our drawer and not the browser's own date wheel (`onMouseDown` prevents focus; Playwright's phone project only emulates touch in Chromium).
+- **Still to do:** `/self-review` in a fresh session, `write-changes` (`docs/changes/date-picker-drawer.md`), then the PR into `pilotMain`. `docs/design/prompts/D-11-date-picker-drawer.md` is ready if a design pack is wanted.
+
+## AI-use record (25 Oct 2026): built on `pilot/source-builder` with the source builder, uncommitted
+
+- **Plan `docs/superpowers/plans/2026-10-25-ai-use-record.md` (Tasks 1-8) is built, left uncommitted for Tim to review.** AI uses are in the Sources page's reference list with an "AI use" chip and a Copy citation each, flagged when they have no share link and no prompt; below it an "AI use appendix" section copies as a four-column table (SEC Appendix 2) with prompts and share links under each row. The greyed AI use tab is gone. No backend production change.
+- **Verification:** `make verify` exit 0; `make e2e` 34 passed. `AppCopySourcesTest`'s new appendix-sentence case was bitten once by hand (found on `[]`).
+- **Not checked:** the page in a browser (chip, flag, 375px and laptop layout), and Copy appendix pasted into Google Docs (plan Task 7 Step 4), and the UI checklist by eye.
+- **Tim: confirm A-7 to A-18** in the plan's second decisions table. Risk: diff SEC Appendix 2 when the 2026-27 rules edition is out.
+- **Still to do:** `/self-review` in a fresh session, `write-changes` (`docs/changes/ai-use-record.md`), then the PR (shared with source-builder).
+
 ## Source builder (25 Oct 2026): built on `pilot/source-builder`, not merged, not pushed
 
 - **Plan `docs/superpowers/plans/2026-10-25-source-builder.md` (Tasks 1-9) is built.** Students get a Sources tab (`/components/[id]/sources`) listing each logged source as an in-text citation and a reference, with Copy citation and Copy reference list, and the source form shows the same output live, flagging missing details. No backend change; `CitationExamplesSourcesTest` and the new `AppCopySourcesTest` case prove the NCCA strings are on their pages (each bitten once by hand).

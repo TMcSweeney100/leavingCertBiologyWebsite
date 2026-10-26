@@ -33,14 +33,14 @@ test("teacher sets up a Biology component", async ({ page: teacher }) => {
   await expect(teacher.getByRole("button", { name: "Save dates" })).toBeVisible();
   await expectAccessible(teacher);
 
-  await teacher.getByLabel("Stage 6 date").fill("2027-03-05");
+  await teacher.getByLabel("Stage 6 date", { exact: true }).fill("2027-03-05");
   await teacher.getByRole("button", { name: "Save dates" }).click();
   await expect(teacher.getByRole("alert").filter({ hasText: "Stage 6 is after the completion date, 26 Feb 2027" })).toBeVisible();
   await expectAccessible(teacher);
 
-  await teacher.getByLabel("Stage 6 date").fill("2027-01-22");
-  await teacher.getByLabel("Stage 4 date").fill("2026-10-16");
-  await teacher.getByLabel("Stage 5 date").fill("2026-12-09");
+  await teacher.getByLabel("Stage 6 date", { exact: true }).fill("2027-01-22");
+  await teacher.getByLabel("Stage 4 date", { exact: true }).fill("2026-10-16");
+  await teacher.getByLabel("Stage 5 date", { exact: true }).fill("2026-12-09");
   // Wait for the PUT itself to settle before reloading: a reload while it's still in flight can
   // cancel the request, losing the save (seen flaky on the phone project without this).
   await Promise.all([
@@ -49,7 +49,23 @@ test("teacher sets up a Biology component", async ({ page: teacher }) => {
   ]);
   await expect(teacher.getByRole("alert").filter({ hasText: "completion date" })).toHaveCount(0);
   await teacher.reload();
-  await expect(teacher.getByLabel("Stage 4 date")).toHaveValue("2026-10-16");
+  await expect(teacher.getByLabel("Stage 4 date", { exact: true })).toHaveValue("2026-10-16");
+
+  // The date drawer (date-picker-drawer): a click on a date box opens it, an unsaved date shows on
+  // another stage's calendar, a pick fills the box, and focus comes back to the box. Put the dates back
+  // after, so the rest of the journey is unchanged.
+  await teacher.getByLabel("Stage 5 date", { exact: true }).fill("2026-12-11");
+  await teacher.getByLabel("Stage 6 date", { exact: true }).click();
+  const drawer = teacher.getByRole("dialog", { name: "Choose the Stage 6 date" });
+  await expect(drawer.getByRole("button", { name: "Friday 11 December 2026: Stage 5 (not saved)" })).toBeVisible();
+  await expect(drawer.getByRole("button", { name: "Friday 22 January 2027: Stage 6" })).toBeFocused();
+  await expectAccessible(teacher);
+  await drawer.getByRole("button", { name: "Friday 29 January 2027" }).click();
+  await expect(drawer).toHaveCount(0);
+  await expect(teacher.getByLabel("Stage 6 date", { exact: true })).toHaveValue("2027-01-29");
+  await expect(teacher.getByLabel("Stage 6 date", { exact: true })).toBeFocused();
+  await teacher.getByLabel("Stage 6 date", { exact: true }).fill("2027-01-22");
+  await teacher.getByLabel("Stage 5 date", { exact: true }).fill("2026-12-09");
 
   await teacher.getByRole("button", { name: "Add item", exact: true }).click();
   await teacher.getByRole("textbox", { name: "Item" }).fill("Full draft in for feedback");

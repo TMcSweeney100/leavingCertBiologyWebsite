@@ -14,6 +14,7 @@ const buttonVariants = cva(
         default:
           "bg-primary text-primary-foreground hover:bg-app-accent-hover disabled:bg-app-inset disabled:text-app-muted",
         outline: "border-app-field-border bg-app-surface text-app-copy hover:bg-app-inset disabled:opacity-60",
+        ghost: "bg-transparent text-app-ink hover:bg-app-inset disabled:opacity-60",
         destructive:
           "border-app-error/40 bg-app-surface text-app-error-hover hover:bg-app-error-tint disabled:opacity-60",
         confirmDestructive: "bg-app-error text-app-on-accent hover:bg-app-error-hover disabled:opacity-60",

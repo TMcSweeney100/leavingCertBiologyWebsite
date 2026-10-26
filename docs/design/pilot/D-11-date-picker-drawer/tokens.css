@@ -1,0 +1,59 @@
+/* Pack D-11 — the date picker drawer. Additions only, on top of D-1 to D-10.
+   No --bipi-* value is changed. Contrast is the WCAG 2.x ratio, measured against
+   #FFFFFF unless noted. Text pairs need 4.5:1; marks, borders that carry meaning
+   and focus rings 3:1. No colour here is the only carrier of anything: every mark
+   also has a shape and a word (NOTES.md, "Marks"). */
+
+:root {
+  /* ── Your pick ─────────────────────────────────────────────────────────────
+     A clear azure, the drawer's one new hue. It means "the date you're about to
+     use" and nothing else: the picked day, the pin and its run on the line, the
+     footer's date and the gap to the stage before. Chosen at hue 204°, clear of
+     navy (219°, and 1.93:1 apart in lightness), BiPi blue (225°), Biology teal
+     (187°), amber, red and green. */
+  --app-pick: #0A6AA8;          /* 5.77:1; white on it 5.77:1; 5.43:1 on --app-ground;
+                                   5.03:1 on --app-pick-tint */
+  --app-pick-hover: #08578A;    /* hover and pressed on the picked day; white on it 7.66:1;
+                                   6.68:1 on --app-pick-tint (the picked day's tag text) */
+  --app-pick-tint: #E6F1F9;     /* the run of days from the stage before to your pick.
+                                   A ground: ink 16.12:1, --app-accent 9.70:1,
+                                   --app-body 10.01:1, --app-muted 4.71:1 (weekend
+                                   numbers) on it. 1.15:1 against white, so it is never
+                                   the only carrier: the footer says the gap in words */
+
+  /* ── Today ─────────────────────────────────────────────────────────────────
+     Sun gold, the drawer's only warm colour, so it reads as "now" and never as a
+     state (amber means pending work and stays that). A disc behind today's
+     number, a disc and a dashed line on the line, a disc in the key. */
+  --app-today: #FFC94D;         /* the disc. A ground for --app-ink (12.07:1), never text.
+                                   3.77:1 against --app-pick, so today still reads
+                                   inside a picked day */
+  --app-today-ring: #A87400;    /* 1.5px ring round the disc; the dashed today line.
+                                   4.07:1 on white, 3.83:1 on --app-ground, 3.55:1 on
+                                   --app-pick-tint. (1.42:1 on --app-pick: inside a picked
+                                   day the disc itself carries it, at 3.77:1) */
+
+  /* ── Sizes ─────────────────────────────────────────────────────────────── */
+  --app-day-cell: 44px;         /* a day's width at 390: 7 × 44 = 308px in 358px
+                                   (390 less 2 × 16px padding), leaving 50px for six 8px gaps */
+  --app-day-cell-lg: 60px;      /* a day's width at 1140: 520px drawer less 2 × 24px = 472px;
+                                   7 × 60 + 6 × 8 = 468px */
+  --app-day-cell-h: 48px;       /* a day's height at both widths: number, then one row of tags */
+  --app-day-gap: 8px;           /* between days, both ways, both widths */
+  --app-today-disc: 26px;       /* the today disc behind the day number */
+  --app-radius-tag: 3px;        /* mark tags (S4, +2): square enough to read as "stage =
+                                   square" beside the round item ring */
+
+  /* ── Motion: the drawer's slide (the page's one designed moment) ──────── */
+  --app-sheet-duration: 300ms;                        /* in: UI-STANDARDS §10, page-level 300–400ms */
+  --app-sheet-ease: cubic-bezier(.32, .72, 0, 1);     /* fast off the edge, long soft landing */
+  --app-sheet-duration-exit: 200ms;                   /* out: about two thirds of in */
+  --app-sheet-ease-exit: cubic-bezier(.4, 0, 1, 1);   /* accelerates away */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --app-sheet-duration: 0ms;
+    --app-sheet-duration-exit: 0ms;
+  }
+}

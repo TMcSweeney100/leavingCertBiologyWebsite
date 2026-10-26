@@ -2,12 +2,13 @@ package ie.coursework.content;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Words the app quotes from SEC or NCCA documents in frontend code, where SourceTextTest can't see them. Each must
- * be on its cited page. The same literals are BACKUP_ADVICE in frontend/lib/app/ready.ts and NO_FORMAL_STYLE in frontend/lib/app/citation.ts: change both or neither.
+ * be on its cited page. The same literals are BACKUP_ADVICE in frontend/lib/app/ready.ts and NO_FORMAL_STYLE in frontend/lib/app/citation.ts and APPENDIX_RULE in frontend/lib/app/ai-appendix.ts: change both or neither.
  */
 class AppCopySourcesTest {
 
@@ -30,5 +31,15 @@ class AppCopySourcesTest {
         SourceRef source = SourceRef.parse(ref);
         assertThat(SourceDocuments.startsOnPage(source, NO_FORMAL_STYLE))
                 .as("not on %s; found on %s", ref, SourceDocuments.printedPagesContaining(source.key(), NO_FORMAL_STYLE)).isTrue();
+    }
+
+    static final String APPENDIX_RULE =
+            "The use of all AI tools must be documented in a dedicated section of the coursework, such as an appendix section.";
+
+    @Test
+    void theAppendixSentenceIsOnItsPage() { // decision A-16; APPENDIX_RULE in frontend/lib/app/ai-appendix.ts
+        SourceRef source = SourceRef.parse("SEC-RULES p. 34");
+        assertThat(SourceDocuments.startsOnPage(source, APPENDIX_RULE))
+                .as("not on %s; found on %s", source, SourceDocuments.printedPagesContaining(source.key(), APPENDIX_RULE)).isTrue();
     }
 }

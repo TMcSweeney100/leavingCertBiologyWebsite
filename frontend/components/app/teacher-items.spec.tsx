@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -10,6 +10,7 @@ vi.mock("@/lib/api/client", async () => {
 });
 
 import { api } from "@/lib/api/client";
+import type { DateMark } from "@/lib/app/date-marks";
 
 import { TeacherItems } from "./teacher-items";
 
@@ -22,6 +23,12 @@ const stages = () => [
   ] },
 ];
 
+const CAL = {
+  marks: [{ iso: "2026-10-16", kind: "stage", short: "S4", name: "Stage 4", saved: true }] as DateMark[],
+  completionDate: "2027-02-26",
+  today: "2026-09-14",
+};
+
 beforeEach(() => {
   refresh.mockReset();
   vi.mocked(api.send).mockReset();
@@ -30,7 +37,7 @@ beforeEach(() => {
 
 describe("TeacherItems", () => {
   it("letters every item by date across the whole component, undated last", () => {
-    render(<TeacherItems componentId="k1" stages={stages()} />);
+    render(<TeacherItems componentId="k1" stages={stages()} calendar={CAL} />);
     const rows = screen.getAllByRole("listitem");
     expect(rows).toHaveLength(3);
     expect(rows[0]).toHaveTextContent("Catch-up window closes");
@@ -41,20 +48,20 @@ describe("TeacherItems", () => {
   });
 
   it("spells out why an undated item is missing from the line and the calendar", () => {
-    render(<TeacherItems componentId="k1" stages={stages()} />);
+    render(<TeacherItems componentId="k1" stages={stages()} calendar={CAL} />);
     const undated = screen.getAllByRole("listitem")[2];
     expect(undated).toHaveTextContent("Stage 4 · no date, so not on the line or the calendar");
     expect(within(undated).getByText("C")).toBeInTheDocument();
   });
 
   it("says the letters follow the date", () => {
-    render(<TeacherItems componentId="k1" stages={stages()} />);
+    render(<TeacherItems componentId="k1" stages={stages()} calendar={CAL} />);
     expect(screen.getByText(/Letters follow the date, so they change when a date does/)).toBeInTheDocument();
   });
 
   it("adds an item to a chosen stage, with an optional date", async () => {
     vi.mocked(api.send).mockResolvedValue({ id: "i4", text: "Catch-up window closes", dueDate: null });
-    render(<TeacherItems componentId="k1" stages={stages()} />);
+    render(<TeacherItems componentId="k1" stages={stages()} calendar={CAL} />);
     await userEvent.click(screen.getByRole("button", { name: "Add item" }));
     await userEvent.type(screen.getByRole("textbox", { name: "Item" }), "Lab notebooks in");
     await userEvent.selectOptions(screen.getByRole("combobox", { name: "Stage" }), "s6");
@@ -67,7 +74,7 @@ describe("TeacherItems", () => {
 
   it("edits an item in place, keeping its stage", async () => {
     vi.mocked(api.send).mockResolvedValue({ id: "i1", text: "Draft in", dueDate: "2026-12-04" });
-    render(<TeacherItems componentId="k1" stages={stages()} />);
+    render(<TeacherItems componentId="k1" stages={stages()} calendar={CAL} />);
     await userEvent.click(screen.getByRole("button", { name: "Edit Full draft in for feedback" }));
     const text = screen.getByRole("textbox", { name: "Item" });
     await userEvent.clear(text);
@@ -79,7 +86,7 @@ describe("TeacherItems", () => {
   });
 
   it("retires an item only after confirming in its row, and Keep backs out", async () => {
-    render(<TeacherItems componentId="k1" stages={stages()} />);
+    render(<TeacherItems componentId="k1" stages={stages()} calendar={CAL} />);
     const row = screen.getAllByRole("listitem")[0];
     await userEvent.click(within(row).getByRole("button", { name: "Retire Catch-up window closes" }));
     expect(within(row).getByText(/students won't see it/i)).toBeInTheDocument();
@@ -94,7 +101,7 @@ describe("TeacherItems", () => {
 
   it("retiring one item keeps an unsaved edit of another", async () => {
     vi.mocked(api.sendNoContent).mockResolvedValue(undefined);
-    render(<TeacherItems componentId="k1" stages={stages()} />);
+    render(<TeacherItems componentId="k1" stages={stages()} calendar={CAL} />);
     await userEvent.click(screen.getByRole("button", { name: "Edit Full draft in for feedback" }));
     const box = screen.getByRole("textbox", { name: "Item" });
     await userEvent.clear(box);
@@ -107,18 +114,40 @@ describe("TeacherItems", () => {
   });
 
   it("invites a first item when there are none", () => {
-    render(<TeacherItems componentId="k1" stages={stages().map((s) => ({ ...s, items: [] }))} />);
+    render(<TeacherItems componentId="k1" stages={stages().map((s) => ({ ...s, items: [] }))} calendar={CAL} />);
     expect(screen.queryAllByRole("listitem")).toHaveLength(0);
     expect(screen.getByRole("button", { name: "Add item" })).toBeInTheDocument();
   });
 
   it("says it's saving while the item request is in flight", async () => {
     vi.mocked(api.send).mockReturnValue(new Promise(() => {}));
-    render(<TeacherItems componentId="k1" stages={stages()} />);
+    render(<TeacherItems componentId="k1" stages={stages()} calendar={CAL} />);
     await userEvent.click(screen.getByRole("button", { name: "Add item" }));
     await userEvent.type(screen.getByRole("textbox", { name: "Item" }), "Lab notebooks in");
     await userEvent.click(screen.getByRole("button", { name: "Save item" }));
 
     expect(screen.getByRole("button", { name: "Saving…" })).toBeDisabled();
+  });
+  it("picks an item's date on the calendar, with the stage dates on it", async () => {
+    vi.mocked(api.send).mockResolvedValue({ id: "i4", text: "Lab notebooks in", dueDate: "2026-10-23" });
+    render(<TeacherItems componentId="k1" stages={stages()} calendar={CAL} />);
+    await userEvent.click(screen.getByRole("button", { name: "Add item" }));
+    await userEvent.type(screen.getByRole("textbox", { name: "Item" }), "Lab notebooks in");
+    await userEvent.click(screen.getByLabelText("Date (optional)"));
+    const dialog = await screen.findByRole("dialog", { name: "Choose the date for “Lab notebooks in”" });
+    expect(within(dialog).getByRole("button", { name: "Friday 16 October 2026: Stage 4" })).toBeInTheDocument();
+    await userEvent.click(within(dialog).getByRole("button", { name: "Friday 23 October 2026" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(screen.getByLabelText("Date (optional)")).toHaveValue("2026-10-23");
+    await userEvent.click(screen.getByRole("button", { name: "Save item" }));
+    expect(api.send).toHaveBeenCalledWith("POST", "/components/k1/teacher-items",
+      { stageId: "s4", text: "Lab notebooks in", dueDate: "2026-10-23" }, expect.anything());
+  });
+
+  it("names the drawer for a new item before it has any text", async () => {
+    render(<TeacherItems componentId="k1" stages={stages()} calendar={CAL} />);
+    await userEvent.click(screen.getByRole("button", { name: "Add item" }));
+    await userEvent.click(screen.getByLabelText("Date (optional)"));
+    expect(await screen.findByRole("dialog", { name: "Choose the date for the new item" })).toBeInTheDocument();
   });
 });

@@ -42,7 +42,7 @@ test("a class that requires a link, with one approved student", async ({ page: t
   await teacher.getByRole("button", { name: "Create" }).click();
   await teacher.getByRole("link", { name: "Component" }).click();
   await teacher.getByRole("button", { name: "Create component" }).click();
-  await teacher.getByLabel("Stage 1 date").fill("2026-09-01");
+  await teacher.getByLabel("Stage 1 date", { exact: true }).fill("2026-09-01");
   await Promise.all([
     teacher.waitForResponse((r) => r.url().includes("/stage-dates") && r.request().method() === "PUT"),
     teacher.getByRole("button", { name: "Save dates" }).click(),

@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import type { SourceFields } from "@/lib/api/schemas";
+import type { AiUseFields, SourceFields } from "@/lib/api/schemas";
 
-import { citation, copyText, ddmmyyyy, missingLine, referenceList, shortLink, shortName, sourceFromForm } from "./citation.ts";
+import { aiCitation, citation, copyText, ddmmyyyy, LIST_RULE, missingLine, referenceList, shortLink, shortName, sourceFromForm } from "./citation.ts";
 
 test("a date accessed reads day/month/year, never ambiguously (decision S-9)", () => {
   assert.equal(ddmmyyyy("2024-06-17"), "17/06/2024");
@@ -143,9 +143,9 @@ test("the missing line names each detail in plain words", () => {
 
 test("the list is alphabetical by reference, ignoring case and a leading quote mark (decision S-7)", () => {
   const list = referenceList([
-    { id: "z", fields: source({ title: "Zebra", author: "zed, A." }) },
-    { id: "q", fields: source({ type: "NEWSPAPER_OR_MAGAZINE", title: "Apples" }) },
-    { id: "b", fields: source({ title: "Bees", author: "Byrne, A." }) },
+    { kind: "SOURCE" as const, id: "z", fields: source({ title: "Zebra", author: "zed, A." }) },
+    { kind: "SOURCE" as const, id: "q", fields: source({ type: "NEWSPAPER_OR_MAGAZINE", title: "Apples" }) },
+    { kind: "SOURCE" as const, id: "b", fields: source({ title: "Bees", author: "Byrne, A." }) },
   ]);
   assert.deepEqual(list.map((s) => s.id), ["q", "b", "z"]);
   assert.equal(copyText(list), "‘Apples’ (date not available)\nByrne, A. (date not available) Bees\nzed, A. (date not available) Zebra");
@@ -155,4 +155,54 @@ test("the form's values become fields for the preview; no title, no preview", ()
   assert.equal(sourceFromForm({ type: "BOOK", title: "  " }), null);
   assert.deepEqual(sourceFromForm({ type: "ONLINE_VIDEO", title: " Demo ", url: "https://youtu.be/x", dateAccessed: "2026-10-01", author: "" }),
     source({ type: "ONLINE_VIDEO", title: "Demo", url: "https://youtu.be/x", dateAccessed: "2026-10-01" }));
+});
+
+const ai = (f: Partial<AiUseFields>): AiUseFields => ({ toolNameAndVersion: "ChatGPT", developer: "OpenAI", dateGenerated: "2023-10-20",
+  howUsed: "Brainstormed themes.", prompts: null, shareUrl: null, ...f });
+
+// NCCA-BIO pp. 15-16 and NCCA-BUS pp. 22-23, quoted. Same literals as CitationExamplesSourcesTest: change both or neither.
+const NCCA_AI = {
+  shareUrl: "https://chat.openai.com/share/f45a1e23-2217-4443-a244-d56ab26ae940",
+  inTextWithLink: "(chat.openai.com/share/f45a1e23-2217-4443-a244-d56ab26ae940)",
+  inTextWithoutLink: "(OpenAI (2023) ChatGPT, 20/10/2023)",
+};
+
+test("an AI use with a share link: the NCCA's in-text exactly; the reference keeps every detail in order (A-7)", () => {
+  const c = aiCitation(ai({ toolNameAndVersion: "ChatGPT (Oct. 20 version)", shareUrl: NCCA_AI.shareUrl }));
+  assert.equal(c.inText, NCCA_AI.inTextWithLink);
+  assert.equal(c.reference, `OpenAI (2023) ChatGPT (Oct. 20 version), accessed 20/10/2023. ${NCCA_AI.shareUrl}`);
+  inOrder(c.reference, ["OpenAI", "(2023)", "ChatGPT (Oct. 20 version)", "20/10/2023", NCCA_AI.shareUrl]);
+  assert.deepEqual(c.missing, []);
+});
+
+test("an AI use without a share link: the NCCA's in-text exactly, and the prompt ends the reference (A-10)", () => {
+  const c = aiCitation(ai({ prompts: "Suggest five project themes\non enzymes." }));
+  assert.equal(c.inText, NCCA_AI.inTextWithoutLink);
+  assert.equal(c.reference, "OpenAI (2023) ChatGPT, accessed 20/10/2023. Prompt used: Suggest five project themes on enzymes.");
+  assert.deepEqual(c.missing, []);
+});
+
+test("a version typed with the tool stays in the in-text citation", () => {
+  assert.equal(aiCitation(ai({ toolNameAndVersion: "ChatGPT (Oct. 20 version)" })).inText, "(OpenAI (2023) ChatGPT (Oct. 20 version), 20/10/2023)");
+});
+
+test("an AI use with no share link and no prompt is flagged; blank counts as none (A-9)", () => {
+  const c = aiCitation(ai({ prompts: "  ", shareUrl: "" }));
+  assert.equal(c.reference, "OpenAI (2023) ChatGPT, accessed 20/10/2023.");
+  assert.deepEqual(c.missing, ["shareUrlOrPrompt"]);
+  assert.equal(missingLine(c.missing), "Add the share link or the prompt you used so a reader can check this source.");
+});
+
+test("sources and AI uses share one alphabetical list (A-11)", () => {
+  const list = referenceList([
+    { id: "b", kind: "SOURCE" as const, fields: source({ title: "Bees", author: "Byrne, A." }) },
+    { id: "o", kind: "AI_USE" as const, fields: ai({ shareUrl: NCCA_AI.shareUrl }) },
+    { id: "a", kind: "SOURCE" as const, fields: source({ title: "Ants", author: "Ahern, B." }) },
+  ]);
+  assert.deepEqual(list.map((e) => e.id), ["a", "b", "o"]);
+  assert.equal(list[2].citation.inText, NCCA_AI.inTextWithLink);
+});
+
+test("the list rule mentions AI uses", () => {
+  assert.equal(LIST_RULE, "Built from the sources and AI uses in your log, in alphabetical order, including the ones only you can read.");
 });

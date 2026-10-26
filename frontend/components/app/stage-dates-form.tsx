@@ -15,7 +15,9 @@ import {
   shortWeekdayDate,
   weekdayDate,
 } from "@/lib/app/component-setup";
+import { type DateMark, dateMarks } from "@/lib/app/date-marks";
 
+import { DatePickerDrawer } from "./date-picker-drawer";
 import { ErrorPanel } from "./error-panel";
 import { Notice } from "./notice";
 import { lead, sectionTitle } from "./styles";
@@ -68,6 +70,16 @@ export function StageDatesForm({ component, today }: { component: TeacherCompone
 
   useEffect(() => setDraft(initial), [initial]);
 
+  // The calendar and the year view both read the draft, so a date typed but not saved shows (C-6, C-8).
+  const marks = useMemo(
+    () => dateMarks(component.stages, draft, component.brief.completionDate),
+    [component.stages, draft, component.brief.completionDate],
+  );
+  const drafted = useMemo(
+    () => component.stages.map((s) => ({ ...s, dueDate: draft[s.id] || null })),
+    [component.stages, draft],
+  );
+
   // UI-STANDARDS: a long form confirms before leaving with unsaved changes.
   useEffect(() => {
     if (!dirty) return;
@@ -110,7 +122,7 @@ export function StageDatesForm({ component, today }: { component: TeacherCompone
 
   const yearView = (
     <YearView
-      stages={component.stages}
+      stages={drafted}
       completionDate={component.brief.completionDate}
       today={today}
       attentionStageIds={attentionStageIds}
@@ -200,6 +212,8 @@ export function StageDatesForm({ component, today }: { component: TeacherCompone
                 value={draft[stage.id] ?? ""}
                 onChange={(value) => setDraft((d) => ({ ...d, [stage.id]: value }))}
                 max={component.brief.completionDate}
+                marks={marks}
+                today={today}
                 refusal={refused.get(stage.id) ?? null}
                 movedMessage={
                   moved.some((w) => w.stageIds.includes(stage.id))
@@ -233,7 +247,11 @@ export function StageDatesForm({ component, today }: { component: TeacherCompone
         </div>
       </form>
 
-      <TeacherItems componentId={component.id} stages={component.stages} />
+      <TeacherItems
+        componentId={component.id}
+        stages={component.stages}
+        calendar={{ marks, completionDate: component.brief.completionDate, today }}
+      />
     </div>
   );
 }
@@ -260,6 +278,8 @@ function StageDateRow({
   value,
   onChange,
   max,
+  marks,
+  today,
   refusal,
   movedMessage,
   attention,
@@ -270,6 +290,8 @@ function StageDateRow({
   value: string;
   onChange: (value: string) => void;
   max: string;
+  marks: ReadonlyArray<DateMark>;
+  today: string;
   refusal: string | null;
   movedMessage: string | null;
   attention: boolean;
@@ -315,16 +337,28 @@ function StageDateRow({
       </div>
       <div className="flex flex-none flex-col gap-1 md:items-end">
         <label htmlFor={id} className="sr-only">{`${label} date`}</label>
-        <input
-          id={id}
-          type="date"
-          max={max}
+        <DatePickerDrawer
+          title={`Choose the ${label} date`}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
-          aria-invalid={refusal ? true : undefined}
-          aria-describedby={noteId}
-          className={`min-h-11 w-full rounded-app-control border bg-app-surface px-3 py-2.5 text-app-base text-app-ink md:min-h-0 md:w-[176px] md:px-2.5 md:py-2 ${inputBorder}`}
-        />
+          marks={marks}
+          completionDate={max}
+          today={today}
+          onPick={onChange}
+        >
+          {(opener) => (
+            <input
+              {...opener}
+              id={id}
+              type="date"
+              max={max}
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+              aria-invalid={refusal ? true : undefined}
+              aria-describedby={noteId}
+              className={`min-h-11 w-full cursor-pointer rounded-app-control border bg-app-surface px-3 py-2.5 text-app-base text-app-ink md:min-h-0 md:w-[176px] md:px-2.5 md:py-2 [&::-webkit-calendar-picker-indicator]:hidden ${inputBorder}`}
+            />
+          )}
+        </DatePickerDrawer>
         <span className={`text-app-small md:text-right ${refusal ? "text-app-error-hover" : "text-app-muted"}`}>
           {value ? weekdayDate(value) : "No date yet"}
         </span>

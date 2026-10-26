@@ -8,6 +8,9 @@ import { APP_NAV, landingFor } from "@/lib/app/navigation";
 import { RoleSwitcher } from "./role-switcher";
 import { SignOutButton } from "./sign-out-button";
 import { textLink } from "./styles";
+import {Button} from "@/components/ui/button";
+import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
+import { User} from "lucide-react"
 
 function Divider() {
   return <span aria-hidden="true" className="hidden h-5 w-px flex-none bg-app-field-border lg:block" />;
@@ -52,10 +55,22 @@ export function AppHeader({ me }: { me: Me }) {
               {me.firstName} {me.lastName}
             </span>
             <span className="flex flex-none items-center gap-2.5 lg:gap-3.5">
-              <Link href="/account/password" className={`text-app-small whitespace-nowrap ${textLink}`}>
+             {/*  <Link href="/account/password" className={`text-app-small whitespace-nowrap ${textLink}`}>
                 Change password
               </Link>
-              <SignOutButton />
+              <SignOutButton /> */}
+
+              <Dialog>
+                    <DialogTrigger render={<Button variant="outline"><User className="size-4" /></Button>} />
+                    <DialogContent className="sm:max-w-[425px]">
+                        <DialogTitle>Account Options</DialogTitle>
+                        <Link href="/account/password" className={`text-app-small whitespace-nowrap ${textLink}`}>
+                            Change password
+                          </Link>
+                        <SignOutButton />
+
+                    </DialogContent>
+              </Dialog>
             </span>
           </nav>
         </div>

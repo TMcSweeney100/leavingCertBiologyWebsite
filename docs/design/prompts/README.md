@@ -24,3 +24,4 @@ One file per pack (or pair of packs), ready to paste into Claude Design alongsid
 | D-8 | School overview | Phase 5 |
 | D-9 | Writing tools | Phase 6, design §8.6 and §6.7 |
 | D-10 | Ready for sign-off: the student's work link and Ready control, the teacher's queue, review panel and require-link switch | `D-10-ready-for-signoff.md` |
+| D-11 | Date picker drawer: the Component tab's calendar for stage and item dates | `D-11-date-picker-drawer.md` |

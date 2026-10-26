@@ -1,4 +1,4 @@
-import type { SourceFields, SourceType } from "@/lib/api/schemas";
+import type { AiUseFields, SourceFields, SourceType } from "@/lib/api/schemas";
 
 import { isOnline } from "./log.ts";
 
@@ -24,15 +24,14 @@ export function shortLink(url: string): string {
   }
 }
 
-export type MissingDetail = "author" | "datePublished" | "publication" | "locator" | "url" | "dateAccessed";
+export type MissingDetail = "author" | "datePublished" | "publication" | "locator" | "url" | "dateAccessed" | "shareUrlOrPrompt";
 
 /** What a source becomes in the report, and what it still lacks (decision S-2: save and flag, never block). */
 export type Citation = { inText: string; reference: string; missing: MissingDetail[] };
 
 /** NCCA-BIO p. 15, NCCA-BUS p. 20 (decision S-15). AppCopySourcesTest proves it's on both pages. */
 export const NO_FORMAL_STYLE = "No particular, formal style of referencing is required.";
-export const LIST_RULE = "Built from the sources in your log, in alphabetical order, including the ones only you can read.";
-export const AI_NOT_YET = "AI uses aren't in this list yet. Add them to your reference list yourself.";
+export const LIST_RULE = "Built from the sources and AI uses in your log, in alphabetical order, including the ones only you can read.";
 
 const NO_DATE = "date not available";
 
@@ -53,6 +52,7 @@ const WORDS: Record<MissingDetail, string> = {
   locator: "the page, chapter or timestamp you used",
   url: "the link",
   dateAccessed: "the date accessed",
+  shareUrlOrPrompt: "the share link or the prompt you used",
 };
 
 const text = (s: string | null): string | null => s?.trim() || null;
@@ -67,7 +67,7 @@ export function citation(f: SourceFields): Citation {
   const locator = text(f.locator);
   const url = text(f.url);
   const accessed = url && f.dateAccessed ? `Date accessed: ${ddmmyyyy(f.dateAccessed)}` : null;
-  const present: Record<MissingDetail, string | null> = { author, datePublished: date, publication, locator, url, dateAccessed: f.dateAccessed };
+  const present: Partial<Record<MissingDetail, string | null>> = { author, datePublished: date, publication, locator, url, dateAccessed: f.dateAccessed };
   const missing = WANTED[f.type].filter((k) => !present[k]);
 
   if (isOnline(f.type)) {
@@ -86,6 +86,22 @@ export function citation(f: SourceFields): Citation {
   };
 }
 
+/** Decision A-7: modelled on NCCA-BIO pp. 15-16's AI examples. The differences are tabled in the plan. */
+export function aiCitation(f: AiUseFields): Citation {
+  const tool = f.toolNameAndVersion.trim();
+  const developer = f.developer.trim();
+  const date = ddmmyyyy(f.dateGenerated);
+  const year = f.dateGenerated.slice(0, 4);
+  const link = text(f.shareUrl);
+  const prompt = text(f.prompts)?.replace(/\s+/g, " ") ?? null;
+  const head = `${developer} (${year}) ${tool}, accessed ${date}.`;
+  return {
+    inText: link ? `(${shortLink(link)})` : `(${developer} (${year}) ${tool}, ${date})`,
+    reference: link ? `${head} ${link}` : prompt ? `${head} Prompt used: ${prompt}` : head,
+    missing: link || prompt ? [] : ["shareUrlOrPrompt"],
+  };
+}
+
 /** "Add the author and the date published so a reader can check this source." */
 export function missingLine(missing: readonly MissingDetail[]): string | null {
   if (missing.length === 0) return null;
@@ -97,10 +113,15 @@ export function missingLine(missing: readonly MissingDetail[]): string | null {
 const ORDER = new Intl.Collator("en-IE", { sensitivity: "base" });
 const sortKey = (reference: string) => reference.replace(/^[‘'"]/, "");
 
-/** Decision S-7: alphabetical by reference. */
-export function referenceList<T extends { fields: SourceFields }>(sources: readonly T[]): Array<T & { citation: Citation }> {
-  return sources
-    .map((s) => ({ ...s, citation: citation(s.fields) }))
+/** One row of the Sources page: a source or an AI use (decision A-3). */
+export type ListEntry = { id: string; kind: "SOURCE"; fields: SourceFields } | { id: string; kind: "AI_USE"; fields: AiUseFields };
+
+const cite = (e: ListEntry): Citation => (e.kind === "AI_USE" ? aiCitation(e.fields) : citation(e.fields));
+
+/** Decisions S-7 and A-11: one alphabetical list by reference. */
+export function referenceList<T extends ListEntry>(entries: readonly T[]): Array<T & { citation: Citation }> {
+  return entries
+    .map((e) => ({ ...e, citation: cite(e) }))
     .sort((a, b) => ORDER.compare(sortKey(a.citation.reference), sortKey(b.citation.reference)));
 }
 

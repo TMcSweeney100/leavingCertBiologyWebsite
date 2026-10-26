@@ -9,7 +9,8 @@ describe("ComponentTabs", () => {
     expect(screen.getByRole("link", { name: "Log" })).toHaveAttribute("href", "/components/k1/log");
     expect(screen.getByRole("link", { name: "Log" })).toHaveAttribute("aria-current", "page");
     expect(screen.getByRole("link", { name: "Overview" })).not.toHaveAttribute("aria-current");
-    expect(screen.queryByRole("link", { name: "AI use" })).not.toBeInTheDocument();
+    expect(screen.queryByText("AI use")).not.toBeInTheDocument();
+    expect(screen.getByText("Word checker")).toHaveAttribute("aria-disabled", "true");
   });
 
   it("makes Sources a live link to the component's sources", () => {

@@ -18,7 +18,8 @@ A diff that fits in one sentence skips step 2.
 | # | Slug | Feature | Status |
 |---|---|---|---|
 | 1 | `source-builder` | The student's sources become a copyable in-text citation and reference list | built on `pilot/source-builder`, not merged: self-review, changes doc and PR still to do (plan: docs/superpowers/plans/2026-10-25-source-builder.md) |
-| 2 | `ai-use-record` | The student's AI uses become a reference entry and the report's AI appendix block | planned: docs/superpowers/plans/2026-10-25-ai-use-record.md; building on pilot/source-builder |
+| 2 | `ai-use-record` | The student's AI uses become a reference entry and the report's AI appendix block | built on `pilot/source-builder` with source-builder, not merged: self-review, changes doc and PR still to do (plan: docs/superpowers/plans/2026-10-25-ai-use-record.md) |
+| 3 | `date-picker-drawer` | Every date on the teacher's Component tab opens a right-hand calendar showing the component's other dates, saved or not | built on pilot/source-builder's working tree (uncommitted), not merged: self-review, changes doc and PR still to do (intent: docs/intent/date-picker-drawer.md; plan: docs/superpowers/plans/2026-10-25-date-picker-drawer.md) |
 
 ### 1. Source builder (`source-builder`)
 
@@ -36,6 +37,12 @@ A diff that fits in one sentence skips step 2.
 **Problem.** Students log AI uses (kind `AI_USE`, since Phase 3), but must still write the reference entry and the report's AI appendix by hand. Roadmap milestone 6A.
 
 **Answered (25 Oct 2026, `docs/intent/ai-use-record.md`):** all three outputs (NCCA in-text citation and reference entry, SEC appendix table); everything on the Sources page with an "AI use" chip per AI entry and an appendix section below; the greyed "AI use" tab removed; four appendix columns, no new field; prompts and share link under each row.
+
+### 3. Date picker drawer (`date-picker-drawer`)
+
+**Problem.** Every date on the Component tab is the browser's own date box, and its calendar is blank: a teacher picks a stage or item date without seeing where it sits among the others. The year view stays empty until the first Save.
+
+**Answered (25 Oct 2026, `docs/intent/date-picker-drawer.md`):** a right-hand drawer with its own reusable calendar component (shadcn Calendar); stage and item dates both; unsaved dates shown, slightly different; picking fills the box and never saves; no holidays; the year view reads the draft too. Next after it: a right-hand stage sheet, where "who ticked each item" comes back.
 
 ## From Tim's testing
 

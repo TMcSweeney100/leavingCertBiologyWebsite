@@ -5,7 +5,8 @@ import { TEACHER, expectAccessible, phone, signInTeacher } from "./helpers";
 /**
  * Gate P3's journey (roadmap §8.3): a student logs a note, a source and an AI use and hides the note; the
  * teacher sees that the note exists but not its text; the student edits the source; the teacher sees
- * "Edited" and its history. Then the Sources tab shows the source as a reference (source-builder).
+ * "Edited" and its history. Then the Sources tab shows the source and the AI use as references, and the AI use as an appendix row
+ * (source-builder, ai-use-record).
  */
 const P3 = { className: "", student: "", password: "e2e-student-password" };
 const NOTE = "Pilot run went well, retest Tuesday";
@@ -109,7 +110,7 @@ test("the student logs a note, a source and an AI use, hides the note and edits 
   await expectAccessible(student);
 });
 
-test("the student's Sources tab turns the edited source into a reference", async ({ browser }) => {
+test("the student's Sources tab turns the source and the AI use into references and the appendix", async ({ browser }) => {
   test.skip(!TEACHER.temporary, "E2E_TEACHER_PASSWORD not set");
   const student = await phone(browser);
   await signInStudent(student);
@@ -119,6 +120,11 @@ test("the student's Sources tab turns the edited source into a reference", async
   await expect(list).toContainText("Titration technique demo (RTÉ), date not available, https://youtu.be/yCv4iyPqZKQ, Date accessed: 01/10/2026");
   await expect(list).toContainText("(youtu.be/yCv4iyPqZKQ)");
   await expect(list).toContainText("Add the page, chapter or timestamp you used so a reader can check this source.");
+  await expect(list).toContainText("OpenAI (2026) ChatGPT-4, accessed 01/10/2026.");
+  await expect(list).toContainText("Add the share link or the prompt you used so a reader can check this source.");
+  const appendix = student.getByRole("region", { name: "AI use appendix" });
+  await expect(appendix.getByRole("list", { name: "AI uses" })).toContainText("Suggested possible project themes.");
+  await expect(appendix.getByRole("button", { name: "Copy appendix" })).toBeVisible();
   await expectAccessible(student);
 });
 

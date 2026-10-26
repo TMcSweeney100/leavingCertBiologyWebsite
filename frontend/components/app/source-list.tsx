@@ -5,17 +5,19 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
-import type { SourceFields } from "@/lib/api/schemas";
-import { AI_NOT_YET, copyText, LIST_RULE, missingLine, NO_FORMAL_STYLE, referenceList } from "@/lib/app/citation";
+import type { ListEntry } from "@/lib/app/citation";
+import { copyText, LIST_RULE, missingLine, NO_FORMAL_STYLE, referenceList } from "@/lib/app/citation";
 
+import { LogKindChip } from "./log-kind-chip";
 import { card, sectionTitle, textLink } from "./styles";
 
-type Source = { id: string; fields: SourceFields };
+/** What a row is called in button and link names: a source's title, an AI use's tool. */
+const entryName = (e: ListEntry) => (e.kind === "AI_USE" ? e.fields.toolNameAndVersion : e.fields.title);
 
 /** Backlog #1, the reference builder (FR-29–31): the student's sources as a list to copy into the report. */
-export function SourceList({ componentId, sources }: { componentId: string; sources: Source[] }) {
+export function SourceList({ componentId, entries }: { componentId: string; entries: ListEntry[] }) {
   const [status, setStatus] = useState("");
-  const list = referenceList(sources);
+  const list = referenceList(entries);
   const flagged = list.filter((s) => s.citation.missing.length > 0).length;
 
   async function copy(value: string, done: string) {
@@ -59,6 +61,7 @@ export function SourceList({ componentId, sources }: { componentId: string; sour
           const flag = missingLine(s.citation.missing);
           return (
             <li key={s.id} className="flex flex-col gap-2 p-4">
+              {s.kind === "AI_USE" && <span><LogKindChip kind="AI_USE" /></span>}
               <p className="text-app-base break-words text-app-ink">{s.citation.reference}</p>
               <p className="text-app-small break-words text-app-copy"><span className="font-semibold">In the text: </span>{s.citation.inText}</p>
               {flag && (
@@ -67,11 +70,11 @@ export function SourceList({ componentId, sources }: { componentId: string; sour
                 </p>
               )}
               <div className="flex flex-wrap items-center gap-4">
-                <Button type="button" variant="outline" aria-label={`Copy citation for ${s.fields.title}`}
+                <Button type="button" variant="outline" aria-label={`Copy citation for ${entryName(s)}`}
                   onClick={() => copy(s.citation.inText, "Citation copied.")}>
                   Copy citation
                 </Button>
-                <Link href={`/components/${componentId}/log/${s.id}`} aria-label={`Open in log, ${s.fields.title}`}
+                <Link href={`/components/${componentId}/log/${s.id}`} aria-label={`Open in log, ${entryName(s)}`}
                   className={`${textLink} inline-flex min-h-11 items-center text-app-small`}>
                   Open in log
                 </Link>
@@ -80,7 +83,6 @@ export function SourceList({ componentId, sources }: { componentId: string; sour
           );
         })}
       </ul>
-      <p className="text-app-small text-app-copy">{AI_NOT_YET}</p>
     </div>
   );
 }

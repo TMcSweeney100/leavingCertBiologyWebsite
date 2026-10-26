@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -41,6 +41,12 @@ const allSix = () => component({
 
 const render5 = (c: TeacherComponent = component()) => render(<StageDatesForm component={c} today={TODAY} />);
 
+// Typing from the keyboard, not a click: a click on a date box opens the calendar drawer.
+async function typeDate(label: string, value: string) {
+  act(() => screen.getByLabelText(label).focus());
+  await userEvent.keyboard(value);
+}
+
 beforeEach(() => {
   refresh.mockReset();
   vi.mocked(api.send).mockReset();
@@ -72,7 +78,7 @@ describe("StageDatesForm", () => {
   it("saves every stage's date in one request, with empty as no date", async () => {
     vi.mocked(api.send).mockResolvedValue(component());
     render5();
-    await userEvent.type(screen.getByLabelText("Stage 4 date"), "2026-10-16");
+    await typeDate("Stage 4 date", "2026-10-16");
     await userEvent.click(screen.getByRole("button", { name: "Save dates" }));
 
     expect(api.send).toHaveBeenCalledWith("PUT", "/components/k1/stage-dates", {
@@ -90,7 +96,7 @@ describe("StageDatesForm", () => {
     render5(allSix());
     expect(screen.getByText("All 6 dates saved")).toBeInTheDocument();
     await userEvent.clear(screen.getByLabelText("Stage 4 date"));
-    await userEvent.type(screen.getByLabelText("Stage 4 date"), "2026-10-23");
+    await typeDate("Stage 4 date", "2026-10-23");
     expect(screen.getByText("1 date changed, not saved yet")).toBeInTheDocument();
   });
 
@@ -105,7 +111,7 @@ describe("StageDatesForm", () => {
     vi.mocked(api.send).mockRejectedValue(new ApiError({ status: 400, code: "COMPLETION_DATE_EXCEEDED", title: "t", detail: message, fieldErrors: [{ field: "s6", message }] }));
     render5(allSix());
     await userEvent.clear(screen.getByLabelText("Stage 6 date"));
-    await userEvent.type(screen.getByLabelText("Stage 6 date"), "2027-03-05");
+    await typeDate("Stage 6 date", "2027-03-05");
     await userEvent.click(screen.getByRole("button", { name: "Save dates" }));
 
     const panel = await screen.findByRole("alert");
@@ -164,9 +170,30 @@ describe("StageDatesForm", () => {
   it("says it's saving the dates while the request is in flight", async () => {
     vi.mocked(api.send).mockReturnValue(new Promise(() => {}));
     render5();
-    await userEvent.type(screen.getByLabelText("Stage 4 date"), "2026-10-16");
+    await typeDate("Stage 4 date", "2026-10-16");
     await userEvent.click(screen.getByRole("button", { name: "Save dates" }));
 
     expect(screen.getByRole("button", { name: "Saving dates…" })).toBeDisabled();
+  });
+  it("opens the calendar from a click on a date box, shows another stage's unsaved date, and a pick fills the box without saving", async () => {
+    render5();
+    await typeDate("Stage 4 date", "2026-10-16");
+    await userEvent.click(screen.getByLabelText("Stage 5 date"));
+    const dialog = await screen.findByRole("dialog", { name: "Choose the Stage 5 date" });
+    expect(within(dialog).getByRole("button", { name: "Friday 16 October 2026: Stage 4 (not saved)" })).toBeInTheDocument();
+    expect(within(dialog).getByRole("button", { name: "Friday 25 September 2026: Stage 3" })).toBeInTheDocument();
+    expect(within(dialog).getByRole("button", { name: "Friday 26 February 2027: the completion date" })).toBeInTheDocument();
+    await userEvent.click(within(dialog).getByRole("button", { name: "Friday 23 October 2026" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(screen.getByLabelText("Stage 5 date")).toHaveValue("2026-10-23");
+    expect(api.send).not.toHaveBeenCalled();
+  });
+
+  it("puts a date that isn't saved yet on the year view's calendar", async () => {
+    render5();
+    await typeDate("Stage 4 date", "2026-10-16");
+    await userEvent.click(screen.getByRole("button", { name: "Show calendar" }));
+    await userEvent.click(screen.getByRole("button", { name: "October 2026" }));
+    expect(screen.getByTitle("Stage 4, Name 4")).toBeInTheDocument();
   });
 });
