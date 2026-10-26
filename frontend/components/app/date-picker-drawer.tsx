@@ -1,33 +1,34 @@
 "use client";
 
-import { type KeyboardEvent, type MouseEvent, type ReactNode, type RefObject, useRef, useState } from "react";
+import { type MouseEvent, type ReactNode, type RefObject, useId, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerTitle } from "@/components/ui/drawer";
+import { Input } from "@/components/ui/input";
 import { weekdayDate } from "@/lib/app/component-setup";
 import { calendarMonths, type DateMark, type Picking, pickReadout, runStart } from "@/lib/app/date-marks";
+import { parseTypedDate, typedDate, typedFromInput } from "@/lib/app/typed-date";
 
 import { DateCalendar } from "./date-calendar";
 import { MarkTag } from "./mark-tag";
 import { YearLine } from "./year-line";
 
-/** What the caller spreads onto its date box so that box opens the drawer. */
+/** What the caller spreads onto its date button so that it opens the drawer. */
 export type DateBoxOpener = {
-  ref: RefObject<HTMLInputElement | null>;
+  ref: RefObject<HTMLButtonElement | null>;
   "aria-haspopup": "dialog";
-  onMouseDown: (event: MouseEvent<HTMLInputElement>) => void;
-  onClick: (event: MouseEvent<HTMLInputElement>) => void;
-  onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => void;
+  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
 };
 
 const monthOf = (iso: string) => `${iso.slice(0, 7)}-01`;
 const DAY_MONTH = new Intl.DateTimeFormat("en-IE", { day: "numeric", month: "short", timeZone: "UTC" });
 
 /**
- * The right-hand calendar drawer (plan date-picker-drawer, Part 2; pack D-11), opened by the caller's own date box: a
- * click, or Alt+Down; typing into the box still works. A tap selects a day and the footer says how it sits against
- * the stages either side (C-22, C-31). Only `Use this date` and `Clear date` hand anything back, through `onPick`
- * ("" clears). Nothing saves (C-5). Focus goes back to the box on close.
+ * The right-hand calendar drawer (plan date-picker-drawer, Parts 2 and 3; pack D-11), opened by the caller's own date
+ * button: nothing is typed on the page (C-35). A tap on a day, or a date typed into the footer's "Type a date" field
+ * (C-37), selects it and the footer says how it sits against the stages either side (C-22, C-31). Only `Use this
+ * date` (or Enter in the field) and `Clear date` hand anything back, through `onPick` ("" clears). Nothing saves
+ * (C-5). Focus goes back to the button on close.
  */
 export function DatePickerDrawer({
   children,
@@ -62,16 +63,44 @@ export function DatePickerDrawer({
   const [selected, setSelected] = useState(value);
   const [month, setMonth] = useState(monthOf(value || today));
   const [refused, setRefused] = useState<string | null>(null);
+  // What's in the "Type a date" field; "I left the field" is what lets it say a half-typed date isn't one (C-39).
+  const [typed, setTyped] = useState(typedDate(value));
+  const [typedLeft, setTypedLeft] = useState(false);
   const days = useRef<HTMLDivElement>(null);
-  const box = useRef<HTMLInputElement>(null);
+  const box = useRef<HTMLButtonElement>(null);
+  const typedId = useId();
+  const typedNoteId = `${typedId}-note`;
 
   const show = (next: boolean) => {
     if (next) {
       setSelected(value);
       setMonth(monthOf(value || today));
       setRefused(null);
+      setTyped(typedDate(value));
+      setTypedLeft(false);
     }
     setOpen(next);
+  };
+  const choose = (iso: string) => {
+    setSelected(iso);
+    setTyped(typedDate(iso));
+    setTypedLeft(false);
+    setRefused(null);
+  };
+  // C-37, C-38: a complete real date on or before the completion date is the pick; anything else leaves no pick.
+  const typeInto = (raw: string) => {
+    const next = typedFromInput(raw);
+    const iso = parseTypedDate(next);
+    setTyped(next);
+    setTypedLeft(false);
+    if (iso && iso <= completionDate) {
+      setSelected(iso);
+      setMonth(monthOf(iso));
+      setRefused(null);
+    } else {
+      setSelected("");
+      setRefused(iso);
+    }
   };
   const finish = (iso: string) => {
     onPick(iso);
@@ -80,18 +109,7 @@ export function DatePickerDrawer({
   const opener: DateBoxOpener = {
     ref: box,
     "aria-haspopup": "dialog",
-    // Stop the click focusing the box: on a phone, focus is what opens the browser's own date wheel.
-    onMouseDown: (event) => event.preventDefault(),
-    onClick: (event) => {
-      event.preventDefault();
-      show(true);
-    },
-    onKeyDown: (event) => {
-      if (event.altKey && event.key === "ArrowDown") {
-        event.preventDefault();
-        show(true);
-      }
-    },
+    onClick: () => show(true),
   };
   // C-12: the chosen day, else today.
   const focusDay = () =>
@@ -99,10 +117,12 @@ export function DatePickerDrawer({
     days.current?.querySelector<HTMLElement>('[data-today="true"] button') ??
     true;
 
-  const range = calendarMonths([value, selected, ...marks.map((m) => m.iso)].filter(Boolean), today, completionDate);
+  // The month in view is in the range too, so a typed date far from the others can still be arrowed away from.
+  const range = calendarMonths([value, selected, month, ...marks.map((m) => m.iso)].filter(Boolean), today, completionDate);
   const runFrom = runStart(marks, picking, selected);
   const readout = selected ? pickReadout(marks, picking, selected, completionDate) : null;
   const run = readout?.gaps.find((g) => g.run);
+  const notADate = typedLeft && typed !== "" && parseTypedDate(typed) === null;
   const pinLabel = selected ? `${picking.kind === "stage" ? `S${picking.ordinal} ` : ""}${DAY_MONTH.format(Date.parse(selected))}` : "";
 
   return (
@@ -139,10 +159,7 @@ export function DatePickerDrawer({
             range={range}
             runFrom={runFrom}
             onMonth={setMonth}
-            onSelect={(iso) => {
-              setSelected(iso);
-              setRefused(null);
-            }}
+            onSelect={choose}
             onAfterCompletion={setRefused}
           />
           {month === monthOf(completionDate) && (
@@ -167,6 +184,36 @@ export function DatePickerDrawer({
               {`${weekdayDate(refused)} is after the completion date, ${weekdayDate(completionDate)}. Nothing can be set after it.`}
             </p>
           )}
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-3">
+              <label htmlFor={typedId} className="text-app-small font-semibold whitespace-nowrap text-app-ink">
+                Type a date
+              </label>
+              <Input
+                id={typedId}
+                type="text"
+                inputMode="numeric"
+                autoComplete="off"
+                placeholder="dd/mm/yyyy"
+                value={typed}
+                onChange={(event) => typeInto(event.target.value)}
+                onBlur={() => setTypedLeft(true)}
+                onKeyDown={(event) => {
+                  if (event.key !== "Enter") return;
+                  event.preventDefault();
+                  if (selected) finish(selected);
+                }}
+                aria-invalid={notADate ? true : undefined}
+                aria-describedby={notADate ? typedNoteId : undefined}
+                className="w-[9.5rem] tabular-nums"
+              />
+            </div>
+            {notADate && (
+              <p id={typedNoteId} className="text-app-small text-app-error-hover">
+                {"That isn't a date. Type day, month, year, like 16/10/2026."}
+              </p>
+            )}
+          </div>
           <div aria-live="polite" className="flex min-h-[52px] flex-col gap-0.5 text-app-small text-app-copy">
             {selected && readout ? (
               <>

@@ -1,6 +1,5 @@
 "use client";
 
-import { CalendarDays } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useMemo, useState } from "react";
 
@@ -10,6 +9,7 @@ import { teacherItemSchema } from "@/lib/api/schemas";
 import { formatCalendarDate, letteredItems, type StageLike } from "@/lib/app/component-setup";
 import type { DateMark } from "@/lib/app/date-marks";
 
+import { DateBox } from "./date-box";
 import { DatePickerDrawer } from "./date-picker-drawer";
 import { ErrorPanel } from "./error-panel";
 import { Field, FieldGroup } from "./field";
@@ -116,17 +116,13 @@ export function TeacherItems({
               onPick={setDueDate}
             >
               {(opener) => (
-                <span className="relative block">
-                  <input
-                    {...control}
-                    {...opener}
-                    type="date"
-                    value={dueDate}
-                    onChange={(e) => setDueDate(e.target.value)}
-                    className={`${control.className} cursor-pointer pr-10 [&::-webkit-calendar-picker-indicator]:hidden`}
-                  />
-                  <CalendarDays aria-hidden="true" className="pointer-events-none absolute top-1/2 right-0 size-[18px] -translate-y-1/2 text-app-accent" />
-                </span>
+                <DateBox
+                  opener={opener}
+                  id={control.id}
+                  value={dueDate}
+                  describedBy={`${control["aria-describedby"] ?? ""} ${control.id}-value`.trim()}
+                  className={`${control.className} cursor-pointer`}
+                />
               )}
             </DatePickerDrawer>
           )}

@@ -41,3 +41,17 @@ export async function signInTeacher(page: Page) {
   }
   await expect(page).toHaveURL(/\/teach$/);
 }
+
+/**
+ * Sets a date the only way the page allows (plan date-picker-drawer C-35, C-41): open the date button, type the date
+ * day first into the drawer's "Type a date" field, and press Enter to use it. Nothing is typed on the page itself.
+ */
+export async function setDate(page: Page, label: string, iso: string) {
+  await page.getByLabel(label, { exact: true }).click();
+  const drawer = page.getByRole("dialog");
+  const [year, month, day] = iso.split("-");
+  const field = drawer.getByRole("textbox", { name: "Type a date" });
+  await field.fill(`${day}${month}${year}`);
+  await field.press("Enter");
+  await expect(drawer).toHaveCount(0);
+}

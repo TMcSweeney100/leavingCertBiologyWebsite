@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
@@ -27,7 +27,7 @@ const draw = (value: string, onPick = vi.fn()) =>
       {(opener) => (
         <>
           <label htmlFor="d">Stage 4 date</label>
-          <input id="d" type="date" value={value} onChange={() => {}} {...opener} />
+          <button id="d" type="button" {...opener}>{value || "Choose a date"}</button>
         </>
       )}
     </DatePickerDrawer>,
@@ -61,6 +61,7 @@ describe("DatePickerDrawer", () => {
     await userEvent.click(within(dialog).getByRole("button", { name: "Friday 30 October 2026" }));
     expect(onPick).not.toHaveBeenCalled();
     expect(within(dialog).getByText("Fri 30 Oct 2026")).toBeInTheDocument();
+    expect(within(dialog).getByRole("textbox", { name: "Type a date" })).toHaveValue("30/10/2026");
     await userEvent.click(within(dialog).getByRole("button", { name: "Use this date" }));
     expect(onPick).toHaveBeenCalledWith("2026-10-30");
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
@@ -103,12 +104,51 @@ describe("DatePickerDrawer", () => {
     expect(onPick).not.toHaveBeenCalled();
   });
 
-  it("lets a keyboard user type into the box without opening the drawer, and open it with Alt+Down", async () => {
+  it("opens from the keyboard on the date button", async () => {
     draw("");
-    act(() => box().focus());
-    await userEvent.keyboard("2026");
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    await userEvent.keyboard("{Alt>}{ArrowDown}{/Alt}");
+    box().focus();
+    await userEvent.keyboard("{Enter}");
     expect(await screen.findByRole("dialog", { name: "Choose the Stage 4 date" })).toBeInTheDocument();
+  });
+
+  it("typing a date selects it, and Enter uses it", async () => {
+    const onPick = vi.fn();
+    draw("2026-10-16", onPick);
+    await userEvent.click(box());
+    const dialog = await screen.findByRole("dialog");
+    const field = within(dialog).getByRole("textbox", { name: "Type a date" });
+    expect(field).toHaveValue("16/10/2026");
+    await userEvent.clear(field);
+    await userEvent.type(field, "30102026");
+    expect(field).toHaveValue("30/10/2026");
+    expect(within(dialog).getByText("Fri 30 Oct 2026")).toBeInTheDocument();
+    await userEvent.keyboard("{Enter}");
+    expect(onPick).toHaveBeenCalledWith("2026-10-30");
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+  });
+
+  it("refuses a typed date after the completion date, like a greyed day", async () => {
+    draw("2026-10-16");
+    await userEvent.click(box());
+    const dialog = await screen.findByRole("dialog");
+    await userEvent.clear(within(dialog).getByRole("textbox", { name: "Type a date" }));
+    await userEvent.type(within(dialog).getByRole("textbox", { name: "Type a date" }), "28112026");
+    expect(
+      within(dialog).getByText("Sat 28 Nov 2026 is after the completion date, Fri 27 Nov 2026. Nothing can be set after it."),
+    ).toHaveAttribute("role", "status");
+    expect(within(dialog).getByRole("button", { name: "Use this date" })).toBeDisabled();
+  });
+
+  it("says a half-typed date isn't one, but only once you leave the field", async () => {
+    draw("2026-10-16");
+    await userEvent.click(box());
+    const dialog = await screen.findByRole("dialog");
+    const field = within(dialog).getByRole("textbox", { name: "Type a date" });
+    await userEvent.clear(field);
+    await userEvent.type(field, "1610");
+    expect(within(dialog).queryByText(/isn't a date/)).not.toBeInTheDocument();
+    await userEvent.tab();
+    expect(within(dialog).getByText("That isn't a date. Type day, month, year, like 16/10/2026.")).toBeInTheDocument();
+    expect(field).toHaveAttribute("aria-invalid", "true");
   });
 });

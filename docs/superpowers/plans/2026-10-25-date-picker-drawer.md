@@ -2817,6 +2817,49 @@ git commit -m "Prove the reworked date drawer in the journey, and record pack D-
 
 ---
 
+## Part 3: one control per date (added 26 Oct 2026)
+
+**Why.** Tim, looking at Part 2 in his own browser: the date box showed two calendar icons (the browser's own, which only Chromium lets us hide, and ours), and he didn't want dates changed by typing on the page at all. A date is chosen in the drawer, always; typing moves into the drawer.
+
+**Goal:** the page's date box is one control that only opens the drawer; the drawer's footer gets a `Type a date` field.
+
+| # | What happens | Why it matters to you |
+|---|---|---|
+| C-35 | **The box becomes a `<button>`**, not an `<input type="date">`. It shows `16/10/2026`, or `Choose a date` in grey, with our one calendar icon. Click, tap, Enter or Space opens the drawer. Nothing is typed on the page. Alt+Down goes: a button doesn't need it. | One icon in every browser (a button has no native picker icon to hide), and no way to change a date without seeing the calendar. Replaces C-10 and the typing half of C-21. |
+| C-36 | **Name and value.** The name stays `Stage 4 date` (the sr-only `<label for>`). The value reaches a screen reader as the button's description (`aria-describedby`): the line under the box on a stage row (`Fri 16 Oct 2026 · not saved`), the box's own text on the item form. | A button named by a label doesn't read its own text, so without this a screen reader user would hear no date. |
+| C-37 | **`Type a date`**, in the drawer's footer above the gaps: `dd/mm/yyyy`, digits only, the slashes added as you type (a phone's number pad has no slash); a pasted `2026-10-16` is accepted. A complete, real date selects it (the pin, the month and the footer move to it); anything else leaves no pick, so `Use this date` stays off. Enter in the field uses the date. A tap on a day writes it into the field. | The keyboard route and the tap route end in the same place: a selected day, confirmed with `Use this date`. |
+| C-38 | A typed date **after the completion date** is refused like a greyed day: nothing is selected and the footer says `Sat 27 Feb 2027 is after the completion date, Fri 26 Feb 2027. Nothing can be set after it.` | One rule, one sentence, wherever the date came from. |
+| C-39 | **Not a date**: when the field loses focus holding something that isn't one (`31/02/2026`, `16/10`), it says `That isn't a date. Type day, month, year, like 16/10/2026.` (`aria-invalid`, in its description). Nothing is said while you're still typing. | No scolding mid-keystroke. |
+| C-40 | **`max` goes** from the page's boxes. The drawer is the only way to set a date and it can't pick after the completion date. The red "server refused" state stays (the completion date can move while a page is open); its spec mocks the refusal, and the journey intercepts the save. | The page can no longer produce a date the server would refuse, so the one e2e step that typed `2027-03-05` has to simulate it. |
+| C-41 | **Tests set dates through the drawer.** Specs and the journey get one helper each: open the box, type into `Type a date`, press Enter. | The old `fill("2026-10-16")` on the box is gone with the input. |
+
+**Concepts in play (Part 3).**
+
+| Concept | What it is | Why it fits here | Where this repo already uses it |
+|---|---|---|---|
+| An input mask in a controlled input | The change handler keeps only digits and puts the separators back, so the field's value is always a prefix of `dd/mm/yyyy` | A phone's number pad has no `/`, and the parser then only ever sees one shape | `components/app/join-code-form.tsx` (typed code normalised to one shape before it's used); here it will be `lib/app/typed-date.ts` |
+| Button vs input for "opens something" | An `<input>` says "type here"; a `<button aria-haspopup="dialog">` says "this opens a dialog" | The box no longer accepts typing, so it should not announce itself as an input | `components/app/request-drawer.tsx` (a `DrawerTrigger` button that opens the review drawer) |
+| `aria-describedby` for a value | A control's name says what it is; its description is read after, so the current value goes there | Keeps `getByLabel("Stage 4 date")` stable while the date is still announced | `components/app/stage-dates-form.tsx` (the refusal note) |
+
+### Task 16: `lib/app/typed-date.ts`
+
+- Test first (`node --test`): `typedFromInput` keeps digits and adds slashes (`1610` → `16/10`, `16102026` → `16/10/2026`, over-long input cut at eight digits, `2026-10-16` → `16/10/2026`); `parseTypedDate` gives an ISO date only for a complete real date (`16/10/2026` → `2026-10-16`; `31/02/2026`, `16/10`, `` → null); `typedDate` turns an ISO date back (`2026-10-16` → `16/10/2026`).
+
+### Task 17: the drawer's `Type a date` field
+
+- `DatePickerDrawer` holds `typed` beside `selected`; reset on open to the box's value. A tap writes `typedDate(iso)` into it. Typing runs `typedFromInput`, then `parseTypedDate`: real and on or before the completion date selects and moves the month; real but after it sets `refused`; anything else clears `selected`. The error line shows on blur only. Enter calls `Use this date` when something is selected.
+- Specs (lean): typing a date selects it and `Use this date` hands it back; a typed date after the completion date is refused; a half-typed date says it isn't one after blur.
+
+### Task 18: the boxes become buttons
+
+- `DateBoxOpener` drops `onMouseDown`/`onKeyDown` and types its ref for a button. `StageDateRow` and `TeacherItems` render a `<button type="button">` with the icon; the box text has an id the description can point at.
+- Specs: `getByLabel("Stage 4 date")` is a button now: values are read as text (`16/10/2026`), "typing" becomes the helper, the `max` spec is removed, the not-saved description and red-refusal specs keep their words.
+
+### Task 19: the journey, the docs, verify
+
+- `e2e/helpers.ts` gets `setDate(page, label, iso)`; `phase2`, `phase4` and `ready-for-signoff` use it; the late-date step in `phase2` intercepts the save instead.
+- `docs/ARCHITECTURE.md`, `docs/PILOT-ROADMAP.md` §6.2, `docs/HANDOFF.md`; run `make verify` and `make e2e`, and look at it in a browser.
+
 ## Not in this plan
 
 - The stage sheet (click a stage heading, a right-hand sheet with its items). Next, built on `DateCalendar` and `YearLine`.

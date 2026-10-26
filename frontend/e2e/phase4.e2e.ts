@@ -1,6 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { TEACHER, expectAccessible, phone, signInTeacher } from "./helpers";
+import { TEACHER, expectAccessible, phone, setDate, signInTeacher } from "./helpers";
 
 /**
  * Gate P4 (roadmap §8.4): the teacher signs off a checkpoint and, after Re-sort, that student moves down the grid
@@ -44,7 +44,7 @@ test("a class with Stage 1 due and two approved students", async ({ page: teache
   await teacher.getByRole("button", { name: "Create" }).click();
   await teacher.getByRole("link", { name: "Component" }).click();
   await teacher.getByRole("button", { name: "Create component" }).click();
-  await teacher.getByLabel("Stage 1 date", { exact: true }).fill("2026-09-01");
+  await setDate(teacher, "Stage 1 date", "2026-09-01");
   await Promise.all([
     teacher.waitForResponse((r) => r.url().includes("/stage-dates") && r.request().method() === "PUT"),
     teacher.getByRole("button", { name: "Save dates" }).click(),

@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -41,10 +41,16 @@ const allSix = () => component({
 
 const render5 = (c: TeacherComponent = component()) => render(<StageDatesForm component={c} today={TODAY} />);
 
-// Typing from the keyboard, not a click: a click on a date box opens the calendar drawer.
-async function typeDate(label: string, value: string) {
-  act(() => screen.getByLabelText(label).focus());
-  await userEvent.keyboard(value);
+// A date is set in the drawer (plan date-picker-drawer C-35, C-41): open the box, type it day first, press Enter.
+async function setDate(label: string, iso: string) {
+  await userEvent.click(screen.getByLabelText(label));
+  const dialog = await screen.findByRole("dialog");
+  const [year, month, day] = iso.split("-");
+  const field = within(dialog).getByRole("textbox", { name: "Type a date" });
+  await userEvent.clear(field);
+  await userEvent.type(field, `${day}${month}${year}`);
+  await userEvent.keyboard("{Enter}");
+  await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
 }
 
 beforeEach(() => {
@@ -60,10 +66,10 @@ describe("StageDatesForm", () => {
 
   // D-5 makes the visible stage name the row's content, not the field's label: every input gets its
   // own visually-hidden label naming the stage, so a screen reader hears "Stage 3 date".
-  it("labels each date input by its stage, and shows hours, supervision and the checkpoint", () => {
+  it("labels each date box by its stage, and shows hours, supervision and the checkpoint", () => {
     render5();
-    expect(screen.getByLabelText("Stage 3 date")).toHaveValue("2026-09-25");
-    expect(screen.getByLabelText("Stage 4 date")).toHaveValue("");
+    expect(screen.getByLabelText("Stage 3 date")).toHaveTextContent("25/09/2026");
+    expect(screen.getByLabelText("Stage 4 date")).toHaveTextContent("Choose a date");
     expect(screen.getByText(/supervised/i)).toBeInTheDocument();
     expect(screen.getAllByText("1–2 hours").length).toBeGreaterThan(0);
     expect(screen.getByText(/Checkpoint: Plan discussed with the teacher/)).toBeInTheDocument();
@@ -78,7 +84,7 @@ describe("StageDatesForm", () => {
   it("saves every stage's date in one request, with empty as no date", async () => {
     vi.mocked(api.send).mockResolvedValue(component());
     render5();
-    await typeDate("Stage 4 date", "2026-10-16");
+    await setDate("Stage 4 date", "2026-10-16");
     await userEvent.click(screen.getByRole("button", { name: "Save dates" }));
 
     expect(api.send).toHaveBeenCalledWith("PUT", "/components/k1/stage-dates", {
@@ -95,8 +101,7 @@ describe("StageDatesForm", () => {
   it("always says where the dates stand, beside the button", async () => {
     render5(allSix());
     expect(screen.getByText("All 6 dates saved")).toBeInTheDocument();
-    await userEvent.clear(screen.getByLabelText("Stage 4 date"));
-    await typeDate("Stage 4 date", "2026-10-23");
+    await setDate("Stage 4 date", "2026-10-23");
     expect(screen.getByText("1 date changed, not saved yet")).toBeInTheDocument();
   });
 
@@ -110,8 +115,8 @@ describe("StageDatesForm", () => {
     const message = "Stage 6 is after the completion date, Fri 26 Feb 2027. Choose a date on or before it.";
     vi.mocked(api.send).mockRejectedValue(new ApiError({ status: 400, code: "COMPLETION_DATE_EXCEEDED", title: "t", detail: message, fieldErrors: [{ field: "s6", message }] }));
     render5(allSix());
-    await userEvent.clear(screen.getByLabelText("Stage 6 date"));
-    await typeDate("Stage 6 date", "2027-03-05");
+    // A date after the completion date can't be set from the page; the server's refusal is mocked.
+    await setDate("Stage 6 date", "2027-02-05");
     await userEvent.click(screen.getByRole("button", { name: "Save dates" }));
 
     const panel = await screen.findByRole("alert");
@@ -120,10 +125,7 @@ describe("StageDatesForm", () => {
     expect(within(panel).getByRole("listitem")).toHaveTextContent("Stage 6");
     expect(panel).toHaveFocus();
 
-    const input = screen.getByLabelText("Stage 6 date");
-    expect(input).toHaveAttribute("aria-invalid", "true");
-    expect(input).toHaveAccessibleDescription(message);
-    expect(screen.getByLabelText("Stage 3 date")).not.toHaveAttribute("aria-invalid");
+    expect(screen.getByLabelText("Stage 6 date")).toHaveAccessibleDescription(expect.stringContaining(message));
     expect(screen.getByText("Nothing was saved — your other five dates are unchanged.")).toBeInTheDocument();
   });
 
@@ -151,14 +153,8 @@ describe("StageDatesForm", () => {
     expect(banner).toHaveTextContent("The completion date moved");
     expect(banner).toHaveTextContent("Fri 15 Jan 2027");
     expect(screen.getByText("Stage 6 is after the new completion date, Fri 15 Jan 2027. Choose a date on or before it.")).toBeInTheDocument();
-    expect(screen.getByLabelText("Stage 6 date")).not.toHaveAttribute("aria-invalid");
+    expect(screen.getByLabelText("Stage 6 date")).toHaveAccessibleDescription(expect.stringContaining("Stage 6 is after the new completion date"));
     expect(screen.getByText("Saved. One date needs fixing.")).toBeInTheDocument();
-  });
-
-  it("keeps the max date as a hint that cannot block a submit the server should refuse", () => {
-    render5();
-    expect(screen.getByLabelText("Stage 3 date")).toHaveAttribute("max", "2027-02-26");
-    expect(screen.getByRole("button", { name: "Save dates" }).closest("form")).toHaveAttribute("noValidate");
   });
 
   it("offers the year view, and a summary of the year for when it is closed", () => {
@@ -170,14 +166,14 @@ describe("StageDatesForm", () => {
   it("says it's saving the dates while the request is in flight", async () => {
     vi.mocked(api.send).mockReturnValue(new Promise(() => {}));
     render5();
-    await typeDate("Stage 4 date", "2026-10-16");
+    await setDate("Stage 4 date", "2026-10-16");
     await userEvent.click(screen.getByRole("button", { name: "Save dates" }));
 
     expect(screen.getByRole("button", { name: "Saving dates…" })).toBeDisabled();
   });
   it("opens the calendar from a click on a date box, shows another stage's unsaved date, and a pick fills the box without saving", async () => {
     render5();
-    await typeDate("Stage 4 date", "2026-10-16");
+    await setDate("Stage 4 date", "2026-10-16");
     await userEvent.click(screen.getByLabelText("Stage 5 date"));
     const dialog = await screen.findByRole("dialog", { name: "Choose the Stage 5 date" });
     // No date yet, so it opens on today's month, September; the arrow goes on to October.
@@ -187,20 +183,20 @@ describe("StageDatesForm", () => {
     await userEvent.click(within(dialog).getByRole("button", { name: "Friday 23 October 2026" }));
     await userEvent.click(within(dialog).getByRole("button", { name: "Use this date" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
-    expect(screen.getByLabelText("Stage 5 date")).toHaveValue("2026-10-23");
+    expect(screen.getByLabelText("Stage 5 date")).toHaveTextContent("23/10/2026");
     expect(api.send).not.toHaveBeenCalled();
   });
 
-  it("says on the row that a typed date isn't saved yet", async () => {
+  it("says on the row that a chosen date isn't saved yet, and reads every date after the box's name", async () => {
     render5();
-    await typeDate("Stage 4 date", "2026-10-16");
+    await setDate("Stage 4 date", "2026-10-16");
     expect(screen.getByLabelText("Stage 4 date")).toHaveAccessibleDescription("Fri 16 Oct 2026 · not saved");
-    expect(screen.getByLabelText("Stage 3 date")).not.toHaveAttribute("aria-describedby");
+    expect(screen.getByLabelText("Stage 3 date")).toHaveAccessibleDescription("Fri 25 Sept 2026");
   });
 
   it("puts a date that isn't saved yet on the year view, dashed", async () => {
     render5();
-    await typeDate("Stage 4 date", "2026-10-16");
+    await setDate("Stage 4 date", "2026-10-16");
     const line = screen.getByRole("img", { name: /Your dates across the year/ });
     expect(within(line).getByText("S4")).toHaveAttribute("data-saved", "false");
   });

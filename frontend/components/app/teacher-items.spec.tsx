@@ -141,7 +141,7 @@ describe("TeacherItems", () => {
     await userEvent.click(within(dialog).getByRole("button", { name: "Friday 23 October 2026" }));
     await userEvent.click(within(dialog).getByRole("button", { name: "Use this date" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
-    expect(screen.getByLabelText("Date (optional)")).toHaveValue("2026-10-23");
+    expect(screen.getByLabelText("Date (optional)")).toHaveTextContent("23/10/2026");
     await userEvent.click(screen.getByRole("button", { name: "Save item" }));
     expect(api.send).toHaveBeenCalledWith("POST", "/components/k1/teacher-items",
       { stageId: "s4", text: "Lab notebooks in", dueDate: "2026-10-23" }, expect.anything());

@@ -1,6 +1,5 @@
 "use client";
 
-import { CalendarDays } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FormEvent, Fragment, useEffect, useMemo, useState } from "react";
 
@@ -18,6 +17,7 @@ import {
 } from "@/lib/app/component-setup";
 import { type DateMark, dateMarks } from "@/lib/app/date-marks";
 
+import { DateBox } from "./date-box";
 import { DatePickerDrawer } from "./date-picker-drawer";
 import { ErrorPanel } from "./error-panel";
 import { MarkTag } from "./mark-tag";
@@ -204,8 +204,7 @@ export function StageDatesForm({ component, today }: { component: TeacherCompone
         />
       )}
 
-      {/* noValidate: the `max` hint must not block a submit the server is meant to refuse (root CLAUDE.md). */}
-      <form onSubmit={save} noValidate className="flex flex-col gap-4">
+      <form onSubmit={save} className="flex flex-col gap-4">
         <div className="overflow-hidden rounded-app-card border border-app-field-border bg-app-surface">
           {component.stages.map((stage, index) => (
             <Fragment key={stage.id}>
@@ -304,7 +303,8 @@ function StageDateRow({
   const label = stage.label ?? stage.name;
   const problem = refusal ?? movedMessage;
   const noteId = problem ? `${id}-note` : undefined;
-  // C-33: a date typed or picked but not saved yet is dashed, and the line under the box says so. Red wins.
+  // C-33: a date picked but not saved yet is dashed, and the line under the box says so. Red wins. That line is also
+  // what a screen reader hears after the button's name (C-36).
   const unsaved = !refusal && value !== "" && value !== (stage.dueDate ?? "");
   const whenId = `${id}-when`;
   const tone = refusal
@@ -360,20 +360,13 @@ function StageDateRow({
           onPick={onChange}
         >
           {(opener) => (
-            <span className="relative block md:inline-block">
-              <input
-                {...opener}
-                id={id}
-                type="date"
-                max={max}
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                aria-invalid={refusal ? true : undefined}
-                aria-describedby={noteId ?? (unsaved ? whenId : undefined)}
-                className={`min-h-11 w-full cursor-pointer rounded-app-control border bg-app-surface py-2.5 pr-10 pl-3 text-app-base text-app-ink hover:border-app-accent hover:bg-app-accent-tint md:min-h-0 md:w-[176px] md:py-2 md:pl-2.5 [&::-webkit-calendar-picker-indicator]:hidden ${unsaved ? "border-dashed border-app-accent" : inputBorder}`}
-              />
-              <CalendarDays aria-hidden="true" className="pointer-events-none absolute top-1/2 right-2.5 size-[18px] -translate-y-1/2 text-app-accent" />
-            </span>
+            <DateBox
+              opener={opener}
+              id={id}
+              value={value}
+              describedBy={noteId ? `${noteId} ${whenId}` : whenId}
+              className={`w-full cursor-pointer py-2.5 pr-2.5 pl-3 hover:border-app-accent hover:bg-app-accent-tint md:min-h-0 md:w-[176px] md:py-2 md:pl-2.5 ${unsaved ? "border-dashed border-app-accent" : inputBorder}`}
+            />
           )}
         </DatePickerDrawer>
         <span id={whenId} className={`text-app-small md:text-right ${refusal ? "text-app-error-hover" : "text-app-muted"}`}>
