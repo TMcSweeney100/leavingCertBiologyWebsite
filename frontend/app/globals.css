@@ -83,7 +83,10 @@
   --radius-app-card: var(--app-radius-card);
   --radius-app-control: var(--app-radius-control);
   --radius-app-inner: var(--app-radius-inner);
+  --radius-app-tag: var(--app-radius-tag);
   --ease-app: var(--app-ease);
+  --ease-app-sheet: var(--app-sheet-ease);
+  --ease-app-sheet-exit: var(--app-sheet-ease-exit);
 
   /* Pack D-3 (docs/design/pilot/D-3-student-component/tokens.css) — stage state on the
      student component page. Additions only; no --bipi-* value touched. */
@@ -114,6 +117,11 @@
   --color-app-request-rule: var(--app-request-rule);
   --color-app-scrim: var(--app-scrim);
   --color-app-signed-recent: var(--app-signed-recent);
+  --color-app-pick: var(--app-pick);
+  --color-app-pick-hover: var(--app-pick-hover);
+  --color-app-pick-tint: var(--app-pick-tint);
+  --color-app-today: var(--app-today);
+  --color-app-today-ring: var(--app-today-ring);
 }
 
 @theme {
@@ -331,6 +339,18 @@
   --app-request-rule: #CFD8E8;      /* hairline above "No link" inside the block */
   --app-scrim: rgb(16 20 25 / .36); /* behind the history sheet */
   --app-sheet-width: 520px;
+  /* Pack D-11 — the date picker drawer. Azure is "your pick", gold is "today"; neither is a state.
+     Ratios measured; full notes in docs/design/pilot/D-11-date-picker-drawer/tokens.css. */
+  --app-pick: #0A6AA8;              /* 5.77:1; white on it 5.77:1; 5.03:1 on --app-pick-tint */
+  --app-pick-hover: #08578A;        /* white on it 7.66:1 */
+  --app-pick-tint: #E6F1F9;         /* the run back to the stage before; ink 16.12:1, muted 4.71:1 on it */
+  --app-today: #FFC94D;             /* the today disc, a ground for ink (12.07:1) */
+  --app-today-ring: #A87400;        /* its ring and the dashed today line; 4.07:1 on white, 3.55:1 on pick-tint */
+  --app-radius-tag: 3px;            /* mark tags (S4, +2) */
+  --app-sheet-duration: 300ms;      /* every right-hand drawer slides in on this (C-30)… */
+  --app-sheet-ease: cubic-bezier(.32, .72, 0, 1);
+  --app-sheet-duration-exit: 200ms; /* …and out on this */
+  --app-sheet-ease-exit: cubic-bezier(.4, 0, 1, 1);
   --app-ready-tint: var(--app-accent-tint); /* Ready cell ground; navy on it 10.20:1 */
   --app-signed: var(--app-done);         /* 8.04:1 on white; 7.36:1 on --app-done-ground */
   --app-signed-recent: var(--app-done-ground); /* a cell signed off this visit (offers Undo); navy on it 10.18:1 */
@@ -400,6 +420,8 @@
 @media (prefers-reduced-motion: reduce) {
   :root {
     --app-duration: 0ms;
+    --app-sheet-duration: 0ms;
+    --app-sheet-duration-exit: 0ms;
   }
 }
 
