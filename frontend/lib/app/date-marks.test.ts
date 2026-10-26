@@ -1,6 +1,6 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
-import { calendarMonths, dateMarks, dayName, isoToLocalDate, localDateToIso } from './date-marks.ts';
+import { calendarMonths, dateMarks, dayName, gapWords, isoToLocalDate, localDateToIso, pickReadout, runStart } from './date-marks.ts';
 
 const stage = (n: number, dueDate: string | null, items: { id: string; text: string; dueDate: string | null }[] = []) => ({
   id: `s${n}`, ordinal: n, label: `Stage ${n}`, name: `Name ${n}`, dueDate, items,
@@ -22,12 +22,12 @@ describe('isoToLocalDate and localDateToIso', () => {
 describe('dateMarks', () => {
   test('a saved stage date is a saved stage mark', () => {
     const marks = dateMarks([stage(3, '2026-09-25')], { s3: '2026-09-25' }, '2027-02-26');
-    assert.deepEqual(marks[0], { iso: '2026-09-25', kind: 'stage', short: 'S3', name: 'Stage 3', saved: true });
+    assert.deepEqual(marks[0], { iso: '2026-09-25', kind: 'stage', short: 'S3', name: 'Stage 3', saved: true, ordinal: 3 });
   });
 
   test('a typed but unsaved stage date is marked not saved, at the typed date', () => {
     const marks = dateMarks([stage(4, '2026-10-16')], { s4: '2026-10-23' }, '2027-02-26');
-    assert.deepEqual(marks[0], { iso: '2026-10-23', kind: 'stage', short: 'S4', name: 'Stage 4 (not saved)', saved: false });
+    assert.deepEqual(marks[0], { iso: '2026-10-23', kind: 'stage', short: 'S4', name: 'Stage 4 (not saved)', saved: false, ordinal: 4 });
   });
 
   test('a stage cleared in the draft has no mark, and a stage missing from the draft uses its saved date', () => {
@@ -105,5 +105,31 @@ describe('calendarMonths', () => {
 
   test('one month when everything is in the same month', () => {
     assert.deepEqual(calendarMonths(['2026-10-20'], '2026-10-14', '2026-10-30'), { start: '2026-10-01', count: 1 });
+  });
+});
+
+describe('the footer: gapWords, pickReadout, runStart', () => {
+  const marks = dateMarks([stage(3, '2026-11-06'), stage(4, '2026-11-27'), stage(5, '2027-01-15'), stage(6, null)], {}, '2027-02-26');
+  const words = (r: { gaps: { amount: string; rest: string }[] }) => r.gaps.map((g) => `${g.amount} ${g.rest}`);
+
+  test('exact days under three weeks, whole weeks from there', () => {
+    assert.deepEqual([1, 13, 21, 57].map(gapWords), ['1 day', '13 days', '3 weeks', '8 weeks']);
+  });
+
+  test('a stage: the gap back to the stage before (the run) and on to the stage after', () => {
+    assert.deepEqual(words(pickReadout(marks, { kind: 'stage', ordinal: 4 }, '2026-11-19', '2027-02-26')), ['13 days after Stage 3', '8 weeks before Stage 5']);
+    assert.equal(runStart(marks, { kind: 'stage', ordinal: 4 }, '2026-11-19'), '2026-11-06');
+  });
+
+  test('with no later dated stage the gap is to the completion date; before the stage before, it asks', () => {
+    assert.deepEqual(words(pickReadout(marks, { kind: 'stage', ordinal: 6 }, '2027-02-26', '2027-02-26')), ['6 weeks after Stage 5', 'On the completion date']);
+    assert.deepEqual(pickReadout(marks, { kind: 'stage', ordinal: 4 }, '2026-11-02', '2027-02-26').asks, [
+      "Before Stage 3 (Fri 6 Nov). That's allowed, but check it's what you meant.",
+    ]);
+  });
+
+  test('an item: the nearest dated stages either side, and no run', () => {
+    assert.deepEqual(words(pickReadout(marks, { kind: 'item' }, '2026-12-04', '2027-02-26')), ['7 days after Stage 4', '6 weeks before Stage 5']);
+    assert.equal(runStart(marks, { kind: 'item' }, '2026-12-04'), null);
   });
 });

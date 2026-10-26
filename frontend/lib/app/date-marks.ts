@@ -1,4 +1,4 @@
-import { letteredItems, type StageLike } from './component-setup.ts';
+import { letteredItems, shortWeekdayDate, type StageLike } from './component-setup.ts';
 
 /** One thing on one day of the date picker's calendar (plan date-picker-drawer, C-13 and C-14). */
 export type DateMark = {
@@ -9,6 +9,8 @@ export type DateMark = {
   /** What the day's accessible name says about it: "Stage 4 (not saved)", "item B", "the completion date". */
   name: string;
   saved: boolean;
+  /** A stage's number, so the footer can find the stages either side of the one being picked (C-31). */
+  ordinal?: number;
 };
 
 const FULL_DATE = new Intl.DateTimeFormat('en-IE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
@@ -41,7 +43,7 @@ export function dateMarks(stages: ReadonlyArray<StageLike>, draft: Record<string
     if (!iso) continue;
     const saved = iso === stage.dueDate;
     const label = stage.label ?? stage.name;
-    marks.push({ iso, kind: 'stage', short: `S${stage.ordinal}`, name: saved ? label : `${label} (not saved)`, saved });
+    marks.push({ iso, kind: 'stage', short: `S${stage.ordinal}`, name: saved ? label : `${label} (not saved)`, saved, ordinal: stage.ordinal });
   }
   for (const item of letteredItems(stages)) {
     if (!item.dueDate) continue;
@@ -66,4 +68,75 @@ export function calendarMonths(dates: ReadonlyArray<string>, today: string, comp
   const last = all[all.length - 1];
   const months = (iso: string) => Number(iso.slice(0, 4)) * 12 + Number(iso.slice(5, 7)) - 1;
   return { start: `${first.slice(0, 7)}-01`, count: months(last) - months(first) + 1 };
+}
+
+/** What the drawer is choosing a date for. */
+export type Picking = { kind: 'stage'; ordinal: number } | { kind: 'item' };
+
+/** One line of the footer, drawn as "<b>13 days</b> after Stage 3". `run` is the gap drawn in azure. */
+export type Gap = { mark: DateMark; amount: string; rest: string; run: boolean };
+
+const CHECK = "That's allowed, but check it's what you meant.";
+const daysBetween = (from: string, to: string) => Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000);
+
+/** "1 day", "13 days", "3 weeks": exact under three weeks, whole weeks (rounded) from there (C-31). */
+export function gapWords(days: number): string {
+  return days < 21 ? `${days} ${days === 1 ? 'day' : 'days'}` : `${Math.round(days / 7)} weeks`;
+}
+
+/** The nearest dated stages before and after stage `ordinal`, in stage order, saved or not. */
+function neighbours(marks: ReadonlyArray<DateMark>, ordinal: number) {
+  const stages = marks.filter((m) => m.kind === 'stage').sort((a, b) => (a.ordinal ?? 0) - (b.ordinal ?? 0));
+  const before = stages.filter((m) => (m.ordinal ?? 0) < ordinal);
+  return { before: before[before.length - 1] ?? null, after: stages.find((m) => (m.ordinal ?? 0) > ordinal) ?? null };
+}
+
+/** Where the azure run starts: the stage before's date, when it's before the picked day (C-27). Items have none. */
+export function runStart(marks: ReadonlyArray<DateMark>, picking: Picking, selected: string): string | null {
+  if (picking.kind !== 'stage' || !selected) return null;
+  const { before } = neighbours(marks, picking.ordinal);
+  return before && before.iso < selected ? before.iso : null;
+}
+
+/** The footer's words for a picked day (C-31): the gaps either side, anything to check, and what else is on the day. */
+export function pickReadout(
+  marks: ReadonlyArray<DateMark>,
+  picking: Picking,
+  selected: string,
+  completionDate: string,
+): { gaps: Gap[]; asks: string[]; also: string[] } {
+  const gaps: Gap[] = [];
+  const asks: string[] = [];
+  if (picking.kind === 'stage') {
+    const { before, after } = neighbours(marks, picking.ordinal);
+    if (before) {
+      const days = daysBetween(before.iso, selected);
+      if (days > 0) gaps.push({ mark: before, amount: gapWords(days), rest: `after ${before.name}`, run: true });
+      else asks.push(`${days === 0 ? `The same day as ${before.name}.` : `Before ${before.name} (${shortWeekdayDate(before.iso)}).`} ${CHECK}`);
+    }
+    if (after) {
+      const days = daysBetween(selected, after.iso);
+      if (days > 0) gaps.push({ mark: after, amount: gapWords(days), rest: `before ${after.name}`, run: false });
+      else asks.push(`${days === 0 ? `The same day as ${after.name}.` : `After ${after.name} (${shortWeekdayDate(after.iso)}).`} ${CHECK}`);
+    } else {
+      const end: DateMark = marks.find((m) => m.kind === 'completion') ?? { iso: completionDate, kind: 'completion', short: 'End', name: 'the completion date', saved: true };
+      const days = daysBetween(selected, completionDate);
+      gaps.push(days === 0
+        ? { mark: end, amount: 'On', rest: 'the completion date', run: false }
+        : { mark: end, amount: gapWords(days), rest: 'before the completion date', run: false });
+    }
+  } else {
+    const byDate = marks.filter((m) => m.kind === 'stage').sort((a, b) => a.iso.localeCompare(b.iso));
+    const earlier = byDate.filter((m) => m.iso <= selected);
+    const prev = earlier[earlier.length - 1];
+    const next = byDate.find((m) => m.iso > selected);
+    if (prev) {
+      const days = daysBetween(prev.iso, selected);
+      gaps.push({ mark: prev, amount: days === 0 ? 'On' : gapWords(days), rest: days === 0 ? `the same day as ${prev.name}` : `after ${prev.name}`, run: false });
+    }
+    if (next) gaps.push({ mark: next, amount: gapWords(daysBetween(selected, next.iso)), rest: `before ${next.name}`, run: false });
+  }
+  const own = picking.kind === 'stage' ? picking.ordinal : null;
+  const also = marks.filter((m) => m.iso === selected && !(m.kind === 'stage' && m.ordinal === own)).map((m) => m.name);
+  return { gaps, asks, also };
 }
