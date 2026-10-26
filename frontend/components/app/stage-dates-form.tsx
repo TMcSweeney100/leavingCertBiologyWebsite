@@ -123,6 +123,7 @@ export function StageDatesForm({ component, today }: { component: TeacherCompone
   const yearView = (
     <YearView
       stages={drafted}
+      marks={marks}
       completionDate={component.brief.completionDate}
       today={today}
       attentionStageIds={attentionStageIds}

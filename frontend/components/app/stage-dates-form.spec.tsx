@@ -189,11 +189,10 @@ describe("StageDatesForm", () => {
     expect(api.send).not.toHaveBeenCalled();
   });
 
-  it("puts a date that isn't saved yet on the year view's calendar", async () => {
+  it("puts a date that isn't saved yet on the year view, dashed", async () => {
     render5();
     await typeDate("Stage 4 date", "2026-10-16");
-    await userEvent.click(screen.getByRole("button", { name: "Show calendar" }));
-    await userEvent.click(screen.getByRole("button", { name: "October 2026" }));
-    expect(screen.getByTitle("Stage 4, Name 4")).toBeInTheDocument();
+    const line = screen.getByRole("img", { name: /Your dates across the year/ });
+    expect(within(line).getByText("S4")).toHaveAttribute("data-saved", "false");
   });
 });

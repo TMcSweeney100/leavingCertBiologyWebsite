@@ -1,6 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+
+import { dateMarks } from "@/lib/app/date-marks";
 
 import { YearView } from "./year-view";
 
@@ -23,6 +24,7 @@ const view = (props: Partial<Parameters<typeof YearView>[0]> = {}) =>
   render(
     <YearView
       stages={stages()}
+      marks={dateMarks(props.stages ?? stages(), {}, COMPLETION)}
       completionDate={COMPLETION}
       today={TODAY}
       attentionStageIds={[]}
@@ -40,13 +42,15 @@ describe("YearView", () => {
     expect(key).toHaveTextContent("Stage date, numbered by the SEC");
     expect(key).toHaveTextContent("Your item, lettered by date");
     expect(key).toHaveTextContent("Completion date, 26 Feb 2027");
+    expect(key).toHaveTextContent("Not saved yet");
+    expect(key).toHaveTextContent("Today");
   });
 
   it("puts every dated stage on the line, in date order, with the weeks between", () => {
     view();
     const line = screen.getByRole("img", { name: /Your dates across the year/ });
-    expect(within(line).getByText("1")).toBeInTheDocument();
-    expect(within(line).getByText("6")).toBeInTheDocument();
+    expect(within(line).getByText("S1")).toBeInTheDocument();
+    expect(within(line).getByText("S6")).toBeInTheDocument();
     expect(within(line).getByText("16 weeks")).toBeInTheDocument();
     expect(within(line).getByText("9 weeks")).toBeInTheDocument();
   });
@@ -60,24 +64,9 @@ describe("YearView", () => {
     expect(rows[2]).toHaveTextContent("No date · stage 4 · not shown on the line");
   });
 
-  it("opens the calendar on the current month and steps a month at a time", async () => {
+  it("has no calendar of its own: the date drawer is the calendar", () => {
     view();
-    await userEvent.click(screen.getByRole("button", { name: "Show calendar" }));
-    expect(screen.getByRole("heading", { name: "November 2026" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "October 2026" })).toBeInTheDocument();
-
-    await userEvent.click(screen.getByRole("button", { name: "December 2026" }));
-    expect(screen.getByRole("heading", { name: "December 2026" })).toBeInTheDocument();
-  });
-
-  it("shows what falls in the month, read-only, and says dates are set below", async () => {
-    view();
-    await userEvent.click(screen.getByRole("button", { name: "Show calendar" }));
-    const grid = screen.getByRole("table", { name: "November 2026" });
-    expect(grid).toHaveTextContent("Stage 5");
-    expect(grid).toHaveTextContent("Catch-up window closes");
-    expect(within(grid).queryAllByRole("button")).toHaveLength(0);
-    expect(screen.getByText("Read-only. Dates are set in the rows below; nothing may be set after 26 Feb 2027.")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Show calendar" })).not.toBeInTheDocument();
   });
 
   it("says the line is empty rather than drawing nothing", () => {
