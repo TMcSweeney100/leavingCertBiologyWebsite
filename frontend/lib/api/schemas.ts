@@ -93,11 +93,15 @@ export type BriefSummary = z.infer<typeof briefSummarySchema>;
 export const teacherItemSchema = z.object({ id: z.string(), text: z.string(), dueDate: z.string().nullable() });
 export type TeacherItem = z.infer<typeof teacherItemSchema>;
 
+// Mirrors ComponentViews.PromptView; both the teacher's and the student's stages carry them.
+const promptSchema = z.object({ heading: z.string().nullable(), text: z.string() });
+
 export const setupStageSchema = z.object({
   id: z.string(),
   ordinal: z.number(),
   label: z.string().nullable(),
   name: z.string(),
+  description: z.string(),
   hoursMin: z.number().nullable(),
   hoursMax: z.number().nullable(),
   hoursGroup: z.string().nullable(),
@@ -105,6 +109,7 @@ export const setupStageSchema = z.object({
   checkpoint: z.string().nullable(),
   dueDate: z.string().nullable(),
   items: z.array(teacherItemSchema),
+  prompts: z.array(promptSchema),
 });
 export type SetupStage = z.infer<typeof setupStageSchema>;
 
@@ -164,7 +169,7 @@ export const studentStageSchema = z.object({
     request: openRequestSchema.nullable(), answers: z.array(answerSchema),
   }).nullable(),
   items: z.array(z.object({ id: z.string(), text: z.string(), dueDate: z.string().nullable(), done: z.boolean(), doneOn: z.string().nullable() })),
-  prompts: z.array(z.object({ heading: z.string().nullable(), text: z.string() })),
+  prompts: z.array(promptSchema),
 });
 export type StudentStage = z.infer<typeof studentStageSchema>;
 

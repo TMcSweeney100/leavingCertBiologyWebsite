@@ -345,9 +345,14 @@ public class ComponentService {
                 .collect(Collectors.groupingBy(TeacherItem::stageId,
                         Collectors.mapping(i -> new TeacherItemView(i.id(), i.text(), i.dueDate()), Collectors.toList())));
 
+        Map<UUID, List<PromptView>> prompts = templates.prompts(brief.versionId()).stream()
+                .collect(Collectors.groupingBy(TemplatePrompt::stageId, LinkedHashMap::new,
+                        Collectors.mapping(p -> new PromptView(p.heading(), p.text()), Collectors.toList())));
+
         List<SetupStage> setup = stages.stream().map(s -> new SetupStage(s.id(), s.ordinal(), s.label(), s.name(),
-                s.hoursMin(), s.hoursMax(), s.hoursGroup(), s.supervised(), checkpoints.get(s.id()), dates.get(s.id()),
-                itemsByStage.getOrDefault(s.id(), List.of()))).toList();
+                s.description(), s.hoursMin(), s.hoursMax(), s.hoursGroup(), s.supervised(), checkpoints.get(s.id()),
+                dates.get(s.id()), itemsByStage.getOrDefault(s.id(), List.of()),
+                prompts.getOrDefault(s.id(), List.of()))).toList();
 
         return new TeacherComponent("TEACHER", owned.component().id(), owned.group().id(), owned.group().name(),
                 brief.subjectCode(), subjects.findById(owned.group().subjectId()).orElseThrow().name(),
