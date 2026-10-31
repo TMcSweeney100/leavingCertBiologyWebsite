@@ -36,6 +36,8 @@ export function StageSheet(props: {
   marks: ReadonlyArray<DateMark>;
   completionDate: string;
   today: string;
+  /** Names a refused field in the error list: Spring keys `COMPLETION_DATE_EXCEEDED` by stage id (S-34). */
+  fieldLabel: (field: string) => string;
   returnFocus: RefObject<HTMLElement | null>;
   onClose: () => void;
 }) {
@@ -64,6 +66,7 @@ function SheetBody({
   marks,
   completionDate,
   today,
+  fieldLabel,
   title,
 }: Parameters<typeof StageSheet>[0] & { stage: Stage; title: RefObject<HTMLHeadingElement | null> }) {
   const id = useId();
@@ -196,7 +199,7 @@ function SheetBody({
           </p>
           {error && (
             <div className="mt-3">
-              <ErrorPanel error={error} focus />
+              <ErrorPanel error={error} fieldLabel={fieldLabel} focus />
             </div>
           )}
         </div>

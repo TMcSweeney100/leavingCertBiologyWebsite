@@ -25,7 +25,7 @@ function renderSheet(props: Partial<Parameters<typeof StageSheet>[0]> = {}) {
   render(
     <StageSheet componentId="k1" stage={stage} stages={[stage]} draft={{ s2: "2026-10-10" }} onDateChange={onDateChange}
       onSaveDate={onSaveDate} marks={[]} completionDate="2027-02-26" today="2026-10-01" returnFocus={createRef()}
-      onClose={vi.fn()} {...props} />,
+      onClose={vi.fn()} fieldLabel={(field) => field} {...props} />,
   );
   return { onDateChange, onSaveDate };
 }
@@ -75,6 +75,20 @@ describe("StageSheet", () => {
 
     expect(onDateChange).toHaveBeenCalledWith("s2", "2026-10-10");
     expect(within(sheet).getByLabelText("Stage date")).toHaveFocus();
+  });
+
+  it("names the stage a refusal is about by its label, not its id", async () => {
+    const refusal = new ApiError({
+      status: 400, code: "COMPLETION_DATE_EXCEEDED", title: "Bad", detail: "A date is after the completion date.",
+      fieldErrors: [{ field: "s5", message: "Choose a date on or before 26 Feb 2027." }],
+    });
+    const { onSaveDate } = renderSheet({ draft: { s2: "2026-10-17" }, fieldLabel: (field) => (field === "s5" ? "Stage 5" : field) });
+    onSaveDate.mockRejectedValueOnce(refusal);
+    const sheet = await screen.findByRole("dialog", { name: "Developing a question" });
+    await userEvent.click(within(sheet).getByRole("button", { name: "Save this date" }));
+
+    expect(await within(sheet).findByText("Stage 5")).toBeInTheDocument();
+    expect(within(sheet).queryByText("s5")).not.toBeInTheDocument();
   });
 
   // The page's refresh lands a round trip after the save, so the draft still differs from the saved date here.

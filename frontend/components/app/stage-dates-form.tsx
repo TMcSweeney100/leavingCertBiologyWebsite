@@ -75,6 +75,7 @@ export function StageDatesForm({
 
   const completion = formatCalendarDate(component.brief.completionDate);
   const byId = useMemo(() => new Map(component.stages.map((s) => [s.id, s])), [component.stages]);
+  const fieldLabel = (field: string) => byId.get(field)?.label ?? field;
   const refused = useMemo(() => new Map((error?.fieldErrors ?? []).map((f) => [f.field, f.message])), [error]);
   const dirty = datesChanged(component.stages, draft);
   const changed = component.stages.filter((s) => (s.dueDate ?? "") !== (draft[s.id] ?? "")).length;
@@ -250,7 +251,7 @@ export function StageDatesForm({
           error={error}
           heading={refused.size > 0 ? "Your dates weren't saved" : undefined}
           summary={refused.size > 0 ? `${WORDS[refused.size] ?? refused.size} date${refused.size === 1 ? "" : "s"} need${refused.size === 1 ? "s" : ""} another look. Nothing was changed.` : undefined}
-          fieldLabel={(field) => byId.get(field)?.label ?? field}
+          fieldLabel={fieldLabel}
           focus
         />
       )}
@@ -312,6 +313,7 @@ export function StageDatesForm({
         marks={marks}
         completionDate={component.brief.completionDate}
         today={today}
+        fieldLabel={fieldLabel}
         returnFocus={sheetOpener}
         onClose={closeSheet}
       />
@@ -395,7 +397,7 @@ function StageDateRow({
             type="button"
             aria-haspopup="dialog"
             onClick={(event) => onOpen(event.currentTarget)}
-            className="w-fit rounded-app-inner text-left text-app-base font-semibold text-app-ink decoration-app-accent underline-offset-3 after:absolute after:inset-0 after:content-[''] hover:underline focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="w-fit cursor-pointer rounded-app-inner text-left text-app-base font-semibold text-app-ink decoration-app-accent underline-offset-3 after:absolute after:inset-0 after:content-[''] hover:underline focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             {stage.name}
             <span aria-hidden="true" className="ml-1.5 font-bold text-app-accent">›</span>
