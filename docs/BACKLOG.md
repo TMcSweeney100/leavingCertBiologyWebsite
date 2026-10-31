@@ -17,9 +17,10 @@ A diff that fits in one sentence skips step 2.
 
 | # | Slug | Feature | Status |
 |---|---|---|---|
-| 1 | `source-builder` | The student's sources become a copyable in-text citation and reference list | built on `pilot/source-builder`, not merged: self-review, changes doc and PR still to do (plan: docs/superpowers/plans/2026-10-25-source-builder.md) |
-| 2 | `ai-use-record` | The student's AI uses become a reference entry and the report's AI appendix block | built on `pilot/source-builder` with source-builder, not merged: self-review, changes doc and PR still to do (plan: docs/superpowers/plans/2026-10-25-ai-use-record.md) |
-| 3 | `date-picker-drawer` | Every date on the teacher's Component tab opens a right-hand calendar showing the component's other dates, saved or not | Part 1 built; Part 2 (pack D-11) built, not merged: self-review, changes doc and PR still to do (intent: docs/intent/date-picker-drawer.md; plan: docs/superpowers/plans/2026-10-25-date-picker-drawer.md) |
+| — | _stage-sheet_ (proposed) | A right-hand stage sheet on the Component tab, where "who ticked each item" comes back | being designed (31 Oct): click a stage to open it; the teacher adds their own note per stage, shown to students alongside the official description, which is never replaced or hidden; the stage's items and who ticked them, added and edited there, so the page's separate item list goes and each stage row shows its item letters. Mockup: `docs/design/pilot/stage-sheet/design/`. Needs a plan |
+| — | _student-preview_ (proposed) | In the stage sheet, a switch the teacher turns on and off to see the stage exactly as students do: the official description, the teacher's note, items, checkpoint and prompts (reusing the student's `StageCard`) | idea only: after stage-sheet |
+
+The three features below are built and merged (see **Done**). Their notes stay here as the record of what was asked and answered.
 
 ### 1. Source builder (`source-builder`)
 
@@ -54,4 +55,7 @@ _To fill in: what came up while using the app by hand._
 |---|---|---|
 | Phases 1–4 | Foundation, components and timeline, the log, the teacher grid | `docs/PILOT-ROADMAP.md` §1, `docs/changes/` |
 | `ready-for-signoff` | The student marks a checkpoint Ready with a note and can withdraw it; the teacher sees a Ready cell, a waiting queue on Progress and a badge per class at `/teach`, and answers Accept or Not yet with a note. Merged into `pilotMain` 25 Oct 2026 | `docs/changes/ready-for-signoff.md` |
+| `source-builder` | A Sources tab per component: each logged source as an NCCA-style in-text citation and reference, Copy citation and Copy reference list, and a live preview in the source form. Merged into `pilotMain` 31 Oct 2026 | `docs/changes/source-builder.md` (not written yet) |
+| `ai-use-record` | AI uses join the Sources page with an "AI use" chip and citation, plus an SEC Appendix 2 table to copy; the greyed AI use tab is gone. Merged with source-builder, 31 Oct 2026 | `docs/changes/ai-use-record.md` (not written yet) |
+| `date-picker-drawer` | Every date on the teacher's Component tab opens a right-hand drawer: the year line over one month, tap then Use this date, typing in the footer, unsaved dates dashed (pack D-11). Merged with source-builder, 31 Oct 2026 | `docs/changes/date-picker-drawer.md` (not written yet) |
 | `document-link` | One link per component to wherever the student's report lives, opened by the teacher from the grid and the student's page; the URL is all that's stored (FR-38 to FR-40). Built inside `ready-for-signoff` | `docs/changes/ready-for-signoff.md` |

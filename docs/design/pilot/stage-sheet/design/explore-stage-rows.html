@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stage sheet — stage rows</title>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&family=Space+Grotesk:wght@600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --app-accent: #1f3a6e; --app-accent-tint: #f4f5f8; --app-on-accent: #fff;
+  --app-ink: #101419; --app-body: #343a42; --app-grey: #4b535c; --app-muted: #636b75;
+  --app-line: #e3e6ea; --app-field-border: #dde1e6; --app-ground: #f7f8f9; --app-surface: #fff;
+  --font-heading: "Space Grotesk", system-ui, sans-serif;
+  --font-sans: "Public Sans", system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; }
+body { background: var(--app-ground); font-family: var(--font-sans); color: var(--app-ink); padding: 28px 40px 40px; width: 1180px; }
+.cap { font-size: 14px; color: var(--app-grey); margin-bottom: 14px; line-height: 1.45; max-width: 980px; }
+.cap b { color: var(--app-ink); font-size: 15px; display: block; margin-bottom: 2px; }
+.card { background: var(--app-surface); border: 1px solid var(--app-field-border); border-radius: 10px; overflow: hidden; }
+.row { display: flex; align-items: center; gap: 18px; padding: 12px 16px; border-bottom: 1px solid var(--app-line); position: relative; }
+.row:last-child { border-bottom: 0; }
+.row.hover { background: var(--app-accent-tint); }
+.ord { width: 24px; flex: none; font-family: var(--font-mono); font-weight: 700; font-size: 15px; color: var(--app-accent); align-self: baseline; padding-top: 2px; }
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.name { font-size: 16px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; width: fit-content; border-radius: 6px; }
+.name .chev { color: var(--app-accent); font-weight: 700; font-size: 18px; line-height: 1; }
+.row.hover .name { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--app-accent); }
+.row.focus .name { outline: 3px solid rgba(31,58,110,.45); outline-offset: 2px; }
+.meta { font-size: 14px; color: var(--app-muted); }
+.extra { font-size: 14px; color: var(--app-grey); display: flex; gap: 10px; align-items: center; margin-top: 3px; flex-wrap: wrap; }
+.letter { font-family: var(--font-mono); font-weight: 700; font-size: 12px; color: var(--app-accent); background: var(--app-accent-tint); border: 1px solid #cdd4e1; border-radius: 3px; padding: 0 4px; }
+.row.hover .letter { background: #fff; }
+.chip { font-size: 12px; font-weight: 600; color: var(--app-accent); border: 1px solid #cdd4e1; border-radius: 999px; padding: 1px 8px; background: #fff; }
+.right { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.datebox { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--app-field-border); border-radius: 8px; padding: 8px 10px; width: 176px; font-family: var(--font-mono); font-size: 16px; background: #fff; position: relative; z-index: 1; }
+.cal { width: 18px; height: 18px; border: 1.5px solid var(--app-accent); border-radius: 3px; position: relative; }
+.cal::before { content: ""; position: absolute; left: 0; right: 0; top: 4px; border-top: 1.5px solid var(--app-accent); }
+.when { font-size: 14px; color: var(--app-muted); }
+.bar { display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+.btn { display: inline-flex; align-items: center; height: 40px; padding: 0 18px; border-radius: 8px; font-weight: 600; font-size: 15px; background: var(--app-accent); color: var(--app-on-accent); }
+.status { font-size: 13px; color: var(--app-grey); }
+.gone { margin-top: 22px; border: 1.5px dashed #c9d0d8; border-radius: 10px; padding: 14px 16px; color: var(--app-muted); font-size: 14px; }
+.callout { position: absolute; right: 214px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--app-accent); font-weight: 600; background: #fff; border: 1px solid #cdd4e1; border-radius: 6px; padding: 3px 8px; }
+</style>
+</head>
+<body>
+<p class="cap"><b>The stage list after the change</b>Each stage name is the button that opens its sheet (› marks it; the row tints on hover). The date box stays on the row, so first-time setup is still every date in one pass and one Save. A new line under each stage shows its items by letter and whether you've written a note. The separate item list under the stages is gone.</p>
+
+<div class="card">
+  <div class="row">
+    <span class="ord">1</span>
+    <div class="main">
+      <span class="name">Getting Started <span class="chev">›</span></span>
+      <span class="meta">2–3 hours</span>
+      <span class="meta">Checkpoint: Initial ideas discussed with the teacher</span>
+      <span class="extra"><span class="letter">A</span> 1 item</span>
+    </div>
+    <div class="right"><div class="datebox">20/09/2026 <span class="cal"></span></div><span class="when">Sun 20 Sept 2026</span></div>
+  </div>
+  <div class="row hover focus">
+    <span class="ord">2</span>
+    <div class="main">
+      <span class="name">Developing a question to research <span class="chev">›</span></span>
+      <span class="meta">1–2 hours</span>
+      <span class="meta">Checkpoint: Research question discussed with the teacher</span>
+      <span class="extra"><span class="letter">B</span><span class="letter">C</span> 2 items <span class="chip">Your note</span></span>
+    </div>
+    <span class="callout">Hover and keyboard focus: opens the Stage 2 sheet</span>
+    <div class="right"><div class="datebox">10/10/2026 <span class="cal"></span></div><span class="when">Sat 10 Oct 2026</span></div>
+  </div>
+  <div class="row">
+    <span class="ord">3</span>
+    <div class="main">
+      <span class="name">Developing a project plan <span class="chev">›</span></span>
+      <span class="meta">1–2 hours</span>
+      <span class="meta">Checkpoint: Project plan shared with the teacher</span>
+    </div>
+    <div class="right"><div class="datebox">20/11/2026 <span class="cal"></span></div><span class="when">Fri 20 Nov 2026</span></div>
+  </div>
+  <div class="row">
+    <span class="ord">4</span>
+    <div class="main">
+      <span class="name">Identifying sources and gathering information and data <span class="chev">›</span></span>
+      <span class="meta">6–8 hours for Stage 4 and Stage 5 together</span>
+      <span class="meta">Checkpoint: Research shared when the teacher asks</span>
+      <span class="extra"><span class="letter">D</span> 1 item</span>
+    </div>
+    <div class="right"><div class="datebox">01/12/2026 <span class="cal"></span></div><span class="when">Tue 1 Dec 2026</span></div>
+  </div>
+  <div class="row">
+    <span class="ord">5</span>
+    <div class="main">
+      <span class="name">Analysis and evaluation <span class="chev">›</span></span>
+      <span class="meta">6–8 hours for Stage 4 and Stage 5 together</span>
+      <span class="meta">Checkpoint: Analysis and evaluation shared with the teacher</span>
+    </div>
+    <div class="right"><div class="datebox">10/01/2027 <span class="cal"></span></div><span class="when">Sun 10 Jan 2027</span></div>
+  </div>
+  <div class="row">
+    <span class="ord">6</span>
+    <div class="main">
+      <span class="name">Applying learning and drawing conclusions <span class="chev">›</span></span>
+      <span class="meta">1–2 hours</span>
+    </div>
+    <div class="right"><div class="datebox">10/02/2027 <span class="cal"></span></div><span class="when">Wed 10 Feb 2027</span></div>
+  </div>
+  <div class="row">
+    <span class="ord">7</span>
+    <div class="main">
+      <span class="name">Compilation of the final report <span class="chev">›</span></span>
+      <span class="meta">2–3 hours</span>
+      <span class="meta">Checkpoint: Final report submitted for review and authentication</span>
+    </div>
+    <div class="right"><div class="datebox">10/03/2027 <span class="cal"></span></div><span class="when">Wed 10 Mar 2027</span></div>
+  </div>
+</div>
+
+<div class="bar"><span class="btn">Save dates</span><span class="status">All 7 dates saved.</span></div>
+
+<div class="gone">The "Your items" list that was here is gone. Items are added and edited in each stage's sheet; the year view above still shows every item by its letter.</div>
+</body>
+</html>
