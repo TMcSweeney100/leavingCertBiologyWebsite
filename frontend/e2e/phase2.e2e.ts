@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { TEACHER, expectAccessible, phone, setDate, signInTeacher } from "./helpers";
+import { TEACHER, expectAccessible, phone, setDate, setSheetDate, signInTeacher } from "./helpers";
 
 /**
  * Gate P2's journey (roadmap §8.2). 2D: the teacher creates a Biology component, sets dates, and a date after
@@ -75,15 +75,24 @@ test("teacher sets up a Biology component", async ({ page: teacher }) => {
   await setDate(teacher, "Stage 6 date", "2027-01-22");
   await setDate(teacher, "Stage 5 date", "2026-12-09");
 
-  await teacher.getByRole("button", { name: "Add item", exact: true }).click();
-  await teacher.getByRole("textbox", { name: "Item" }).fill("Full draft in for feedback");
-  await teacher.getByLabel("Stage", { exact: true }).selectOption({ label: "Stage 6 — Finalising the Biology in Practice Investigation Report" });
-  await setDate(teacher, "Date (optional)", "2026-12-04");
-  await teacher.getByRole("button", { name: "Save item" }).click();
-  await expect(
-    teacher.getByRole("region", { name: "Your items" }).getByRole("listitem").filter({ hasText: "Full draft in for feedback" }),
-  ).toBeVisible();
+  // Stage sheet (plan stage-sheet): the stage's name opens its sheet; the item is added there, its date picked in the
+  // sheet's own calendar view.
+  const stage6 = "Finalising the Biology in Practice Investigation Report";
+  await teacher.getByRole("button", { name: stage6 }).click();
+  const sheet = teacher.getByRole("dialog", { name: stage6 });
+  await expect(sheet).toContainText("From the guidelines");
+  await expect(teacher).toHaveURL(/\?stage=6$/);
   await expectAccessible(teacher);
+  await sheet.getByRole("button", { name: "Add an item to Stage 6" }).click();
+  await sheet.getByRole("textbox", { name: "Item" }).fill("Full draft in for feedback");
+  await setSheetDate(sheet, "Date (optional)", "2026-12-04");
+  await sheet.getByRole("button", { name: "Save item" }).click();
+  await expect(sheet.getByRole("button", { name: /Full draft in for feedback/ })).toBeVisible();
+  await expectAccessible(teacher);
+  await sheet.getByRole("button", { name: "Close" }).click();
+  await expect(sheet).toHaveCount(0);
+  await expect(teacher).toHaveURL(/\/component$/);
+  await expect(teacher.getByText("1 item")).toBeVisible();
 });
 
 test("a student sees the component and ticks a teacher item", async ({ page: teacher, browser }) => {

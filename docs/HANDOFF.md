@@ -16,6 +16,21 @@ Rewritten at the end of every session: where things stand, what's half-done, wha
 - `draft-list.md` in the repo root is an unrelated untracked file; keep it out of commits.
 - **Three uncommitted edits that aren't any feature's** ride along in the working tree: `docs/design/UI-STANDARDS.md` (a new "share a recipe at its third copy" rule), `frontend/components/app/styles.ts` (its header comment deleted) and `frontend/lib/app/component-setup.ts` (one blank line). The stage-sheet build left them alone; Tim decides whether to keep them.
 
+## Stage sheet: Tim's hand tests (branch `pilot/stage-sheet`)
+
+Built without stopping (31 Oct 2026); each part's hand test is waiting on Tim. Anything found goes into "From Tim's testing" in `docs/BACKLOG.md`. Run `make db-up`, `make backend-run`, `make frontend-run`; check on a laptop and a phone-width window.
+
+### Hand test, Part 1 (the sheet, dates, items)
+
+- Stage 2's name, or anywhere else on its row, opens its sheet. The address shows `?stage=2`. Back closes the sheet and Forward opens it again. Loading `…/component?stage=2` opens it, and Close keeps you on the Component tab.
+- The sheet shows the official text ("From the guidelines") and the prompts ("Questions students get from the guidelines").
+- An item can be added with a date picked in the sheet's calendar, then edited, then retired. A half-typed item survives a trip to the calendar and back.
+- A date picked in the sheet shows dashed on the row, and a date picked on the row shows dashed in the sheet. Save this date saves only that stage; another row's unsaved date stays dashed.
+- Keyboard only: the stage name opens the sheet with focus on its title; the date box opens the calendar with focus on the day; "Back to Stage 2" puts focus back on the box; then the items; Close puts focus back on the stage name. After Save this date or Undo, focus is on the date box.
+- The stage date box on the row still opens its own drawer.
+- At 390px wide the sheet fills the screen.
+- The one known limit (decision S-34): with one stage's saved date after the completion date, Save this date on another stage is refused, and the message names the late stage. To set it up, save Stage 6 on a date in February 2027, move Biology's completion date earlier in the local database (`docker exec -it coursework-postgres psql -U coursework coursework`, then `UPDATE annual_brief SET completion_date = '2027-01-29' WHERE sec_code = '2027L025C2EL';`), reload, and put it back to `'2027-02-26'` after.
+
 ## Still to do on merged work
 
 - **Changes docs not written** (CLAUDE.md wants one per implementation): `docs/changes/source-builder.md`, `ai-use-record.md`, `date-picker-drawer.md`, plus two older ones skipped at the time: `pilot-4-teacher-grid.md` and the 3B D-6 restyle.

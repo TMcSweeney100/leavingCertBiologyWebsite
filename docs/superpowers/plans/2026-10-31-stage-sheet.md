@@ -71,6 +71,19 @@ Made while writing this plan. **Tim: confirm or change S-15 to S-29.**
 | S-28 | Ticked and not-ticked names are full names, sorted by surname then first name. | Easy to scan for one student. |
 | S-29 | The sheet's date box is labelled **"Stage date"**, not "Stage 2 date". | "Stage 2 date" belongs to the row's box; two controls with one name confuse a screen reader and the tests. |
 
+Made while building (31 Oct 2026, Tim away), mostly from code review between tasks. **Tim: confirm or change these too.**
+
+| # | What happens | Why it matters to you |
+|---|---|---|
+| S-30 | The item form's date help starts with **"Letters follow the date, so they change when a date does."** | The deleted page list said it; nothing else did. Without it, item B turning into A after a date change is a surprise. |
+| S-31 | When an item's form closes, focus goes somewhere: back to the item's row after Save or Cancel, to "Add an item to Stage N" after a new item or Retire item. | The button you pressed disappears with the form; without this a keyboard user lands at the top of the sheet. |
+| S-32 | After **Save this date** or **Undo**, focus goes to the date box, and "Stage 2's date saved." shows at once (the Save row hides as soon as the save succeeds, not when the page catches up). | Both buttons disappear when the date stops being unsaved. And for one round trip after a save the button used to come back enabled with no status. |
+| S-33 | The calendar view in the sheet doesn't repeat the stage name above "Choose the Stage 2 date" (an item's still says "Item B · Stage 2"). The "‹" in "Back to Stage 2" is hidden from screen readers. | The sheet's header already names the stage, directly above. |
+| S-34 | **Save this date is refused while another stage's saved date is after the completion date** (after the SEC moves it earlier). The refusal names that stage; Save dates on the page fixes them together. | `PUT …/stage-dates` replaces every date, and a stage left out is cleared, so the sheet has to send the late ones too. Fixing it means a one-stage endpoint: say if you want that. |
+| S-35 | Each item in the sheet is one button whose name includes its letter: "B Bring three questions 6 Oct 2026". | The old list hid the letter from screen readers because it had separate Edit buttons. Here the letter is how the calendar's eyebrow names the item ("Item B"). |
+
+Built differently from this plan's code, with no change to what you see: the Zod prompt shape is one shared `promptSchema` for both stage schemas (Task 1); `DatePickerPanel` drops a `days` ref nothing read (Task 3); `StageDatesForm`'s saved-dates memo is `savedDates`, because `saved` was already a count (Task 6); `setDate` drops an edit equal to the saved date, so Undo leaves nothing behind; the Retire button stays red on hover; the prompts toggle is 44px tall; the stage rows show a pointer cursor.
+
 ---
 
 ## Concepts in play
