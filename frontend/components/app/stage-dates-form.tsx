@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { type FormEvent, Fragment, useEffect, useMemo, useState } from "react";
+import { type FormEvent, Fragment, useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { api, ApiError } from "@/lib/api/client";
@@ -16,14 +16,15 @@ import {
   weekdayDate,
 } from "@/lib/app/component-setup";
 import { type DateMark, dateMarks } from "@/lib/app/date-marks";
+import { dropSaved, oneStageDates, stageFromParam, stageItems } from "@/lib/app/stage-sheet";
 
 import { DateBox } from "./date-box";
 import { DatePickerDrawer } from "./date-picker-drawer";
 import { ErrorPanel } from "./error-panel";
 import { MarkTag } from "./mark-tag";
 import { Notice } from "./notice";
+import { StageSheet } from "./stage-sheet";
 import { lead, sectionTitle } from "./styles";
-import { TeacherItems } from "./teacher-items";
 import { YearView } from "./year-view";
 
 type Stage = TeacherComponent["stages"][number];
@@ -44,13 +45,26 @@ const textButton =
  * covers all six stages, the status beside it always says where things stand, and leaving with unsaved
  * dates is confirmed.
  */
-export function StageDatesForm({ component, today }: { component: TeacherComponent; today: string }) {
+export function StageDatesForm({
+  component,
+  today,
+  initialStage = null,
+}: {
+  component: TeacherComponent;
+  today: string;
+  initialStage?: string | null;
+}) {
   const router = useRouter();
-  const initial = useMemo(
+  // Only what the teacher changed (Concepts in play, "Store the edits, not a copy"). The draft is worked out from it,
+  // so a save that changes one stage's saved date leaves every other row's unsaved date alone (S-7).
+  const savedDates = useMemo(
     () => Object.fromEntries(component.stages.map((s) => [s.id, s.dueDate ?? ""])),
     [component.stages],
   );
-  const [draft, setDraft] = useState<Record<string, string>>(initial);
+  const [edits, setEdits] = useState<Record<string, string>>({});
+  useEffect(() => setEdits((current) => dropSaved(current, savedDates)), [savedDates]);
+  const draft = useMemo(() => ({ ...savedDates, ...edits }), [savedDates, edits]);
+  const setDate = (stageId: string, value: string) => setEdits((current) => ({ ...current, [stageId]: value }));
   const [error, setError] = useState<ApiError | null>(null);
   const [busy, setBusy] = useState(false);
   // Null until the teacher decides: the view then defaults by width in CSS alone, which is what the
@@ -69,8 +83,6 @@ export function StageDatesForm({ component, today }: { component: TeacherCompone
   const moved = component.warnings.filter((w) => w.code === "AFTER_COMPLETION_DATE");
   const attentionStageIds = component.warnings.flatMap((w) => w.stageIds);
   const errorStageIds = [...refused.keys()];
-
-  useEffect(() => setDraft(initial), [initial]);
 
   // The calendar and the year view both read the draft, so a date typed but not saved shows (C-6, C-8).
   const marks = useMemo(
@@ -104,6 +116,43 @@ export function StageDatesForm({ component, today }: { component: TeacherCompone
       setBusy(false);
     }
   }
+
+  /** Save this date, from the sheet (S-7): this stage's draft, every other stage's saved date. */
+  async function saveStage(stageId: string) {
+    const dates = oneStageDates(component.stages, stageId, draft[stageId] ?? "");
+    await api.send("PUT", `/components/${component.id}/stage-dates`, { dates }, teacherComponentSchema);
+    setError(null);
+    router.refresh();
+  }
+
+  // The open sheet is in the address as ?stage=N (S-18), written with the browser's own history so opening a sheet
+  // doesn't re-run the server page. Back closes it; a link with ?stage=N opens it.
+  const [sheetId, setSheetId] = useState<string | null>(() => stageFromParam(initialStage, component.stages));
+  const sheetOpener = useRef<HTMLElement | null>(null);
+  const pushed = useRef(false);
+  useEffect(() => {
+    const sync = () => setSheetId(stageFromParam(new URLSearchParams(window.location.search).get("stage"), component.stages));
+    window.addEventListener("popstate", sync);
+    return () => window.removeEventListener("popstate", sync);
+  }, [component.stages]);
+
+  function openSheet(stage: Stage, from: HTMLElement) {
+    sheetOpener.current = from;
+    pushed.current = true;
+    window.history.pushState(null, "", `?stage=${stage.ordinal}`);
+    setSheetId(stage.id);
+  }
+
+  function closeSheet() {
+    setSheetId(null);
+    if (pushed.current) {
+      pushed.current = false;
+      window.history.back();
+    } else {
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  }
+  const sheetStage = component.stages.find((s) => s.id === sheetId) ?? null;
 
   /** The line's footnote says the same thing the rows say, in the shape of the line (pack D-5 §4–6). */
   const footnote = (() => {
@@ -212,7 +261,9 @@ export function StageDatesForm({ component, today }: { component: TeacherCompone
                 stage={stage}
                 stages={component.stages}
                 value={draft[stage.id] ?? ""}
-                onChange={(value) => setDraft((d) => ({ ...d, [stage.id]: value }))}
+                onChange={(value) => setDate(stage.id, value)}
+                onOpen={(from) => openSheet(stage, from)}
+                letters={stageItems(component.stages, stage.id).map((item) => item.letter)}
                 max={component.brief.completionDate}
                 marks={marks}
                 today={today}
@@ -249,10 +300,18 @@ export function StageDatesForm({ component, today }: { component: TeacherCompone
         </div>
       </form>
 
-      <TeacherItems
+      <StageSheet
         componentId={component.id}
+        stage={sheetStage}
         stages={component.stages}
-        calendar={{ marks, completionDate: component.brief.completionDate, today }}
+        draft={draft}
+        onDateChange={setDate}
+        onSaveDate={saveStage}
+        marks={marks}
+        completionDate={component.brief.completionDate}
+        today={today}
+        returnFocus={sheetOpener}
+        onClose={closeSheet}
       />
     </div>
   );
@@ -279,6 +338,8 @@ function StageDateRow({
   stages,
   value,
   onChange,
+  onOpen,
+  letters,
   max,
   marks,
   today,
@@ -291,6 +352,8 @@ function StageDateRow({
   stages: ReadonlyArray<Stage>;
   value: string;
   onChange: (value: string) => void;
+  onOpen: (from: HTMLElement) => void;
+  letters: ReadonlyArray<string>;
   max: string;
   marks: ReadonlyArray<DateMark>;
   today: string;
@@ -317,14 +380,24 @@ function StageDateRow({
 
   return (
     <div
-      className={`flex flex-col gap-2.5 px-4 py-3 md:flex-row md:gap-[18px] ${problem ? "md:items-start" : "md:items-center"} ${last ? "" : "border-b border-app-line"} ${tone}`}
+      className={`flex flex-col gap-2.5 px-4 py-3 md:flex-row md:gap-[18px] ${problem ? "md:items-start" : "md:items-center"} ${last ? "" : "border-b border-app-line"} ${tone || "hover:bg-app-accent-tint"} relative`}
     >
       <div className="flex min-w-0 flex-1 items-baseline gap-2.5 md:gap-[18px]">
         <span className={`w-6 flex-none font-mono text-[14px] font-bold md:text-[15px] ${ordinalInk} ${problem ? "md:pt-0.5" : ""}`}>
           {stage.ordinal}
         </span>
         <div className="flex min-w-0 flex-1 flex-col gap-px">
-          <span className="text-app-base font-semibold text-app-ink">{stage.name}</span>
+          {/* Stretched link (Concepts in play): the name's ::after covers the row, so the row opens the sheet; the date
+              column sits above it (relative z-10) and keeps its own button. */}
+          <button
+            type="button"
+            aria-haspopup="dialog"
+            onClick={(event) => onOpen(event.currentTarget)}
+            className="w-fit rounded-app-inner text-left text-app-base font-semibold text-app-ink decoration-app-accent underline-offset-3 after:absolute after:inset-0 after:content-[''] hover:underline focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          >
+            {stage.name}
+            <span aria-hidden="true" className="ml-1.5 font-bold text-app-accent">›</span>
+          </button>
           {problem ? (
             <span id={noteId} className={`text-app-small ${refusal ? "text-app-error-hover" : "text-app-attention"}`}>
               {problem}
@@ -337,11 +410,20 @@ function StageDateRow({
                 </span>
               )}
               {stage.checkpoint && <span className="text-app-small text-app-muted">{`Checkpoint: ${stage.checkpoint}`}</span>}
+              {letters.length > 0 && (
+                <span className="mt-0.5 flex flex-wrap items-center gap-1.5 text-app-small text-app-grey">
+                  {letters.map((letter) => (
+                    <MarkTag key={letter} kind="item">{letter}</MarkTag>
+                  ))}
+                  {/* Its own element, so "1 item" is findable as text next to the tags. */}
+                  <span>{`${letters.length} item${letters.length === 1 ? "" : "s"}`}</span>
+                </span>
+              )}
             </>
           )}
         </div>
       </div>
-      <div className="flex flex-none flex-col gap-1 md:items-end">
+      <div className="relative z-10 flex flex-none flex-col gap-1 md:items-end">
         <label htmlFor={id} className="sr-only">{`${label} date`}</label>
         <DatePickerDrawer
           title={`Choose the ${label} date`}

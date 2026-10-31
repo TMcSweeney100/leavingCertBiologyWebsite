@@ -57,6 +57,7 @@ async function setDate(label: string, iso: string) {
 beforeEach(() => {
   refresh.mockReset();
   vi.mocked(api.send).mockReset();
+  window.history.replaceState(null, "", "/");
 });
 
 describe("StageDatesForm", () => {
@@ -200,5 +201,35 @@ describe("StageDatesForm", () => {
     await setDate("Stage 4 date", "2026-10-16");
     const line = screen.getByRole("img", { name: /Your dates across the year/ });
     expect(within(line).getByText("S4")).toHaveAttribute("data-saved", "false");
+  });
+
+  it("opens a stage's sheet from its name, and shows the stage's item letters on the row", async () => {
+    render5(component({ stages: [stage(3, "2026-09-25", { items: [{ id: "i1", text: "Plan draft", dueDate: "2026-09-20" }] }), stage(4, null)] }));
+    expect(screen.getByText("1 item")).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "Name 3" }));
+    expect(await screen.findByRole("dialog", { name: "Name 3" })).toBeInTheDocument();
+    expect(window.location.search).toBe("?stage=3");
+  });
+
+  it("saving one stage in its sheet keeps another row's unsaved date", async () => {
+    const saved = component({ stages: [stage(3, "2026-09-25"), stage(4, null), stage(5, "2026-11-27")] });
+    vi.mocked(api.send).mockResolvedValue(saved);
+    const { rerender } = render(<StageDatesForm component={component({ stages: [stage(3, "2026-09-25"), stage(4, null), stage(5, null)] })} today={TODAY} />);
+    await setDate("Stage 4 date", "2026-10-16");
+
+    await userEvent.click(screen.getByRole("button", { name: "Name 5" }));
+    const sheet = await screen.findByRole("dialog", { name: "Name 5" });
+    await userEvent.click(within(sheet).getByLabelText("Stage date"));
+    const field = within(sheet).getByRole("textbox", { name: "Type a date" });
+    await userEvent.type(field, "27112026");
+    await userEvent.keyboard("{Enter}");
+    await userEvent.click(within(sheet).getByRole("button", { name: "Save this date" }));
+
+    expect(api.send).toHaveBeenCalledWith("PUT", "/components/k1/stage-dates", {
+      dates: [{ stageId: "s3", dueDate: "2026-09-25" }, { stageId: "s4", dueDate: null }, { stageId: "s5", dueDate: "2026-11-27" }],
+    }, expect.anything());
+    rerender(<StageDatesForm component={saved} today={TODAY} />);
+    expect(screen.getByLabelText("Stage 4 date")).toHaveTextContent("16/10/2026");
   });
 });

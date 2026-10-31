@@ -15,8 +15,10 @@ import { toIsoDate } from "@/lib/app/timeline";
 
 export const dynamic = "force-dynamic";
 
-export default async function ClassComponentPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ClassComponentPage({ params, searchParams }:
+  { params: Promise<{ id: string }>; searchParams: Promise<{ stage?: string }> }) {
   const { id } = await params;
+  const { stage } = await searchParams;
   const detail = await attempt(() => serverApi.get(`/classes/${encodeURIComponent(id)}`, classDetailSchema));
   // Another teacher's class is a 404 from Spring, and stays a 404 here.
   if (!detail.ok && detail.error.code === "NOT_FOUND") notFound();
@@ -47,7 +49,7 @@ export default async function ClassComponentPage({ params }: { params: Promise<{
         // client's clock, the same rule the student pages follow.
         <>
           <RequireLinkSwitch componentId={body.data.id} requireLink={body.data.requireLink} />
-          <StageDatesForm component={body.data} today={toIsoDate(dublinToday())} />
+          <StageDatesForm component={body.data} today={toIsoDate(dublinToday())} initialStage={stage ?? null} />
         </>
       )}
     </AppMain>
