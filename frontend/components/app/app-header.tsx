@@ -6,8 +6,17 @@ import { APP_NAME, CREST_SRC, headerSchoolName } from "@/lib/app/brand";
 import { APP_NAV, landingFor } from "@/lib/app/navigation";
 
 import { RoleSwitcher } from "./role-switcher";
-import { SignOutButton } from "./sign-out-button";
-import { textLink } from "./styles";
+import { SignOutMenuItem } from "./sign-out-button";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { KeyRound, User } from "lucide-react";
 
 function Divider() {
   return <span aria-hidden="true" className="hidden h-5 w-px flex-none bg-app-field-border lg:block" />;
@@ -52,10 +61,25 @@ export function AppHeader({ me }: { me: Me }) {
               {me.firstName} {me.lastName}
             </span>
             <span className="flex flex-none items-center gap-2.5 lg:gap-3.5">
-              <Link href="/account/password" className={`text-app-small whitespace-nowrap ${textLink}`}>
-                Change password
-              </Link>
-              <SignOutButton />
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={
+                    <Button variant="outline" aria-label="Account options">
+                      <User className="size-4" />
+                    </Button>
+                  }
+                />
+                <DropdownMenuContent align="end" className="w-auto min-w-48">
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem render={<Link href="/account/password" />}>
+                      <KeyRound />
+                      Change password
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <SignOutMenuItem />
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </span>
           </nav>
         </div>

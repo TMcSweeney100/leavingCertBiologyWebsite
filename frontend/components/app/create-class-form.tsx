@@ -10,7 +10,8 @@ import { classDetailSchema, type Subject } from "@/lib/api/schemas";
 
 import { ErrorPanel } from "./error-panel";
 import { Field, FieldGroup } from "./field";
-import { backLink, pageTitle, textLink } from "./styles";
+import { BackLink } from "./back-link";
+import { pageTitle, textLink } from "./styles";
 
 /** Roadmap §6.2 `/teach/classes/new`: subject, name, year group, academic year, level optional. */
 export function CreateClassForm({
@@ -55,9 +56,9 @@ export function CreateClassForm({
 
   return (
     <form onSubmit={submit} aria-labelledby="new-class-heading">
-      <Link href="/teach" className={backLink}>
+      <BackLink href="/teach">
         My classes
-      </Link>
+      </BackLink>
       <h1 id="new-class-heading" className={`mt-2.5 ${pageTitle}`}>
         Create a class
       </h1>

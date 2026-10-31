@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motion · the slide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&amp;family=Space+Grotesk:wght@600;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+<style>
+:root {
+  --app-accent: #1f3a6e;
+  --app-accent-hover: #16294e;
+  --app-accent-tint: #f4f5f8;
+  --app-on-accent: #ffffff;
+  --app-on-accent-muted: #c3cde1;
+  --app-pick: #0a6aa8;
+  --app-pick-hover: #08578a;
+  --app-pick-tint: #e6f1f9;
+  --app-today: #ffc94d;
+  --app-today-ring: #a87400;
+  --app-attention: #a04806;
+  --app-attention-tint: #f6ede6;
+  --app-approved: #0f5c3a;
+  --app-approved-tint: #f1f6f4;
+  --app-error: #b3251e;
+  --app-error-hover: #8e1d17;
+  --app-error-tint: #fbf1f0;
+  --app-ink: #101419;
+  --app-body: #343a42;
+  --app-grey: #4b535c;
+  --app-muted: #636b75;
+  --app-disabled: #9aa2ac;
+  --app-line: #e3e6ea;
+  --app-field-border: #dde1e6;
+  --app-inset: #eff1f3;
+  --app-ground: #f7f8f9;
+  --app-surface: #ffffff;
+  --app-weekend: #fbfcfc;
+  --app-stem: #c9d0d8;
+  --app-request-tint: #eaeff7;
+  --app-scrim: rgba(16, 20, 25, 0.36);
+  --app-subject-biology: #0e6e7a;
+  --app-subject-business: #6d3aa8;
+  --app-subject-chemistry: #8e2846;
+  --app-kind-source: #52561a;
+  --app-kind-ai: #7a2e6b;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --app-sheet-width: 520px;
+  --app-day-cell: 44px;
+  --app-day-cell-lg: 60px;
+  --app-radius-card: 10px;
+  --app-radius-control: 8px;
+  --app-radius-inner: 6px;
+  --app-radius-tag: 3px;
+  --app-now-lift: 0 6px 20px rgba(16, 20, 25, 0.08);
+  --font-heading: "Space Grotesk", system-ui, sans-serif;
+  --font-sans: "Public Sans", system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+}
+/* D-11 frames — shared styles. Every value is an --app-* token (D-1 to D-10, plus the D-11 additions). */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--app-ground); color: var(--app-ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; cursor: pointer; }
+.tab { font-variant-numeric: tabular-nums; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ── Frame chrome (not part of the design) ─────────────────────────────── */
+.cap { display: flex; align-items: baseline; gap: 12px; padding: 0 0 10px; font-size: 14px; color: var(--app-grey); }
+.cap b { font-family: var(--font-heading); font-size: 17px; color: var(--app-ink); letter-spacing: -.01em; }
+.cap .sample { margin-left: auto; font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--app-muted); border: 1px dashed var(--app-disabled); border-radius: var(--app-radius-inner); padding: 2px 6px; }
+.row-frames { display: flex; gap: 32px; align-items: flex-start; }
+.wrap { padding: 20px 24px 28px; }
+
+.canvas { position: relative; overflow: hidden; background: var(--app-ground); border: 1px solid var(--app-line); border-radius: var(--app-radius-card); }
+.canvas.lg { width: 1140px; height: 860px; }
+.canvas.sm { width: 390px; height: 844px; }
+
+/* ── The Component tab behind the drawer (a faithful sketch of D-5) ────── */
+.pg { position: absolute; inset: 0; }
+.pg-head { height: 64px; background: var(--app-surface); border-bottom: 1px solid var(--app-line); display: flex; align-items: center; gap: 12px; padding: 0 28px; }
+.pg-crest { width: 28px; height: 28px; border-radius: var(--app-radius-inner); background: var(--app-accent); }
+.pg-app { font-family: var(--font-heading); font-weight: 700; font-size: 17px; }
+.pg-who { margin-left: auto; font-size: 14px; color: var(--app-grey); }
+.pg-main { max-width: 880px; margin: 0 auto; padding: 28px 28px 0; }
+.sm .pg-head { padding: 0 16px; }
+.sm .pg-main { padding: 20px 16px 0; }
+.pg-crumb { font-size: 14px; color: var(--app-accent); text-decoration: underline; text-underline-offset: 3px; }
+.pg-h1 { font-family: var(--font-heading); font-size: 32px; line-height: 1.15; letter-spacing: -.03em; margin: 8px 0 14px; }
+.sm .pg-h1 { font-size: 27px; }
+.pg-tabs { display: flex; gap: 22px; border-bottom: 1px solid var(--app-line); font-size: 15px; font-weight: 600; color: var(--app-grey); }
+.pg-tabs span { padding: 10px 0 12px; }
+.pg-tabs .on { color: var(--app-accent); box-shadow: inset 0 -2px 0 var(--app-accent); }
+.pg-tabs .off { color: var(--app-disabled); }
+.pg-h2 { font-family: var(--font-heading); font-size: 21px; letter-spacing: -.02em; margin: 24px 0 6px; }
+.pg-lead { font-size: 17px; line-height: 1.45; color: var(--app-body); max-width: 620px; margin: 0 0 16px; }
+.pg-lead strong { color: var(--app-ink); font-weight: 600; }
+.rows { background: var(--app-surface); border: 1px solid var(--app-field-border); border-radius: var(--app-radius-card); overflow: hidden; }
+.sr-row { display: flex; align-items: center; gap: 18px; padding: 12px 16px; border-bottom: 1px solid var(--app-line); }
+.sr-row:last-child { border-bottom: 0; }
+.sr-ord { width: 24px; flex: none; font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--app-accent); }
+.sr-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.sr-name { font-size: 16px; font-weight: 600; }
+.sr-meta { font-size: 14px; color: var(--app-muted); }
+.sr-date { flex: none; display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
+.sr-under { font-size: 14px; color: var(--app-muted); }
+.sr-under.draft { color: var(--app-grey); }
+.sr-under .ns { font-weight: 600; color: var(--app-ink); }
+.sm .sr-row { flex-direction: column; align-items: stretch; gap: 10px; padding: 12px 15px 13px; }
+.sm .sr-top { display: flex; gap: 10px; align-items: baseline; }
+.sm .sr-ord { font-size: 14px; }
+.sm .sr-date { align-items: stretch; }
+
+/* ── The date box (the trigger, frame 1) ───────────────────────────────── */
+.box { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 176px; height: 40px; padding: 0 8px 0 10px; border: 1px solid var(--app-field-border); border-radius: var(--app-radius-control); background: var(--app-surface); font-size: 16px; color: var(--app-ink); cursor: pointer; }
+.sm .box { width: 100%; height: 48px; padding: 0 10px 0 12px; }
+.box .ph { color: var(--app-muted); }
+.box .cal { flex: none; width: 28px; height: 28px; border-radius: var(--app-radius-inner); display: grid; place-items: center; color: var(--app-accent); }
+.box .cal svg { width: 18px; height: 18px; }
+.box.hover { border-color: var(--app-accent); background: var(--app-accent-tint); }
+.box.hover .cal { background: var(--app-surface); }
+.box.focus { outline: 2px solid var(--app-accent); outline-offset: 2px; }
+.box.open { border-color: var(--app-pick); box-shadow: inset 0 0 0 1px var(--app-pick); }
+.box.draft { border-style: dashed; border-color: var(--app-accent); }
+
+/* ── Scrim and drawer ──────────────────────────────────────────────────── */
+.scrim { position: absolute; inset: 0; background: var(--app-scrim); }
+.dr { position: absolute; top: 0; right: 0; bottom: 0; width: var(--app-sheet-width); background: var(--app-surface); border-left: 1px solid var(--app-line); display: flex; flex-direction: column; }
+.sm .dr { width: 100%; border-left: 0; }
+.dh { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 18px 24px 16px; border-bottom: 1px solid var(--app-line); }
+.sm .dh { padding: 12px 16px 14px; }
+.dh-t { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.dh-eyebrow { font-size: 14px; color: var(--app-muted); }
+.dh-eyebrow b { font-family: var(--font-mono); font-size: 13px; color: var(--app-accent); margin-right: 4px; }
+.dh h2 { margin: 0; font-family: var(--font-heading); font-size: 21px; line-height: 1.25; letter-spacing: -.02em; text-wrap: balance; }
+.sm .dh h2 { font-size: 20px; }
+.dh-help { margin: 4px 0 0; font-size: 14px; line-height: 1.4; color: var(--app-grey); }
+.btn { flex: none; display: inline-flex; align-items: center; justify-content: center; height: 44px; padding: 0 15px; border: 1px solid var(--app-field-border); border-radius: var(--app-radius-control); background: var(--app-surface); font-size: 15px; font-weight: 600; color: var(--app-body); }
+.btn.pri { height: 48px; padding: 0 20px; border-color: var(--app-accent); background: var(--app-accent); color: var(--app-on-accent); font-size: 16px; }
+.btn.pri[disabled] { opacity: .45; cursor: not-allowed; }
+.btn.txt { border: 0; background: transparent; padding: 0 8px; color: var(--app-accent); text-decoration: underline; text-underline-offset: 3px; }
+.btn.focus { outline: 2px solid var(--app-accent); outline-offset: 2px; }
+.db { position: relative; flex: 1; min-height: 0; overflow: hidden; padding: 14px 24px 16px; }
+.sm .db { padding: 12px 16px 14px; }
+.df { border-top: 1px solid var(--app-line); padding: 14px 24px 18px; display: flex; flex-direction: column; gap: 12px; background: var(--app-surface); }
+.sm .df { padding: 12px 16px 16px; }
+
+/* ── The footer readout ────────────────────────────────────────────────── */
+.ro { display: flex; flex-direction: column; gap: 3px; min-height: 52px; }
+.ro-date { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.ro-date strong { font-family: var(--font-heading); font-size: 19px; line-height: 1.25; letter-spacing: -.015em; font-variant-numeric: tabular-nums; }
+.ro-was { font-size: 14px; color: var(--app-muted); }
+.ro-was s { text-decoration-thickness: 1px; }
+.ro-gap { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 14px; color: var(--app-body); font-variant-numeric: tabular-nums; }
+.ro-gap .g { display: inline-flex; align-items: center; gap: 6px; }
+.ro-gap .g b { font-weight: 600; color: var(--app-ink); }
+.ro-gap .close b { color: var(--app-pick-hover); }
+.ro-also { font-size: 14px; color: var(--app-muted); }
+.ro-ask { font-size: 14px; color: var(--app-attention); }
+.ro-why { font-size: 14px; line-height: 1.4; color: var(--app-body); padding: 8px 10px; border-radius: var(--app-radius-inner); background: var(--app-inset); }
+.ro-empty { font-size: 14px; color: var(--app-grey); }
+.acts { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.sm .acts .pri { flex: 1; }
+
+/* ── Month heading, weekdays, grid ─────────────────────────────────────── */
+.mo { --cell: 60px; --cellh: 48px; --gap: 8px; }
+.sm .mo { --cell: 44px; --cellh: 48px; --gap: 8px; }
+.mh { display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 44px; margin-bottom: 6px; }
+.mh h3 { margin: 0; font-family: var(--font-heading); font-size: 19px; letter-spacing: -.015em; font-variant-numeric: tabular-nums; }
+.arrows { display: flex; gap: 8px; }
+.arw { width: 44px; height: 44px; border: 1px solid var(--app-field-border); border-radius: var(--app-radius-control); background: var(--app-surface); color: var(--app-ink); font-size: 20px; line-height: 1; display: grid; place-items: center; }
+.wkd { display: grid; grid-template-columns: repeat(7, var(--cell)); column-gap: var(--gap); height: 24px; align-items: center; text-align: center; font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: .06em; color: var(--app-muted); }
+.grid { display: grid; grid-template-columns: repeat(7, var(--cell)); grid-auto-rows: var(--cellh); gap: var(--gap); }
+.d { position: relative; width: var(--cell); height: var(--cellh); padding: 5px 1px 0; border: 0; border-radius: var(--app-radius-inner); background: transparent; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 16px; line-height: 20px; font-variant-numeric: tabular-nums; color: var(--app-ink); }
+.sm .d { padding-top: 5px; gap: 3px; }
+.d .n { position: relative; }
+.d.we .n { color: var(--app-muted); }
+.d.blank { visibility: hidden; }
+.d.run { background: var(--app-pick-tint); }
+.d.run.first { border-top-left-radius: var(--app-radius-inner); }
+.d.today .n { font-weight: 700; }
+.d.today .n::after { content: ""; position: absolute; left: 50%; bottom: -3px; width: 18px; height: 2px; margin-left: -9px; border-radius: 1px; background: var(--app-ink); }
+.d.sel { background: var(--app-pick); color: var(--app-on-accent); }
+.d.sel .n { font-weight: 700; color: var(--app-on-accent); }
+.d.sel.today .n::after { background: var(--app-on-accent); }
+.d.after { cursor: not-allowed; color: var(--app-disabled); background: repeating-linear-gradient(135deg, var(--app-ground) 0 5px, var(--app-inset) 5px 6px); }
+.d.after .n { color: var(--app-disabled); }
+.d.end::before { content: ""; position: absolute; top: 4px; bottom: 4px; right: -5px; width: 3px; border-radius: 2px; background: var(--app-accent); }
+.d.focus { outline: 2px solid var(--app-accent); outline-offset: 2px; z-index: 2; }
+.d.tapped { box-shadow: inset 0 0 0 2px var(--app-disabled); }
+.d.focus.tapped { box-shadow: none; }
+.d.hov { background: var(--app-inset); }
+
+/* ── Marks: a shape and a word, never colour alone ─────────────────────── */
+.tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; max-width: calc(var(--cell) - 2px); }
+.tg { display: inline-flex; align-items: center; justify-content: center; height: 16px; min-width: 18px; padding: 0 2px; border-radius: var(--app-radius-tag); font-family: var(--font-mono); font-size: 12px; font-weight: 700; line-height: 1; letter-spacing: -.02em; }
+.tg.st { background: var(--app-accent); color: var(--app-on-accent); }
+.tg.st.draft { background: var(--app-surface); color: var(--app-accent); border: 1.5px dashed var(--app-accent); }
+.tg.it { width: 18px; height: 18px; min-width: 18px; padding: 0; border-radius: 50%; border: 1.5px solid var(--app-accent); background: var(--app-surface); color: var(--app-accent); }
+.tg.en { background: var(--app-ink); color: var(--app-on-accent); }
+.tg.more { background: var(--app-surface); color: var(--app-ink); border: 1px solid var(--app-grey); }
+.d.sel .tg.st { background: var(--app-on-accent); color: var(--app-pick-hover); }
+.d.sel .tg.st.draft, .d.sel .tg.it, .d.sel .tg.more { background: transparent; color: var(--app-on-accent); border-color: var(--app-on-accent); }
+.d.sel .tg.en { background: var(--app-on-accent); color: var(--app-ink); }
+
+.key { list-style: none; margin: 14px 0 0; padding: 12px 0 0; border-top: 1px solid var(--app-line); display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 14px; color: var(--app-grey); }
+.key li { display: inline-flex; align-items: center; gap: 6px; }
+.key .sw { width: 18px; height: 16px; border-radius: var(--app-radius-tag); }
+.key .sw.pick { background: var(--app-pick); }
+.key .sw.run { background: var(--app-pick-tint); }
+.key .bar { width: 3px; height: 16px; border-radius: 2px; background: var(--app-accent); }
+.key .td { position: relative; font-weight: 700; color: var(--app-ink); }
+.key .td::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; background: var(--app-ink); }
+.key .hat { width: 18px; height: 16px; border-radius: var(--app-radius-tag); background: repeating-linear-gradient(135deg, var(--app-ground) 0 4px, var(--app-inset) 4px 5px); border: 1px solid var(--app-line); }
+.after-note { margin: 10px 0 0; font-size: 14px; line-height: 1.4; color: var(--app-grey); display: flex; gap: 8px; align-items: flex-start; }
+.after-note .hat { flex: none; margin-top: 2px; width: 18px; height: 16px; border-radius: var(--app-radius-tag); background: repeating-linear-gradient(135deg, var(--app-ground) 0 4px, var(--app-inset) 4px 5px); border: 1px solid var(--app-line); }
+
+/* ── Direction A: the month strip ──────────────────────────────────────── */
+.strip { display: flex; gap: 8px; padding: 12px 24px; border-bottom: 1px solid var(--app-line); overflow: hidden; }
+.sm .strip { padding: 10px 16px; }
+.mc { flex: 1 0 0; min-width: 44px; height: 56px; padding: 6px 4px 0; border: 1px solid var(--app-field-border); border-radius: var(--app-radius-control); background: var(--app-surface); display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.mc .m { font-size: 15px; font-weight: 600; color: var(--app-ink); }
+.mc .gl { display: flex; gap: 3px; flex-wrap: wrap; justify-content: center; max-width: 64px; }
+.mc .gl i { display: block; width: 8px; height: 8px; }
+.mc .gl .s { background: var(--app-accent); border-radius: 1px; }
+.mc .gl .s.draft { background: transparent; border: 1.5px dashed var(--app-accent); }
+.mc .gl .i { border: 1.5px solid var(--app-accent); border-radius: 50%; }
+.mc .gl .p { background: var(--app-pick); border-radius: 50%; }
+.mc .gl .e { width: 3px; background: var(--app-accent); border-radius: 1px; }
+.mc.on { border: 2px solid var(--app-accent); background: var(--app-accent-tint); padding-top: 5px; }
+.mc.now .m { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+
+/* ── Direction B: the line on top ──────────────────────────────────────── */
+.ln { position: relative; height: 112px; margin: 0 24px; }
+.sm .ln { margin: 0 16px; height: 108px; }
+.ln-wrap { padding: 12px 0 10px; border-bottom: 1px solid var(--app-line); }
+.ln-band { position: absolute; top: 0; bottom: 20px; border-radius: var(--app-radius-inner); background: var(--app-accent-tint); }
+.ln-axis { position: absolute; left: 0; right: 0; top: 62px; height: 1px; background: var(--app-stem); }
+.ln-after { position: absolute; top: 46px; height: 32px; right: 0; background: repeating-linear-gradient(135deg, transparent 0 4px, var(--app-line) 4px 5px); }
+.ln-run { position: absolute; top: 60px; height: 5px; border-radius: 3px; background: var(--app-pick-tint); box-shadow: inset 0 0 0 1px var(--app-pick); }
+.ln-st { position: absolute; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; }
+.ln-st .tg { position: relative; z-index: 1; }
+.ln-st .stem { width: 1px; background: var(--app-stem); }
+.ln-st .dot { width: 9px; height: 9px; margin-top: -1px; background: var(--app-accent); border-radius: 1px; }
+.ln-st.draft .dot { background: var(--app-surface); border: 1.5px dashed var(--app-accent); }
+.ln-it { position: absolute; top: 70px; transform: translateX(-50%); }
+.ln-it .tg.it { width: 18px; height: 18px; }
+.ln-pick { position: absolute; top: 4px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; z-index: 3; }
+.ln-pick .lab { font-size: 12px; font-weight: 700; line-height: 16px; color: var(--app-on-accent); background: var(--app-pick); border-radius: var(--app-radius-tag); padding: 0 4px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ln-pick .pin { width: 2px; height: 38px; background: var(--app-pick); }
+.ln-pick .head { width: 13px; height: 13px; margin-top: -6px; border-radius: 50%; background: var(--app-pick); box-shadow: 0 0 0 2px var(--app-surface); }
+.ln-today { position: absolute; top: 18px; height: 44px; border-left: 1px dashed var(--app-disabled); }
+.ln-today span { position: absolute; top: -16px; left: 4px; font-size: 12px; color: var(--app-muted); white-space: nowrap; }
+.ln-end { position: absolute; top: 44px; width: 3px; height: 34px; margin-left: -1px; background: var(--app-accent); border-radius: 1px; }
+.ln-months { position: absolute; left: 0; right: 0; bottom: 0; height: 20px; }
+.ln-months span { position: absolute; transform: translateX(-50%); font-family: var(--font-mono); font-size: 12px; color: var(--app-muted); }
+.ln-months span.on { color: var(--app-accent); font-weight: 700; }
+
+/* ── Direction C: the calm column ──────────────────────────────────────── */
+.col-mo { margin-bottom: 18px; }
+.col-h { position: relative; display: flex; align-items: baseline; justify-content: space-between; gap: 8px; height: 40px; padding-top: 8px; background: var(--app-surface); }
+.col-h.stuck { box-shadow: 0 1px 0 var(--app-line); }
+.col-h h3 { margin: 0; font-family: var(--font-heading); font-size: 19px; letter-spacing: -.015em; }
+.col-h .sum { display: flex; gap: 4px; }
+.col-fade { position: absolute; left: 0; right: 0; height: 28px; pointer-events: none; }
+
+/* ── Frame notes and the zoomed focus sampler (frame chrome) ───────────── */
+.side { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 14px; padding-top: 30px; }
+.side h4 { margin: 8px 0 0; font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--app-muted); }
+.side p, .side li { margin: 0; font-size: 15px; line-height: 1.45; color: var(--app-body); }
+.side ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+.side code, .sheet code { font-family: var(--font-mono); font-size: 13px; background: var(--app-inset); padding: 1px 4px; border-radius: var(--app-radius-tag); color: var(--app-ink); }
+.sheet { display: flex; flex-wrap: wrap; gap: 20px 28px; margin-top: 22px; padding: 18px 20px; background: var(--app-surface); border: 1px solid var(--app-line); border-radius: var(--app-radius-card); }
+.sheet .st { display: flex; flex-direction: column; gap: 8px; }
+.sheet .st > span:first-child { font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--app-muted); }
+.sheet .st .under { font-size: 14px; color: var(--app-muted); }
+.box.err { border-color: var(--app-error); }
+.box.amb { border-color: var(--app-attention); }
+.zoom { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
+.zoom .z { display: flex; flex-direction: column; gap: 10px; width: 170px; }
+.zoom .zc { position: relative; width: 60px; height: 48px; transform: scale(2); transform-origin: top left; margin: 4px 0 52px 4px; background: var(--app-surface); }
+.zoom .zc .d { position: absolute; inset: 0; }
+.zoom .zn { font-size: 13px; line-height: 1.4; color: var(--app-body); }
+.zoom .zn code { font-size: 12px; }
+
+/* ── Field group (D-1), for the item form ──────────────────────────────── */
+.fg { max-width: 620px; background: var(--app-surface); border: 1px solid var(--app-field-border); border-radius: var(--app-radius-card); overflow: hidden; }
+.fr { display: flex; flex-direction: column; gap: 4px; padding: 10px 14px 12px; border-bottom: 1px solid var(--app-line); }
+.fr:last-child { border-bottom: 0; }
+.fr .lb { font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--app-muted); }
+.fr .v { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 28px; font-size: 16px; color: var(--app-ink); }
+.fr .v .cal { flex: none; width: 28px; height: 28px; display: grid; place-items: center; color: var(--app-accent); border-radius: var(--app-radius-inner); }
+.fr .v .cal svg { width: 18px; height: 18px; }
+.fr .help { font-size: 13px; line-height: 1.4; color: var(--app-muted); }
+.fr.on { background: var(--app-accent-tint); box-shadow: inset 2px 0 0 var(--app-accent); }
+.fr.hover { background: var(--app-accent-tint); }
+.fr.hover .cal { background: var(--app-surface); }
+.items { display: flex; flex-direction: column; gap: 10px; max-width: 620px; margin-bottom: 14px; }
+.it-card { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--app-surface); border: 1px solid var(--app-field-border); border-radius: var(--app-radius-card); }
+.it-ring { flex: none; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--app-accent); display: grid; place-items: center; font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--app-accent); }
+.it-card p { margin: 0; }
+.it-card .t { font-size: 16px; color: var(--app-ink); }
+.it-card .m { font-size: 14px; color: var(--app-muted); }
+
+/* ── Motion demo ───────────────────────────────────────────────────────── */
+.mv .dr.anim { transform: translate3d(100%, 0, 0); }
+.mv .scrim.anim { opacity: 0; }
+
+/* ══ Refined B (25–26 Oct): today in gold, more azure, the real D-5 page ═══════════════════════ */
+/* Today: a sun-gold disc with a ring that meets 3:1 on every ground. */
+.d.today .n { width: 26px; height: 26px; margin-top: -3px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: var(--app-ink); background: var(--app-today); box-shadow: inset 0 0 0 1.5px var(--app-today-ring); }
+.d.today .n::after { content: none; }
+.d.sel.today .n { color: var(--app-ink); }
+.key .td { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; font-size: 13px; font-weight: 700; background: var(--app-today); box-shadow: inset 0 0 0 1.5px var(--app-today-ring); }
+.key .td::after { content: none; }
+
+/* More azure, all of it meaning "your pick": the run on the line, the footer's date and its gap. */
+.ln { height: 116px; }
+.ln-run { top: 60px; height: 4px; border-radius: 2px; background: var(--app-pick); box-shadow: none; }
+.ln-pick { top: 0; width: 13px; height: 70px; margin-left: -6.5px; transform: none; display: block; }
+.ln-pick .lab { position: absolute; top: 0; white-space: nowrap; }
+.ln-pick .lab.r { left: 0; }
+.ln-pick .lab.l { right: 0; }
+.ln-pick .pin { position: absolute; left: 5.5px; top: 16px; width: 2px; height: 42px; }
+.ln-pick .head { position: absolute; left: 0; top: 55px; margin: 0; }
+.ln-today { top: 20px; height: 42px; border-left: 1.5px dashed var(--app-today-ring); }
+.ln-today span { top: -20px; font-size: 12px; font-weight: 700; color: var(--app-ink); }
+.ln-today span.l { right: 5px; left: auto; }
+.ln-today span.r { left: 5px; right: auto; }
+.ln-today i { position: absolute; top: 37px; left: -6.5px; width: 11px; height: 11px; border-radius: 50%; background: var(--app-today); box-shadow: inset 0 0 0 1.5px var(--app-today-ring); }
+.ro-date strong { color: var(--app-pick); }
+.ro-gap .g.run b { color: var(--app-pick); }
+.dh-eyebrow { display: flex; align-items: center; gap: 6px; }
+.dh-eyebrow .tg { flex: none; }
+
+/* The D-5 page, as exported. */
+.pg-head { height: auto; padding: 10px 28px; gap: 11px; }
+.pg-head img { width: 30px; height: 30px; object-fit: contain; flex: none; }
+.pg-app { font-size: 17px; letter-spacing: -.025em; white-space: nowrap; }
+.pg-sep { width: 1px; height: 20px; background: var(--app-field-border); flex: none; }
+.pg-school { font-size: 14px; color: var(--app-grey); white-space: nowrap; }
+.pg-right { margin-left: auto; display: flex; align-items: center; gap: 14px; font-size: 14px; color: var(--app-body); white-space: nowrap; }
+.pg-right a { color: var(--app-accent); text-decoration: underline; text-underline-offset: 3px; }
+.pg-signout { padding: 9px 14px; border-radius: var(--app-radius-control); border: 1px solid var(--app-field-border); background: var(--app-surface); font-size: 14px; font-weight: 600; color: var(--app-body); }
+.sm .pg-head { flex-wrap: wrap; padding: 10px 16px 11px; gap: 9px; }
+.sm .pg-head img { width: 26px; height: 26px; }
+.sm .pg-app { font-size: 16px; }
+.sm .pg-right { width: 100%; justify-content: space-between; gap: 10px; }
+.pg-main { padding: 32px 28px 0; }
+.sm .pg-main { padding: 22px 16px 0; }
+.pg-crumb { font-size: 15px; }
+.pg-h1 { margin: 10px 0 0; line-height: 1.06; }
+.sm .pg-h1 { margin-top: 8px; }
+.pg-sub { margin: 6px 0 0; font-size: 16px; color: var(--app-grey); }
+.pg-tabs { margin-top: 20px; gap: 24px; font-size: 16px; color: var(--app-body); }
+.pg-tabs span { padding: 10px 2px; }
+.pg-h2 { margin-top: 28px; }
+.yv { margin: 0 0 16px; padding: 18px 20px 6px; background: var(--app-surface); border: 1px solid var(--app-field-border); border-radius: var(--app-radius-card); }
+.yv-h { display: flex; justify-content: space-between; align-items: baseline; }
+.yv-h span { font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--app-muted); }
+.yv-h b { font-size: 15px; color: var(--app-accent); text-decoration: underline; text-underline-offset: 3px; }
+.yv .ln-wrap { border: 0; }
+.yv .ln { margin: 0; }
+.save-row { display: flex; align-items: center; gap: 14px; margin-top: 16px; }
+.save-row span { font-size: 15px; color: var(--app-grey); }
+.sm .save-row { flex-direction: column; align-items: stretch; gap: 10px; }
+.sm .save-row span { text-align: center; }
+.tapme { position: absolute; z-index: 4; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--app-pick-hover); }
+.tapme i { width: 30px; height: 30px; border-radius: 50%; background: var(--app-pick); opacity: .22; box-shadow: 0 0 0 6px var(--app-pick-tint); }
+
+/* Motion demo: a checkbox per slide, so it plays with no script. */
+.mv-in { position: absolute; opacity: 0; pointer-events: none; }
+.mv .dr { transform: translate3d(100%, 0, 0); }
+.mv .scrim { opacity: 0; pointer-events: none; display: block; }
+.mv .d-old { transition: transform 160ms cubic-bezier(.2, .7, .3, 1); }
+.mv .s-old { transition: opacity 160ms linear; }
+.mv .d-new { transition: transform 200ms cubic-bezier(.4, 0, 1, 1); }
+.mv .s-new { transition: opacity 200ms linear; }
+#m-old:checked ~ .mv .d-old, #m-new:checked ~ .mv .d-new { transform: none; }
+#m-old:checked ~ .mv .s-old, #m-new:checked ~ .mv .s-new { opacity: 1; pointer-events: auto; }
+#m-new:checked ~ .mv .d-new { transition: transform 300ms cubic-bezier(.32, .72, 0, 1); }
+#m-new:checked ~ .mv .s-new { transition: opacity 300ms linear; }
+.mv-btns { position: absolute; left: 28px; bottom: 28px; z-index: 1; display: flex; gap: 12px; }
+.mv-btns label { cursor: pointer; }
+@media (prefers-reduced-motion: reduce) { .mv .dr, .mv .scrim { transition: none !important; } }
+.box.tap::after { content: ""; position: absolute; right: 44px; top: 50%; width: 30px; height: 30px; margin-top: -15px; border-radius: 50%; background: var(--app-pick); opacity: .3; box-shadow: 0 0 0 8px var(--app-pick-tint); }
+.canvas.lg { height: 900px; }
+.sm .db::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 28px; background: linear-gradient(rgba(255, 255, 255, 0), var(--app-surface)); pointer-events: none; }
+.mv-btns { position: static; margin: 0 0 12px; }
+.ln-gap { position: absolute; top: 52px; transform: translateX(-50%); padding: 0 6px; background: var(--app-surface); font-size: 12px; line-height: 16px; color: var(--app-muted); white-space: nowrap; z-index: 1; }
+.ln-st.draft .tg { background: var(--app-surface); }
+/* The year view as built (D-5), drawn for the before/after. */
+.old-ln { position: relative; height: 148px; margin-top: 12px; }
+.old-ln .ax { position: absolute; left: 0; right: 0; bottom: 58px; height: 1px; background: var(--app-line); }
+.old-ln .band { position: absolute; top: 0; bottom: 0; border-radius: var(--app-radius-inner); background: var(--app-accent-tint); }
+.old-ln .td { position: absolute; top: 0; bottom: 58px; border-left: 1px dashed var(--app-disabled); }
+.old-ln .tdl { position: absolute; top: 0; transform: translateX(-100%); padding-right: 6px; font-size: 12px; color: var(--app-muted); }
+.old-ln .mk { position: absolute; bottom: 58px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; }
+.old-ln .mk b { font-family: var(--font-mono); font-size: 13px; line-height: 1; color: var(--app-accent); }
+.old-ln .mk i { width: 1px; background: var(--app-stem); }
+.old-ln .mk u { width: 11px; height: 11px; margin-bottom: -6px; border-radius: 50%; background: var(--app-accent); }
+.old-ln .gp { position: absolute; bottom: 52px; transform: translateX(-50%); padding: 0 6px; background: var(--app-surface); font-size: 12px; color: var(--app-muted); white-space: nowrap; }
+.old-ln .ir { position: absolute; bottom: 40px; transform: translateX(-50%); width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--app-accent); background: var(--app-surface); }
+.old-ln .il { position: absolute; bottom: 22px; transform: translateX(-50%); font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--app-accent); }
+.old-ln .end { position: absolute; bottom: 58px; width: 3px; height: 34px; transform: translateX(-50%); background: var(--app-accent); }
+.old-ln .tk { position: absolute; bottom: 0; transform: translateX(-50%); font-family: var(--font-mono); font-size: 12px; color: var(--app-muted); }
+.old-ln .tk.on { color: var(--app-accent); font-weight: 700; }
+.yv-key { list-style: none; margin: 12px 0 0; padding: 12px 0 0; border-top: 1px solid var(--app-line); display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 14px; color: var(--app-muted); }
+.yv-key li { display: flex; align-items: center; gap: 8px; }
+.yv-items { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.yv-items li { display: flex; align-items: center; gap: 10px; font-size: 15px; color: var(--app-ink); }
+.yv-items li span:last-child { font-size: 14px; color: var(--app-muted); }
+.yv-items .r { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--app-accent); display: grid; place-items: center; font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--app-accent); }
+.yv-foot { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--app-line); }
+.yv-foot b { font-size: 15px; color: var(--app-accent); text-decoration: underline; text-underline-offset: 3px; }
+.ba { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; width: 1760px; }
+.ba .yv { margin: 0; }
+.ba-h { display: flex; align-items: baseline; gap: 10px; margin: 0 0 10px; }
+.ba-h b { font-family: var(--font-heading); font-size: 19px; letter-spacing: -.015em; }
+.ba-h span { font-size: 14px; color: var(--app-grey); }
+.ln-today { z-index: 2; }
+.ab.canvas { border: 0; border-radius: 0; }
+/* Keep the page behind the scrim and the drawer, whatever z-index its own marks use. */
+.pg, .sw { z-index: 0; }
+.scrim { z-index: 1; }
+.dr { z-index: 2; }
+</style>
+</head>
+<body>
+<div id="root" class="wrap"><div class="cap"><b>Motion · the slide</b><span>Press a button to open the drawer each way; press the dark area or Close to shut it.</span><span class="sample">Sample content</span></div><div class="mv-btns"><label for="m-old" class="btn">Open with today's slide: 160ms</label><label for="m-new" class="btn pri">Open with the D-11 slide: 300ms in, 200ms out</label></div><input type="checkbox" id="m-old" class="mv-in"><input type="checkbox" id="m-new" class="mv-in"><div class="canvas lg mv"><div class="pg"><div class="pg-head"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAjUAAAC0BAMAAACeSMD/AAAWfmNhQlgAABZ+anVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAFlhqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOmY0MDI5ODE4LTU4NjktNGMzNS04Y2Y0LTBiNjE1OGZiMGQwNgAAAAOTanVtYgAAAClqdW1kYzJhcwARABCAAACqADibcQNjMnBhLmFzc2VydGlvbnMAAAAAuGp1bWIAAABEanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5pbmdyZWRpZW50LnYzAAAAABhjMnNozGrYQ8lDzlo5PaiNfKOF4QAAAGxjYm9yo2lkYzpmb3JtYXRpaW1hZ2UvcG5namluc3RhbmNlSUR4LHhtcDppaWQ6ZWNmYjc2N2YtYzNmZC00YjA2LTg1MWItZGQxM2U1NjY1MDVjbHJlbGF0aW9uc2hpcGhwYXJlbnRPZgAAAeJqdW1iAAAAQWp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuYWN0aW9ucy52MgAAAAAYYzJzaOvaC8GzUeLme7f5QQ0QMoAAAAGZY2JvcqJnYWN0aW9uc4KiZmFjdGlvbmtjMnBhLm9wZW5lZGpwYXJhbWV0ZXJzoWtpbmdyZWRpZW50c4GiY3VybHgtc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5pbmdyZWRpZW50LnYzZGhhc2hYID3X14bgSXNe6EyThZSac7xFNHHxlshx0ya5/cnT/siVpGZhY3Rpb254HWNvbS5hbnRocm9waWMuY2xhdWRlLnByb3ZpZGVkanBhcmFtZXRlcnOheB9jb20uYW50aHJvcGljLm9yaWdpbi1jb25maWRlbmNlZ3Vua25vd25rZGVzY3JpcHRpb254ZkNsYXVkZSBwcm92aWRlZCB0aGlzIGZpbGUgYXQgdGhlIHJlcXVlc3Qgb2YgYSB1c2VyIGFuZCBtYXkgaGF2ZSBjcmVhdGVkIG9yIG1vZGlmaWVkIHRoZSBmaWxlIGNvbnRlbnRzLm1zb2Z0d2FyZUFnZW50oWRuYW1lZkNsYXVkZXJhbGxBY3Rpb25zSW5jbHVkZWT1AAAAyGp1bWIAAABAanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5oYXNoLmRhdGEAAAAAGGMyc2gMhKBTLV9RJZ8fE/C7FQy5AAAAgGNib3KlY2FsZ2ZzaGEyNTZjcGFkTQAAAAAAAAAAAAAAAABkaGFzaFggXLZ1855+kTPfZmLeXIQnNQ3G8LoSzT7o9LpoM4NrjWdkbmFtZW5qdW1iZiBtYW5pZmVzdGpleGNsdXNpb25zgaJlc3RhcnQYIWZsZW5ndGgZFooAAAI+anVtYgAAACdqdW1kYzJjbAARABCAAACqADibcQNjMnBhLmNsYWltLnYyAAAAAg9jYm9ypWNhbGdmc2hhMjU2aXNpZ25hdHVyZXhNc2VsZiNqdW1iZj0vYzJwYS91cm46YzJwYTpmNDAyOTgxOC01ODY5LTRjMzUtOGNmNC0wYjYxNThmYjBkMDYvYzJwYS5zaWduYXR1cmVqaW5zdGFuY2VJRHgseG1wOmlpZDpkODhiMjEyYi1lZTQxLTQxNmQtYmJjNS0wM2VlYTc3MzEyMjFyY3JlYXRlZF9hc3NlcnRpb25zg6JjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggPdfXhuBJc17oTJOFlJpzvEU0cfGWyHHTJrn9ydP+yJWiY3VybHgqc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5hY3Rpb25zLnYyZGhhc2hYICQ6ebqAtBprsosA2AW/9bz9Rceq+xyhPBY2Vdsj5yDjomN1cmx4KXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaGFzaC5kYXRhZGhhc2hYILrs/sKtrWlYvGTbQ9ctdL8yRJVKJ6SCkZ5P6VZx9IGmdGNsYWltX2dlbmVyYXRvcl9pbmZvo2RuYW1lb0FudGhyb3BpYyBGaWxlc2d2ZXJzaW9uZTEuMC4wa3NwZWNWZXJzaW9uZTIuNC4wAAAQOGp1bWIAAAAoanVtZGMyY3MAEQAQgAAAqgA4m3EDYzJwYS5zaWduYXR1cmUAAAAQCGNib3LShFkCEqIBJhghWQIKMIICBjCCAY2gAwIBAgIUQOWgCu7COdC+uIP6BkIFPWdVEwAwCgYIKoZIzj0EAwMwSTEXMBUGA1UEChMOQW50aHJvcGljLCBQQkMxLjAsBgNVBAMTJUFudGhyb3BpYyBDb250ZW50IENyZWRlbnRpYWxzIFJvb3QgQ0EwHhcNMjYwODA3MTg0MzU2WhcNMjgwODA2MTk0MzU2WjBEMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEpMCcGA1UEAxMgQW50aHJvcGljIENsYXVkZSBDb250ZW50IFNpZ25pbmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASYegpry1AYBRTVNL1CpTlbROnY3dey+UrsF9C3phYrATN3ZHf93Mo8RQN0KOUuOn19P4oWNFWe5n2/She9N7eTo1gwVjAOBgNVHQ8BAf8EBAMCB4AwFQYDVR0lBA4wDAYKKwYBBAGD6F4CATAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFM5R4gSBTmRbI/jjxM+aPpzB11zCMAoGCCqGSM49BAMDA2cAMGQCMDFzHRSeAXrSy1WOzkbhPZ6Km2wGTmZ/2gK18k8BQGXyqz88Rdrz6CTX9flAnYNVxgIwcF9c3fVhqmJKpi+UhasNUMko69cyX6STPfta3Q8EjyzDjzoyrol46FP6VFHhvUcJoWNwYWRZDZ4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2WEBZixRwUwMxvj4ogeCkv4c4IbwaNgXk/T05E7xAkcYOQQqAhvu3Jw885kOuD0Bylswax7/5rCgK3FhnqOjDoP4TbSxfggAAADBQTFRF////AXetu72+eKEv19vRt7m66/HscZwkfKQ1pL90W6bHjK5OkcLYN5C5wtSgv9zoQliu2AAAAAlwSFlzAAAuIwAALiMBeKU/dgAAIABJREFUeNrNXc1rVNm2P0hxQO2O3KkkvMvB7T9Q4VVdhEeRL7u54OCQclz48orY9u0MSqiEQCYlJtLwEG7TuSI0z0kPRFHwYXXT0LQTB6KIkzcQReE1N7cRGu/EQaP49sdaa6/9cU6dinZ8h+vtdFKxU7+svT5+67fWTubmOgk8c+/1WTB/6elL1Z7n5uWfqg9S/oWv4af75VLH/evMpz+6+ns9NxLRXkRwUtF+j8+i+UuP96s9gM22+iDdZF+4aL5Qa6ypf+zQ51fNj/3xH36vZzLJMpETODPtLM/yPBdCZOqP/BD+6H/DPzm9yHzIP2u+kmUZYDPbrNebW/X61kD/gz4cuB8eg5/h1lZL/f+gCV/ZOgY/25n6bfN1+DvwO35PbGYUOAt4rDQ4mXpr6o96cv1H0Ef2s/bDPHP/6H8gNvUqT3MDfjsDjcWtAX1lGn6y7YECrWa/ZX0v7Ea9EwLnVFvhIDQcygLk14QBRxuI+pz5LBqOfkGew+vgK8p8xsKmfh5Ozqo+OUPCpgFnrVbXX9jfo+84thfY5A44SxIcgEYbD4Mm0xiYz4Jl6eOm0bUw7sZuGuBVJla1AQ3JntbdI3VmdS/tZt68l/YRdDpLgo6SwNNl3rCxCkGQAWDaM2V0EnNjTWNi0zKv3t+bdrCxR6quX3G8vpd2I8CzOODAm8f3neO50YAI81UBLwB4lHEJa2diPGzQFS8b8yBsNjFKNdcAor22G42DoFi+1DY2YPAwgJhzgz4ZnG5uHU5mzxlY01jYgCtOZs3hGhZglg7qe+tv8AzZcKUdck5mIeCkZOhywBvhK/C8wWvN0RsPGzw6O5vPHWw2nCiV7F/9IHYjODgzxt0IJzJjqBLkWgS54CCCj2c3jZuuWxkGLnoNPPLe2k0ubMKC4KTzmN/Aeyd3Q8mOzn1zx27Yk4/nbxCDZGisgewGXPQygLcz+DB2o3/5bQQHzEGwPE+QZ5K1BaEgMo1SlvF6IRvX37Qw9TP2gdisuebE8p69jFMIQPsouBzKgHNIAnOITNJajsx1u/pV3fCRVeaRTII3Vu6HLneit+Fgc97JemRmWN9bu7HJiuDgzJvPsOLAfDnPFrrJqKe7NDeW3aB97F+d5thgBMcjxbLiPY5TJkrjsarliIgpMfUrpMksJNWetDsGNhiODppQjdigOeGRcv6uPY1TOUQfAGeeHA4ZTrsyMvaZHSeEL4NTHjqQ4ZHimd/e+Bth7QZyXMNZcMPRGLXz8ZGphg2F8OOmtExvmc/fxoTwJtSbH9pupM9dhFAlIOUDo+kkvxM26FdkjG4xbLAGHzZbiZ/57bm/oWRY++P/yJjhiF0ZTVW7eY6x2rxhKA3AMuhIze653QhbYOf4D32qalRiZh40qYzU6rMzMyFLvNDtdsb2N156A9hsuEeKVed7lt8g08fIPnFS/YSsosrZ++3OZSb5K6CX5VfmFjrjYIPxqAb0X427mxSP1ERv7/2NMJWSwPpA+x31HxbkhBYtNEszog2sRMiPIsASoLkxYjimNxOQ3tR67KTtxyN1pvcB7CZzyF/z/lo6ikNtZK1GIoNlp2FykHg3GZA1QtEeI/fD9GZ/7zbDptnhtIV01PUP4G9yU0/DuzMfndTOGGzJ9iEE+GyB8R5NxZah6NB3gc1BaLhMqIAEbJY8Up3E5272LE7F7Ea/MwhUeYsIwbbzMmYwhmXPkA0ck6Owqd9zwGZAxRQdKTeC75G/yW1ZQAYE2GhLOoqkDh4n04TKnRoVGcKcsqUxsLmN6Q3QxhobOEo7mPzM7r3diCz6kN2IRdvXA7aTszQmP6TckTWrqmNjmS04PqamhDQQj9StwYeyG/ofHBLjbzDVAWiQ6SPvxKjTzHE4Y3GiltlaSyw2a+6Rmlit/3+xmz+qOCUwRZbQ5OFrAJicdfCMwxHj+WJMi9MB4HCwRw7aHin/uz6A3YD1YAw3ZqOhYYZFpEWOrRpKbXL0OeNjU6ufTYgWNgctHcCR8pLiD2o36ueiykpz66Hh5MISPICqIDsaJ061kPU7jx0XWX8+Lz9Se5UXh5ZzEuopYzaGIM1ZJINoZgkebDDYjl51bNA09vfZ+TGfLD5SzQ9lN231390nP9BmU+O6ijAbIswcOxrDbkhGgofrOLpiKauAUDD0olSjvzf+xjcb4IznoXTQH1DF5Tic3GWUHTsqw6YZLadmN1u2Opg2Tjme+DX6X37zc/IB7EYYaFL83e/LI77GccBGmkRhyyBXhk3jh/ogxGanSfwwuGI6UjsuMhd+pgpv7+KUQia3ZPpJaFWRcMtxOJk9SKxhw7PHImzWTq8Pw3Jq+1hisVHHq0ZHip+o/rGvGGOyZ/WUYl9QG4lHqpZnBbGM/K+GDhukeN6KsWn2np/Z2B4E2NxCAxqCKz7YDOiJZqP3Y4tzZ7+rpk1wVsqSUppK70CjSjhOyTqc0N1kFexm81wye5adkrOY+tEHcM7oSG1baNa/cjnX3xObVLcigc5k/815ldIA+xd3N1nM3SCKZf5GRpid88eDMpzSmxrgVcM4bRm/xoW/J3uHTcFzCtO3fZD+8kCWWwQK3U0xNptSMbx9cznQ+k30b1Ke11Cl+ZnmWe/v6H/fSj44Nku6sjQFZy7KzKbA3RT7m+aaNIbhRcZwnneZLY2NcsXbcKRq4Jqa/R/DNtCeY2Og0djM40ERBQ6nwN0UYqPecK3x3Pa2G7eR2WrZMrzFjhTC2P8x8qPuMTbAR+Q6K54Xu3A3eXF+o6nOiV7LYrN5E1XaHeyKa3noGaOLTNLtEmj2Fpt0KQPqMz+KxTiYStThFLibImy0lexf7zD/ivkdpjfLRoqNRwpy4kYUmj3ERnblDCmsa6KTEMKzEYbjuZu8JL9p6jLo4Br0Ejg225Qfaxc00YSKabsMmhJspq7ev//w/v1713ef38jgTbKimQwUWSb7B/LPuhtR5nC8XKcVt5tz2jI2WOMfsEmHG4SNshg8UsbAGv/pu+FaKTZT197SN6y8vr7Leoq3JHOXnFmEanxEnGLuRlCWuBjva5pS+/g0KwMAmxrGK2koirzBI6WTxM0/+dB88UNJHT517aV7HF5feQddOi81HcleDXXEjuUwhxN3N9TTmo3NdOzcZkQeNl56Nyktll55YtUcKWM2615ek/6yWcJRPHkVetF7u9KJYgcF7GZm7ohU7Blhn+n8Vnc3dNaoceNhAzFp+yKrA7C3S5NSOpYtQ7qszWb1uXee/tY/9veiMzV1I+qYPn+0K/4m19aSzaHE0Xjl7txMizkcp4HlkMY+d2MbN6HdGPpZnxkPm4PIbE30lHVtG1JUm03ja/dtnhjaBDnA5vCrgnz20JVd8Testx88NSaYHeFuiBxjsovZSHe3prI80goDJstEjfak58Ejpcym8d/u8XjR6H1TyN8cflkoBRoTHO1vlI6vWJOVgnLCbWAx0jh0N3mrQH+zif3uDqOrIB0+bifspHeGI6XMxvPDX/ytz2txD5sn7LUrr+/L5y07C1fG5W9G6/hU0lOYHHvuRlnNQpE2Cfzn/nVn3KflpjezypKG5khtB37401t9pxb/uACalXtP0f88ftjZDTjSbirp+FJICWOkse9u2gtFui2iqhQMn/jY2PSm2ZJHCo5X03E2tRcNr+B0sJnELx1yw9Lju7sAR9pNRR0f6kvigYp1OFG8HdEmUUNlA5pQDJt08zyxfusSuGmopJx8+Itb/dVvOoV5MUKT/hbEJDSoMcCZTAIXrFPkmCl1VQkallReVozQ1CI1A3rbnfO6onSwqTVserMBR+rPspJa6/CkhkJ3DJvD8NJDsTQYfXR1hzzpKe3nrD2oWsL3yjHTwfNlcKNhkfkQmyaR5gqGg6sONhPE3vTq0+ZI1TYHklq25+lyv3/B+p6an/tNvSxNZKbujgnOJPMomjmGfktu0mMuajTqpDzQXDiCEzaBFWKDRI1ktpyWU8ekfs+xFdW4OavLrv9t8vB94la/x1xNetnHBt7754W1J4LzaDxsugoYRMW6WJUROvEdqJ3Q3cAgSMtSqhFsUC+hD4yHzZley4ZwfaRO9+oDOlEyqemvchr9z37N8Mx8/jeKTnJtwtMoOB89GgObFLSfOVNh0+Qua8uAosLNkW1HxkY8xTaH2KyTHLQVYrO8TmGqcUKN2dWGgybVCjKpaaxzV3O64fXD4bf8GQQmqMJX7jk4jDKtEJslJz6j6oiF53bO0PGVOBjK286MeQybsygHXXebByYBtnNkx/5XHal/rNY38UR9Ouw1LvA0Z2LoaUzA2RhoHrOywXXMdx0ER2ODOj4ahyf1MPkTCZ49WfN5xOHI3LqbOBPmATYkXTu45mBjohemN3KW4dgteaRO9wYYo+R5qvecrKa23fSw+dacFg3TQzeCvIkcq9+qYTMDJ8nI9izzgPxDDrGZEqFUBG1x0WZpkoEmgg3+4pc3ItgMqUulOWV1ourmRH3x177XsUv/JoFz/M2k9bJhQcWBwGD2phLv17bvn3XpkOK0oj6Rz+FvTTiaHe/MnWoX6CjQoShmiwTWiE2KjLrm2M+nf+2p9qdJanoNL6t5IaFx7Ma8Y53XxWrNGDh3qusoDM9rtdeOnM9fPXAqd3ro3FdrrOP6G8xuTOpnSVGNTQ1Z42Ud0F70gFmuvegHHbs/K2gcu/kvsoXJaAH0JkwCRyfIRitgw41gDtY6HHLKeYcNcwIdFo/xod2Qu9HMlo/NBKY3qjxf+1RKUHQddeJWb7Dqdez+3Pf1fpPkYA/bl668fWspY24l8JqROaDafyMyXkPb7MY6HIrWAhKYWg7E6RGX9tERDwANsMF4nA7NcF2dx6n9qy2rebywacxMn6d1r0r4tB/o/V6isyFoUtNdIN7YsRKwrVE5oLYbv63NLMlj9oiakRuFjkiasOMV622W7fjYNEmhYZyyJdPVF87AW5XW1Ks3mvJrzxXz2Wz8yYemEehEn6FpoC9htSYSpA4QTyqlOZoTtcmNYO6GcLGUhMjcSSqvUWxqURG3m+Ya5SarHRcbBdUsyq5X1/6hreycSmoGQQf800bT14lO6Q/+It/NT7GUBvLljyKf+6yC3QRm47JVTIyUcyo4ymEU6v1woANSPw+bnQ10xed0wrzefdFobq5+5Vnmi36oL9aO+BDlOEFJEAPi2wppDs1rYjuS81XgcDgbYZXq0UYxhvyI3ZAwH1I/D5vtaVxkclGr0n/8a3/LD90ONGQ3h/FETRaV4QDOPyMJ8psq85p54G7CHRzgm9udkBXM2t6LArshVwypHw06G2yGUKMPt1r6OwbyPF1oBZ2XiC5dm80B8sMxhuLb0B9P/TQSHJzXZGynhYMyP6bRFzDM6bDJGVSqosRujnXc9IYtclF6EpTayCrTNGcGPd/VqHgecs+H9Nt+hM4mXmPfDf0x+O30wQhf7DscxgRzi8JT5Q62zmCl6nxDYDfkig2z5WEzgU2q3rS2p2Zj9Sv/PDVWB7EBWPjtPyuLy04l6qY56Z1SuxF8fQDPA4nOI3ejg5X4I5CnS2riN2clhvVQgd2cpTcyvOieKQXLfmBvjm9e1JMLgas58V0/Ps8Ajti808JkF4B4EyHeCy0HYrjncIy8KPMcDq1R0vqKU5nwxAWOh/LtxmbFhtnidiP//SDqSZotxZX6rmbpcqPnq9mZ3dzBE/VmFFHlYAdpThE4Zv9N7hkOX0SROc2WnOiHU3nukn8Z39sQcFvWFdfqrRCb5TVaxya/oen2Ek5c3uxH1aYJpS7/MjJfeYYWFgawAnBAey38eBRWWJzzylE/SiYmLBmGiZF3psgQJtY7ITazG1CEn5Nrx+p/+nvXJge/XG70ywbuldmY9O9QaSr3UwQ+VBU8KKqnWBrjdONyTIbzoDQHbJiJsfWI8He42BBBkexHr8z9zc40THtc1GlP78tL3/wqn18ufVfv95qDGDZkNx9hkL7CFVv3rz6K+uM7kegeTwJRs+/KhF2IPHcDo1GnaAcg7LMTmTv562JDBEVyxhJ8Fpvt2zjMajSSDdzE2xu5qEG+W5P+/QWbmNDi9QVJMZdD4ETSIpz1KHQ3wjli8EWrdfPsRmR2J5mLzbRtAp/1sbkoS/OLuLFkGYaIBpFhoqjdfATHBQqmw4wRTX+LuJePYqlPrOGHduOU236f2ynNlfCoRRpJAhDWIZqeVleF9yMcGxumtGbLqRkkNjXjqtVKqZ16xQft5g4YxJ1ARxGYQ8zlEDhBo1hiw7uSgbuhYyRYOFpkA2fcYZsNbvRLc7C5mLjMlovNhElv5FZIW0mMesBuPgL65jPHuVpwRrocOlbJyvW43s9tULKxKJrkpVCvzSbNLTGYiwAYX0dhQ3gyfO5jc1PpjfVn1iMzqyPs5mMTv01CHFGzfTbS5bDvcgSlat8WG/D2m7gek2OY8yM4QsQOYrHwa9YltmTl1AqxOQiLm88ydUVFu/nYmM0/C6DxQlC8snjG9Ey22Ud2I3x3IzxZDRVYZhfOPKs03PZVFBsbwoHZ4pvFbkNprra5bNfHtZt/IQdLbzGViq2H1L97MNLlOF4qfX3v6SOWFwsRuJvMqTcJH4AmZacsa5dpeGYdBQUxWxyb8ya9Uasn0sG4dnPgJbqQSXpzTyGWR7jiqU60uPAElN2VtxLdJIt0pmjNVubpjqgNc8pmzYI3p4rsxlaaBzH1s6L988n2eYjg+1fHtZsU6Bvi0T+/4puDc4Qm4+2pqPB2JuNz8FF3k9mNZABNSotvImpBJeOx2pRZPiJlmS3eD59Ohjf1K2/znd8V7QYzYuTRf4uU305K8z8F7amIYNtPY0TIb4FnYWshbfPOVwt29UyESnMWGDYsvTn+rwE2Z3VpniphybA+rt2g2XwbrYwmI0fopwKmZ+qGb//z5Fdi7sbuaub+tpZjjSWOeAygXd/L82IWwnduJv6GiQ3dlZEdBn8VW1W7uUJHJSgan4RHCCws0oGZetiJ2U3uBCaX4DIiHBuJrFiAQ4M6ZATTwaYVpH5sqeyGjl2z8uAtN3djNwfo/Ub4mxuFLuez6JDIKwcbTx0caPDbnngrnafX2t12SoLcdr6PY2PTmxRTP+Z2N1Rpng7kkdoe7MZurmBD/LNibiLWnop3YJ5ee/vKnimngekwgGZuyBX9pfO5PyNFwi/bnnJ5P/s+iNli2Kwd3FDSyDVvmWpVuzmAlvBRGVf8JlImFNKET6Ug7t4Nu+CQtCR8mupIIBatiZxC+1HSj1pyVMTsxhLpxGwxneiaKs23B+ecVfHV7eYKa4iXcMV3QmNKHlSanwIxo1kuIJ+lpbjKWMtohTMjhdoJ1TIW0V3yPPUjmBg2sisz0VNHajd2c4A1xEvp0EgHphQcu4/CMOPOmFB0AjjPaEnSUWZIWRD0ud2cDZithPndddmVmW2OeaTIbpARLSGLv6VIH3RgHlSZSYwcn/hQg6DdLi0LjRBusujtTTofMFt8nqG5ebE2GNz2F4ZWsxtkRMsUIzGXM5kkI1sTcszuiJKgd0aPe0DLGztXsAHa5U5tsGPYkOjaNjWda28az+X9QK2xohSrww+P1qjFuldPkhF6gcmk4qQHrZ+1VM/JBMfHedFBXp1jczFoarr3UHSHklCeGMtsPB3FgXItTYybeDZiWHGyGjBzdjaaKEJcjuMVq0AjigJsKL3h2Kyd6cl++Cf13fgbo6MYqd77tqQDs3JlV9iksnDUBRLTbmHExxWAzvItEcuLbcmQblKGzK9LGm6td9JhfVd281+8xzCWyyFw0gfV91HI8L2wIAP5zIy+oSN3mnfUk5A/W9r2l29Zbp374lbAbLnLDJubt8ehJxy+uOL4RpSbIGLi9aNKOxfmePrHm7pI46BpqCNl6FDbsmO7xRf9XX0Os5U4ZtKUc4c7g13ZTSg7GsPlWHDSe4/KsOHHJ8+caxJzb0GdWvu9SF66zVaE2yWsDBtbMhCz5a4Xk4MLtfpgV3YTNHufqqbmPW8EpqCwstEqGAvRO6WSTqerYVG4+Ots8BZA3m0QnOWiXNnPbxxsQmaL0X7mfc7W67u2G2s2j+9THb1y//poEY5DFaevr1t4ph7fSKimFN5GG2F37nrlqGK0PFmxy737+Y0tp46fSwJqS68NqN6XCu2GzOawx7+8vh47JG9KBsrTt9Lkrl69dl/LtpUNZJFpXfItud+FEQHZZ7ZquiQqx2YjZLacO4G+Vru1dm83aDbXwvz1dSyjuROfx4vxxbF9xJbzI50SczcL8dVlhf5mI2S2ODaKvdke7NpuDpW9xUMPRogiC0BF3o/d3+HsIhEOG0imFB21n3dszotTZ0NmixdP55JKAbzRcGQVZDf/LN+1EBmCCUYZDsdNh2kgchHTb1lpMXjhaDOqlrs6A+dMnQuZreTf+RjnCLMZ1CUqWz+oZ0t+6NrNIWf+ecQCk8NFowxPXkXtRni4eOPNbr+8bUWiMnqrUemuc89Z1G7Oh8wWS2fWR5lNv9/8/hsgT7pLv14eaPNBu/mLB01Xtt3uP3zbie/omCyc9b32KuZv+BwZ12/lTr/BDGWSF1ZK9LYks6REwDGcDK/Gs9jYDoxltpiWZDopzfsave9/dU116ZdbfbKb9BGHJn2Ncq2pqzZocQfzrHgQ+vFDDs/Kq4Su7g03rWW2CRNcbFuzw9BtA44vEoxhc5B5ZbaIoYTUaqx+/3N4XORaClz+d4CxeF7QZjs6HgRccXx8SiaOD+Xc1ev7Mnc08wx5HnU3zkobYzVhukdrFk654lKODQWnZeuVb7F4c7DoSDX63/8cdyKf8p1SP8VikjPwy8Gpul/A0235OuOcXxYknFvG6fJeFKqneVZkNxdDZqvGRxXlkYoeKndTcVK0i+xZCQ8TKbVxlCF9MHruzhPzgWIvd+Xq/u30BTRX1G7oyjbGbFFarNR+Bd6mF25W5UJ1xGaylKKiBSYPAiJ9xCQ0s5sccclJbuSIi/MWWy1gLzvW+hTRoetjInaz+TxktvazKd/9UcIv2FTsWM3lBrAdH8fLpLAmYIMLBE7pfjJ97zy9Jd1pwCtXl/QQB7mbxQ6HxqFHYS1bjTXVBc2gzfJJTYvSwZ5zpMLd2P1gUzELVC82e8T7/c+o+UJMmGPglPcZ5m0P0xfsdW0sEjZACTvukjsq/jRn9RSt7Zhl3fCaZbaWraAtWmbG1vHSGpxbfblO/lfgtjqjya27QSgncJLPC3ZGTt14ZWoGDUzYglELbzyrwQDF7UYVEh3cBAjT9Ee4/qZFqV8SpH6tWOI36H1TBE2qJmL6X/7cecF1aFeqsMUOOHeLqnUW/s0ujqJFbQYKDg1dJC5ImM7I4xy3Vzi6rVaY+mGRsBbbjD1YLXQ1Jy43ZPiSyJ1eZT/xyCUBYVLDS9MVdx/rU0yRS3f7GfbBzvYuwSQ93eBGLuYk3lfVbrvCyFlGidqmZgK3ScnOVYRDX/260AVvymzwxwW1AYZxWxXWknwbpsOOik2qJ6/qh4kok+xIeTezJmjODhvfgm1i4Lfb7Wv7chQPm9lzfnoj3XTQlhqsFnjhmty3JSsI/dV/rFpsKi1CioDz5OWILsvIC6+X2i03douM6itBYy+5adiE+gKOzc7txBVtqaHxoC21/vdCF6wdjfqX0z3G+935Q5UnsjSpmNUqvPpbldcsZHUD3U3OMh8I46JEX0zvImS2zieBeCJuNdoFN46Bi5YbYJwZod2CM9p0vMlUeS5ELvyrwlPUBORmUs9beCKCFJbmGZrrYeq3bI/UahVoZK7XM47GbFBvuvqbSg/WCk7CFwogKXw9jCsZc0PVLPjQRC4pxaXOPjZLdg5m3V1EYRkKhZon8Yu6YZ3rgaNJcMnLutXfvAs4wR5obDnY/pQa8m7n3hSdrbsVNJbXsZfb2jzwj/6exMXAbhiztU3Ujcv49b+Ku+A6vzrodGOAi9fH24JZsAFQLhx1c15DAk1aYDihjuEZwQmvAvQaEyhUoo14vNZcD9ObIaNuLDhNbxuvdcHHWC5YGzqa/XFWyx4uWo849Vi2XfRjd89PMvmIk/DiEN1RUs0Gt57QSnCN41FHjuLUmmsBs1WLUzeN/wxdsNyz0Fj9hp/u7VW7sH/cOwgQnCor/iaTJWsyOS7Xgp1kupiAy6hKrzxRwKkztbTAVvWH2FhmC8oEr85shAvjlQtmjkZB849e2V2Amrh71e0Cd1ckjKyyOVNq2mwbyvC8KLLBbmYLGlB5cEEpl5RoXyxIXiBi2Bw/71bhqs5k0Az8hfHSBWtHk7jLtvhFDy42UjntorvCu7guOKOYLeRv7Eid7WbSrR1ww2bBSnnqDsPgEE3HRLCxTc1ZqjPdzq/rggc919FoP1zfKrpD8vHDWDgOLmeoDM4k9DVZjuvfly6ojxC6G5KwAYFjDC/3tElrQeq3jUkx3zb6teuCv9OOxjOlLzbdC0IsNocfFmZtHjrUlHj9aKTdsCYULrPDEaCcpXUzedFVOSg1hksD8wK7sU1NKC/5JQ3uDmftgmVG47cJJ4bNgrtHb5RqOd0pVWqBHiq77+PJXbAbK2eM3GpHpyp0N8j7LTBdZJHdWGYLrjHhdeYm2+FsXLAsnZISaBy7GV0YOXP0tj9caDp6izjregvBxu4YCJDlLOUFcQqOXZo5t88H2Fhmy3iZNb4XnPlhlQUPYi2G2pAvB2LYHK5QFTnj3/YbInot67pcLV/c48Kpmg/djWAdvX15ud3Y1G8ZJQLbdBfp19YFD+XmusDRqK/c6gUXEmlsnElUJaC5/lQOa4CGJn6wmKEd8p213cs/b7veeeZkePbeGzxVefQiSeQ/cVlkkd1YZmsHjhQ1qSgfNi7YzWjoQPXi+uInrApyF3RMuV1c5wRxZktKvB4R58fqB2eELH5FGc6Ey9aln90wariGgsgiu5md5hWD+r1TswGX8Z74Tq497F2I9TK/GLorpeiPMaFVAAAHuUlEQVRMTdpeeOR4TDmRnXc+3e0M6YquGLreTCKpAgRbKuAcGxBaxwyHivVU2LIjbjfEbNUoKYbjAZmNcsGDIKNBaOr1emzf1qGREdmhIVglVXhxjGc3Ze7GBmnwOFZm0XbWgLNSI2Y3dhpx1e1nmnGHpcvSBUcdjW5/N8vmfGO98AJ02AunSgN/2mUzidzdeFVBDhsP9zk3k3H6y9xsW2o3lN5oV9y0zZd/07oRSdE0wowGd7Q1S/XFIy9Q4pkhM7DHhbFfHlDMi0vdjflSC8N0TkOcXVcMWe5vrFx/B47ULIVvRUQ0B5yjcQLU5X6zfD68wopvJsxyvM6rODLXoedLi7SyWJDO+a5mJesT4RAnOpu8JE4Rs2X6mLeR1mp8rYPToFA08cWt3gh98W+ViC12gniuE5ZhoMJm9VSRuwHZp3HHWmRzxB+3qgnAI243JuebwPRmwmWKL0iWvNjR6B3G5fu2qkHjniBn9GXq2kOq37tvGbcVdzeuQMm84ZOFXRrqA8f9zbrLbOnIvZbg5OqXjd5WPKOBixlG6Ys/q05tWbGsf/+dmuy9KpPGgl1kJe7GvPHCGU7iJeJxat1lto5DUqwUST15vrYG2HWKkujN0fu2xuD97la//47tInOyGze9AdSiP79eziucKaG43Rw/zwgKpZsdNGXfW/5LcG2SLR9u9UfvMRnzFjvrdQ49qKRpKyumSNQVa88tQRtY832mtVVkN8hs1eCXLiO4bLgM61vxuA1q0ArzmmM+LOUrJ3BAmxQWU9zh5Ewr4Q9xwu4XJWnSu1fb7ZD3W3dSP12EqwiutsTL9O9CK9rGvCSR2ao0rznuw1bdlBI4EKdK3I2V/bl2I4c4cZtAm3VAuwYux27M5RSY+uEA51CtmlWx6svvf3blBd0Tv3wn92QOKs75jv/YTm/khjNvJ3ge425snELxsT/EmfuaLmzbeTNC5nIKVAxsG6Z4Yk3ay8Qt0J3/IHdk/qz2Gfz666UfthpSeD6oPOfrVJZysMy0mWSXofhtsytjVq6X200pd0OXCukbbI/MkHvJCvan6+vNhI8NMls1YIonWqqA7JEsXy/INP8Ycz6cpSluGd19e/96ET6sCn9dOANNpEvA3fClQSiUPdXO28Je/lGwWl4nPIuubguZLeVuYJb+C0Zx1ptbaqWq/LO1NeZ8eFmXofgOaBbNC+76pTtPCt2NXRqJM8/usxjPeXIfG0z97Ey0A834j2M3j0v4hpV7j0ZE82TlQXF+E+Vu7Lw3daASe50Zvr5TlBAuujrRT6Ytr7XutlN29zC7mXo4giuOG8/jl6UAQn5Tkt2QMzoJ5JbKdARot+yJ6ipHypWmM56+GJgt3VlQMJ1+R2gK+OKKParI4jqXN5bO62VC5WGMu6HrhDKT+e1zMkJrNumMGSnneqauiw2kN2rcTmn4I2TVbs/UjWq6qyg6j1/6gkjNwwMNP4O5Wl5iN7iyZd6Ocxp0jib8wjxNBC4EmjatRof0RmkDZNyqNd4RGbKbA3c92ve+ed6+6oR01R+qXjaOnKg+JAXcDQUx0WIdKNiohQpS50rStrcmEmY9gNnSNKj0ymdW3xUbl/fz2wWgqfG6MIfulTMXMb64zN2A9mjRUKJc54eim9SuxMnDdYgwIwRNTUWDqgi+887QeHxxgb/l03feQk3GXBS1/uZR9RnjbhCFHKn0zBmoMhXWvLvhxZnpJGyA2ZrFGrz+nu3mdWE57q7si+YyUwVD0AaVYnfDct9azvWhuKZuX+7f5urMAsNM4v4N2q2/lhRMBe3eblaulxN+D0eZztS1WII0LwSdqpC7AW5nEWfAHbsxR0pwvTH56QUPG8NsaRp0Ohl3DdAou/ltpEKNo1MgvPES65V7eh+FvQmxKFB1sHHp+BvYnGRsyMoq3N0DMANtmK3ZpvHM2+9+pprrnaSqAst3uQVYTj2WejhJtcjlxerSenavR5S7MesnFhI2c2jjVE5hPTJSjveIAzaG2do2g3a192A2dKaqQeO2W1auVLqXdabU12Q2963lvh59ESdYffmfv99vGlI/faQ22NDde7Cb9E51UotR6Q+qYJN5F1cE3gZ0Aqlw96pLAzmqPXFwcxUos919FDr1+wRWGe/U35+/ObBLKv23SthkQpRZzSJtAReu3WBhHru5yrWbDXmZZgfqTJkDjrt17H3yftZ0qvUZvAvd3P8BNLW220xAjlRk/iYCuG8yd7DRzNYENKYmeu/RbsblRK3pfF7l7tHinJhG7tJ5Vlox2Wwtj9lNFtiNZrZmYYRhuffh7IbzNiP015N2H0XU12CGO2MHEJ2LV/dlriNnez6cnVKK2dJHSUXwncEHtBtefJf3tibtHpPIQ5XRUp4FdpPjiOZou1lLlqchGZYRPH0v0LxLn4HUfmmVHb3xvAahqdk7OJm/+SMb7Q3sxt1hlxy/aaUl+1frH9ZuRm6EdHXpMVeD2VuBXt9MMBQHOMRmUJfrWHbkNJAis+Qm3mR2631A03wnbCxX+KbC/uLgoaw/LXhJS+3MLH4Am+Oqq9KS6c0nur8i05xh/708q++EjZUYvynGZq7ooUSg5AXpXPED0J6+JJ/OpVbyi/rgkvyeS+/pgZ0LV3f3XL9GWWDBC579Hyemh62xNhlWAAAAAElFTkSuQmCC" alt=""><span class="pg-app">Leaving Cert Practical</span><span class="pg-sep"></span><span class="pg-school">North Wicklow ETSS</span><div class="pg-right"><span>Ms Byrne</span><a>Change password</a><span class="pg-signout">Sign out</span></div></div><div class="pg-main"><span class="pg-crumb">My classes</span><h1 class="pg-h1">6A Biology</h1><p class="pg-sub">Biology, year 6, 2026/27</p><div class="pg-tabs"><span>Students</span><span class="on">Component</span><span class="off">Progress</span></div><h2 class="pg-h2">Biology in Practice Investigation, 2027</h2><p class="pg-lead">These are your class's own dates, not SEC deadlines. The SEC's only date is the completion date, <strong>26 Feb 2027</strong>.</p><section class="yv"><div class="yv-h"><span>Your dates across the year</span><b>Hide the year view</b></div><div class="ln-wrap"><div class="ln" role="group" aria-label="Your dates across the year"><span class="ln-band" style="left:33.70165745856354%;width:16.57458563535912%"></span><span class="ln-axis"></span><span class="ln-after" style="left:98.89502762430939%"></span><span class="ln-today" style="left:38.950276243093924%"><span class="l">Today</span><i></i></span><span class="ln-st" style="left:9.668508287292818%;top:36px"><span class="tg st">S1</span><span class="stem" style="height:6px"></span><span class="dot"></span></span><span class="ln-st" style="left:21.2707182320442%;top:18px"><span class="tg st">S2</span><span class="stem" style="height:24px"></span><span class="dot"></span></span><span class="ln-st" style="left:36.74033149171271%;top:36px"><span class="tg st">S3</span><span class="stem" style="height:6px"></span><span class="dot"></span></span><span class="ln-st" style="left:48.34254143646409%;top:18px"><span class="tg st">S4</span><span class="stem" style="height:24px"></span><span class="dot"></span></span><span class="ln-st" style="left:75.41436464088397%;top:36px"><span class="tg st">S5</span><span class="stem" style="height:6px"></span><span class="dot"></span></span><span class="ln-st" style="left:90.88397790055248%;top:18px"><span class="tg st">S6</span><span class="stem" style="height:24px"></span><span class="dot"></span></span><span class="ln-it" style="left:17.403314917127073%"><span class="tg it">A</span></span><span class="ln-it" style="left:40.607734806629836%"><span class="tg it">B</span></span><span class="ln-it" style="left:52.20994475138122%"><span class="tg it">C</span></span><span class="ln-it" style="left:79.28176795580112%"><span class="tg it">D</span></span><span class="ln-end" style="left:98.89502762430939%"></span><span class="ln-gap" style="left:15.46961325966851%">3 weeks</span><span class="ln-gap" style="left:29.005524861878456%">4 weeks</span><span class="ln-gap" style="left:42.5414364640884%">3 weeks</span><span class="ln-gap" style="left:61.87845303867403%">7 weeks</span><span class="ln-gap" style="left:83.14917127071823%">4 weeks</span><span class="ln-gap" style="left:94.7513812154696%">2 weeks</span><span class="ln-months"><span class="" style="left:8.287292817679557%">Sept</span><span class="" style="left:25.138121546961326%">Oct</span><span class="on" style="left:41.9889502762431%">Nov</span><span class="" style="left:58.83977900552487%">Dec</span><span class="" style="left:75.96685082872929%">Jan</span><span class="" style="left:92.26519337016575%">Feb</span></span></div></div></section><div class="rows"><div class="sr-row"><span class="sr-ord">1</span><div class="sr-body"><span class="sr-name">Initial Response to the Brief</span><span class="sr-meta">1–2 hours</span></div><div class="sr-date"><span class="box" role="textbox" aria-label="Stage 1 date" aria-haspopup="dialog"><span class="tab">18/09/2026</span><span class="cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"></path></svg></span></span><span class="sr-under">Fri 18 Sept 2026</span></div></div><div class="sr-row"><span class="sr-ord">2</span><div class="sr-body"><span class="sr-name">Background Research</span><span class="sr-meta">2–3 hours</span></div><div class="sr-date"><span class="box" role="textbox" aria-label="Stage 2 date" aria-haspopup="dialog"><span class="tab">09/10/2026</span><span class="cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"></path></svg></span></span><span class="sr-under">Fri 9 Oct 2026</span></div></div><div class="sr-row"><span class="sr-ord">3</span><div class="sr-body"><span class="sr-name">Designing &amp; Planning the Experiment</span><span class="sr-meta">2–3 hours</span></div><div class="sr-date"><span class="box" role="textbox" aria-label="Stage 3 date" aria-haspopup="dialog"><span class="tab">06/11/2026</span><span class="cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"></path></svg></span></span><span class="sr-under">Fri 6 Nov 2026</span></div></div><div class="sr-row"><span class="sr-ord">4</span><div class="sr-body"><span class="sr-name">Conducting the Experiment</span><span class="sr-meta">About 1–2 hours per lab session · Supervised in class</span></div><div class="sr-date"><span class="box" role="textbox" aria-label="Stage 4 date" aria-haspopup="dialog"><span class="tab">27/11/2026</span><span class="cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"></path></svg></span></span><span class="sr-under">Fri 27 Nov 2026</span></div></div><div class="sr-row"><span class="sr-ord">5</span><div class="sr-body"><span class="sr-name">Data Analysis &amp; Conclusions</span><span class="sr-meta">1–2 hours</span></div><div class="sr-date"><span class="box" role="textbox" aria-label="Stage 5 date" aria-haspopup="dialog"><span class="tab">15/01/2027</span><span class="cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"></path></svg></span></span><span class="sr-under">Fri 15 Jan 2027</span></div></div><div class="sr-row"><span class="sr-ord">6</span><div class="sr-body"><span class="sr-name">Finalising the Report</span><span class="sr-meta">Up to 4 hours</span></div><div class="sr-date"><span class="box" role="textbox" aria-label="Stage 6 date" aria-haspopup="dialog"><span class="tab">12/02/2027</span><span class="cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"></path></svg></span></span><span class="sr-under">Fri 12 Feb 2027</span></div></div></div><div class="save-row"><span class="btn pri">Save dates</span><span>All 6 dates saved</span></div></div></div><label for="m-old" class="scrim s-old" aria-label="Close"></label><aside class="dr d-old" role="dialog" aria-modal="true" aria-labelledby="dt"><header class="dh"><div class="dh-t"><span class="dh-eyebrow"><span class="tg st">S4</span><span>Conducting the Experiment</span></span><h2 id="dt">Choose the Stage 4 date</h2><p class="dh-help">Nothing is saved until you press Save dates.</p></div><label for="m-old" class="btn">Close</label></header><div class="ln-wrap"><div class="ln" role="group" aria-label="Your dates across the year"><span class="ln-band" style="left:33.70165745856354%;width:16.57458563535912%"></span><span class="ln-axis"></span><span class="ln-after" style="left:98.89502762430939%"></span><span class="ln-run" style="left:36.74033149171271%;width:11.60220994475138%"></span><span class="ln-today" style="left:38.950276243093924%"><span class="l">Today</span><i></i></span><span class="ln-st" style="left:9.668508287292818%;top:36px"><span class="tg st">S1</span><span class="stem" style="height:6px"></span><span class="dot"></span></span><span class="ln-st" style="left:21.2707182320442%;top:18px"><span class="tg st">S2</span><span class="stem" style="height:24px"></span><span class="dot"></span></span><span class="ln-st" style="left:36.74033149171271%;top:36px"><span class="tg st">S3</span><span class="stem" style="height:6px"></span><span class="dot"></span></span><span class="ln-st" style="left:75.41436464088397%;top:36px"><span class="tg st">S5</span><span class="stem" style="height:6px"></span><span class="dot"></span></span><span class="ln-st" style="left:90.88397790055248%;top:18px"><span class="tg st">S6</span><span class="stem" style="height:24px"></span><span class="dot"></span></span><span class="ln-it" style="left:17.403314917127073%"><span class="tg it">A</span></span><span class="ln-it" style="left:40.607734806629836%"><span class="tg it">B</span></span><span class="ln-it" style="left:52.20994475138122%"><span class="tg it">C</span></span><span class="ln-it" style="left:79.28176795580112%"><span class="tg it">D</span></span><span class="ln-end" style="left:98.89502762430939%"></span><span class="ln-pick" style="left:48.34254143646409%"><span class="lab r">S4 27 Nov</span><span class="pin"></span><span class="head"></span></span><span class="ln-months"><span class="" style="left:8.287292817679557%">Sept</span><span class="" style="left:25.138121546961326%">Oct</span><span class="on" style="left:41.9889502762431%">Nov</span><span class="" style="left:58.83977900552487%">Dec</span><span class="" style="left:75.96685082872929%">Jan</span><span class="" style="left:92.26519337016575%">Feb</span></span></div></div><div class="db"><section class="mo"><div class="mh"><h3>November 2026</h3><div class="arrows"><button type="button" class="arw" aria-label="October 2026">‹</button><button type="button" class="arw" aria-label="December 2026">›</button></div></div><div class="wkd" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div><div class="grid" role="grid" aria-label="November 2026"><span class="d blank" aria-hidden="true"></span><span class="d blank" aria-hidden="true"></span><span class="d blank" aria-hidden="true"></span><span class="d blank" aria-hidden="true"></span><span class="d blank" aria-hidden="true"></span><span class="d blank" aria-hidden="true"></span><button type="button" class="d we" aria-label="Sunday 1 November 2026"><span class="n">1</span></button><button type="button" class="d" aria-label="Monday 2 November 2026"><span class="n">2</span></button><button type="button" class="d" aria-label="Tuesday 3 November 2026"><span class="n">3</span></button><button type="button" class="d" aria-label="Wednesday 4 November 2026"><span class="n">4</span></button><button type="button" class="d" aria-label="Thursday 5 November 2026"><span class="n">5</span></button><button type="button" class="d" aria-label="Friday 6 November 2026: Stage 3"><span class="n">6</span><span class="tags" aria-hidden="true"><span class="tg st">S3</span></span></button><button type="button" class="d we run" aria-label="Saturday 7 November 2026"><span class="n">7</span></button><button type="button" class="d we run" aria-label="Sunday 8 November 2026"><span class="n">8</span></button><button type="button" class="d run" aria-label="Monday 9 November 2026"><span class="n">9</span></button><button type="button" class="d today run" aria-label="Tuesday 10 November 2026: today"><span class="n">10</span></button><button type="button" class="d run" aria-label="Wednesday 11 November 2026"><span class="n">11</span></button><button type="button" class="d run" aria-label="Thursday 12 November 2026"><span class="n">12</span></button><button type="button" class="d run" aria-label="Friday 13 November 2026: item B"><span class="n">13</span><span class="tags" aria-hidden="true"><span class="tg it">B</span></span></button><button type="button" class="d we run" aria-label="Saturday 14 November 2026"><span class="n">14</span></button><button type="button" class="d we run" aria-label="Sunday 15 November 2026"><span class="n">15</span></button><button type="button" class="d run" aria-label="Monday 16 November 2026"><span class="n">16</span></button><button type="button" class="d run" aria-label="Tuesday 17 November 2026"><span class="n">17</span></button><button type="button" class="d run" aria-label="Wednesday 18 November 2026"><span class="n">18</span></button><button type="button" class="d run" aria-label="Thursday 19 November 2026"><span class="n">19</span></button><button type="button" class="d run" aria-label="Friday 20 November 2026"><span class="n">20</span></button><button type="button" class="d we run" aria-label="Saturday 21 November 2026"><span class="n">21</span></button><button type="button" class="d we run" aria-label="Sunday 22 November 2026"><span class="n">22</span></button><button type="button" class="d run" aria-label="Monday 23 November 2026"><span class="n">23</span></button><button type="button" class="d run" aria-label="Tuesday 24 November 2026"><span class="n">24</span></button><button type="button" class="d run" aria-label="Wednesday 25 November 2026"><span class="n">25</span></button><button type="button" class="d run" aria-label="Thursday 26 November 2026"><span class="n">26</span></button><button type="button" class="d sel focus" aria-label="Friday 27 November 2026: Stage 4" aria-selected="true"><span class="n">27</span><span class="tags" aria-hidden="true"><span class="tg st">S4</span></span></button><button type="button" class="d we" aria-label="Saturday 28 November 2026"><span class="n">28</span></button><button type="button" class="d we" aria-label="Sunday 29 November 2026"><span class="n">29</span></button><button type="button" class="d" aria-label="Monday 30 November 2026"><span class="n">30</span></button></div></section><ul class="key" aria-label="What the marks mean"><li><span class="tg st">S2</span>Stage date</li><li><span class="tg st draft">S2</span>Not saved yet</li><li><span class="tg it">A</span>Your item</li><li><span class="bar"></span>Completion date</li><li><span class="td">10</span>Today</li><li><span class="sw pick"></span>Your pick</li><li><span class="sw run"></span>Days since Stage 3</li></ul></div><footer class="df"><div class="ro" aria-live="polite"><div class="ro-date"><strong>Fri 27 Nov 2026</strong><span class="ro-was">the date now</span></div><div class="ro-gap"><span class="g run"><span class="tg st" aria-hidden="true">S3</span><span><b>3 weeks</b> after Stage 3</span></span><span class="g"><span class="tg st" aria-hidden="true">S5</span><span><b>7 weeks</b> before Stage 5</span></span></div></div><div class="acts"><button type="button" class="btn txt">Clear date</button><button type="button" class="btn pri">Use this date</button></div></footer></aside><label for="m-new" class="scrim s-new" aria-label="Close"></label><aside class="dr d-new" role="dialog" aria-modal="true" aria-labelledby="dt"><header class="dh"><div class="dh-t"><span class="dh-eyebrow"><span class="tg st">S4</span><span>Conducting the Experiment</span></span><h2 id="dt">Choose the Stage 4 date</h2><p class="dh-help">Nothing is saved until you press Save dates.</p></div><label for="m-new" class="btn">Close</label></header><div class="ln-wrap"><div class="ln" role="group" aria-label="Your dates across the year"><span class="ln-band" style="left:33.70165745856354%;width:16.57458563535912%"></span><span class="ln-axis"></span><span class="ln-after" style="left:98.89502762430939%"></span><span class="ln-run" style="left:36.74033149171271%;width:11.60220994475138%"></span><span class="ln-today" style="left:38.950276243093924%"><span class="l">Today</span><i></i></span><span class="ln-st" style="left:9.668508287292818%;top:36px"><span class="tg st">S1</span><span class="stem" style="height:6px"></span><span class="dot"></span></span><span class="ln-st" style="left:21.2707182320442%;top:18px"><span class="tg st">S2</span><span class="stem" style="height:24px"></span><span class="dot"></span></span><span class="ln-st" style="left:36.74033149171271%;top:36px"><span class="tg st">S3</span><span class="stem" style="height:6px"></span><span class="dot"></span></span><span class="ln-st" style="left:75.41436464088397%;top:36px"><span class="tg st">S5</span><span class="stem" style="height:6px"></span><span class="dot"></span></span><span class="ln-st" style="left:90.88397790055248%;top:18px"><span class="tg st">S6</span><span class="stem" style="height:24px"></span><span class="dot"></span></span><span class="ln-it" style="left:17.403314917127073%"><span class="tg it">A</span></span><span class="ln-it" style="left:40.607734806629836%"><span class="tg it">B</span></span><span class="ln-it" style="left:52.20994475138122%"><span class="tg it">C</span></span><span class="ln-it" style="left:79.28176795580112%"><span class="tg it">D</span></span><span class="ln-end" style="left:98.89502762430939%"></span><span class="ln-pick" style="left:48.34254143646409%"><span class="lab r">S4 27 Nov</span><span class="pin"></span><span class="head"></span></span><span class="ln-months"><span class="" style="left:8.287292817679557%">Sept</span><span class="" style="left:25.138121546961326%">Oct</span><span class="on" style="left:41.9889502762431%">Nov</span><span class="" style="left:58.83977900552487%">Dec</span><span class="" style="left:75.96685082872929%">Jan</span><span class="" style="left:92.26519337016575%">Feb</span></span></div></div><div class="db"><section class="mo"><div class="mh"><h3>November 2026</h3><div class="arrows"><button type="button" class="arw" aria-label="October 2026">‹</button><button type="button" class="arw" aria-label="December 2026">›</button></div></div><div class="wkd" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div><div class="grid" role="grid" aria-label="November 2026"><span class="d blank" aria-hidden="true"></span><span class="d blank" aria-hidden="true"></span><span class="d blank" aria-hidden="true"></span><span class="d blank" aria-hidden="true"></span><span class="d blank" aria-hidden="true"></span><span class="d blank" aria-hidden="true"></span><button type="button" class="d we" aria-label="Sunday 1 November 2026"><span class="n">1</span></button><button type="button" class="d" aria-label="Monday 2 November 2026"><span class="n">2</span></button><button type="button" class="d" aria-label="Tuesday 3 November 2026"><span class="n">3</span></button><button type="button" class="d" aria-label="Wednesday 4 November 2026"><span class="n">4</span></button><button type="button" class="d" aria-label="Thursday 5 November 2026"><span class="n">5</span></button><button type="button" class="d" aria-label="Friday 6 November 2026: Stage 3"><span class="n">6</span><span class="tags" aria-hidden="true"><span class="tg st">S3</span></span></button><button type="button" class="d we run" aria-label="Saturday 7 November 2026"><span class="n">7</span></button><button type="button" class="d we run" aria-label="Sunday 8 November 2026"><span class="n">8</span></button><button type="button" class="d run" aria-label="Monday 9 November 2026"><span class="n">9</span></button><button type="button" class="d today run" aria-label="Tuesday 10 November 2026: today"><span class="n">10</span></button><button type="button" class="d run" aria-label="Wednesday 11 November 2026"><span class="n">11</span></button><button type="button" class="d run" aria-label="Thursday 12 November 2026"><span class="n">12</span></button><button type="button" class="d run" aria-label="Friday 13 November 2026: item B"><span class="n">13</span><span class="tags" aria-hidden="true"><span class="tg it">B</span></span></button><button type="button" class="d we run" aria-label="Saturday 14 November 2026"><span class="n">14</span></button><button type="button" class="d we run" aria-label="Sunday 15 November 2026"><span class="n">15</span></button><button type="button" class="d run" aria-label="Monday 16 November 2026"><span class="n">16</span></button><button type="button" class="d run" aria-label="Tuesday 17 November 2026"><span class="n">17</span></button><button type="button" class="d run" aria-label="Wednesday 18 November 2026"><span class="n">18</span></button><button type="button" class="d run" aria-label="Thursday 19 November 2026"><span class="n">19</span></button><button type="button" class="d run" aria-label="Friday 20 November 2026"><span class="n">20</span></button><button type="button" class="d we run" aria-label="Saturday 21 November 2026"><span class="n">21</span></button><button type="button" class="d we run" aria-label="Sunday 22 November 2026"><span class="n">22</span></button><button type="button" class="d run" aria-label="Monday 23 November 2026"><span class="n">23</span></button><button type="button" class="d run" aria-label="Tuesday 24 November 2026"><span class="n">24</span></button><button type="button" class="d run" aria-label="Wednesday 25 November 2026"><span class="n">25</span></button><button type="button" class="d run" aria-label="Thursday 26 November 2026"><span class="n">26</span></button><button type="button" class="d sel focus" aria-label="Friday 27 November 2026: Stage 4" aria-selected="true"><span class="n">27</span><span class="tags" aria-hidden="true"><span class="tg st">S4</span></span></button><button type="button" class="d we" aria-label="Saturday 28 November 2026"><span class="n">28</span></button><button type="button" class="d we" aria-label="Sunday 29 November 2026"><span class="n">29</span></button><button type="button" class="d" aria-label="Monday 30 November 2026"><span class="n">30</span></button></div></section><ul class="key" aria-label="What the marks mean"><li><span class="tg st">S2</span>Stage date</li><li><span class="tg st draft">S2</span>Not saved yet</li><li><span class="tg it">A</span>Your item</li><li><span class="bar"></span>Completion date</li><li><span class="td">10</span>Today</li><li><span class="sw pick"></span>Your pick</li><li><span class="sw run"></span>Days since Stage 3</li></ul></div><footer class="df"><div class="ro" aria-live="polite"><div class="ro-date"><strong>Fri 27 Nov 2026</strong><span class="ro-was">the date now</span></div><div class="ro-gap"><span class="g run"><span class="tg st" aria-hidden="true">S3</span><span><b>3 weeks</b> after Stage 3</span></span><span class="g"><span class="tg st" aria-hidden="true">S5</span><span><b>7 weeks</b> before Stage 5</span></span></div></div><div class="acts"><button type="button" class="btn txt">Clear date</button><button type="button" class="btn pri">Use this date</button></div></footer></aside></div><div class="row-frames" style="margin-top:8px"><div class="side" style="max-width:1140px"><h4>The slide</h4><ul><li><b>In: 300ms on <code>cubic-bezier(.32, .72, 0, 1)</code>.</b> Fast off the edge, then a long, soft landing, so the drawer arrives instead of snapping. UI-STANDARDS §10 puts a page-level panel at 300–400ms.</li><li><b>Out: 200ms on <code>cubic-bezier(.4, 0, 1, 1)</code>.</b> About two thirds of the way in, and accelerating, so closing gets out of the way.</li><li><b>Transform only.</b> Today's drawer transitions <code>transform, height, opacity, filter</code>; D-11 moves <code>transform</code> and the scrim's <code>opacity</code>, nothing else.</li><li><b>The stutter is drawing, not timing.</b> Today the drawer draws every month at once (about 300 day buttons) as it opens. B draws one month (about 35), so the slide has nothing to wait for. This demo can't show that part; the build will.</li><li><b>Reduced motion:</b> both open and close instantly.</li></ul></div></div></div>
+
+
+
+</body></html>

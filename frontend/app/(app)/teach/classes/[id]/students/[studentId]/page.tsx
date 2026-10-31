@@ -6,7 +6,8 @@ import { ErrorPanel } from "@/components/app/error-panel";
 import { StudentCheckpoints } from "@/components/app/student-checkpoints";
 import { WorkLink } from "@/components/app/work-link";
 import { TeacherLog } from "@/components/app/teacher-log";
-import { backLink, card, pageTitle, sectionTitle } from "@/components/app/styles";
+import { BackLink } from "@/components/app/back-link";
+import { card, pageTitle, sectionTitle } from "@/components/app/styles";
 import { classDetailSchema, studentCheckpointsSchema, teacherStudentLogSchema } from "@/lib/api/schemas";
 import { serverApi } from "@/lib/api/server";
 import { buttonVariants } from "@/components/ui/button";
@@ -24,8 +25,8 @@ export default async function StudentLogPage({ params }: { params: Promise<{ id:
   const cls = detail.data;
   const back = (
     <nav aria-label="Back to class" className="flex flex-wrap gap-x-5 gap-y-1">
-      <Link href={`/teach/classes/${cls.id}/progress`} className={backLink}>{`${cls.name}, Progress`}</Link>
-      <Link href={`/teach/classes/${cls.id}`} className={backLink}>{`${cls.name}, Students`}</Link>
+      <BackLink href={`/teach/classes/${cls.id}/progress`}>{`${cls.name}, Progress`}</BackLink>
+      <BackLink href={`/teach/classes/${cls.id}`}>{`${cls.name}, Students`}</BackLink>
     </nav>
   );
   if (!cls.componentId) {

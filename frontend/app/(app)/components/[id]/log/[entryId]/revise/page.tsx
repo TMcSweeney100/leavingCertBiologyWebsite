@@ -1,10 +1,10 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { AppMain } from "@/components/app/app-main";
 import { ErrorPanel } from "@/components/app/error-panel";
 import { LogEntryForm } from "@/components/app/log-entry-form";
-import { backLink, card, pageTitle } from "@/components/app/styles";
+import { BackLink } from "@/components/app/back-link";
+import { card, pageTitle } from "@/components/app/styles";
 import { logEntryDetailSchema } from "@/lib/api/schemas";
 import { serverApi } from "@/lib/api/server";
 import { attempt } from "@/lib/app/attempt";
@@ -23,14 +23,14 @@ export default async function ReviseLogEntryPage({ params }: { params: Promise<{
   if (loaded.ok && loaded.data.entry.componentId !== id) notFound();
 
   if (!loaded.ok) {
-    return <AppMain><Link href={`/components/${id}/log/${entryId}`} className={backLink}>Back</Link><div className="mt-6"><ErrorPanel error={loaded.error} /></div></AppMain>;
+    return <AppMain><BackLink href={`/components/${id}/log/${entryId}`}>Back</BackLink><div className="mt-6"><ErrorPanel error={loaded.error} /></div></AppMain>;
   }
   const { entry, history } = loaded.data;
   const first = formatCalendarDate(dublinDate(entry.createdAt));
   const today = toIsoDate(dublinToday());
   return (
     <AppMain>
-      <Link href={`/components/${id}/log/${entryId}`} className={backLink}>{`${KIND_WORD[entry.kind]}, ${first}`}</Link>
+      <BackLink href={`/components/${id}/log/${entryId}`}>{`${KIND_WORD[entry.kind]}, ${first}`}</BackLink>
       <h1 className={`mt-2.5 ${pageTitle}`}>{`Revise ${KIND_WORD[entry.kind].toLowerCase()}`}</h1>
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_250px] lg:items-start">
         <LogEntryForm mode="revise" entryId={entryId} kind={entry.kind} body={entry.body}

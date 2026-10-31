@@ -1,4 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 import type { Me } from "@/lib/api/schemas";
@@ -50,10 +51,11 @@ describe("AppHeader", () => {
     expect(screen.getByText("North Wicklow ETSS")).toBeInTheDocument();
   });
 
-  it("has the account menu with change password and sign out", () => {
+  it("has the account menu with change password and sign out", async () => {
     render(<AppHeader me={{ ...base, roles: [{ ...school, role: "STUDENT" }] }} />);
-    expect(screen.getByRole("link", { name: "Change password" })).toHaveAttribute("href", "/account/password");
-    expect(screen.getByRole("button", { name: "Sign out" })).toBeInTheDocument();
+    await userEvent.setup().click(screen.getByRole("button", { name: "Account options" }));
+    expect(await screen.findByRole("menuitem", { name: "Change password" })).toHaveAttribute("href", "/account/password");
+    expect(screen.getByRole("menuitem", { name: "Sign out" })).toBeInTheDocument();
     expect(screen.getByText("Katelyn Hanlon")).toBeInTheDocument();
   });
 });

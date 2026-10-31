@@ -17,40 +17,32 @@ A diff that fits in one sentence skips step 2.
 
 | # | Slug | Feature | Status |
 |---|---|---|---|
-| 1 | `ready-for-signoff` | The student says a checkpoint is ready; the teacher gets a queue | built on `pilot/ready-for-signoff`, not merged: self-review, changes doc and PR still to do; D-10 restyle waits for the pack (plan: docs/superpowers/plans/2026-10-17-ready-for-signoff.md) |
-| 2 | `document-link` | The student attaches a link to their report; the teacher opens it from the grid | folded into ready-for-signoff (built on the same branch, not merged) |
+| 1 | `source-builder` | The student's sources become a copyable in-text citation and reference list | built on `pilot/source-builder`, not merged: self-review, changes doc and PR still to do (plan: docs/superpowers/plans/2026-10-25-source-builder.md) |
+| 2 | `ai-use-record` | The student's AI uses become a reference entry and the report's AI appendix block | built on `pilot/source-builder` with source-builder, not merged: self-review, changes doc and PR still to do (plan: docs/superpowers/plans/2026-10-25-ai-use-record.md) |
+| 3 | `date-picker-drawer` | Every date on the teacher's Component tab opens a right-hand calendar showing the component's other dates, saved or not | Part 1 built; Part 2 (pack D-11) built, not merged: self-review, changes doc and PR still to do (intent: docs/intent/date-picker-drawer.md; plan: docs/superpowers/plans/2026-10-25-date-picker-drawer.md) |
 
-### 1. Ready for sign-off (`ready-for-signoff`)
+### 1. Source builder (`source-builder`)
 
-**Problem.** The only way a teacher finds out a student is ready for a checkpoint is by asking, or by scanning the grid. The student has no way to say "I've done this, have a look".
-
-**What it does.**
-- On their component page, the student marks a checkpoint **Ready for sign-off**, with an optional short note ("plan's on page 2").
-- The teacher's Progress grid shows it as a fourth cell state, next to Not due yet, Due and Signed off. Pack D-7's cells are a word plus a tint, so it fits without a redesign (spec P4-7).
-- The teacher sees a queue, *3 students waiting for you*, that opens the students in the order they asked.
-- Signing off clears the request.
-
-**Open questions (each with a best guess):**
-- Can the student withdraw a request? *Guess: yes, until it's signed off.*
-- Can the teacher turn a request down with a reason, rather than just leaving it? *Yes the teacher should be able to leave a note saying why it was turned down, they should aslo be able to leave a note saying they accept it aswell, the note could be stored as a log for the student? It would be easy to trace it in the future?*
-- Where does the queue live: on the Progress tab, on `/teach` across every class, or both? *Guess: a count on each class card at `/teach`, and the list at the top of Progress.*
-
-
-### 2. Link to the student's document (`document-link`)
-
-**Problem.** The work lives in Google Docs, OneDrive or the school's own system. To look at it, a teacher has to go hunting through Classroom or Teams for the right file.
+**Problem.** Students already record sources in their log (a log entry of kind `SOURCE`, with the fields in `docs/PILOT-DESIGN.md` §6.7, since Phase 3). But the app does nothing with them: when the student writes up, they still type every citation and the reference list by hand, and there's no one place that lists a component's sources.
 
 **What it does.**
-- The student attaches one link per component: wherever their report actually lives (FR-38).
-- The teacher opens it from that student's row on the Progress grid and from the student's page.
-- The app never uploads, fetches, mirrors or caches the document (FR-39, and CLAUDE.md's rule against server-side fetching of student links). It stores the URL and nothing else.
-- A line reminds the student to keep their own backup (FR-40).
+- Turns each `SOURCE` entry into an in-text citation and a reference-list entry, shaped like the NCCA's own examples (Biology Appendix 1, Business Appendix Four), with no formal style enforced (FR-29 to FR-31).
+- A Sources page per component (`/components/[id]/sources`, roadmap §6) lists them, with Copy citation on each and Copy reference list for all of them.
+- The NCCA's example strings are the formatter's test fixtures, reproduced exactly (roadmap 6B, Gate P6). They are read from the PDFs, never written from memory.
 
-**Open questions (each with a best guess):**
-- Any `https` link, or only known hosts (Google, Microsoft, the school's domain)? *Guess: any `https` link, the same rule as log sources.*
-- Is the link always visible to the teacher, or can the student hide it the way they hide log entries? *Guess: always visible. Its whole purpose is to be opened by the teacher.*
-- Keep the old links when the student changes it? *Guess: yes, as history, the same way log revisions are kept.*
-- Should a ready-for-sign-off request be able to point at the link ("see page 2")? *Guess: yes, so build `document-link` first, or at least design the two together.*
+**Answered (25 Oct 2026, `docs/intent/source-builder.md`):** a live preview in the source form doubles as the nudge; incomplete sources are saved and flagged, never blocked; sources only, no AI uses; one consistent format per type modelled on the NCCA examples; its own page; hidden sources included; student only, no teacher view; FR-32 not in this feature.
+
+### 2. AI-use record (`ai-use-record`)
+
+**Problem.** Students log AI uses (kind `AI_USE`, since Phase 3), but must still write the reference entry and the report's AI appendix by hand. Roadmap milestone 6A.
+
+**Answered (25 Oct 2026, `docs/intent/ai-use-record.md`):** all three outputs (NCCA in-text citation and reference entry, SEC appendix table); everything on the Sources page with an "AI use" chip per AI entry and an appendix section below; the greyed "AI use" tab removed; four appendix columns, no new field; prompts and share link under each row.
+
+### 3. Date picker drawer (`date-picker-drawer`)
+
+**Problem.** Every date on the Component tab is the browser's own date box, and its calendar is blank: a teacher picks a stage or item date without seeing where it sits among the others. The year view stays empty until the first Save.
+
+**Answered (25 Oct 2026, `docs/intent/date-picker-drawer.md`):** a right-hand drawer with its own reusable calendar component (shadcn Calendar); stage and item dates both; unsaved dates shown, slightly different; picking fills the box and never saves; no holidays; the year view reads the draft too. Next after it: a right-hand stage sheet, where "who ticked each item" comes back.
 
 ## From Tim's testing
 
@@ -61,3 +53,5 @@ _To fill in: what came up while using the app by hand._
 | Slug | What | Learning doc |
 |---|---|---|
 | Phases 1–4 | Foundation, components and timeline, the log, the teacher grid | `docs/PILOT-ROADMAP.md` §1, `docs/changes/` |
+| `ready-for-signoff` | The student marks a checkpoint Ready with a note and can withdraw it; the teacher sees a Ready cell, a waiting queue on Progress and a badge per class at `/teach`, and answers Accept or Not yet with a note. Merged into `pilotMain` 25 Oct 2026 | `docs/changes/ready-for-signoff.md` |
+| `document-link` | One link per component to wherever the student's report lives, opened by the teacher from the grid and the student's page; the URL is all that's stored (FR-38 to FR-40). Built inside `ready-for-signoff` | `docs/changes/ready-for-signoff.md` |

@@ -7,7 +7,8 @@ import { ErrorPanel } from "@/components/app/error-panel";
 import { LogHistory, RevisionContent } from "@/components/app/log-history";
 import { LogKindChip } from "@/components/app/log-kind-chip";
 import { LogVisibilityToggle } from "@/components/app/log-visibility-toggle";
-import { backLink, card, pageTitle, sectionTitle } from "@/components/app/styles";
+import { BackLink } from "@/components/app/back-link";
+import { card, pageTitle, sectionTitle } from "@/components/app/styles";
 import { buttonVariants } from "@/components/ui/button";
 import { logEntryDetailSchema } from "@/lib/api/schemas";
 import { serverApi } from "@/lib/api/server";
@@ -28,7 +29,7 @@ export default async function LogEntryPage({ params }: { params: Promise<{ id: s
 
   return (
     <AppMain>
-      <Link href={`/components/${id}/log`} className={backLink}>Log</Link>
+      <BackLink href={`/components/${id}/log`}>Log</BackLink>
       {loaded.ok ? (() => {
         const { entry, history } = loaded.data;
         const current = history[0];

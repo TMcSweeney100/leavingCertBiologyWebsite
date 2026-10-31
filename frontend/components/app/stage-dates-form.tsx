@@ -15,8 +15,12 @@ import {
   shortWeekdayDate,
   weekdayDate,
 } from "@/lib/app/component-setup";
+import { type DateMark, dateMarks } from "@/lib/app/date-marks";
 
+import { DateBox } from "./date-box";
+import { DatePickerDrawer } from "./date-picker-drawer";
 import { ErrorPanel } from "./error-panel";
+import { MarkTag } from "./mark-tag";
 import { Notice } from "./notice";
 import { lead, sectionTitle } from "./styles";
 import { TeacherItems } from "./teacher-items";
@@ -68,6 +72,16 @@ export function StageDatesForm({ component, today }: { component: TeacherCompone
 
   useEffect(() => setDraft(initial), [initial]);
 
+  // The calendar and the year view both read the draft, so a date typed but not saved shows (C-6, C-8).
+  const marks = useMemo(
+    () => dateMarks(component.stages, draft, component.brief.completionDate),
+    [component.stages, draft, component.brief.completionDate],
+  );
+  const drafted = useMemo(
+    () => component.stages.map((s) => ({ ...s, dueDate: draft[s.id] || null })),
+    [component.stages, draft],
+  );
+
   // UI-STANDARDS: a long form confirms before leaving with unsaved changes.
   useEffect(() => {
     if (!dirty) return;
@@ -110,7 +124,8 @@ export function StageDatesForm({ component, today }: { component: TeacherCompone
 
   const yearView = (
     <YearView
-      stages={component.stages}
+      stages={drafted}
+      marks={marks}
       completionDate={component.brief.completionDate}
       today={today}
       attentionStageIds={attentionStageIds}
@@ -189,8 +204,7 @@ export function StageDatesForm({ component, today }: { component: TeacherCompone
         />
       )}
 
-      {/* noValidate: the `max` hint must not block a submit the server is meant to refuse (root CLAUDE.md). */}
-      <form onSubmit={save} noValidate className="flex flex-col gap-4">
+      <form onSubmit={save} className="flex flex-col gap-4">
         <div className="overflow-hidden rounded-app-card border border-app-field-border bg-app-surface">
           {component.stages.map((stage, index) => (
             <Fragment key={stage.id}>
@@ -200,6 +214,8 @@ export function StageDatesForm({ component, today }: { component: TeacherCompone
                 value={draft[stage.id] ?? ""}
                 onChange={(value) => setDraft((d) => ({ ...d, [stage.id]: value }))}
                 max={component.brief.completionDate}
+                marks={marks}
+                today={today}
                 refusal={refused.get(stage.id) ?? null}
                 movedMessage={
                   moved.some((w) => w.stageIds.includes(stage.id))
@@ -233,7 +249,11 @@ export function StageDatesForm({ component, today }: { component: TeacherCompone
         </div>
       </form>
 
-      <TeacherItems componentId={component.id} stages={component.stages} />
+      <TeacherItems
+        componentId={component.id}
+        stages={component.stages}
+        calendar={{ marks, completionDate: component.brief.completionDate, today }}
+      />
     </div>
   );
 }
@@ -260,6 +280,8 @@ function StageDateRow({
   value,
   onChange,
   max,
+  marks,
+  today,
   refusal,
   movedMessage,
   attention,
@@ -270,6 +292,8 @@ function StageDateRow({
   value: string;
   onChange: (value: string) => void;
   max: string;
+  marks: ReadonlyArray<DateMark>;
+  today: string;
   refusal: string | null;
   movedMessage: string | null;
   attention: boolean;
@@ -279,6 +303,10 @@ function StageDateRow({
   const label = stage.label ?? stage.name;
   const problem = refusal ?? movedMessage;
   const noteId = problem ? `${id}-note` : undefined;
+  // C-33: a date picked but not saved yet is dashed, and the line under the box says so. Red wins. That line is also
+  // what a screen reader hears after the button's name (C-36).
+  const unsaved = !refusal && value !== "" && value !== (stage.dueDate ?? "");
+  const whenId = `${id}-when`;
   const tone = refusal
     ? "bg-app-error-tint shadow-[inset_2px_0_0_var(--app-error)]"
     : attention
@@ -315,18 +343,40 @@ function StageDateRow({
       </div>
       <div className="flex flex-none flex-col gap-1 md:items-end">
         <label htmlFor={id} className="sr-only">{`${label} date`}</label>
-        <input
-          id={id}
-          type="date"
-          max={max}
+        <DatePickerDrawer
+          title={`Choose the ${label} date`}
+          eyebrow={
+            <>
+              <MarkTag kind="stage" saved={!unsaved}>{`S${stage.ordinal}`}</MarkTag>
+              {stage.name}
+            </>
+          }
+          help="Nothing is saved until you press Save dates."
+          picking={{ kind: "stage", ordinal: stage.ordinal }}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
-          aria-invalid={refusal ? true : undefined}
-          aria-describedby={noteId}
-          className={`min-h-11 w-full rounded-app-control border bg-app-surface px-3 py-2.5 text-app-base text-app-ink md:min-h-0 md:w-[176px] md:px-2.5 md:py-2 ${inputBorder}`}
-        />
-        <span className={`text-app-small md:text-right ${refusal ? "text-app-error-hover" : "text-app-muted"}`}>
+          marks={marks}
+          completionDate={max}
+          today={today}
+          onPick={onChange}
+        >
+          {(opener) => (
+            <DateBox
+              opener={opener}
+              id={id}
+              value={value}
+              describedBy={noteId ? `${noteId} ${whenId}` : whenId}
+              className={`w-full cursor-pointer py-2.5 pr-2.5 pl-3 hover:border-app-accent hover:bg-app-accent-tint md:min-h-0 md:w-[176px] md:py-2 md:pl-2.5 ${unsaved ? "border-dashed border-app-accent" : inputBorder}`}
+            />
+          )}
+        </DatePickerDrawer>
+        <span id={whenId} className={`text-app-small md:text-right ${refusal ? "text-app-error-hover" : "text-app-muted"}`}>
           {value ? weekdayDate(value) : "No date yet"}
+          {unsaved && (
+            <>
+              {" · "}
+              <strong className="font-semibold text-app-ink">not saved</strong>
+            </>
+          )}
         </span>
       </div>
     </div>

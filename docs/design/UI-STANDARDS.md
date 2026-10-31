@@ -61,6 +61,7 @@ The live BiPi schedule (`app/[class]/`, `components/bipi/`) has its own notes in
 - Text 4.5:1 against its background (large text 3:1); controls, borders that carry meaning, focus rings and icons 3:1. Measure; don't eyeball. Record ratios in `NOTES.md` when a token is added.
 - BiPi blue and green appear only inside reused BiPi components, where they mean "now" and "done". App code never uses `--bipi-*`.
 - No state carried by colour alone: pair it with a word, and where useful an icon.
+- `--app-pick` (azure) means "your pick" and `--app-today` (gold) means "today", in the date drawer and the year view only; neither is a state (pack D-11).
 - Disabled: `disabled` attribute plus reduced opacity and no pointer events. Read-only looks different from disabled.
 
 ## 6. Interactive elements
@@ -112,6 +113,7 @@ The live BiPi schedule (`app/[class]/`, `components/bipi/`) has its own notes in
 - Durations by size: micro-feedback 100–150ms, disclosure 150–200ms ease-out, page-level 300–400ms ease-out; exits about two thirds of enters. Define them once as tokens.
 - Interruptible and never blocking: the user can act mid-animation and the final state is set explicitly, not on `animationend`.
 - `prefers-reduced-motion` respected on every animated element; the page must be fully usable with it on.
+- Right-hand drawers slide on `--app-sheet-duration` / `--app-sheet-ease` (300ms in) and `--app-sheet-duration-exit` / `--app-sheet-ease-exit` (200ms out), set once in `components/ui/drawer.tsx` (pack D-11).
 
 ## 11. Copy
 
