@@ -80,8 +80,12 @@ function SheetBody({
   const value = draft[stage.id] ?? "";
   const saved = stage.dueDate ?? "";
   const unsaved = value !== saved;
+  // The page refreshes after a save without waiting, so for one round trip `justSaved` is true while `unsaved` still
+  // is: that moment is "saved", not "not saved".
+  const pending = unsaved && !justSaved;
   const boxId = `${id}-date`;
   const whenId = `${id}-when`;
+  const helpId = `${id}-save-help`;
 
   const changeDate = (iso: string) => {
     setJustSaved(false);
@@ -108,6 +112,7 @@ function SheetBody({
     try {
       await onSaveDate(stage.id);
       setJustSaved(true);
+      dateBox.current?.focus(); // Save this date is about to go; the box stays (S-32).
     } catch (e) {
       setError(e instanceof ApiError ? e : ApiError.unreachable(e));
     } finally {
@@ -139,7 +144,7 @@ function SheetBody({
                 onClick: (event) =>
                   ask({
                     title: `Choose the ${label} date`,
-                    eyebrow: stage.name,
+                    eyebrow: "", // The header just above already names the stage (S-33).
                     help: "Nothing is saved until you press Save this date.",
                     picking: { kind: "stage", ordinal: stage.ordinal },
                     value,
@@ -150,36 +155,44 @@ function SheetBody({
               id={boxId}
               value={value}
               describedBy={whenId}
-              className={`w-full cursor-pointer py-2.5 pr-2.5 pl-3 hover:border-app-accent hover:bg-app-accent-tint sm:w-[220px] ${unsaved ? "border-dashed border-app-accent" : "border-app-field-border"}`}
+              className={`w-full cursor-pointer py-2.5 pr-2.5 pl-3 hover:border-app-accent hover:bg-app-accent-tint sm:w-[220px] ${pending ? "border-dashed border-app-accent" : "border-app-field-border"}`}
             />
           </div>
           <p id={whenId} className="mt-1 text-app-small text-app-muted">
             {value ? weekdayDate(value) : "No date yet"}
-            {unsaved && (
+            {pending && (
               <>
                 {" · "}
                 <strong className="font-semibold text-app-ink">not saved</strong>
               </>
             )}
           </p>
-          {unsaved && (
+          {pending && (
             <>
               <div className="mt-3 flex items-center gap-2">
-                <Button type="button" size="header" disabled={busy} onClick={() => void save()}>
+                <Button type="button" size="header" disabled={busy} aria-describedby={helpId} onClick={() => void save()}>
                   {busy ? "Saving…" : "Save this date"}
                 </Button>
-                <Button type="button" variant="link" size="header" onClick={() => changeDate(saved)}>
+                <Button
+                  type="button"
+                  variant="link"
+                  size="header"
+                  onClick={() => {
+                    changeDate(saved);
+                    dateBox.current?.focus(); // Undo is about to go; the box stays (S-32).
+                  }}
+                >
                   Undo
                 </Button>
               </div>
-              <p className="mt-2 text-app-small text-app-grey">
+              <p id={helpId} className="mt-2 text-app-small text-app-grey">
                 {`Saves ${label}'s date only. Other dates you've changed on the page stay unsaved until you press Save dates there.`}
               </p>
             </>
           )}
           {/* Always rendered, so the change of text is announced (Concepts in play, "A persistent live region"). */}
           <p role="status" className="mt-2 text-app-small font-semibold text-app-approved">
-            {justSaved && !unsaved ? `${label}'s date saved.` : ""}
+            {justSaved ? `${label}'s date saved.` : ""}
           </p>
           {error && (
             <div className="mt-3">
@@ -205,11 +218,11 @@ function SheetBody({
         </div>
 
         {stage.prompts.length > 0 && (
-          <details className="py-4">
-            <summary className="cursor-pointer text-app-base font-semibold text-app-accent">
+          <details className="py-1.5">
+            <summary className="cursor-pointer py-2.5 text-app-base font-semibold text-app-accent">
               {`Questions students get from the guidelines (${stage.prompts.length})`}
             </summary>
-            <ul className="mt-2 flex list-disc flex-col gap-1 pl-5">
+            <ul className="mb-2.5 flex list-disc flex-col gap-1 pl-5">
               {stage.prompts.map((prompt, i) => (
                 <li key={i} className="text-app-base text-app-copy">
                   {prompt.heading && (i === 0 || stage.prompts[i - 1].heading !== prompt.heading) && (
@@ -227,9 +240,10 @@ function SheetBody({
         <div role="group" aria-labelledby={`${id}-choose`} className="flex min-h-0 flex-1 flex-col">
           <div className="border-b border-app-line px-4 pt-2 pb-3 sm:px-6">
             <Button type="button" variant="link" size="header" onClick={() => setRequest(null)} className="-ml-1.5">
-              {`‹ Back to ${label}`}
+              <span aria-hidden="true">‹ </span>
+              Back to {label}
             </Button>
-            <p className="text-app-small text-app-muted">{request.eyebrow}</p>
+            {request.eyebrow && <p className="text-app-small text-app-muted">{request.eyebrow}</p>}
             <h3 id={`${id}-choose`} ref={chooseHeading} tabIndex={-1} className="font-heading text-app-title font-bold text-app-ink">
               {request.title}
             </h3>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { type FormEvent, useId, useMemo, useRef, useState } from "react";
+import { type FormEvent, useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { api, ApiError } from "@/lib/api/client";
@@ -13,6 +13,9 @@ import { DateBox } from "./date-box";
 import { ErrorPanel } from "./error-panel";
 import { Field, FieldGroup } from "./field";
 import { eyebrow } from "./styles";
+
+/** Where focus goes when a form closes on a new or retired item: the "Add an item" button (S-31). */
+const ADD = "add";
 
 /**
  * One stage's items, in the stage sheet (plan stage-sheet S-5, S-17): the page's separate item list is gone. Each item
@@ -33,6 +36,9 @@ export function StageItems({
   const router = useRouter();
   const formId = useId();
   const dateBox = useRef<HTMLButtonElement>(null);
+  const section = useRef<HTMLElement>(null);
+  const addButton = useRef<HTMLButtonElement>(null);
+  const focusNext = useRef<string | null>(null);
   const [open, setOpen] = useState<string | "new" | null>(null);
   const [text, setText] = useState("");
   const [dueDate, setDueDate] = useState("");
@@ -43,6 +49,22 @@ export function StageItems({
   const label = stage.label ?? stage.name;
   const base = `/components/${componentId}/teacher-items`;
   const openItem = items.find((item) => item.id === open);
+  // Closing a form removes the button that had focus. An existing item's form hands focus to its own row; a new
+  // item's, or a retired one's (its row is gone), to "Add an item" (S-31).
+  const ownRow = openItem?.id ?? ADD;
+
+  useEffect(() => {
+    if (open !== null || focusNext.current === null) return;
+    const target =
+      focusNext.current === ADD ? addButton.current : section.current?.querySelector<HTMLElement>(`[data-item="${focusNext.current}"]`);
+    focusNext.current = null;
+    target?.focus();
+  }, [open]);
+
+  function closeForm(focusAfter: string) {
+    focusNext.current = focusAfter;
+    setOpen(null);
+  }
 
   function start(item?: LetteredItem) {
     setOpen(item?.id ?? "new");
@@ -52,12 +74,12 @@ export function StageItems({
     setError(null);
   }
 
-  async function run(action: () => Promise<unknown>) {
+  async function run(action: () => Promise<unknown>, focusAfter: string) {
     setBusy(true);
     setError(null);
     try {
       await action();
-      setOpen(null);
+      closeForm(focusAfter);
       setRetiring(false);
       router.refresh();
     } catch (e) {
@@ -74,6 +96,7 @@ export function StageItems({
       open === "new"
         ? api.send("POST", base, { stageId: stage.id, ...body }, teacherItemSchema)
         : api.send("PATCH", `${base}/${open}`, body, teacherItemSchema),
+      ownRow,
     );
   }
 
@@ -83,7 +106,7 @@ export function StageItems({
         <Field id={`${formId}-text`} label="Item">
           {(control) => <input {...control} value={text} maxLength={200} onChange={(e) => setText(e.target.value)} />}
         </Field>
-        <Field id={`${formId}-date`} label="Date (optional)" help="An item with no date keeps a letter, but stays off the line and the calendar.">
+        <Field id={`${formId}-date`} label="Date (optional)" help="Letters follow the date, so they change when a date does. An item with no date keeps a letter, but stays off the line and the calendar.">
           {(control) => (
             <DateBox
               opener={{
@@ -111,7 +134,7 @@ export function StageItems({
         <Button type="submit" size="header" disabled={busy || !text.trim()}>
           {busy ? "Saving…" : "Save item"}
         </Button>
-        <Button type="button" variant="outline" size="header" onClick={() => setOpen(null)}>
+        <Button type="button" variant="outline" size="header" onClick={() => closeForm(ownRow)}>
           Cancel
         </Button>
         {openItem && (
@@ -121,7 +144,7 @@ export function StageItems({
             size="header"
             onClick={() => setRetiring(true)}
             aria-label={`Retire ${openItem.text}`}
-            className="ml-auto text-app-error-hover"
+            className="ml-auto text-app-error-hover hover:text-app-error-hover"
           >
             Retire
           </Button>
@@ -135,7 +158,7 @@ export function StageItems({
             variant="confirmDestructive"
             size="header"
             disabled={busy}
-            onClick={() => void run(() => api.sendNoContent("DELETE", `${base}/${openItem.id}`))}
+            onClick={() => void run(() => api.sendNoContent("DELETE", `${base}/${openItem.id}`), ADD)}
           >
             Retire item
           </Button>
@@ -148,7 +171,7 @@ export function StageItems({
   );
 
   return (
-    <section aria-labelledby={`${formId}-heading`} className="flex flex-col gap-2">
+    <section ref={section} aria-labelledby={`${formId}-heading`} className="flex flex-col gap-2">
       <h3 id={`${formId}-heading`} className={`${eyebrow} text-app-muted`}>
         Your items in this stage
       </h3>
@@ -162,6 +185,7 @@ export function StageItems({
             <li key={item.id} className="border-t border-app-line first:border-t-0">
               <button
                 type="button"
+                data-item={item.id}
                 aria-expanded={open === item.id}
                 onClick={() => (open === item.id ? setOpen(null) : start(item))}
                 className="grid w-full grid-cols-[26px_1fr_auto] items-baseline gap-x-2.5 gap-y-0.5 rounded-app-inner py-2.5 text-left focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
@@ -188,7 +212,7 @@ export function StageItems({
         form
       ) : (
         <div>
-          <Button type="button" variant="link" size="header" onClick={() => start()} className="-ml-1.5">
+          <Button ref={addButton} type="button" variant="link" size="header" onClick={() => start()} className="-ml-1.5">
             {`Add an item to ${label}`}
           </Button>
         </div>

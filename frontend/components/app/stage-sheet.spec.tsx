@@ -47,6 +47,8 @@ describe("StageSheet", () => {
     const sheet = await screen.findByRole("dialog", { name: "Developing a question" });
     await userEvent.click(within(sheet).getByLabelText("Stage date"));
     const view = within(sheet).getByRole("group", { name: "Choose the Stage 2 date" });
+    expect(within(view).getByRole("button", { name: "Back to Stage 2" })).toBeInTheDocument();
+    expect(within(view).queryByText("Developing a question")).not.toBeInTheDocument();
     await userEvent.click(within(view).getByRole("button", { name: /^Friday 16 October 2026/ }));
     await userEvent.click(within(view).getByRole("button", { name: "Use this date" }));
 
@@ -64,5 +66,25 @@ describe("StageSheet", () => {
     await userEvent.click(within(sheet).getByRole("button", { name: "Save this date" }));
     expect(onSaveDate).toHaveBeenCalledWith("s2");
     expect(await within(sheet).findByText("Stage 2 is after the completion date.")).toBeInTheDocument();
+  });
+
+  it("Undo puts the saved date back and moves focus to the date box", async () => {
+    const { onDateChange } = renderSheet({ draft: { s2: "2026-10-17" } });
+    const sheet = await screen.findByRole("dialog", { name: "Developing a question" });
+    await userEvent.click(within(sheet).getByRole("button", { name: "Undo" }));
+
+    expect(onDateChange).toHaveBeenCalledWith("s2", "2026-10-10");
+    expect(within(sheet).getByLabelText("Stage date")).toHaveFocus();
+  });
+
+  // The page's refresh lands a round trip after the save, so the draft still differs from the saved date here.
+  it("says the date is saved at once, and puts focus on the date box where Save this date was", async () => {
+    renderSheet({ draft: { s2: "2026-10-17" } });
+    const sheet = await screen.findByRole("dialog", { name: "Developing a question" });
+    await userEvent.click(within(sheet).getByRole("button", { name: "Save this date" }));
+
+    expect(await within(sheet).findByText("Stage 2's date saved.")).toBeInTheDocument();
+    expect(within(sheet).queryByRole("button", { name: "Save this date" })).not.toBeInTheDocument();
+    expect(within(sheet).getByLabelText("Stage date")).toHaveFocus();
   });
 });

@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -62,5 +62,26 @@ describe("StageItems", () => {
     const confirm = screen.getByText("Retire this item? Students won't see it any more.").parentElement!;
     await userEvent.click(within(confirm).getByRole("button", { name: "Retire item" }));
     expect(api.sendNoContent).toHaveBeenCalledWith("DELETE", "/components/k1/teacher-items/i2");
+    await waitFor(() => expect(screen.getByRole("button", { name: "Add an item to Stage 2" })).toHaveFocus());
+  });
+
+  it("saves an edited item through its own endpoint", async () => {
+    vi.mocked(api.send).mockResolvedValue({ id: "i2", text: "Bring four questions", dueDate: "2026-10-06" });
+    renderItems();
+    await userEvent.click(screen.getByRole("button", { name: /^B Bring three questions/ }));
+    const text = screen.getByRole("textbox", { name: "Item" });
+    await userEvent.clear(text);
+    await userEvent.type(text, "Bring four questions");
+    await userEvent.click(screen.getByRole("button", { name: "Save item" }));
+
+    expect(api.send).toHaveBeenCalledWith("PATCH", "/components/k1/teacher-items/i2",
+      { text: "Bring four questions", dueDate: "2026-10-06" }, expect.anything());
+  });
+
+  it("puts focus back on the item's row when its form is cancelled", async () => {
+    renderItems();
+    await userEvent.click(screen.getByRole("button", { name: /^B Bring three questions/ }));
+    await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    await waitFor(() => expect(screen.getByRole("button", { name: /^B Bring three questions/ })).toHaveFocus());
   });
 });

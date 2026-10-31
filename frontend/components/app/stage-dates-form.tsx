@@ -64,7 +64,9 @@ export function StageDatesForm({
   const [edits, setEdits] = useState<Record<string, string>>({});
   useEffect(() => setEdits((current) => dropSaved(current, savedDates)), [savedDates]);
   const draft = useMemo(() => ({ ...savedDates, ...edits }), [savedDates, edits]);
-  const setDate = (stageId: string, value: string) => setEdits((current) => ({ ...current, [stageId]: value }));
+  // An edit back to the saved date (Undo, or picking it again) isn't an edit, so it isn't kept.
+  const setDate = (stageId: string, value: string) =>
+    setEdits((current) => dropSaved({ ...current, [stageId]: value }, savedDates));
   const [error, setError] = useState<ApiError | null>(null);
   const [busy, setBusy] = useState(false);
   // Null until the teacher decides: the view then defaults by width in CSS alone, which is what the
