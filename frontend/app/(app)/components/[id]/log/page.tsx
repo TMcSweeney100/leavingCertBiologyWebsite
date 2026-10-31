@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { z } from "zod";
 
@@ -6,7 +5,8 @@ import { AppMain } from "@/components/app/app-main";
 import { ComponentTabs } from "@/components/app/component-tabs";
 import { ErrorPanel } from "@/components/app/error-panel";
 import { LogList } from "@/components/app/log-list";
-import { backLink, pageTitle } from "@/components/app/styles";
+import { BackLink } from "@/components/app/back-link";
+import { pageTitle } from "@/components/app/styles";
 import { componentViewSchema, logEntrySchema } from "@/lib/api/schemas";
 import { serverApi } from "@/lib/api/server";
 import { attempt } from "@/lib/app/attempt";
@@ -25,7 +25,7 @@ export default async function LogPage({ params }: { params: Promise<{ id: string
 
   return (
     <AppMain>
-      <Link href="/home" className={backLink}>Timeline</Link>
+      <BackLink href="/home">Timeline</BackLink>
       {component.ok && component.data.view === "STUDENT" ? (
         <>
           <h1 className={`mt-2.5 ${pageTitle}`}>{`${component.data.subjectName} log`}</h1>

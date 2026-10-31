@@ -1,11 +1,11 @@
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { AppMain } from "@/components/app/app-main";
 import { ComponentOverview } from "@/components/app/component-overview";
 import { ComponentTabs } from "@/components/app/component-tabs";
 import { ErrorPanel } from "@/components/app/error-panel";
-import { backLink, pageTitle } from "@/components/app/styles";
+import { BackLink } from "@/components/app/back-link";
+import { pageTitle } from "@/components/app/styles";
 import { componentViewSchema } from "@/lib/api/schemas";
 import { serverApi } from "@/lib/api/server";
 import { attempt } from "@/lib/app/attempt";
@@ -21,7 +21,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ id: 
 
   return (
     <AppMain>
-      <Link href="/home" className={backLink}>Timeline</Link>
+      <BackLink href="/home">Timeline</BackLink>
       {loaded.ok && loaded.data.view === "STUDENT" ? (
         <>
           <h1 className={`mt-2.5 ${pageTitle}`}>{loaded.data.subjectName}</h1>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-import { backLink, pageTitle } from "./styles";
+import { BackLink } from "./back-link";
+import { pageTitle } from "./styles";
 
 export type ClassTab = "students" | "component" | "progress";
 
@@ -24,9 +25,7 @@ export function ClassHeader({
   ];
   return (
     <>
-      <Link href="/teach" className={backLink}>
-        My classes
-      </Link>
+      <BackLink href="/teach">My classes</BackLink>
       <h1 className={`mt-2.5 break-words ${pageTitle}`}>{detail.name}</h1>
       <p className="mt-1.5 text-app-base text-app-grey">
         {detail.subjectName}, year {detail.yearGroup}, {detail.academicYear}

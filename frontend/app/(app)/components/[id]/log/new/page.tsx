@@ -1,10 +1,10 @@
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { AppMain } from "@/components/app/app-main";
 import { ErrorPanel } from "@/components/app/error-panel";
 import { LogEntryForm } from "@/components/app/log-entry-form";
-import { backLink, card, pageTitle } from "@/components/app/styles";
+import { BackLink } from "@/components/app/back-link";
+import { card, pageTitle } from "@/components/app/styles";
 import { componentViewSchema, entryKindSchema } from "@/lib/api/schemas";
 import { serverApi } from "@/lib/api/server";
 import { attempt } from "@/lib/app/attempt";
@@ -23,7 +23,7 @@ export default async function NewLogEntryPage({ params, searchParams }: { params
 
   return (
     <AppMain>
-      <Link href={`/components/${id}/log`} className={backLink}>Log</Link>
+      <BackLink href={`/components/${id}/log`}>Log</BackLink>
       <h1 className={`mt-2.5 ${pageTitle}`}>New entry</h1>
       {component.ok ? (() => {
         // Today's Irish date comes from the server so the FR-24e line can't disagree with the entry's date.
