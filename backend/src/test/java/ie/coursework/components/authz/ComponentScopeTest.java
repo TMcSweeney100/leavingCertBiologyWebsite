@@ -27,6 +27,7 @@ class ComponentScopeTest extends PostgresIntegrationTest {
     private ClassFixtures.World world;
     private String component;
     private String item;
+    private String note;
 
     @BeforeEach
     void seed() {
@@ -34,6 +35,7 @@ class ComponentScopeTest extends PostgresIntegrationTest {
         UUID id = components.component(world.class1(), world.teacher1(), ComponentFixtures.BIOLOGY_2027);
         component = "/api/v1/components/" + id;
         item = component + "/teacher-items/" + components.item(id, stage(6), "Full draft in", null);
+        note = component + "/stages/" + stage(6) + "/note";
     }
 
     @Test
@@ -70,6 +72,8 @@ class ComponentScopeTest extends PostgresIntegrationTest {
                 .andExpect(status().isNotFound());
         student.patch(item, "{\"text\":\"x\",\"dueDate\":null}").andExpect(status().isNotFound());
         student.delete(item).andExpect(status().isNotFound());
+        student.put(note, "{\"text\":\"x\"}").andExpect(status().isNotFound());
+        student.delete(note).andExpect(status().isNotFound());
     }
 
     @Test
@@ -109,6 +113,8 @@ class ComponentScopeTest extends PostgresIntegrationTest {
                 .andExpect(expected);
         session.patch(item, "{\"text\":\"x\",\"dueDate\":null}").andExpect(expected);
         session.delete(item).andExpect(expected);
+        session.put(note, "{\"text\":\"x\"}").andExpect(expected);
+        session.delete(note).andExpect(expected);
     }
 
     private ApiSession as(String username) throws Exception {

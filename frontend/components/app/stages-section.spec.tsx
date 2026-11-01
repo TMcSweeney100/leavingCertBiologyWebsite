@@ -12,7 +12,7 @@ import { StagesSection } from "./stages-section";
 
 const stage = (n: number, dueDate: string | null) => ({
   id: `s${n}`, ordinal: n, label: `Stage ${n}`, name: `Stage name ${n}`, description: `What stage ${n} is.`,
-  hoursMin: 1, hoursMax: 2, hoursGroup: null, supervised: false, dueDate, checkpoint: null, items: [], prompts: [],
+  hoursMin: 1, hoursMax: 2, hoursGroup: null, supervised: false, dueDate, checkpoint: null, items: [], prompts: [], note: null,
 });
 
 const stages = [stage(1, "2026-05-29"), stage(2, "2026-10-16"), stage(3, null)];

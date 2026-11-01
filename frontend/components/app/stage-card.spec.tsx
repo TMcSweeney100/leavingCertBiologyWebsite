@@ -13,7 +13,7 @@ import { StageCard } from "./stage-card";
 const baseStage = {
   id: "s4", ordinal: 4, label: "Stage 4", name: "Conducting the experiment", description: "Carry out the plan.",
   hoursMin: 1, hoursMax: 2, hoursGroup: null, supervised: true, dueDate: "2026-10-16",
-  checkpoint: null, items: [], prompts: [],
+  checkpoint: null, items: [], prompts: [], note: null,
 };
 
 describe("StageCard", () => {

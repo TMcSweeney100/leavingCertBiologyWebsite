@@ -21,7 +21,7 @@ const stage = (n: number, dueDate: string | null, extra = {}) => ({
   id: `s${n}`, ordinal: n, label: `Stage ${n}`, name: `Name ${n}`, hoursMin: 1, hoursMax: 2, hoursGroup: null,
   supervised: n === 4, checkpoint: n === 3 ? "Plan discussed with the teacher (feasibility and safety)" : null,
   dueDate, items: [] as { id: string; text: string; dueDate: string | null }[],
-  description: `About stage ${n}.`, prompts: [] as { heading: string | null; text: string }[], ...extra,
+  description: `About stage ${n}.`, prompts: [] as { heading: string | null; text: string }[], note: null, ...extra,
 });
 
 const component = (overrides: Partial<TeacherComponent> = {}): TeacherComponent => ({

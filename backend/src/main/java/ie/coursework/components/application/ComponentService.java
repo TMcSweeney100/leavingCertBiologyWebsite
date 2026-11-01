@@ -13,6 +13,7 @@ import ie.coursework.components.adapter.persistence.ItemTickRepository;
 import ie.coursework.components.adapter.persistence.TeacherItemRepository;
 import ie.coursework.components.adapter.persistence.SignoffRepository;
 import ie.coursework.components.adapter.persistence.SignoffRequestRepository;
+import ie.coursework.components.adapter.persistence.StageNoteRepository;
 import ie.coursework.components.adapter.persistence.TemplateRepository;
 import ie.coursework.components.application.ComponentViews.BriefDetail;
 import ie.coursework.components.application.ComponentViews.BriefSummary;
@@ -22,6 +23,7 @@ import ie.coursework.components.application.ComponentViews.DateWarning;
 import ie.coursework.components.application.ComponentViews.DocumentLinkView;
 import ie.coursework.components.application.ComponentViews.MarkBandView;
 import ie.coursework.components.application.ComponentViews.MyComponent;
+import ie.coursework.components.application.ComponentViews.NoteView;
 import ie.coursework.components.application.ComponentViews.OpenRequestView;
 import ie.coursework.components.application.ComponentViews.PromptView;
 import ie.coursework.components.application.ComponentViews.RuleView;
@@ -43,6 +45,7 @@ import ie.coursework.components.domain.Signoff;
 import ie.coursework.components.domain.SignoffRequest;
 import ie.coursework.components.domain.DocumentLink;
 import ie.coursework.components.domain.DublinDate;
+import ie.coursework.components.domain.StageNote;
 import ie.coursework.components.domain.StageOrder;
 import ie.coursework.components.domain.TeacherItem;
 import ie.coursework.components.domain.TemplateCheckpoint;
@@ -88,13 +91,15 @@ public class ComponentService {
     private final SignoffRepository signoffs;
     private final DocumentLinkRepository links;
     private final SignoffRequestRepository requests;
+    private final StageNoteRepository notes;
     private final AuditLog audit;
     private final Clock clock;
 
     public ComponentService(ClassService classes, ClassGroupRepository classGroups, SubjectRepository subjects,
             BriefRepository briefs, TemplateRepository templates, ComponentRepository components,
             TeacherItemRepository items, ItemTickRepository ticks, SignoffRepository signoffs,
-            DocumentLinkRepository links, SignoffRequestRepository requests, AuditLog audit, Clock clock) {
+            DocumentLinkRepository links, SignoffRequestRepository requests, StageNoteRepository notes,
+            AuditLog audit, Clock clock) {
         this.classes = classes;
         this.classGroups = classGroups;
         this.subjects = subjects;
@@ -106,6 +111,7 @@ public class ComponentService {
         this.signoffs = signoffs;
         this.links = links;
         this.requests = requests;
+        this.notes = notes;
         this.audit = audit;
         this.clock = clock;
     }
@@ -185,6 +191,7 @@ public class ComponentService {
         Map<UUID, List<PromptView>> prompts = templates.prompts(brief.versionId()).stream()
                 .collect(Collectors.groupingBy(TemplatePrompt::stageId, LinkedHashMap::new,
                         Collectors.mapping(p -> new PromptView(p.heading(), p.text()), Collectors.toList())));
+        Map<UUID, StageNote> notes = this.notes.forComponent(component.id());
         Map<UUID, Instant> done = ticks.doneItems(component.id(), actor.userId());
         Map<UUID, List<StudentItem>> items = this.items.active(component.id()).stream()
                 .collect(Collectors.groupingBy(TeacherItem::stageId,
@@ -204,7 +211,7 @@ public class ComponentService {
                     checkpoint == null ? null : new CheckpointView(checkpoint.id(), checkpoint.text(),
                             CheckpointState.at(due, today, at != null, open != null), at == null ? null : DublinDate.of(at),
                             open, RequestViews.answers(rows)),
-                    items.getOrDefault(s.id(), List.of()), prompts.getOrDefault(s.id(), List.of()));
+                    items.getOrDefault(s.id(), List.of()), prompts.getOrDefault(s.id(), List.of()), note(notes.get(s.id())));
         }).toList();
 
         BriefDetails details = briefs.details(brief.id());
@@ -293,6 +300,33 @@ public class ComponentService {
         items.retire(itemId, clock.instant());
     }
 
+    /** Stage sheet S-8, S-24: the teacher's note on one stage. Whitespace either side is dropped; blank is refused earlier. */
+    @Transactional
+    public NoteView setNote(Actor actor, UUID componentId, UUID stageId, String text) {
+        Owned owned = owned(actor, componentId);
+        requireStage(owned, stageId);
+        return note(notes.set(owned.component().id(), stageId, text.strip(), clock.instant()));
+    }
+
+    @Transactional
+    public void clearNote(Actor actor, UUID componentId, UUID stageId) {
+        Owned owned = owned(actor, componentId);
+        requireStage(owned, stageId);
+        notes.clear(owned.component().id(), stageId);
+    }
+
+    /** The stage is in the path, so one outside the component's template is 404 (S-24), not a validation error. */
+    private void requireStage(Owned owned, UUID stageId) {
+        boolean inVersion = templates.stages(owned.brief().versionId()).stream().anyMatch(s -> s.id().equals(stageId));
+        if (!inVersion) {
+            throw new DomainException(ErrorCode.NOT_FOUND, "No such stage.");
+        }
+    }
+
+    private static NoteView note(StageNote note) {
+        return note == null ? null : new NoteView(note.text(), DublinDate.of(note.updatedAt()));
+    }
+
     /** Self-reported (plan 2E P2-37). Only an approved student of the class, only on an active item. */
     @Transactional
     public StudentItem tick(Actor actor, UUID componentId, UUID itemId, boolean done) {
@@ -349,10 +383,12 @@ public class ComponentService {
                 .collect(Collectors.groupingBy(TemplatePrompt::stageId, LinkedHashMap::new,
                         Collectors.mapping(p -> new PromptView(p.heading(), p.text()), Collectors.toList())));
 
+        Map<UUID, StageNote> notes = this.notes.forComponent(owned.component().id());
+
         List<SetupStage> setup = stages.stream().map(s -> new SetupStage(s.id(), s.ordinal(), s.label(), s.name(),
                 s.description(), s.hoursMin(), s.hoursMax(), s.hoursGroup(), s.supervised(), checkpoints.get(s.id()),
                 dates.get(s.id()), itemsByStage.getOrDefault(s.id(), List.of()),
-                prompts.getOrDefault(s.id(), List.of()))).toList();
+                prompts.getOrDefault(s.id(), List.of()), note(notes.get(s.id())))).toList();
 
         return new TeacherComponent("TEACHER", owned.component().id(), owned.group().id(), owned.group().name(),
                 brief.subjectCode(), subjects.findById(owned.group().subjectId()).orElseThrow().name(),

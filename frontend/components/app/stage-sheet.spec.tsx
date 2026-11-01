@@ -17,7 +17,7 @@ const stage = {
   id: "s2", ordinal: 2, label: "Stage 2", name: "Developing a question", description: "Students develop a research question.",
   hoursMin: 1, hoursMax: 2, hoursGroup: null, supervised: false, checkpoint: "Question discussed with the teacher",
   dueDate: "2026-10-10", items: [{ id: "i1", text: "Bring three questions", dueDate: "2026-10-06" }],
-  prompts: [{ heading: "Prompts", text: "Is it researchable?" }],
+  prompts: [{ heading: "Prompts", text: "Is it researchable?" }], note: null,
 };
 
 const grid = {
