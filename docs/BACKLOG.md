@@ -17,7 +17,7 @@ A diff that fits in one sentence skips step 2.
 
 | # | Slug | Feature | Status |
 |---|---|---|---|
-| — | _stage-sheet_ (proposed) | A right-hand stage sheet on the Component tab, where "who ticked each item" comes back | being designed (31 Oct): click a stage to open it; the teacher adds their own note per stage, shown to students alongside the official description, which is never replaced or hidden; the stage's items and who ticked them, added and edited there, so the page's separate item list goes and each stage row shows its item letters. Mockup: `docs/design/pilot/stage-sheet/design/`. Needs a plan |
+| — | _stage-sheet_ | A right-hand stage sheet on the Component tab, where "who ticked each item" comes back | built on `pilot/stage-sheet`, not merged (1 Nov 2026). Click a stage to open it: its date, a note for students (shown above the official text, which is never replaced or hidden), the checkpoint with sign-off counts, and its items with who ticked them. Still to do: `/self-review` in a fresh session, `docs/changes/stage-sheet.md`, and the PR into `pilotMain`. Plan: `docs/superpowers/plans/2026-10-31-stage-sheet.md`; intent: `docs/intent/stage-sheet.md` |
 | — | _student-preview_ (proposed) | In the stage sheet, a switch the teacher turns on and off to see the stage exactly as students do: the official description, the teacher's note, items, checkpoint and prompts (reusing the student's `StageCard`) | idea only: after stage-sheet |
 
 The three features below are built and merged (see **Done**). Their notes stay here as the record of what was asked and answered.
