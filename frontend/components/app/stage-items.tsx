@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { type FormEvent, useEffect, useId, useMemo, useRef, useState } from "react";
+import { type FormEvent, type ReactNode, useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { api, ApiError } from "@/lib/api/client";
@@ -244,7 +244,7 @@ export function StageItems({
 
 /** Who has and hasn't ticked one item (S-28). Students tick these themselves; the words say so. */
 function TickNames({ lists, id }: { lists: TickLists; id: string }) {
-  const group = (key: string, heading: string, names: string[], done: boolean) => (
+  const group = (key: string, heading: ReactNode, names: string[], done: boolean) => (
     <div className="flex flex-col gap-1.5">
       <h4 id={`${id}-${key}`} className="text-app-small font-semibold text-app-grey">{heading}</h4>
       {names.length === 0 ? (
@@ -267,8 +267,8 @@ function TickNames({ lists, id }: { lists: TickLists; id: string }) {
   );
   return (
     <div className="mb-3 flex flex-col gap-3 rounded-app-inner border border-app-line bg-app-ground p-3">
-      {group("not", `Not ticked yet (${lists.notYet.length})`, lists.notYet, false)}
-      {group("done", `Ticked (${lists.ticked.length}) · students tick these themselves`, lists.ticked, true)}
+      {group("not", <>Not ticked yet (<span data-private>{lists.notYet.length}</span>)</>, lists.notYet, false)}
+      {group("done", <>Ticked (<span data-private>{lists.ticked.length}</span>) · students tick these themselves</>, lists.ticked, true)}
     </div>
   );
 }

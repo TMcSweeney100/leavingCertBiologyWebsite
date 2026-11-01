@@ -141,6 +141,10 @@ describe("StageSheet", () => {
     await userEvent.click(within(sheet).getByRole("button", { name: /Bring three questions.*1 ticked/ }));
     expect(within(sheet).getByRole("list", { name: /^Ticked/ })).toHaveTextContent("Cian Murphy");
     expect(within(sheet).getByRole("list", { name: /^Not ticked yet/ })).toHaveTextContent("Aoife Byrne");
+    // Hide names blurs counts too (S-20): only the number is private, so the words around it stay readable.
+    for (const heading of [/^Ticked \(1\)/, /^Not ticked yet \(1\)/]) {
+      expect(within(sheet).getByRole("heading", { name: heading }).querySelector("[data-private]")).toHaveTextContent(/^1$/);
+    }
   });
 
   it("says so in place when the class's progress didn't load", async () => {
