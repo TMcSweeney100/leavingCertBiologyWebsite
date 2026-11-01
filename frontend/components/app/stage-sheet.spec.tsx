@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createRef } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -22,12 +22,14 @@ const stage = {
 function renderSheet(props: Partial<Parameters<typeof StageSheet>[0]> = {}) {
   const onDateChange = vi.fn();
   const onSaveDate = vi.fn().mockResolvedValue(undefined);
-  render(
+  const sheet = (more: Partial<Parameters<typeof StageSheet>[0]> = {}) => (
     <StageSheet componentId="k1" stage={stage} stages={[stage]} draft={{ s2: "2026-10-10" }} onDateChange={onDateChange}
       onSaveDate={onSaveDate} marks={[]} completionDate="2027-02-26" today="2026-10-01" returnFocus={createRef()}
-      onClose={vi.fn()} fieldLabel={(field) => field} {...props} />,
+      onClose={vi.fn()} fieldLabel={(field) => field} {...props} {...more} />
   );
-  return { onDateChange, onSaveDate };
+  const view = render(sheet());
+  // What the page does when `onDateChange` is called: hand the sheet the new draft.
+  return { onDateChange, onSaveDate, redraw: (draft: Record<string, string>) => view.rerender(sheet({ draft })) };
 }
 
 beforeEach(() => vi.clearAllMocks());
@@ -89,6 +91,24 @@ describe("StageSheet", () => {
 
     expect(await within(sheet).findByText("Stage 5")).toBeInTheDocument();
     expect(within(sheet).queryByText("s5")).not.toBeInTheDocument();
+  });
+
+  it("doesn't call a different date saved when the save that finished was for an earlier one", async () => {
+    let finish!: () => void;
+    const { onSaveDate, redraw } = renderSheet({ draft: { s2: "2026-10-17" } });
+    onSaveDate.mockReturnValueOnce(new Promise<void>((resolve) => (finish = resolve)));
+    const sheet = await screen.findByRole("dialog", { name: "Developing a question" });
+    await userEvent.click(within(sheet).getByRole("button", { name: "Save this date" })); // sends 17 Oct
+    await userEvent.click(within(sheet).getByLabelText("Stage date"));
+    const view = within(sheet).getByRole("group", { name: "Choose the Stage 2 date" });
+    await userEvent.click(within(view).getByRole("button", { name: /^Tuesday 20 October 2026/ }));
+    await userEvent.click(within(view).getByRole("button", { name: "Use this date" }));
+    redraw({ s2: "2026-10-20" });
+    await act(async () => finish());
+
+    expect(await within(sheet).findByRole("button", { name: "Save this date" })).toBeEnabled();
+    expect(within(sheet).getByText("not saved")).toBeInTheDocument();
+    expect(within(sheet).queryByText("Stage 2's date saved.")).not.toBeInTheDocument();
   });
 
   // The page's refresh lands a round trip after the save, so the draft still differs from the saved date here.

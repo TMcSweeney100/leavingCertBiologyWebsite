@@ -77,21 +77,23 @@ function SheetBody({
   const [request, setRequest] = useState<DateRequest | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
-  const [justSaved, setJustSaved] = useState(false);
+  const [savedAs, setSavedAs] = useState<string | null>(null);
 
   const label = stage.label ?? stage.name;
   const value = draft[stage.id] ?? "";
   const saved = stage.dueDate ?? "";
   const unsaved = value !== saved;
-  // The page refreshes after a save without waiting, so for one round trip `justSaved` is true while `unsaved` still
-  // is: that moment is "saved", not "not saved".
+  // The page refreshes after a save without waiting, so for one round trip the date just saved is shown while
+  // `unsaved` still is: that moment is "saved", not "not saved". It remembers which date was sent, so a different date
+  // picked while the save was in flight stays unsaved.
+  const justSaved = savedAs === value;
   const pending = unsaved && !justSaved;
   const boxId = `${id}-date`;
   const whenId = `${id}-when`;
   const helpId = `${id}-save-help`;
 
   const changeDate = (iso: string) => {
-    setJustSaved(false);
+    setSavedAs(null);
     onDateChange(stage.id, iso);
   };
   const ask = (next: DateRequest) => {
@@ -112,9 +114,10 @@ function SheetBody({
   async function save() {
     setBusy(true);
     setError(null);
+    const sent = value;
     try {
       await onSaveDate(stage.id);
-      setJustSaved(true);
+      setSavedAs(sent);
       dateBox.current?.focus(); // Save this date is about to go; the box stays (S-32).
     } catch (e) {
       setError(e instanceof ApiError ? e : ApiError.unreachable(e));

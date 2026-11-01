@@ -187,7 +187,7 @@ export function StageItems({
                 type="button"
                 data-item={item.id}
                 aria-expanded={open === item.id}
-                onClick={() => (open === item.id ? setOpen(null) : start(item))}
+                onClick={() => (open === item.id ? closeForm(item.id) : start(item))}
                 className="grid w-full grid-cols-[26px_1fr_auto] items-baseline gap-x-2.5 gap-y-0.5 rounded-app-inner py-2.5 text-left focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
               >
                 <span
