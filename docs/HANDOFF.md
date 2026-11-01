@@ -32,6 +32,19 @@ Built without stopping (31 Oct 2026); each part's hand test is waiting on Tim. A
 - The one known limit (decision S-34): with one stage's saved date after the completion date, Save this date on another stage is refused, and the message names the late stage. To set it up, save Stage 6 on a date on or before 26 February 2027, then move Biology's completion date earlier **in your local database** (`docker exec -it coursework-postgres psql -U coursework coursework`, then `UPDATE annual_brief SET completion_date = '2027-01-29' WHERE sec_code = '2027L025C2EL';`) and reload.
 - **Put it back when you're done:** `UPDATE annual_brief SET completion_date = '2027-02-26' WHERE sec_code = '2027L025C2EL';`. That date is shared by every Biology class on your local database.
 
+### Hand test, Part 2 (who ticked, and the checkpoint counts)
+
+Part 3 (the teacher's note) follows without waiting for this test (31 Oct 2026, Tim away), so anything you find here may already have Part 3 built on top of it. Use a class with a few approved students, some of whom have ticked items, asked for sign-off, or been signed off.
+
+- **The success test (2):** open the current stage and answer "who hasn't ticked B, and who's waiting for sign-off?" in a few seconds, without going to the Progress tab.
+- The counts line under the checkpoint reads "N signed off", "N waiting for you" and "N not yet". It matches the Progress grid for that stage. "Waiting for you" is a link to the Progress tab, and is plain "0 waiting" when nobody is.
+- A stage with no checkpoint (Business Stage 6) shows no counts line.
+- Each item shows "N ticked" on its row. Opening the item lists "Not ticked yet" and "Ticked", with "students tick these themselves" in the second heading. Names are full names, sorted by surname.
+- A student you removed from the class doesn't appear in the counts or the lists, and isn't in the tick number.
+- Turn on Hide names on the Progress tab, then go to the Component tab and open the sheet. The names, the counts and the tick numbers are blurred. Turn it off, reload, and they are readable.
+- If you can, make the progress endpoint fail (stop the backend part-way, or block `GET /components/{id}/progress` in the browser's network panel, then reload). The sheet should say "Couldn't load the class's progress" in the checkpoint section and on an opened item, while the dates and items still work.
+- Keyboard only: each item row is one button (its name reads the letter, the text, "N ticked" and the date), and Tab reaches the "waiting for you" link.
+
 ## Still to do on merged work
 
 - **Changes docs not written** (CLAUDE.md wants one per implementation): `docs/changes/source-builder.md`, `ai-use-record.md`, `date-picker-drawer.md`, plus two older ones skipped at the time: `pilot-4-teacher-grid.md` and the 3B D-6 restyle.
