@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,6 +29,7 @@ export function StageNoteForm({ componentId, stageId, note, draft, onDraft }: {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const [savedAs, setSavedAs] = useState<string | null>(null);
+  const box = useRef<HTMLTextAreaElement>(null);
   const id = `note-${stageId}`;
   const path = `/components/${componentId}/stages/${stageId}/note`;
   const text = draft.trim();
@@ -48,6 +49,7 @@ export function StageNoteForm({ componentId, stageId, note, draft, onDraft }: {
       if (removing) await api.sendNoContent("DELETE", path);
       else await api.send("PUT", path, { text: draft }, noteSchema);
       setSavedAs(text);
+      box.current?.focus(); // The button is about to disable itself; the box stays.
       // The server drops whitespace either side; match it so the saved note and the draft agree after the refresh.
       onDraft(text);
       router.refresh();
@@ -64,8 +66,10 @@ export function StageNoteForm({ componentId, stageId, note, draft, onDraft }: {
       <p id={`${id}-help`} className="text-app-small text-app-grey">Shown to students above the guidelines. Web links become clickable.</p>
       <Textarea
         id={id}
+        ref={box}
         rows={4}
         value={draft}
+        readOnly={busy}
         maxLength={NOTE_MAX}
         aria-describedby={`${id}-help ${id}-count`}
         onChange={(event) => onDraft(event.target.value)}
@@ -82,10 +86,10 @@ export function StageNoteForm({ componentId, stageId, note, draft, onDraft }: {
       {error && <ErrorPanel error={error} focus />}
       <div className="flex items-center justify-between gap-3">
         <p role="status" className="text-app-small text-app-muted">
-          {dirty ? "Not saved yet" : differs ? "Saved just now" : note ? `Saved ${formatCalendarDate(note.updatedOn)}` : ""}
+          {dirty ? "Not saved yet" : differs ? (text ? "Saved just now" : "Note removed") : note ? `Saved ${formatCalendarDate(note.updatedOn)}` : ""}
         </p>
         <Button type="submit" variant="outline" size="header" disabled={busy || !dirty}>
-          {busy ? "Saving…" : removing ? "Remove note" : "Save note"}
+          {busy ? (removing ? "Removing…" : "Saving…") : removing ? "Remove note" : "Save note"}
         </Button>
       </div>
     </form>

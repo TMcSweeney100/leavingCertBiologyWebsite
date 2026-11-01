@@ -223,7 +223,7 @@ function SheetBody({
           )}
         </div>
 
-        <section className="border-b border-app-line py-4">
+        <div className="border-b border-app-line py-4">
           <StageNoteForm
             componentId={componentId}
             stageId={stage.id}
@@ -231,7 +231,7 @@ function SheetBody({
             draft={noteDrafts[stage.id] ?? stage.note?.text ?? ""}
             onDraft={(text) => onNoteDraft(stage.id, text)}
           />
-        </section>
+        </div>
 
         <section aria-labelledby={`${id}-official`} className="border-b border-app-line py-4">
           <h3 id={`${id}-official`} className={sectionLabel}>From the guidelines</h3>
