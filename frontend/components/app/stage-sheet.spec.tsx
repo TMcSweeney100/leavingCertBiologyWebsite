@@ -91,6 +91,17 @@ describe("StageSheet", () => {
     expect(within(sheet).getByLabelText("Stage date")).toHaveFocus();
   });
 
+  it("keeps Undo off while the date is saving, or it would put the old date back and the save would still go through", async () => {
+    let finish!: () => void;
+    const { onSaveDate } = renderSheet({ draft: { s2: "2026-10-17" } });
+    onSaveDate.mockReturnValueOnce(new Promise<void>((resolve) => (finish = resolve)));
+    const sheet = await screen.findByRole("dialog", { name: "Developing a question" });
+    await userEvent.click(within(sheet).getByRole("button", { name: "Save this date" }));
+
+    expect(within(sheet).getByRole("button", { name: "Undo" })).toBeDisabled();
+    await act(async () => finish());
+  });
+
   it("names the stage a refusal is about by its label, not its id", async () => {
     const refusal = new ApiError({
       status: 400, code: "COMPLETION_DATE_EXCEEDED", title: "Bad", detail: "A date is after the completion date.",

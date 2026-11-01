@@ -40,14 +40,25 @@ export function StageNoteForm({ componentId, stageId, note, draft, onDraft }: {
   const justSaved = savedAs === text;
   const dirty = differs && !justSaved;
   const removing = text === "" && note !== null;
+  // Once the page has caught up a removed note is gone, `differs` is false and `note` is null: `justSaved` is what still
+  // knows it was removed, so the line keeps saying so instead of going blank.
+  const status = dirty
+    ? "Not saved yet"
+    : differs
+      ? (text ? "Saved just now" : "Note removed")
+      : note
+        ? `Saved ${formatCalendarDate(note.updatedOn)}`
+        : justSaved ? "Note removed" : "";
 
   async function save(event: FormEvent) {
     event.preventDefault();
     setBusy(true);
     setError(null);
     try {
+      // The trimmed text is what's sent: Java's strip and JavaScript's trim drop different characters (a pasted
+      // non-breaking space), so the raw box could store text the form then never matches.
       if (removing) await api.sendNoContent("DELETE", path);
-      else await api.send("PUT", path, { text: draft }, noteSchema);
+      else await api.send("PUT", path, { text }, noteSchema);
       setSavedAs(text);
       box.current?.focus(); // The button is about to disable itself; the box stays.
       // The server drops whitespace either side; match it so the saved note and the draft agree after the refresh.
@@ -86,7 +97,7 @@ export function StageNoteForm({ componentId, stageId, note, draft, onDraft }: {
       {error && <ErrorPanel error={error} focus />}
       <div className="flex items-center justify-between gap-3">
         <p role="status" className="text-app-small text-app-muted">
-          {dirty ? "Not saved yet" : differs ? (text ? "Saved just now" : "Note removed") : note ? `Saved ${formatCalendarDate(note.updatedOn)}` : ""}
+          {status}
         </p>
         <Button type="submit" variant="outline" size="header" disabled={busy || !dirty}>
           {busy ? (removing ? "Removing…" : "Saving…") : removing ? "Remove note" : "Save note"}

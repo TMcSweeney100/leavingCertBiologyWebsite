@@ -40,7 +40,6 @@ export function StageItems({
 }) {
   const router = useRouter();
   const formId = useId();
-  const dateBox = useRef<HTMLButtonElement>(null);
   const section = useRef<HTMLElement>(null);
   const addButton = useRef<HTMLButtonElement>(null);
   const focusNext = useRef<string | null>(null);
@@ -115,7 +114,6 @@ export function StageItems({
           {(control) => (
             <DateBox
               opener={{
-                ref: dateBox,
                 onClick: (event) =>
                   chooseDate({
                     title: text.trim() ? `Choose the date for “${text.trim()}”` : "Choose the date for the new item",

@@ -57,11 +57,13 @@ export function StageSheet(props: {
   const [shown, setShown] = useState(props.stage);
   if (props.stage && props.stage !== shown) setShown(props.stage);
   const title = useRef<HTMLHeadingElement>(null);
+  // The drawer's own props; the body gets the rest.
+  const { returnFocus, onClose, hideNames, ...body } = props;
 
   return (
-    <Drawer swipeDirection="right" open={props.stage !== null} onOpenChange={(next) => !next && props.onClose()}>
-      <DrawerContent initialFocus={title} finalFocus={props.returnFocus} className={props.hideNames ? "app-hide-names" : undefined}>
-        {shown && <SheetBody key={shown.id} {...props} stage={shown} title={title} />}
+    <Drawer swipeDirection="right" open={props.stage !== null} onOpenChange={(next) => !next && onClose()}>
+      <DrawerContent initialFocus={title} finalFocus={returnFocus} className={hideNames ? "app-hide-names" : undefined}>
+        {shown && <SheetBody key={shown.id} {...body} stage={shown} title={title} />}
       </DrawerContent>
     </Drawer>
   );
@@ -83,7 +85,7 @@ function SheetBody({
   noteDrafts,
   onNoteDraft,
   title,
-}: Parameters<typeof StageSheet>[0] & { stage: Stage; title: RefObject<HTMLHeadingElement | null> }) {
+}: Omit<Parameters<typeof StageSheet>[0], "returnFocus" | "onClose" | "hideNames"> & { stage: Stage; title: RefObject<HTMLHeadingElement | null> }) {
   const id = useId();
   const dateBox = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
@@ -199,6 +201,7 @@ function SheetBody({
                   type="button"
                   variant="link"
                   size="header"
+                  disabled={busy}
                   onClick={() => {
                     changeDate(saved);
                     dateBox.current?.focus(); // Undo is about to go; the box stays (S-32).

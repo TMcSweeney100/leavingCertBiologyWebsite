@@ -5,8 +5,9 @@ import type { Picking } from './date-marks.ts';
 import { fullName } from './progress.ts';
 
 /**
- * The stage sheet's pure parts (plan stage-sheet). The page keeps only the teacher's edits over the saved dates
- * (Concepts in play, "Store the edits, not a copy"): after any save, an edit that now matches what's saved is done.
+ * The stage sheet's pure parts (plan stage-sheet). The page keeps only the teacher's edits over what's saved, dates and
+ * note drafts alike (Concepts in play, "Store the edits, not a copy"): after any save, an edit that now matches what's
+ * saved is done.
  */
 export function dropSaved(edits: Record<string, string>, saved: Record<string, string>): Record<string, string> {
   const kept = Object.entries(edits).filter(([id, value]) => value !== (saved[id] ?? ''));

@@ -49,7 +49,7 @@ describe("StageNoteForm", () => {
   it("an emptied box removes the note, and says so", async () => {
     const request = deferred<void>();
     vi.mocked(api.sendNoContent).mockReturnValue(request.promise);
-    render(<Harness note={{ text: "Old", updatedOn: "2026-10-28" }} />);
+    const { rerender } = render(<Harness note={{ text: "Old", updatedOn: "2026-10-28" }} />);
     expect(screen.getByText("Saved 28 Oct 2026")).toBeInTheDocument();
     await userEvent.clear(screen.getByRole("textbox", { name: "Your note for students" }));
     await userEvent.click(screen.getByRole("button", { name: "Remove note" }));
@@ -60,6 +60,20 @@ describe("StageNoteForm", () => {
     expect(await screen.findByText("Note removed")).toBeInTheDocument();
     expect(screen.queryByText("Saved just now")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Remove note" })).toBeDisabled();
+
+    // The page's refresh lands: the stage has no note now, and the line still says what happened.
+    rerender(<Harness note={null} />);
+    expect(screen.getByText("Note removed")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Save note" })).toBeDisabled();
+  });
+
+  it("sends the note trimmed, so what is stored is what the form compares", async () => {
+    vi.mocked(api.send).mockResolvedValue({ text: "Hello", updatedOn: "2026-10-31" });
+    render(<Harness note={null} />);
+    await userEvent.type(screen.getByRole("textbox", { name: "Your note for students" }), "Hello ");
+    await userEvent.click(screen.getByRole("button", { name: "Save note" }));
+
+    expect(api.send).toHaveBeenCalledWith("PUT", "/components/k1/stages/s2/note", { text: "Hello" }, expect.anything());
   });
 
   it("says it is saved at once, while the page has not yet caught up with the note", async () => {

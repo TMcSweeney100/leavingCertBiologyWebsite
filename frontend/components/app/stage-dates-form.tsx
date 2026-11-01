@@ -156,6 +156,11 @@ export function StageDatesForm({
     return () => window.removeEventListener("popstate", sync);
   }, [component.stages]);
 
+  // A sheet opened from the address (on load, or by Forward) wasn't opened by a click, so focus goes back to the stage's name.
+  useEffect(() => {
+    if (sheetId && !sheetOpener.current) sheetOpener.current = document.querySelector<HTMLElement>(`[data-stage="${sheetId}"]`);
+  }, [sheetId]);
+
   function openSheet(stage: Stage, from: HTMLElement) {
     sheetOpener.current = from;
     pushed.current = true;
@@ -420,6 +425,7 @@ function StageDateRow({
               column sits above it (relative z-10) and keeps its own button. */}
           <button
             type="button"
+            data-stage={stage.id}
             aria-haspopup="dialog"
             onClick={(event) => onOpen(event.currentTarget)}
             className="w-fit cursor-pointer rounded-app-inner text-left text-app-base font-semibold text-app-ink decoration-app-accent underline-offset-3 after:absolute after:inset-0 after:content-[''] hover:underline focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"

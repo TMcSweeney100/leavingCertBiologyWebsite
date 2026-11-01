@@ -10,7 +10,7 @@ import { DatePickerPanel, pickedDay } from "./date-picker-panel";
 
 /** What the caller spreads onto its date button so that it opens the calendar. */
 export type DateBoxOpener = {
-  ref: RefObject<HTMLButtonElement | null>;
+  ref?: RefObject<HTMLButtonElement | null>;
   /** Set when the button opens a dialog; the stage sheet's boxes swap the sheet's view instead (S-4). */
   "aria-haspopup"?: "dialog";
   onClick: (event: MouseEvent<HTMLButtonElement>) => void;

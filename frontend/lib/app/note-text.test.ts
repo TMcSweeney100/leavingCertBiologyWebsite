@@ -12,6 +12,27 @@ describe('note text', () => {
     ]);
   });
 
+  test('a closing bracket that closes one inside the address stays in the link', () => {
+    assert.deepEqual(noteParts('Read https://en.wikipedia.org/wiki/Osmosis_(biology) first'), [
+      { kind: 'text', text: 'Read ' },
+      { kind: 'link', href: 'https://en.wikipedia.org/wiki/Osmosis_(biology)' },
+      { kind: 'text', text: ' first' },
+    ]);
+    assert.deepEqual(noteParts('(see https://en.wikipedia.org/wiki/Osmosis_(biology)).'), [
+      { kind: 'text', text: '(see ' },
+      { kind: 'link', href: 'https://en.wikipedia.org/wiki/Osmosis_(biology)' },
+      { kind: 'text', text: ').' },
+    ]);
+  });
+
+  test('a closing bracket with no opening one in the address belongs to the sentence', () => {
+    assert.deepEqual(noteParts('(see https://example.ie/a)'), [
+      { kind: 'text', text: '(see ' },
+      { kind: 'link', href: 'https://example.ie/a' },
+      { kind: 'text', text: ')' },
+    ]);
+  });
+
   test('nothing else becomes a link', () => {
     assert.deepEqual(noteParts('javascript:alert(1) or www.example.ie'), [{ kind: 'text', text: 'javascript:alert(1) or www.example.ie' }]);
   });

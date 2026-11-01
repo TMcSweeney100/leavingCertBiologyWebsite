@@ -217,6 +217,15 @@ describe("StageDatesForm", () => {
     expect(window.location.search).toBe("?stage=3");
   });
 
+  it("a sheet opened from the address gives focus back to the stage's name when it closes", async () => {
+    render(<StageDatesForm component={component()} today={TODAY} initialStage="3" progress={progress} hideNames={false} />);
+    await screen.findByRole("dialog", { name: "Name 3" });
+    await userEvent.keyboard("{Escape}");
+
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(screen.getByRole("button", { name: "Name 3" })).toHaveFocus();
+  });
+
   it("saving one stage in its sheet keeps another row's unsaved date", async () => {
     const saved = component({ stages: [stage(3, "2026-09-25"), stage(4, null), stage(5, "2026-11-27")] });
     vi.mocked(api.send).mockResolvedValue(saved);
