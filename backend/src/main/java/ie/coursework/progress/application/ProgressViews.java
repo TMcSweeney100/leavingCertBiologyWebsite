@@ -31,8 +31,11 @@ public final class ProgressViews {
     public record WaitingRequest(UUID studentId, String firstName, String lastName, UUID checkpointId, String checkpointText,
             LocalDate askedOn, String note) {}
 
+    /** Stage sheet S-15, S-16: the approved students who have ticked one active item. Items nobody has ticked are left out. */
+    public record ItemTicks(UUID itemId, List<UUID> studentIds) {}
+
     public record Grid(UUID componentId, UUID classId, String className, LocalDate today, List<GridStage> stages,
-            List<GridStudent> students, List<WaitingRequest> waiting) {}
+            List<GridStudent> students, List<WaitingRequest> waiting, List<ItemTicks> itemTicks) {}
 
     public record PastSignoff(LocalDate signedOffOn, LocalDate revokedOn, String revokedBy) {}
 

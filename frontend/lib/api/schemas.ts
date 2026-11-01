@@ -355,6 +355,8 @@ export const progressStudentSchema = z.object({
 });
 export type ProgressStudent = z.infer<typeof progressStudentSchema>;
 
+export const itemTicksSchema = z.object({ itemId: z.string(), studentIds: z.array(z.string()) });
+
 export const progressGridSchema = z.object({
   componentId: z.string(),
   classId: z.string(),
@@ -363,6 +365,7 @@ export const progressGridSchema = z.object({
   stages: z.array(gridStageSchema),
   students: z.array(progressStudentSchema),
   waiting: z.array(waitingRequestSchema),
+  itemTicks: z.array(itemTicksSchema),
 });
 export type ProgressGrid = z.infer<typeof progressGridSchema>;
 

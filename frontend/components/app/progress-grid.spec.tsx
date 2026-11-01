@@ -30,7 +30,7 @@ const grid = (students: Grid["students"]): Grid => ({
     { stageId: "s1", ordinal: 1, label: "Stage 1", name: "Initial", dueDate: "2026-10-02", checkpoint: { id: "c1", text: INITIAL } },
     { stageId: "s2", ordinal: 2, label: "Stage 2", name: "Research", dueDate: "2026-11-06", checkpoint: { id: "c2", text: LOG } },
   ],
-  students, waiting: [],
+  students, waiting: [], itemTicks: [],
 });
 const START = grid([row("a", "Aoife", "Byrne", 2, "DUE", 20), row("c", "Cian", "Murphy", 1, "SIGNED_OFF", 3)]);
 const props = { basePath: "/teach/classes/cl1/progress", laptopStage: "all", phoneStage: "2", hideNames: false };
