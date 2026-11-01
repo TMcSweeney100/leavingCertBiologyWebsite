@@ -132,6 +132,15 @@ test("a student sees the component and ticks a teacher item", async ({ page: tea
   await expect(student.getByText(/^You ticked this · \d{1,2} [A-Z][a-z]{2,3} \d{4}$/)).toBeVisible();
   await expect(student.getByRole("checkbox", { name: /Full draft in for feedback/ })).toBeChecked();
   await expectAccessible(student);
+
+  // Stage sheet Part 2: the teacher sees who ticked it, in Stage 6's sheet.
+  await teacher.getByRole("link", { name: "Component" }).click();
+  const stage6 = "Finalising the Biology in Practice Investigation Report";
+  await teacher.getByRole("button", { name: stage6 }).click();
+  const sheet = teacher.getByRole("dialog", { name: stage6 });
+  await sheet.getByRole("button", { name: /Full draft in for feedback.*1 ticked/ }).click();
+  await expect(sheet.getByRole("list", { name: /^Ticked/ })).toContainText("Cian Murphy");
+  await expectAccessible(teacher);
 });
 
 test("the timeline shows the stage date, the teacher's item and the student's own item, in order", async ({ browser }) => {
