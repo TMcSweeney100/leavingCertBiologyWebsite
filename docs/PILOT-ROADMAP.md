@@ -411,7 +411,7 @@ All under `/api/v1`. JSON, camelCase. Errors are RFC 9457 problem details with a
 
 | Method | Path | Who | Body and result |
 |---|---|---|---|
-| PUT | `/api/v1/components/{id}/stages/{stageId}/note` | Class teacher | `{text}` → `{text, updatedOn}`. Text 1–1,000 characters after trimming (`VALIDATION_FAILED` otherwise); a stage outside the component's template is 404 |
+| PUT | `/api/v1/components/{id}/stages/{stageId}/note` | Class teacher | `{text}` → `{text, updatedOn}`. The client sends the text trimmed. At most 1,000 characters and not blank, checked by Spring on the raw text (`VALIDATION_FAILED` otherwise), then stripped; a stage outside the component's template is 404 |
 | DELETE | `/api/v1/components/{id}/stages/{stageId}/note` | Class teacher | remove the note → 204 |
 
 The note comes back as `note` (`{text, updatedOn}`, or null when there is none) on every stage of `GET /api/v1/components/{id}`, in both the teacher's and the student's view. `GET /api/v1/components/{id}/progress` gains `itemTicks` (see the Phase 4 row above).
