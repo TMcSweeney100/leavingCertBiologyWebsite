@@ -22,14 +22,15 @@ Built without stopping (31 Oct 2026); each part's hand test is waiting on Tim. A
 
 ### Hand test, Part 1 (the sheet, dates, items)
 
-- Stage 2's name, or anywhere else on its row, opens its sheet. The address shows `?stage=2`. Back closes the sheet and Forward opens it again. Loading `…/component?stage=2` opens it, and Close keeps you on the Component tab.
+- Stage 2's name, or anywhere else on its row except the date box, opens its sheet. The address shows `?stage=2`. Back closes the sheet and Forward opens it again. Loading `…/component?stage=2` opens it, and Close keeps you on the Component tab.
 - The sheet shows the official text ("From the guidelines") and the prompts ("Questions students get from the guidelines").
 - An item can be added with a date picked in the sheet's calendar, then edited, then retired. A half-typed item survives a trip to the calendar and back.
 - A date picked in the sheet shows dashed on the row, and a date picked on the row shows dashed in the sheet. Save this date saves only that stage; another row's unsaved date stays dashed.
 - Keyboard only: the stage name opens the sheet with focus on its title; the date box opens the calendar with focus on the day; "Back to Stage 2" puts focus back on the box; then the items; Close puts focus back on the stage name. After Save this date or Undo, focus is on the date box.
 - The stage date box on the row still opens its own drawer.
 - At 390px wide the sheet fills the screen.
-- The one known limit (decision S-34): with one stage's saved date after the completion date, Save this date on another stage is refused, and the message names the late stage. To set it up, save Stage 6 on a date in February 2027, move Biology's completion date earlier in the local database (`docker exec -it coursework-postgres psql -U coursework coursework`, then `UPDATE annual_brief SET completion_date = '2027-01-29' WHERE sec_code = '2027L025C2EL';`), reload, and put it back to `'2027-02-26'` after.
+- The one known limit (decision S-34): with one stage's saved date after the completion date, Save this date on another stage is refused, and the message names the late stage. To set it up, save Stage 6 on a date on or before 26 February 2027, then move Biology's completion date earlier **in your local database** (`docker exec -it coursework-postgres psql -U coursework coursework`, then `UPDATE annual_brief SET completion_date = '2027-01-29' WHERE sec_code = '2027L025C2EL';`) and reload.
+- **Put it back when you're done:** `UPDATE annual_brief SET completion_date = '2027-02-26' WHERE sec_code = '2027L025C2EL';`. That date is shared by every Biology class on your local database.
 
 ## Still to do on merged work
 
