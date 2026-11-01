@@ -1,7 +1,7 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { dropSaved, oneStageDates, stageFromParam, stageItems } from './stage-sheet.ts';
+import { checkpointCounts, dropSaved, oneStageDates, stageFromParam, stageItems, tickLists } from './stage-sheet.ts';
 
 const stages = [
   { id: 's1', ordinal: 1, label: 'Stage 1', name: 'One', dueDate: '2026-09-20', items: [{ id: 'i2', text: 'Later', dueDate: '2026-10-08' }] },
@@ -35,5 +35,30 @@ describe('stage sheet helpers', () => {
 
   test("stageItems keeps each item's letter from the whole component", () => {
     assert.deepEqual(stageItems(stages, 's2').map((i) => [i.letter, i.text]), [['A', 'Sooner'], ['C', 'Undated']]);
+  });
+});
+
+const student = (studentId: string, firstName: string, lastName: string, state: 'NOT_DUE' | 'DUE' | 'READY' | 'SIGNED_OFF') => ({
+  studentId, firstName, lastName, behindBy: 0, lastLogActivityOn: null, daysSinceLastLogActivity: null, documentLink: null,
+  cells: [{ checkpointId: 'c2', state, signedOffOn: null }],
+});
+const grid = {
+  stages: [
+    { stageId: 's2', ordinal: 2, label: 'Stage 2', name: 'Two', dueDate: null, checkpoint: { id: 'c2', text: 'Discussed' } },
+    { stageId: 's6', ordinal: 6, label: 'Stage 6', name: 'Six', dueDate: null, checkpoint: null },
+  ],
+  students: [student('a', 'Aoife', 'Byrne', 'SIGNED_OFF'), student('b', 'Cian', 'Murphy', 'READY'), student('c', 'Ella', 'Doyle', 'DUE'), student('d', 'Finn', 'Allen', 'NOT_DUE')],
+  itemTicks: [{ itemId: 'i1', studentIds: ['b', 'a'] }],
+};
+
+describe('stage sheet progress helpers', () => {
+  test('checkpointCounts: signed off, waiting (Ready), and the rest as not yet', () => {
+    assert.deepEqual(checkpointCounts(grid, 's2'), { signedOff: 1, waiting: 1, notYet: 2 });
+    assert.equal(checkpointCounts(grid, 's6'), null);
+  });
+
+  test('tickLists: full names, by surname, ticked and not', () => {
+    assert.deepEqual(tickLists(grid, 'i1'), { ticked: ['Aoife Byrne', 'Cian Murphy'], notYet: ['Finn Allen', 'Ella Doyle'] });
+    assert.deepEqual(tickLists(grid, 'i9').ticked, []);
   });
 });

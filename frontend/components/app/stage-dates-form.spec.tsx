@@ -40,7 +40,12 @@ const allSix = () => component({
   ],
 });
 
-const render5 = (c: TeacherComponent = component()) => render(<StageDatesForm component={c} today={TODAY} />);
+// No students, so the sheet's counts and tick names add nothing to these cases.
+const emptyGrid = { componentId: "k1", classId: "c1", className: "6A Biology", today: TODAY, stages: [], students: [], waiting: [], itemTicks: [] };
+const progress = { ok: true as const, data: emptyGrid };
+
+const render5 = (c: TeacherComponent = component()) =>
+  render(<StageDatesForm component={c} today={TODAY} progress={progress} hideNames={false} />);
 
 // A date is set in the drawer (plan date-picker-drawer C-35, C-41): open the box, type it day first, press Enter.
 async function setDate(label: string, iso: string) {
@@ -215,7 +220,7 @@ describe("StageDatesForm", () => {
   it("saving one stage in its sheet keeps another row's unsaved date", async () => {
     const saved = component({ stages: [stage(3, "2026-09-25"), stage(4, null), stage(5, "2026-11-27")] });
     vi.mocked(api.send).mockResolvedValue(saved);
-    const { rerender } = render(<StageDatesForm component={component({ stages: [stage(3, "2026-09-25"), stage(4, null), stage(5, null)] })} today={TODAY} />);
+    const { rerender } = render(<StageDatesForm component={component({ stages: [stage(3, "2026-09-25"), stage(4, null), stage(5, null)] })} today={TODAY} progress={progress} hideNames={false} />);
     await setDate("Stage 4 date", "2026-10-16");
 
     await userEvent.click(screen.getByRole("button", { name: "Name 5" }));
@@ -229,7 +234,7 @@ describe("StageDatesForm", () => {
     expect(api.send).toHaveBeenCalledWith("PUT", "/components/k1/stage-dates", {
       dates: [{ stageId: "s3", dueDate: "2026-09-25" }, { stageId: "s4", dueDate: null }, { stageId: "s5", dueDate: "2026-11-27" }],
     }, expect.anything());
-    rerender(<StageDatesForm component={saved} today={TODAY} />);
+    rerender(<StageDatesForm component={saved} today={TODAY} progress={progress} hideNames={false} />);
     expect(screen.getByLabelText("Stage 4 date")).toHaveTextContent("16/10/2026");
   });
 });

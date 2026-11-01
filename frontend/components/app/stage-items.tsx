@@ -5,9 +5,11 @@ import { type FormEvent, useEffect, useId, useMemo, useRef, useState } from "rea
 
 import { Button } from "@/components/ui/button";
 import { api, ApiError } from "@/lib/api/client";
-import { teacherItemSchema } from "@/lib/api/schemas";
+import { type ProgressGrid, teacherItemSchema } from "@/lib/api/schemas";
+import type { Attempt } from "@/lib/app/attempt";
 import { formatCalendarDate, type LetteredItem, type StageLike } from "@/lib/app/component-setup";
-import { type DateRequest, stageItems } from "@/lib/app/stage-sheet";
+import { studentCount } from "@/lib/app/progress";
+import { type DateRequest, stageItems, type TickLists, tickLists } from "@/lib/app/stage-sheet";
 
 import { DateBox } from "./date-box";
 import { ErrorPanel } from "./error-panel";
@@ -21,17 +23,20 @@ const ADD = "add";
  * One stage's items, in the stage sheet (plan stage-sheet S-5, S-17): the page's separate item list is gone. Each item
  * opens in place; one at a time. Items save one at a time through their own endpoints, outside the dates' batch.
  * An item's date is chosen in the sheet's own calendar view, through `chooseDate`, never a second drawer (S-4).
+ * Each row counts who has ticked it, and the open item names them, from the class's progress grid (S-16).
  */
 export function StageItems({
   componentId,
   stage,
   stages,
   chooseDate,
+  progress,
 }: {
   componentId: string;
   stage: StageLike;
   stages: ReadonlyArray<StageLike>;
   chooseDate: (request: DateRequest) => void;
+  progress: Attempt<ProgressGrid>;
 }) {
   const router = useRouter();
   const formId = useId();
@@ -172,9 +177,14 @@ export function StageItems({
 
   return (
     <section ref={section} aria-labelledby={`${formId}-heading`} className="flex flex-col gap-2">
-      <h3 id={`${formId}-heading`} className={`${eyebrow} text-app-muted`}>
-        Your items in this stage
-      </h3>
+      <div className="flex items-baseline justify-between gap-3">
+        <h3 id={`${formId}-heading`} className={`${eyebrow} text-app-muted`}>
+          Your items in this stage
+        </h3>
+        {progress.ok && (
+          <span data-private className="text-app-small text-app-muted">{studentCount(progress.data.students.length)}</span>
+        )}
+      </div>
       {error && <ErrorPanel error={error} focus />}
       {items.length === 0 && open !== "new" && (
         <p className="text-app-small text-app-muted">No items in this stage yet. Students see your items under the stage and on their timeline.</p>
@@ -198,12 +208,23 @@ export function StageItems({
                   {item.letter}
                 </span>{" "}
                 <span className="text-app-base font-semibold text-app-ink">{item.text}</span>{" "}
-                <span aria-hidden="true" className="font-bold text-app-accent">{open === item.id ? "⌄" : "›"}</span>
+                <span className="whitespace-nowrap">
+                  {progress.ok && (
+                    <span data-private className="text-app-small text-app-grey">{`${tickLists(progress.data, item.id).ticked.length} ticked`}</span>
+                  )}{" "}
+                  <span aria-hidden="true" className="font-bold text-app-accent">{open === item.id ? "⌄" : "›"}</span>
+                </span>{" "}
                 <span className="col-start-2 text-app-small text-app-muted">
                   {item.dueDate ? formatCalendarDate(item.dueDate) : "No date, so not on the line or the calendar"}
                 </span>
               </button>
               {open === item.id && form}
+              {open === item.id && progress.ok && (
+                <TickNames lists={tickLists(progress.data, item.id)} id={`${formId}-${item.id}`} />
+              )}
+              {open === item.id && !progress.ok && (
+                <p className="pb-3 text-app-small text-app-muted">{"Couldn't load the class's progress, so who has ticked this isn't shown."}</p>
+              )}
             </li>
           ))}
         </ul>
@@ -218,5 +239,36 @@ export function StageItems({
         </div>
       )}
     </section>
+  );
+}
+
+/** Who has and hasn't ticked one item (S-28). Students tick these themselves; the words say so. */
+function TickNames({ lists, id }: { lists: TickLists; id: string }) {
+  const group = (key: string, heading: string, names: string[], done: boolean) => (
+    <div className="flex flex-col gap-1.5">
+      <h4 id={`${id}-${key}`} className="text-app-small font-semibold text-app-grey">{heading}</h4>
+      {names.length === 0 ? (
+        <p className="text-app-small text-app-muted">Nobody.</p>
+      ) : (
+        <ul aria-labelledby={`${id}-${key}`} className="flex flex-wrap gap-1.5">
+          {/* Two students can share a full name, so the index keeps the keys apart. */}
+          {names.map((name, i) => (
+            <li
+              key={`${i}-${name}`}
+              data-private
+              className={`rounded-full border px-2 py-0.5 text-app-small ${done ? "border-app-approved/30 bg-app-approved-tint text-app-approved" : "border-app-line bg-app-surface text-app-ink"}`}
+            >
+              {name}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+  return (
+    <div className="mb-3 flex flex-col gap-3 rounded-app-inner border border-app-line bg-app-ground p-3">
+      {group("not", `Not ticked yet (${lists.notYet.length})`, lists.notYet, false)}
+      {group("done", `Ticked (${lists.ticked.length}) · students tick these themselves`, lists.ticked, true)}
+    </div>
   );
 }

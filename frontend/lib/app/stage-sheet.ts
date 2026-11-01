@@ -1,5 +1,8 @@
+import type { ProgressGrid } from '@/lib/api/schemas';
+
 import { letteredItems, type LetteredItem, type StageLike } from './component-setup.ts';
 import type { Picking } from './date-marks.ts';
+import { fullName } from './progress.ts';
 
 /**
  * The stage sheet's pure parts (plan stage-sheet). The page keeps only the teacher's edits over the saved dates
@@ -43,3 +46,33 @@ export type DateRequest = {
   onPick: (iso: string) => void;
   from: HTMLElement | null;
 };
+
+export type CheckpointCounts = { signedOff: number; waiting: number; notYet: number };
+
+/** The counts line (S-27). Null for a stage with nothing to sign off (Business Stage 6). */
+export function checkpointCounts(grid: Pick<ProgressGrid, 'stages' | 'students'>, stageId: string): CheckpointCounts | null {
+  const checkpointId = grid.stages.find((s) => s.stageId === stageId)?.checkpoint?.id;
+  if (!checkpointId) return null;
+  const counts = { signedOff: 0, waiting: 0, notYet: 0 };
+  for (const student of grid.students) {
+    const state = student.cells.find((c) => c.checkpointId === checkpointId)?.state;
+    if (state === 'SIGNED_OFF') counts.signedOff += 1;
+    else if (state === 'READY') counts.waiting += 1;
+    else counts.notYet += 1;
+  }
+  return counts;
+}
+
+export type TickLists = { ticked: string[]; notYet: string[] };
+
+/** Who has ticked one item, and who hasn't (S-16, S-28): approved students, full names, by surname. */
+export function tickLists(grid: Pick<ProgressGrid, 'students' | 'itemTicks'>, itemId: string): TickLists {
+  const ticked = new Set(grid.itemTicks.find((t) => t.itemId === itemId)?.studentIds ?? []);
+  const byName = [...grid.students].sort(
+    (a, b) => a.lastName.localeCompare(b.lastName, 'en-IE') || a.firstName.localeCompare(b.firstName, 'en-IE'),
+  );
+  return {
+    ticked: byName.filter((s) => ticked.has(s.studentId)).map(fullName),
+    notYet: byName.filter((s) => !ticked.has(s.studentId)).map(fullName),
+  };
+}

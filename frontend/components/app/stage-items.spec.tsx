@@ -22,7 +22,11 @@ const stages = [
 // The sheet answers a date request by showing its calendar; here the "calendar" picks 8 Oct at once.
 const chooseDate = vi.fn((request: DateRequest) => request.onPick("2026-10-08"));
 
-const renderItems = () => render(<StageItems componentId="k1" stage={stages[1]} stages={stages} chooseDate={chooseDate} />);
+// No students, so the tick counts and names add nothing to these cases.
+const emptyGrid = { componentId: "k1", classId: "c1", className: "6A", today: "2026-10-01", stages: [], students: [], waiting: [], itemTicks: [] };
+
+const renderItems = () =>
+  render(<StageItems componentId="k1" stage={stages[1]} stages={stages} chooseDate={chooseDate} progress={{ ok: true, data: emptyGrid }} />);
 
 beforeEach(() => {
   refresh.mockReset();

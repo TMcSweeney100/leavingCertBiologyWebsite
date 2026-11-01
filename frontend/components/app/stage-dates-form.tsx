@@ -5,7 +5,8 @@ import { type FormEvent, Fragment, useEffect, useMemo, useRef, useState } from "
 
 import { Button } from "@/components/ui/button";
 import { api, ApiError } from "@/lib/api/client";
-import { type TeacherComponent, teacherComponentSchema } from "@/lib/api/schemas";
+import { type ProgressGrid, type TeacherComponent, teacherComponentSchema } from "@/lib/api/schemas";
+import type { Attempt } from "@/lib/app/attempt";
 import {
   datesChanged,
   datesRunSummary,
@@ -49,10 +50,15 @@ export function StageDatesForm({
   component,
   today,
   initialStage = null,
+  progress,
+  hideNames,
 }: {
   component: TeacherComponent;
   today: string;
   initialStage?: string | null;
+  /** The class's progress grid, for the sheet's counts and ticks (S-15). A failure blanks only those. */
+  progress: Attempt<ProgressGrid>;
+  hideNames: boolean;
 }) {
   const router = useRouter();
   // Only what the teacher changed (Concepts in play, "Store the edits, not a copy"). The draft is worked out from it,
@@ -314,6 +320,9 @@ export function StageDatesForm({
         completionDate={component.brief.completionDate}
         today={today}
         fieldLabel={fieldLabel}
+        progress={progress}
+        classId={component.classId}
+        hideNames={hideNames}
         returnFocus={sheetOpener}
         onClose={closeSheet}
       />

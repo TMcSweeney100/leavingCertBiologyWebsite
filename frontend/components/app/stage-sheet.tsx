@@ -1,14 +1,16 @@
 "use client";
 
+import Link from "next/link";
 import { type RefObject, useEffect, useId, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerClose, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { ApiError } from "@/lib/api/client";
-import type { TeacherComponent } from "@/lib/api/schemas";
+import type { ProgressGrid, TeacherComponent } from "@/lib/api/schemas";
+import type { Attempt } from "@/lib/app/attempt";
 import { hoursLabel, weekdayDate } from "@/lib/app/component-setup";
 import type { DateMark } from "@/lib/app/date-marks";
-import type { DateRequest } from "@/lib/app/stage-sheet";
+import { checkpointCounts, type DateRequest } from "@/lib/app/stage-sheet";
 
 import { DateBox } from "./date-box";
 import { DatePickerPanel, pickedDay } from "./date-picker-panel";
@@ -38,6 +40,11 @@ export function StageSheet(props: {
   today: string;
   /** Names a refused field in the error list: Spring keys `COMPLETION_DATE_EXCEEDED` by stage id (S-34). */
   fieldLabel: (field: string) => string;
+  /** The class's progress grid: the checkpoint's counts and who has ticked each item (S-15, S-16). */
+  progress: Attempt<ProgressGrid>;
+  classId: string;
+  /** The Progress tab's Hide names (S-20). The sheet is portalled out of the page, so it carries the class itself. */
+  hideNames: boolean;
   returnFocus: RefObject<HTMLElement | null>;
   onClose: () => void;
 }) {
@@ -49,7 +56,7 @@ export function StageSheet(props: {
 
   return (
     <Drawer swipeDirection="right" open={props.stage !== null} onOpenChange={(next) => !next && props.onClose()}>
-      <DrawerContent initialFocus={title} finalFocus={props.returnFocus}>
+      <DrawerContent initialFocus={title} finalFocus={props.returnFocus} className={props.hideNames ? "app-hide-names" : undefined}>
         {shown && <SheetBody key={shown.id} {...props} stage={shown} title={title} />}
       </DrawerContent>
     </Drawer>
@@ -67,6 +74,8 @@ function SheetBody({
   completionDate,
   today,
   fieldLabel,
+  progress,
+  classId,
   title,
 }: Parameters<typeof StageSheet>[0] & { stage: Stage; title: RefObject<HTMLHeadingElement | null> }) {
   const id = useId();
@@ -127,6 +136,7 @@ function SheetBody({
   }
 
   const meta = [stage.label, hoursLabel(stage, stages), stage.supervised ? "Supervised in class" : ""].filter(Boolean).join(" · ");
+  const counts = progress.ok ? checkpointCounts(progress.data, stage.id) : null;
 
   return (
     <>
@@ -216,11 +226,28 @@ function SheetBody({
           <section aria-labelledby={`${id}-checkpoint`} className="border-b border-app-line py-4">
             <h3 id={`${id}-checkpoint`} className={sectionLabel}>Checkpoint</h3>
             <p className="mt-2 rounded-app-inner bg-app-inset px-3 py-2.5 text-app-base text-app-ink">{stage.checkpoint}</p>
+            {!progress.ok ? (
+              <p className="mt-2 text-app-small text-app-muted">{"Couldn't load the class's progress, so the counts aren't shown. Reload to try again."}</p>
+            ) : progress.data.students.length === 0 ? (
+              <p className="mt-2 text-app-small text-app-muted">No students in the class yet.</p>
+            ) : counts && (
+              <p className="mt-2 flex flex-wrap gap-x-3.5 gap-y-1 text-app-small text-app-grey">
+                <span data-private><b className="font-semibold text-app-ink">{counts.signedOff}</b> signed off</span>
+                {counts.waiting > 0 ? (
+                  <Link href={`/teach/classes/${classId}/progress`} data-private className="font-semibold text-app-accent underline underline-offset-3">
+                    {`${counts.waiting} waiting for you`}
+                  </Link>
+                ) : (
+                  <span data-private><b className="font-semibold text-app-ink">0</b> waiting</span>
+                )}
+                <span data-private><b className="font-semibold text-app-ink">{counts.notYet}</b> not yet</span>
+              </p>
+            )}
           </section>
         )}
 
         <div className="border-b border-app-line py-4">
-          <StageItems componentId={componentId} stage={stage} stages={stages} chooseDate={ask} />
+          <StageItems componentId={componentId} stage={stage} stages={stages} chooseDate={ask} progress={progress} />
         </div>
 
         {stage.prompts.length > 0 && (

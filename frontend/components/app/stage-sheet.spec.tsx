@@ -16,7 +16,18 @@ import { StageSheet } from "./stage-sheet";
 const stage = {
   id: "s2", ordinal: 2, label: "Stage 2", name: "Developing a question", description: "Students develop a research question.",
   hoursMin: 1, hoursMax: 2, hoursGroup: null, supervised: false, checkpoint: "Question discussed with the teacher",
-  dueDate: "2026-10-10", items: [], prompts: [{ heading: "Prompts", text: "Is it researchable?" }],
+  dueDate: "2026-10-10", items: [{ id: "i1", text: "Bring three questions", dueDate: "2026-10-06" }],
+  prompts: [{ heading: "Prompts", text: "Is it researchable?" }],
+};
+
+const grid = {
+  componentId: "k1", classId: "c1", className: "6A", today: "2026-10-01", waiting: [],
+  stages: [{ stageId: "s2", ordinal: 2, label: "Stage 2", name: "Developing a question", dueDate: null, checkpoint: { id: "c2", text: "Discussed" } }],
+  students: [
+    { studentId: "a", firstName: "Aoife", lastName: "Byrne", behindBy: 0, lastLogActivityOn: null, daysSinceLastLogActivity: null, documentLink: null, cells: [{ checkpointId: "c2", state: "READY" as const, signedOffOn: null }] },
+    { studentId: "b", firstName: "Cian", lastName: "Murphy", behindBy: 0, lastLogActivityOn: null, daysSinceLastLogActivity: null, documentLink: null, cells: [{ checkpointId: "c2", state: "DUE" as const, signedOffOn: null }] },
+  ],
+  itemTicks: [{ itemId: "i1", studentIds: ["b"] }],
 };
 
 function renderSheet(props: Partial<Parameters<typeof StageSheet>[0]> = {}) {
@@ -25,7 +36,8 @@ function renderSheet(props: Partial<Parameters<typeof StageSheet>[0]> = {}) {
   const sheet = (more: Partial<Parameters<typeof StageSheet>[0]> = {}) => (
     <StageSheet componentId="k1" stage={stage} stages={[stage]} draft={{ s2: "2026-10-10" }} onDateChange={onDateChange}
       onSaveDate={onSaveDate} marks={[]} completionDate="2027-02-26" today="2026-10-01" returnFocus={createRef()}
-      onClose={vi.fn()} fieldLabel={(field) => field} {...props} {...more} />
+      onClose={vi.fn()} fieldLabel={(field) => field} progress={{ ok: true, data: grid }} classId="c1" hideNames={false}
+      {...props} {...more} />
   );
   const view = render(sheet());
   // What the page does when `onDateChange` is called: hand the sheet the new draft.
@@ -120,5 +132,20 @@ describe("StageSheet", () => {
     expect(await within(sheet).findByText("Stage 2's date saved.")).toBeInTheDocument();
     expect(within(sheet).queryByRole("button", { name: "Save this date" })).not.toBeInTheDocument();
     expect(within(sheet).getByLabelText("Stage date")).toHaveFocus();
+  });
+
+  it("counts the checkpoint across the class, and lists who has and hasn't ticked an item", async () => {
+    renderSheet();
+    const sheet = await screen.findByRole("dialog", { name: "Developing a question" });
+    expect(within(sheet).getByRole("link", { name: "1 waiting for you" })).toHaveAttribute("href", "/teach/classes/c1/progress");
+    await userEvent.click(within(sheet).getByRole("button", { name: /Bring three questions.*1 ticked/ }));
+    expect(within(sheet).getByRole("list", { name: /^Ticked/ })).toHaveTextContent("Cian Murphy");
+    expect(within(sheet).getByRole("list", { name: /^Not ticked yet/ })).toHaveTextContent("Aoife Byrne");
+  });
+
+  it("says so in place when the class's progress didn't load", async () => {
+    renderSheet({ progress: { ok: false, error: ApiError.unreachable(new Error("down")) } });
+    const sheet = await screen.findByRole("dialog", { name: "Developing a question" });
+    expect(within(sheet).getAllByText(/Couldn't load the class's progress/).length).toBeGreaterThan(0);
   });
 });
