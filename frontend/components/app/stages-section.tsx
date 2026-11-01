@@ -22,6 +22,7 @@ export function StagesSection({
   initialOpenId,
   link,
   requireLink,
+  today,
 }: {
   componentId: string;
   stages: ReadonlyArray<Stage>;
@@ -29,6 +30,7 @@ export function StagesSection({
   initialOpenId: string | null;
   link: DocumentLink | null;
   requireLink: boolean;
+  today: string;
 }) {
   const [openId, setOpenId] = useState<string | null>(initialOpenId);
   const ordered = [...stages].sort((a, b) => a.ordinal - b.ordinal);
@@ -60,6 +62,7 @@ export function StagesSection({
             onToggle={toggleRow}
             link={link}
             requireLink={requireLink}
+            today={today}
           />
         ))}
       </div>

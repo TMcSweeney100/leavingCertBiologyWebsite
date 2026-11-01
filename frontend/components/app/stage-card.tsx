@@ -1,8 +1,10 @@
 import type { DocumentLink, StudentComponent } from "@/lib/api/schemas";
 import { STAGE_STATE_STYLE, STAGE_STATE_WORD, type StageState } from "@/lib/app/component-progress";
 import { formatCalendarDate, hoursLabel } from "@/lib/app/component-setup";
+import { recentlyUpdated } from "@/lib/app/note-text";
 
 import { ItemTick } from "./item-tick";
+import { NoteText } from "./note-text";
 import { ReadyControl } from "./ready-control";
 import { card, eyebrow, lead } from "./styles";
 
@@ -26,6 +28,7 @@ export function StageCard({
   onToggle,
   link,
   requireLink,
+  today,
 }: {
   componentId: string;
   stage: Stage;
@@ -35,6 +38,7 @@ export function StageCard({
   onToggle: (id: string) => void;
   link: DocumentLink | null;
   requireLink: boolean;
+  today: string;
 }) {
   const checkpointDue = s.checkpoint?.state === "DUE";
   const signedOff = s.checkpoint?.state === "SIGNED_OFF";
@@ -55,6 +59,9 @@ export function StageCard({
       >
         <span className="font-semibold text-app-ink">{s.label ? `${s.label} · ${s.name}` : s.name}</span>
         <span className={`${eyebrow} rounded-full px-2.5 py-1 ${STAGE_STATE_STYLE[state]}`}>{STAGE_STATE_WORD[state]}</span>
+        {s.note && recentlyUpdated(s.note.updatedOn, today) && (
+          <span className={`${eyebrow} rounded-full bg-app-accent-tint px-2.5 py-1 text-app-accent`}>Note updated</span>
+        )}
         {s.dueDate && <span className="font-mono text-app-label text-app-grey">{formatCalendarDate(s.dueDate)}</span>}
       </button>
       <div
@@ -65,6 +72,13 @@ export function StageCard({
       >
         <div className="min-h-0 overflow-hidden">
           <div className="flex flex-col gap-3 px-4 pb-4">
+            {s.note && (
+              <div className="flex flex-col gap-1 rounded-app-inner border-l-[3px] border-l-app-accent bg-app-accent-tint p-3">
+                <span className={`${eyebrow} text-app-accent`}>Note from your teacher</span>
+                <NoteText text={s.note.text} />
+                <span className="text-app-small text-app-muted">{`Updated ${formatCalendarDate(s.note.updatedOn)}`}</span>
+              </div>
+            )}
             <p className={lead}>{s.description}</p>
             <p className="text-app-small text-app-grey">
               {[hoursLabel(s, allStages), s.supervised ? "Done in supervised class time" : ""].filter(Boolean).join(" · ")}
