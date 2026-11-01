@@ -37,7 +37,7 @@ function renderSheet(props: Partial<Parameters<typeof StageSheet>[0]> = {}) {
     <StageSheet componentId="k1" stage={stage} stages={[stage]} draft={{ s2: "2026-10-10" }} onDateChange={onDateChange}
       onSaveDate={onSaveDate} marks={[]} completionDate="2027-02-26" today="2026-10-01" returnFocus={createRef()}
       onClose={vi.fn()} fieldLabel={(field) => field} progress={{ ok: true, data: grid }} classId="c1" hideNames={false}
-      {...props} {...more} />
+      noteDrafts={{}} onNoteDraft={vi.fn()} {...props} {...more} />
   );
   const view = render(sheet());
   // What the page does when `onDateChange` is called: hand the sheet the new draft.

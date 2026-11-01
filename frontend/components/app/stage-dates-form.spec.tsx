@@ -237,4 +237,19 @@ describe("StageDatesForm", () => {
     rerender(<StageDatesForm component={saved} today={TODAY} progress={progress} hideNames={false} />);
     expect(screen.getByLabelText("Stage 4 date")).toHaveTextContent("16/10/2026");
   });
+
+  it("keeps a note typed in a sheet after the sheet closes, and chips a saved note on its row", async () => {
+    render5(component({ stages: [stage(3, "2026-09-25", { note: { text: "Bring notes", updatedOn: "2026-09-20" } }), stage(4, null)] }));
+    expect(screen.getByText("Your note")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Name 4" }));
+    await userEvent.type(await screen.findByRole("textbox", { name: "Your note for students" }), "Half a thought");
+    await userEvent.keyboard("{Escape}");
+    await userEvent.click(screen.getByRole("button", { name: "Name 4" }));
+    expect(await screen.findByRole("textbox", { name: "Your note for students" })).toHaveValue("Half a thought");
+
+    // The unsaved note counts for the leave-page warning, like an unsaved date.
+    const leaving = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(leaving);
+    expect(leaving.defaultPrevented).toBe(true);
+  });
 });

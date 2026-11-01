@@ -73,6 +73,17 @@ export function StageDatesForm({
   // An edit back to the saved date (Undo, or picking it again) isn't an edit, so it isn't kept.
   const setDate = (stageId: string, value: string) =>
     setEdits((current) => dropSaved({ ...current, [stageId]: value }, savedDates));
+  // Note drafts live here, like the dates' edits (S-21): a sheet closed by Escape or a scrim click keeps them.
+  const savedNotes = useMemo(
+    () => Object.fromEntries(component.stages.map((s) => [s.id, s.note?.text ?? ""])),
+    [component.stages],
+  );
+  const [noteDrafts, setNoteDrafts] = useState<Record<string, string>>({});
+  useEffect(() => setNoteDrafts((current) => dropSaved(current, savedNotes)), [savedNotes]);
+  const setNoteDraft = (stageId: string, text: string) =>
+    setNoteDrafts((current) => dropSaved({ ...current, [stageId]: text }, savedNotes));
+  // Trimmed, as the sheet's Save note compares it: Spring strips a note, so spaces alone aren't a change.
+  const notesDirty = Object.entries(noteDrafts).some(([id, text]) => text.trim() !== (savedNotes[id] ?? ""));
   const [error, setError] = useState<ApiError | null>(null);
   const [busy, setBusy] = useState(false);
   // Null until the teacher decides: the view then defaults by width in CSS alone, which is what the
@@ -105,11 +116,11 @@ export function StageDatesForm({
 
   // UI-STANDARDS: a long form confirms before leaving with unsaved changes.
   useEffect(() => {
-    if (!dirty) return;
+    if (!dirty && !notesDirty) return;
     const warn = (event: BeforeUnloadEvent) => event.preventDefault();
     window.addEventListener("beforeunload", warn);
     return () => window.removeEventListener("beforeunload", warn);
-  }, [dirty]);
+  }, [dirty, notesDirty]);
 
   async function save(event: FormEvent) {
     event.preventDefault();
@@ -273,6 +284,7 @@ export function StageDatesForm({
                 onChange={(value) => setDate(stage.id, value)}
                 onOpen={(from) => openSheet(stage, from)}
                 letters={stageItems(component.stages, stage.id).map((item) => item.letter)}
+                hasNote={Boolean(stage.note)}
                 max={component.brief.completionDate}
                 marks={marks}
                 today={today}
@@ -323,6 +335,8 @@ export function StageDatesForm({
         progress={progress}
         classId={component.classId}
         hideNames={hideNames}
+        noteDrafts={noteDrafts}
+        onNoteDraft={setNoteDraft}
         returnFocus={sheetOpener}
         onClose={closeSheet}
       />
@@ -353,6 +367,7 @@ function StageDateRow({
   onChange,
   onOpen,
   letters,
+  hasNote,
   max,
   marks,
   today,
@@ -367,6 +382,7 @@ function StageDateRow({
   onChange: (value: string) => void;
   onOpen: (from: HTMLElement) => void;
   letters: ReadonlyArray<string>;
+  hasNote: boolean;
   max: string;
   marks: ReadonlyArray<DateMark>;
   today: string;
@@ -423,13 +439,18 @@ function StageDateRow({
                 </span>
               )}
               {stage.checkpoint && <span className="text-app-small text-app-muted">{`Checkpoint: ${stage.checkpoint}`}</span>}
-              {letters.length > 0 && (
+              {(letters.length > 0 || hasNote) && (
                 <span className="mt-0.5 flex flex-wrap items-center gap-1.5 text-app-small text-app-grey">
                   {letters.map((letter) => (
                     <MarkTag key={letter} kind="item">{letter}</MarkTag>
                   ))}
                   {/* Its own element, so "1 item" is findable as text next to the tags. */}
-                  <span>{`${letters.length} item${letters.length === 1 ? "" : "s"}`}</span>
+                  {letters.length > 0 && <span>{`${letters.length} item${letters.length === 1 ? "" : "s"}`}</span>}
+                  {hasNote && (
+                    <span className="rounded-full border border-app-accent/30 bg-app-surface px-2 py-px text-app-label font-semibold text-app-accent">
+                      Your note
+                    </span>
+                  )}
                 </span>
               )}
             </>

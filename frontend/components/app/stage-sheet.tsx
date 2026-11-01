@@ -16,6 +16,7 @@ import { DateBox } from "./date-box";
 import { DatePickerPanel, pickedDay } from "./date-picker-panel";
 import { ErrorPanel } from "./error-panel";
 import { StageItems } from "./stage-items";
+import { StageNoteForm } from "./stage-note-form";
 import { eyebrow, lead } from "./styles";
 
 type Stage = TeacherComponent["stages"][number];
@@ -45,6 +46,9 @@ export function StageSheet(props: {
   classId: string;
   /** The Progress tab's Hide names (S-20). The sheet is portalled out of the page, so it carries the class itself. */
   hideNames: boolean;
+  /** Unsaved notes by stage id. They live in the page, like the dates, so closing the sheet keeps them (S-21). */
+  noteDrafts: Record<string, string>;
+  onNoteDraft: (stageId: string, text: string) => void;
   returnFocus: RefObject<HTMLElement | null>;
   onClose: () => void;
 }) {
@@ -76,6 +80,8 @@ function SheetBody({
   fieldLabel,
   progress,
   classId,
+  noteDrafts,
+  onNoteDraft,
   title,
 }: Parameters<typeof StageSheet>[0] & { stage: Stage; title: RefObject<HTMLHeadingElement | null> }) {
   const id = useId();
@@ -216,6 +222,16 @@ function SheetBody({
             </div>
           )}
         </div>
+
+        <section className="border-b border-app-line py-4">
+          <StageNoteForm
+            componentId={componentId}
+            stageId={stage.id}
+            note={stage.note}
+            draft={noteDrafts[stage.id] ?? stage.note?.text ?? ""}
+            onDraft={(text) => onNoteDraft(stage.id, text)}
+          />
+        </section>
 
         <section aria-labelledby={`${id}-official`} className="border-b border-app-line py-4">
           <h3 id={`${id}-official`} className={sectionLabel}>From the guidelines</h3>
