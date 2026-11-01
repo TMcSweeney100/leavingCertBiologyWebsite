@@ -46,5 +46,22 @@ describe("StageNoteForm", () => {
     await userEvent.clear(screen.getByRole("textbox", { name: "Your note for students" }));
     await userEvent.click(screen.getByRole("button", { name: "Remove note" }));
     expect(api.sendNoContent).toHaveBeenCalledWith("DELETE", "/components/k1/stages/s2/note");
+    expect(await screen.findByText("Saved just now")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Remove note" })).toBeDisabled();
+  });
+
+  it("says it is saved at once, while the page has not yet caught up with the note", async () => {
+    vi.mocked(api.send).mockResolvedValue({ text: "Bring a lab coat", updatedOn: "2026-10-31" });
+    render(<Harness note={null} />);
+    await userEvent.type(screen.getByRole("textbox", { name: "Your note for students" }), "Bring a lab coat");
+    await userEvent.click(screen.getByRole("button", { name: "Save note" }));
+
+    expect(await screen.findByText("Saved just now")).toBeInTheDocument();
+    expect(screen.queryByText("Not saved yet")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Save note" })).toBeDisabled();
+
+    await userEvent.type(screen.getByRole("textbox", { name: "Your note for students" }), "!");
+    expect(screen.getByText("Not saved yet")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Save note" })).toBeEnabled();
   });
 });

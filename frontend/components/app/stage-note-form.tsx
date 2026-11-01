@@ -28,11 +28,16 @@ export function StageNoteForm({ componentId, stageId, note, draft, onDraft }: {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
+  const [savedAs, setSavedAs] = useState<string | null>(null);
   const id = `note-${stageId}`;
   const path = `/components/${componentId}/stages/${stageId}/note`;
   const text = draft.trim();
   // Compared trimmed, as Spring strips the text and refuses a blank one: spaces alone are nothing to save.
-  const dirty = text !== (note?.text ?? "");
+  const differs = text !== (note?.text ?? "");
+  // The page refreshes after a save without waiting, so for one round trip the note just saved still differs from the
+  // page's: that moment is "saved", not "not saved". It remembers what was sent, so typing anything else is unsaved again.
+  const justSaved = savedAs === text;
+  const dirty = differs && !justSaved;
   const removing = text === "" && note !== null;
 
   async function save(event: FormEvent) {
@@ -42,6 +47,7 @@ export function StageNoteForm({ componentId, stageId, note, draft, onDraft }: {
     try {
       if (removing) await api.sendNoContent("DELETE", path);
       else await api.send("PUT", path, { text: draft }, noteSchema);
+      setSavedAs(text);
       // The server drops whitespace either side; match it so the saved note and the draft agree after the refresh.
       onDraft(text);
       router.refresh();
@@ -76,7 +82,7 @@ export function StageNoteForm({ componentId, stageId, note, draft, onDraft }: {
       {error && <ErrorPanel error={error} focus />}
       <div className="flex items-center justify-between gap-3">
         <p role="status" className="text-app-small text-app-muted">
-          {dirty ? "Not saved yet" : note ? `Saved ${formatCalendarDate(note.updatedOn)}` : ""}
+          {dirty ? "Not saved yet" : differs ? "Saved just now" : note ? `Saved ${formatCalendarDate(note.updatedOn)}` : ""}
         </p>
         <Button type="submit" variant="outline" size="header" disabled={busy || !dirty}>
           {busy ? "Saving…" : removing ? "Remove note" : "Save note"}
