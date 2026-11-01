@@ -51,6 +51,21 @@ class StageNoteTest extends PostgresIntegrationTest {
     }
 
     @Test
+    void onlyTheClassTeacherCanChangeOrClearTheNote() throws Exception {
+        teacher.put(note, "{\"text\":\"Workshop on Thursday.\"}").andExpect(status().isOk());
+        for (String who : new String[] {ClassFixtures.TEACHER2, ClassFixtures.APPROVED_STUDENT, ClassFixtures.REMOVED_STUDENT}) {
+            ApiSession other = new ApiSession(mockMvc).login(who, TestAccounts.PASSWORD);
+            other.put(note, "{\"text\":\"Changed.\"}").andExpect(status().isNotFound());
+            other.delete(note).andExpect(status().isNotFound());
+        }
+        ApiSession anonymous = new ApiSession(mockMvc);
+        anonymous.put(note, "{\"text\":\"Changed.\"}").andExpect(status().isUnauthorized());
+        anonymous.delete(note).andExpect(status().isUnauthorized());
+        teacher.get("/api/v1/components/" + component)
+                .andExpect(jsonPath("$.stages[1].note.text").value("Workshop on Thursday."));
+    }
+
+    @Test
     void aBlankOrTooLongNoteIsRefused() throws Exception {
         teacher.put(note, "{\"text\":\"   \"}").andExpect(status().isBadRequest()).andExpect(jsonPath("$.code").value("VALIDATION_FAILED"));
         teacher.put(note, "{\"text\":\"%s\"}".formatted("x".repeat(1001))).andExpect(jsonPath("$.code").value("VALIDATION_FAILED"));

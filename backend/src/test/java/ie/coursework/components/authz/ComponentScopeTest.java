@@ -43,6 +43,8 @@ class ComponentScopeTest extends PostgresIntegrationTest {
         ApiSession owner = as(ClassFixtures.TEACHER1);
         owner.get(component).andExpect(status().isOk());
         owner.put(component + "/stage-dates", "{\"dates\":[]}").andExpect(status().isOk());
+        owner.put(note, "{\"text\":\"x\"}").andExpect(status().isOk());
+        owner.delete(note).andExpect(status().isNoContent());
     }
 
     @Test
