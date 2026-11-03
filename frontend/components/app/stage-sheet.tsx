@@ -49,6 +49,8 @@ export function StageSheet(props: {
   /** Unsaved notes by stage id. They live in the page, like the dates, so closing the sheet keeps them (S-21). */
   noteDrafts: Record<string, string>;
   onNoteDraft: (stageId: string, text: string) => void;
+  /** Unsaved dates or notes anywhere on the page. A client-side link doesn't trigger the page's leave warning. */
+  hasUnsaved: boolean;
   returnFocus: RefObject<HTMLElement | null>;
   onClose: () => void;
 }) {
@@ -84,6 +86,7 @@ function SheetBody({
   classId,
   noteDrafts,
   onNoteDraft,
+  hasUnsaved,
   title,
 }: Omit<Parameters<typeof StageSheet>[0], "returnFocus" | "onClose" | "hideNames"> & { stage: Stage; title: RefObject<HTMLHeadingElement | null> }) {
   const id = useId();
@@ -253,7 +256,14 @@ function SheetBody({
               <p className="mt-2 flex flex-wrap gap-x-3.5 gap-y-1 text-app-small text-app-grey">
                 <span data-private><b className="font-semibold text-app-ink">{counts.signedOff}</b> signed off</span>
                 {counts.waiting > 0 ? (
-                  <Link href={`/teach/classes/${classId}/progress`} data-private className="font-semibold text-app-accent underline underline-offset-3">
+                  <Link
+                    href={`/teach/classes/${classId}/progress`}
+                    data-private
+                    onClick={(event) => {
+                      if (hasUnsaved && !window.confirm("Leave without saving your changes?")) event.preventDefault();
+                    }}
+                    className="font-semibold text-app-accent underline underline-offset-3"
+                  >
                     {`${counts.waiting} waiting for you`}
                   </Link>
                 ) : (
@@ -296,7 +306,7 @@ function SheetBody({
               Back to {label}
             </Button>
             {request.eyebrow && <p className="text-app-small text-app-muted">{request.eyebrow}</p>}
-            <h3 id={`${id}-choose`} ref={chooseHeading} tabIndex={-1} className="font-heading text-app-title font-bold text-app-ink">
+            <h3 id={`${id}-choose`} ref={chooseHeading} tabIndex={-1} className="font-heading text-app-title font-bold break-words text-app-ink">
               {request.title}
             </h3>
             <p className="text-app-small text-app-grey">{request.help}</p>

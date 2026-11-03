@@ -150,8 +150,14 @@ export function StageDatesForm({
   const [sheetId, setSheetId] = useState<string | null>(() => stageFromParam(initialStage, component.stages));
   const sheetOpener = useRef<HTMLElement | null>(null);
   const pushed = useRef(false);
+  const addressRead = useRef(false);
   useEffect(() => {
     const sync = () => setSheetId(stageFromParam(new URLSearchParams(window.location.search).get("stage"), component.stages));
+    // Back from another tab can show a cached page rendered for the plain address, so `initialStage` may be out of date.
+    if (!addressRead.current) {
+      addressRead.current = true;
+      sync();
+    }
     window.addEventListener("popstate", sync);
     return () => window.removeEventListener("popstate", sync);
   }, [component.stages]);
@@ -342,6 +348,7 @@ export function StageDatesForm({
         hideNames={hideNames}
         noteDrafts={noteDrafts}
         onNoteDraft={setNoteDraft}
+        hasUnsaved={dirty || notesDirty}
         returnFocus={sheetOpener}
         onClose={closeSheet}
       />

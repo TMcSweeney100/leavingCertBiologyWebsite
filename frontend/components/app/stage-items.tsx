@@ -205,7 +205,7 @@ export function StageItems({
                 >
                   {item.letter}
                 </span>{" "}
-                <span className="text-app-base font-semibold text-app-ink">{item.text}</span>{" "}
+                <span className="min-w-0 text-app-base font-semibold break-words text-app-ink">{item.text}</span>{" "}
                 <span className="whitespace-nowrap">
                   {progress.ok && (
                     <span data-private className="text-app-small text-app-grey">{`${tickLists(progress.data, item.id).ticked.length} ticked`}</span>
