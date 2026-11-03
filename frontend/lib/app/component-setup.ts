@@ -11,6 +11,7 @@ const toIso = (ms: number) => new Date(ms).toISOString().slice(0, 10);
  * "2026-10-16" → "16 Oct 2026". A calendar date has no time or zone, so it's read and formatted in UTC; any
  * other zone could move it a day (the same hazard lib/schedule.ts documents).
  */
+
 export function formatCalendarDate(iso: string): string {
   return CALENDAR_DATE.format(epoch(iso));
 }

@@ -24,6 +24,7 @@ The live BiPi schedule (`app/[class]/`, `components/bipi/`) has its own notes in
 
 - **Never put a custom `--text-*` size and a `text-*` colour through the same `cn()` call.** tailwind-merge doesn't know the `@theme` sizes and drops one. Build such class strings with a template literal, or pass `text-[length:var(--text-body)]`.
 - **Two `--text-*` steps must never land on one element.** Tailwind's CSS order decides, not the class string. Responsive pairs (`text-body lg:text-title`) are fine.
+- **Classes stay on the element; share a recipe at its third copy.** Use what `components/app/styles.ts` already exports (`card`, `eyebrow`, `pageTitle`…) before writing it out by hand. When the same recipe would appear a third time, add it there as a plain string (see the `cn()` rule above), or make a small component if the markup repeats too. One-off strings stay inline, however long.
 - **No raw colour in a component.** If a colour has no token, add the token.
 - **`transition-[height,opacity]`, never `transition-all`.** List the properties.
 - **Focus rings come from `--ring`** (`focus-visible:ring-3 focus-visible:ring-ring/50` is shadcn's default and is fine). Never `outline-none` without a `focus-visible:` replacement on the same element.
