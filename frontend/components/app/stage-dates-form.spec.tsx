@@ -20,7 +20,8 @@ const TODAY = "2026-09-14";
 const stage = (n: number, dueDate: string | null, extra = {}) => ({
   id: `s${n}`, ordinal: n, label: `Stage ${n}`, name: `Name ${n}`, hoursMin: 1, hoursMax: 2, hoursGroup: null,
   supervised: n === 4, checkpoint: n === 3 ? "Plan discussed with the teacher (feasibility and safety)" : null,
-  dueDate, items: [] as { id: string; text: string; dueDate: string | null }[], ...extra,
+  dueDate, items: [] as { id: string; text: string; dueDate: string | null }[],
+  description: `About stage ${n}.`, prompts: [] as { heading: string | null; text: string }[], note: null, ...extra,
 });
 
 const component = (overrides: Partial<TeacherComponent> = {}): TeacherComponent => ({
@@ -39,7 +40,12 @@ const allSix = () => component({
   ],
 });
 
-const render5 = (c: TeacherComponent = component()) => render(<StageDatesForm component={c} today={TODAY} />);
+// No students, so the sheet's counts and tick names add nothing to these cases.
+const emptyGrid = { componentId: "k1", classId: "c1", className: "6A Biology", today: TODAY, stages: [], students: [], waiting: [], itemTicks: [] };
+const progress = { ok: true as const, data: emptyGrid };
+
+const render5 = (c: TeacherComponent = component()) =>
+  render(<StageDatesForm component={c} today={TODAY} progress={progress} hideNames={false} />);
 
 // A date is set in the drawer (plan date-picker-drawer C-35, C-41): open the box, type it day first, press Enter.
 async function setDate(label: string, iso: string) {
@@ -56,6 +62,7 @@ async function setDate(label: string, iso: string) {
 beforeEach(() => {
   refresh.mockReset();
   vi.mocked(api.send).mockReset();
+  window.history.replaceState(null, "", "/");
 });
 
 describe("StageDatesForm", () => {
@@ -199,5 +206,59 @@ describe("StageDatesForm", () => {
     await setDate("Stage 4 date", "2026-10-16");
     const line = screen.getByRole("img", { name: /Your dates across the year/ });
     expect(within(line).getByText("S4")).toHaveAttribute("data-saved", "false");
+  });
+
+  it("opens a stage's sheet from its name, and shows the stage's item letters on the row", async () => {
+    render5(component({ stages: [stage(3, "2026-09-25", { items: [{ id: "i1", text: "Plan draft", dueDate: "2026-09-20" }] }), stage(4, null)] }));
+    expect(screen.getByText("1 item")).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "Name 3" }));
+    expect(await screen.findByRole("dialog", { name: "Name 3" })).toBeInTheDocument();
+    expect(window.location.search).toBe("?stage=3");
+  });
+
+  it("a sheet opened from the address gives focus back to the stage's name when it closes", async () => {
+    render(<StageDatesForm component={component()} today={TODAY} initialStage="3" progress={progress} hideNames={false} />);
+    await screen.findByRole("dialog", { name: "Name 3" });
+    await userEvent.keyboard("{Escape}");
+
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(screen.getByRole("button", { name: "Name 3" })).toHaveFocus();
+  });
+
+  it("saving one stage in its sheet keeps another row's unsaved date", async () => {
+    const saved = component({ stages: [stage(3, "2026-09-25"), stage(4, null), stage(5, "2026-11-27")] });
+    vi.mocked(api.send).mockResolvedValue(saved);
+    const { rerender } = render(<StageDatesForm component={component({ stages: [stage(3, "2026-09-25"), stage(4, null), stage(5, null)] })} today={TODAY} progress={progress} hideNames={false} />);
+    await setDate("Stage 4 date", "2026-10-16");
+
+    await userEvent.click(screen.getByRole("button", { name: "Name 5" }));
+    const sheet = await screen.findByRole("dialog", { name: "Name 5" });
+    await userEvent.click(within(sheet).getByLabelText("Stage date"));
+    const field = within(sheet).getByRole("textbox", { name: "Type a date" });
+    await userEvent.type(field, "27112026");
+    await userEvent.keyboard("{Enter}");
+    await userEvent.click(within(sheet).getByRole("button", { name: "Save this date" }));
+
+    expect(api.send).toHaveBeenCalledWith("PUT", "/components/k1/stage-dates", {
+      dates: [{ stageId: "s3", dueDate: "2026-09-25" }, { stageId: "s4", dueDate: null }, { stageId: "s5", dueDate: "2026-11-27" }],
+    }, expect.anything());
+    rerender(<StageDatesForm component={saved} today={TODAY} progress={progress} hideNames={false} />);
+    expect(screen.getByLabelText("Stage 4 date")).toHaveTextContent("16/10/2026");
+  });
+
+  it("keeps a note typed in a sheet after the sheet closes, and chips a saved note on its row", async () => {
+    render5(component({ stages: [stage(3, "2026-09-25", { note: { text: "Bring notes", updatedOn: "2026-09-20" } }), stage(4, null)] }));
+    expect(screen.getByText("Your note")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Name 4" }));
+    await userEvent.type(await screen.findByRole("textbox", { name: "Your note for students" }), "Half a thought");
+    await userEvent.keyboard("{Escape}");
+    await userEvent.click(screen.getByRole("button", { name: "Name 4" }));
+    expect(await screen.findByRole("textbox", { name: "Your note for students" })).toHaveValue("Half a thought");
+
+    // The unsaved note counts for the leave-page warning, like an unsaved date.
+    const leaving = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(leaving);
+    expect(leaving.defaultPrevented).toBe(true);
   });
 });

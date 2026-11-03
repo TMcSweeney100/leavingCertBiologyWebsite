@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stage sheet — one drawer</title>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&family=Space+Grotesk:wght@600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --app-accent: #1f3a6e; --app-accent-tint: #f4f5f8; --app-on-accent: #fff;
+  --app-pick: #0a6aa8; --app-pick-tint: #e6f1f9;
+  --app-today: #ffc94d; --app-today-ring: #a87400;
+  --app-attention: #a04806; --app-attention-tint: #f6ede6;
+  --app-approved: #0f5c3a; --app-approved-tint: #f1f6f4;
+  --app-ready-tint: #eaeff7;
+  --app-ink: #101419; --app-body: #343a42; --app-grey: #4b535c; --app-muted: #636b75;
+  --app-line: #e3e6ea; --app-field-border: #dde1e6; --app-inset: #eff1f3; --app-ground: #f7f8f9; --app-surface: #fff;
+  --app-sheet-width: 520px;
+  --font-heading: "Space Grotesk", system-ui, sans-serif;
+  --font-sans: "Public Sans", system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; }
+body { background: #dfe3e8; font-family: var(--font-sans); color: var(--app-ink); padding: 28px; }
+.row { display: flex; gap: 28px; align-items: flex-start; }
+.frame { width: var(--app-sheet-width); }
+.cap { font-size: 14px; color: var(--app-grey); margin-bottom: 10px; line-height: 1.4; }
+.cap b { color: var(--app-ink); font-size: 15px; display: block; margin-bottom: 2px; }
+.sheet { background: var(--app-surface); height: 900px; display: flex; flex-direction: column; border-left: 1px solid var(--app-line); box-shadow: -8px 0 24px rgba(16,20,25,.12); overflow: hidden; }
+.head { padding: 18px 24px 16px; border-bottom: 1px solid var(--app-line); display: flex; justify-content: space-between; gap: 12px; }
+.eyebrow { font-size: 13px; color: var(--app-muted); display: flex; align-items: center; gap: 6px; }
+.title { font-family: var(--font-heading); font-size: 22px; font-weight: 700; letter-spacing: -.02em; line-height: 1.25; margin-top: 2px; }
+.x { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--app-field-border); display: grid; place-items: center; color: var(--app-grey); flex: none; font-size: 18px; }
+.body { flex: 1; overflow: hidden; padding: 4px 24px 24px; }
+.sec { padding: 16px 0; border-bottom: 1px solid var(--app-line); }
+.sec:last-child { border-bottom: 0; }
+.label { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--app-muted); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: baseline; }
+.label span { text-transform: none; letter-spacing: 0; font-weight: 400; font-size: 12px; }
+.datebox { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--app-field-border); border-radius: 8px; padding: 9px 12px; width: 220px; font-family: var(--font-mono); font-size: 16px; }
+.datebox.unsaved { border-style: dashed; border-color: var(--app-accent); }
+.when { font-size: 13px; color: var(--app-muted); margin-top: 5px; }
+.cal { width: 18px; height: 18px; border: 1.5px solid var(--app-accent); border-radius: 3px; position: relative; }
+.cal::before { content: ""; position: absolute; left: 0; right: 0; top: 4px; border-top: 1.5px solid var(--app-accent); }
+.note { border: 1px solid var(--app-field-border); border-radius: 8px; padding: 10px 12px; font-size: 15px; line-height: 1.45; color: var(--app-body); min-height: 74px; }
+.note-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 13px; color: var(--app-muted); }
+.btn { display: inline-flex; align-items: center; justify-content: center; height: 36px; padding: 0 14px; border-radius: 8px; font-weight: 600; font-size: 14px; background: var(--app-accent); color: var(--app-on-accent); }
+.btn.out { background: var(--app-surface); color: var(--app-accent); border: 1px solid var(--app-field-border); }
+.btn.quiet { background: none; color: var(--app-accent); text-decoration: underline; text-underline-offset: 3px; padding: 0 6px; }
+.official { font-size: 15px; line-height: 1.5; color: var(--app-body); }
+.src { font-size: 12px; color: var(--app-muted); margin-top: 6px; font-family: var(--font-mono); }
+.cp { background: var(--app-inset); border-radius: 6px; padding: 10px 12px; font-size: 15px; line-height: 1.4; }
+.counts { display: flex; gap: 14px; margin-top: 8px; font-size: 13px; color: var(--app-grey); flex-wrap: wrap; }
+.counts b { color: var(--app-ink); }
+.counts a { color: var(--app-accent); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: 1px; }
+.item { display: grid; grid-template-columns: 26px 1fr auto; gap: 4px 10px; padding: 10px 0; border-top: 1px solid var(--app-line); align-items: baseline; }
+.item:first-of-type { border-top: 0; }
+.letter { font-family: var(--font-mono); font-weight: 700; font-size: 13px; color: var(--app-accent); background: var(--app-accent-tint); border: 1px solid #cdd4e1; border-radius: 3px; text-align: center; padding: 1px 0; }
+.itext { font-size: 15px; font-weight: 600; }
+.imeta { grid-column: 2; font-size: 13px; color: var(--app-muted); }
+.ticks { font-size: 13px; color: var(--app-grey); white-space: nowrap; }
+.bar { grid-column: 2 / 4; height: 4px; background: var(--app-inset); border-radius: 2px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--app-approved); }
+.chev { color: var(--app-accent); font-weight: 700; }
+.add { margin-top: 6px; }
+details summary, .summary { font-size: 15px; font-weight: 600; color: var(--app-accent); list-style: none; }
+.foot { border-top: 1px solid var(--app-line); padding: 14px 24px 18px; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; color: var(--app-grey); }
+.back { font-size: 14px; font-weight: 600; color: var(--app-accent); text-decoration: underline; text-underline-offset: 3px; margin-bottom: 6px; display: inline-block; }
+/* calendar */
+.yl { position: relative; height: 34px; margin: 6px 0 4px; }
+.yl .track { position: absolute; left: 0; right: 0; top: 16px; height: 2px; background: var(--app-line); }
+.yl .tag { position: absolute; top: 6px; transform: translateX(-50%); font-family: var(--font-mono); font-size: 11px; font-weight: 700; padding: 1px 4px; border-radius: 3px; background: var(--app-accent); color: #fff; }
+.yl .tag.item { background: var(--app-accent-tint); color: var(--app-accent); border: 1px solid #cdd4e1; }
+.yl .end { position: absolute; right: 0; top: 4px; width: 3px; height: 26px; background: var(--app-accent); border-radius: 2px; }
+.months { display: flex; justify-content: space-between; font-size: 11px; color: var(--app-muted); font-family: var(--font-mono); }
+.mhead { display: flex; justify-content: space-between; align-items: center; margin: 14px 0 8px; }
+.mhead b { font-family: var(--font-heading); font-size: 18px; }
+.arrows { display: flex; gap: 6px; }
+.arrows span { width: 34px; height: 34px; border: 1px solid var(--app-field-border); border-radius: 8px; display: grid; place-items: center; color: var(--app-accent); font-weight: 700; }
+.grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.dow { font-size: 12px; color: var(--app-muted); text-align: center; padding-bottom: 2px; }
+.day { height: 54px; border-radius: 6px; border: 1px solid var(--app-line); padding: 4px 5px; font-size: 13px; position: relative; }
+.day.blank { border-color: transparent; }
+.day.we { background: #fbfcfc; }
+.day .mk { position: absolute; left: 5px; bottom: 4px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; padding: 0 3px; border-radius: 3px; background: var(--app-accent-tint); color: var(--app-accent); border: 1px solid #cdd4e1; }
+.day .mk.st { background: var(--app-accent); color: #fff; border-color: var(--app-accent); }
+.day.pick { background: var(--app-pick); color: #fff; border-color: var(--app-pick); font-weight: 700; }
+.day.pick .mk { background: #fff; color: var(--app-pick); border-color: #fff; }
+.day.today { box-shadow: inset 0 0 0 1.5px var(--app-today-ring); background: #fff7e0; }
+.typed { display: flex; gap: 8px; align-items: center; }
+.typed .datebox { width: 160px; font-size: 14px; padding: 7px 10px; }
+/* who ticked */
+.who { background: var(--app-ground); border: 1px solid var(--app-line); border-radius: 8px; padding: 12px; margin: 4px 0 6px; }
+.field { margin-bottom: 10px; }
+.field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.input { border: 1px solid var(--app-field-border); border-radius: 8px; padding: 8px 10px; font-size: 15px; background: #fff; }
+.names { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.names span { font-size: 13px; padding: 3px 8px; border-radius: 999px; background: #fff; border: 1px solid var(--app-line); }
+.names.done span { background: var(--app-approved-tint); border-color: #cfe1d8; color: var(--app-approved); }
+.sub { font-size: 13px; font-weight: 700; color: var(--app-grey); margin-top: 10px; }
+.actions { display: flex; gap: 8px; align-items: center; }
+.dim { opacity: .45; }
+</style>
+</head>
+<body>
+<div class="row">
+
+<!-- Frame 1: resting -->
+<div class="frame">
+  <p class="cap"><b>1 · Opened from the stage row</b>Everything at rest: one date box, the note, the official text, the checkpoint, the stage's items with tick counts. Prompts folded away. The calendar and the item form are hidden until asked for.</p>
+  <div class="sheet">
+    <div class="head">
+      <div>
+        <p class="eyebrow">Stage 2 · 1–2 hours</p>
+        <h2 class="title">Developing a question to research</h2>
+      </div>
+      <span class="x">✕</span>
+    </div>
+    <div class="body">
+      <div class="sec">
+        <p class="label">Stage date</p>
+        <div class="datebox">10/10/2026 <span class="cal"></span></div>
+        <p class="when">Sat 10 Oct 2026</p>
+      </div>
+      <div class="sec">
+        <p class="label">Your note for students <span>Shown above the guidelines</span></p>
+        <div class="note">We'll workshop questions in Thursday's double class. Bring your Stage 1 background notes and three possible questions.</div>
+        <div class="note-foot"><span>Saved 28 Oct</span><span class="btn out">Save note</span></div>
+      </div>
+      <div class="sec">
+        <p class="label">From the guidelines</p>
+        <p class="official">Having completed their initial background research students will develop a research question.</p>
+        <p class="src">NCCA Business guidelines, p. 5</p>
+      </div>
+      <div class="sec">
+        <p class="label">Checkpoint</p>
+        <div class="cp">Research question discussed with the teacher</div>
+        <div class="counts">
+          <span><i class="dot" style="background:var(--app-approved)"></i><b>6</b> signed off</span>
+          <span><i class="dot" style="background:var(--app-pick)"></i><a>3 waiting for you</a></span>
+          <span><i class="dot" style="background:#c9d0d8"></i><b>15</b> not yet</span>
+        </div>
+      </div>
+      <div class="sec">
+        <p class="label">Your items in this stage <span>24 students</span></p>
+        <div class="item">
+          <span class="letter">B</span><span class="itext">Bring three possible questions</span><span class="ticks">17 ticked <span class="chev">›</span></span>
+          <span class="imeta">Tue 6 Oct</span>
+          <span class="bar"><i style="width:71%"></i></span>
+        </div>
+        <div class="item">
+          <span class="letter">C</span><span class="itext">Read the sample questions sheet</span><span class="ticks">9 ticked <span class="chev">›</span></span>
+          <span class="imeta">Thu 8 Oct</span>
+          <span class="bar"><i style="width:37%"></i></span>
+        </div>
+        <span class="btn quiet add">+ Add an item to Stage 2</span>
+      </div>
+      <div class="sec">
+        <p class="summary">▸ Questions students get from the guidelines (7)</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Frame 2: picking the date, same sheet -->
+<div class="frame">
+  <p class="cap"><b>2 · Tap the date box: the sheet's body becomes the calendar</b>Not a second drawer on top. The D-11 calendar as it is today, with a back link. "Use this date" fills the box and returns to frame 1. Nothing saves until Save dates.</p>
+  <div class="sheet">
+    <div class="head">
+      <div>
+        <p class="eyebrow"><span class="letter" style="padding:0 4px;background:var(--app-accent);color:#fff;border-color:var(--app-accent)">S2</span> Developing a question to research</p>
+        <h2 class="title">Choose the Stage 2 date</h2>
+      </div>
+      <span class="x">✕</span>
+    </div>
+    <div class="body">
+      <span class="back" style="margin-top:14px">‹ Back to Stage 2</span>
+      <div class="yl">
+        <div class="track"></div>
+        <span class="tag" style="left:8%">S1</span>
+        <span class="tag item" style="left:17%">B</span>
+        <span class="tag" style="left:22%">S2</span>
+        <span class="tag" style="left:38%">S3</span>
+        <span class="tag" style="left:47%">S4</span>
+        <span class="tag" style="left:63%">S5</span>
+        <span class="tag" style="left:80%">S6</span>
+        <span class="end"></span>
+      </div>
+      <div class="months"><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span></div>
+      <div class="mhead"><b>October 2026</b><span class="arrows"><span>‹</span><span>›</span></span></div>
+      <div class="grid">
+        <span class="dow">Mon</span><span class="dow">Tue</span><span class="dow">Wed</span><span class="dow">Thu</span><span class="dow">Fri</span><span class="dow">Sat</span><span class="dow">Sun</span>
+        <span class="day blank"></span><span class="day blank"></span><span class="day blank"></span>
+        <span class="day">1</span><span class="day">2</span><span class="day we">3</span><span class="day we">4</span>
+        <span class="day">5</span><span class="day">6<span class="mk">B</span></span><span class="day">7</span><span class="day">8<span class="mk">C</span></span><span class="day">9</span><span class="day pick">10<span class="mk">S2</span></span><span class="day we">11</span>
+        <span class="day">12</span><span class="day">13</span><span class="day">14</span><span class="day">15</span><span class="day">16</span><span class="day we">17</span><span class="day we">18</span>
+        <span class="day">19</span><span class="day">20</span><span class="day">21</span><span class="day">22</span><span class="day">23</span><span class="day we">24</span><span class="day we">25</span>
+        <span class="day">26</span><span class="day">27</span><span class="day">28</span><span class="day">29</span><span class="day">30</span><span class="day we today">31</span><span class="day blank"></span>
+      </div>
+      <p class="when" style="margin-top:12px">Legend, as in D-11: stage date · not saved yet · your item · completion date · today · your pick</p>
+    </div>
+    <div class="foot" style="flex-direction:column;align-items:stretch">
+      <div class="typed"><span>Or type a date</span><div class="datebox">10/10/2026</div></div>
+      <div class="actions" style="justify-content:space-between"><span class="btn quiet">Clear date</span><span class="btn">Use this date</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Frame 3: an item opened -->
+<div class="frame">
+  <p class="cap"><b>3 · Tap an item: it opens in place</b>Edit its text and date there (its date box goes to the calendar, like frame 2), and see who ticked it. Only one item is open at a time; the rest of the sheet stays put.</p>
+  <div class="sheet">
+    <div class="head">
+      <div>
+        <p class="eyebrow">Stage 2 · 1–2 hours</p>
+        <h2 class="title">Developing a question to research</h2>
+      </div>
+      <span class="x">✕</span>
+    </div>
+    <div class="body">
+      <p class="when" style="padding-top:10px">Scrolled down to the items</p>
+      <div class="sec dim">
+        <p class="label">Checkpoint</p>
+        <div class="cp">Research question discussed with the teacher</div>
+      </div>
+      <div class="sec">
+        <p class="label">Your items in this stage <span>24 students</span></p>
+        <div class="item">
+          <span class="letter">B</span><span class="itext">Bring three possible questions</span><span class="ticks">17 ticked <span class="chev">⌄</span></span>
+          <span class="imeta">Tue 6 Oct</span>
+        </div>
+        <div class="who">
+          <div class="field"><label>Item</label><div class="input">Bring three possible questions</div></div>
+          <div class="field"><label>Date (optional)</label><div class="datebox" style="width:200px;font-size:15px;padding:7px 10px">06/10/2026 <span class="cal"></span></div></div>
+          <div class="actions"><span class="btn">Save item</span><span class="btn out">Cancel</span><span class="btn quiet" style="margin-left:auto">Remove item</span></div>
+          <p class="sub">Not ticked yet (7)</p>
+          <div class="names"><span>Aoife B.</span><span>Cian D.</span><span>Ella F.</span><span>Jack M.</span><span>Niamh O.</span><span>Rory S.</span><span>Tadhg W.</span></div>
+          <p class="sub">Ticked (17) · students tick these themselves</p>
+          <div class="names done"><span>Amy A.</span><span>Ben C.</span><span>Cara D.</span><span>Darragh E.</span><span>Eve G.</span><span>Finn H.</span><span>+ 11 more</span></div>
+        </div>
+        <div class="item">
+          <span class="letter">C</span><span class="itext">Read the sample questions sheet</span><span class="ticks">9 ticked <span class="chev">›</span></span>
+          <span class="imeta">Thu 8 Oct</span>
+        </div>
+        <span class="btn quiet add">+ Add an item to Stage 2</span>
+      </div>
+      <div class="sec dim">
+        <p class="summary">▸ Questions students get from the guidelines (7)</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

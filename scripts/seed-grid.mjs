@@ -3,14 +3,14 @@
 //
 // Usage:
 //   node scripts/seed-grid.mjs --username=<teacher> --password=<teacher password> \
-//     [--base=https://<pilot host>] [--students=30]
+//     [--base=https://<pilot host>] [--students=30] [--class-name="6th Year Biology"]
 //
 // The teacher must exist (operator create-user + create-school + grant-role TEACHER) and must
 // already have replaced their temporary password. --base defaults to http://localhost:3000.
 //
 // WARNING: this creates REAL accounts (students `seed.<stamp>.<i>`, all with the same known
-// password) and a class called "Seed grid <stamp>". Against the deployed stack, delete that class
-// and those users before onboarding real students.
+// password) and a class called "Seed grid <stamp>" unless --class-name says otherwise. Against the
+// deployed stack, delete that class and those users before onboarding real students.
 const args = Object.fromEntries(
   process.argv.slice(2).map((a) => {
     const [k, ...v] = a.replace(/^--/, "").split("=");
@@ -20,7 +20,7 @@ const args = Object.fromEntries(
 const base = (args.base || "http://localhost:3000").replace(/\/$/, "");
 const count = Number(args.students || 30);
 if (!args.username || !args.password) {
-  console.error("Usage: node scripts/seed-grid.mjs --username=<teacher> --password=<password> [--base=<url>] [--students=30]");
+  console.error("Usage: node scripts/seed-grid.mjs --username=<teacher> --password=<password> [--base=<url>] [--students=30] [--class-name=<name>]");
   process.exit(2);
 }
 
@@ -79,13 +79,14 @@ const days = (n) => {
   return d;
 };
 const stamp = Date.now().toString(36);
+const className = args["class-name"] || `Seed grid ${stamp}`;
 
 async function step(label, fn) {
   try {
     return await fn();
   } catch (e) {
     console.error(`\nseed-grid failed while ${label}:\n  ${e.message}`);
-    console.error("Anything created before this point is still there (class name contains the stamp " + stamp + ").");
+    console.error(`Nothing is undone: if class "${className}" or students seed.${stamp}.* were created before this point, they are still there.`);
     process.exit(1);
   }
 }
@@ -110,7 +111,7 @@ const { cls, component } = await step("building the class and component", async 
   const cls = await teacher.call("POST", "/api/v1/classes", {
     schoolId: school,
     subjectCode: "BIOLOGY",
-    name: `Seed grid ${stamp}`,
+    name: className,
     yearGroup: 6,
     academicYear: "2026/27",
   });
@@ -174,4 +175,4 @@ await time("Progress page, first load", page);
 await time("Progress page, second load", page);
 await time("Grid API", `/api/v1/components/${component.id}/progress`);
 console.log(`Class: ${base}${page} (${grid.students.length} students x ${grid.stages.filter((s) => s.checkpoint).length} checkpoints)`);
-console.log(`Created: class "Seed grid ${stamp}", students seed.${stamp}.0 to seed.${stamp}.${count - 1}. Delete before onboarding.`);
+console.log(`Created: class "${className}", students seed.${stamp}.0 to seed.${stamp}.${count - 1}. Delete before onboarding.`);

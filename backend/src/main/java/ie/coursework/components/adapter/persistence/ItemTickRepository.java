@@ -3,7 +3,9 @@ package ie.coursework.components.adapter.persistence;
 import ie.coursework.shared.persistence.Timestamps;
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -30,6 +32,22 @@ public class ItemTickRepository {
                             rs.getObject("done_at", OffsetDateTime.class).toInstant());
                 });
         return done;
+    }
+
+    /** Stage sheet S-15: who has ticked each active item in the component. Unticked rows and retired items aren't returned. */
+    public Map<UUID, List<UUID>> tickedBy(UUID componentId) {
+        Map<UUID, List<UUID>> ticked = new LinkedHashMap<>();
+        jdbc.sql("""
+                SELECT t.teacher_item_id, t.student_user_id FROM item_tick t
+                JOIN teacher_item i ON i.id = t.teacher_item_id AND i.retired_at IS NULL
+                WHERE t.instance_id = :component AND t.done_at IS NOT NULL
+                ORDER BY t.teacher_item_id
+                """).param("component", componentId)
+                .query(rs -> {
+                    ticked.computeIfAbsent(rs.getObject("teacher_item_id", UUID.class), k -> new ArrayList<>())
+                            .add(rs.getObject("student_user_id", UUID.class));
+                });
+        return ticked;
     }
 
     public void set(UUID componentId, UUID studentId, UUID itemId, boolean done, Instant now) {

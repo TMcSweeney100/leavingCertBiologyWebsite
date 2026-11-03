@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stage sheet — date</title>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&family=Space+Grotesk:wght@600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --app-accent: #1f3a6e; --app-accent-tint: #f4f5f8; --app-on-accent: #fff;
+  --app-pick: #0a6aa8; --app-pick-tint: #e6f1f9;
+  --app-today: #ffc94d; --app-today-ring: #a87400;
+  --app-attention: #a04806; --app-attention-tint: #f6ede6;
+  --app-approved: #0f5c3a; --app-approved-tint: #f1f6f4;
+  --app-ready-tint: #eaeff7;
+  --app-ink: #101419; --app-body: #343a42; --app-grey: #4b535c; --app-muted: #636b75;
+  --app-line: #e3e6ea; --app-field-border: #dde1e6; --app-inset: #eff1f3; --app-ground: #f7f8f9; --app-surface: #fff;
+  --app-sheet-width: 520px;
+  --font-heading: "Space Grotesk", system-ui, sans-serif;
+  --font-sans: "Public Sans", system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; }
+body { width: 1150px; background: #dfe3e8; font-family: var(--font-sans); color: var(--app-ink); padding: 28px; }
+.row { display: flex; gap: 28px; align-items: flex-start; }
+.frame { width: var(--app-sheet-width); }
+.cap { font-size: 14px; color: var(--app-grey); margin-bottom: 10px; line-height: 1.4; }
+.cap b { color: var(--app-ink); font-size: 15px; display: block; margin-bottom: 2px; }
+.sheet { background: var(--app-surface); height: 900px; display: flex; flex-direction: column; border-left: 1px solid var(--app-line); box-shadow: -8px 0 24px rgba(16,20,25,.12); overflow: hidden; }
+.head { padding: 18px 24px 16px; border-bottom: 1px solid var(--app-line); display: flex; justify-content: space-between; gap: 12px; }
+.eyebrow { font-size: 13px; color: var(--app-muted); display: flex; align-items: center; gap: 6px; }
+.title { font-family: var(--font-heading); font-size: 22px; font-weight: 700; letter-spacing: -.02em; line-height: 1.25; margin-top: 2px; }
+.x { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--app-field-border); display: grid; place-items: center; color: var(--app-grey); flex: none; font-size: 18px; }
+.body { flex: 1; overflow: hidden; padding: 4px 24px 24px; }
+.sec { padding: 16px 0; border-bottom: 1px solid var(--app-line); }
+.sec:last-child { border-bottom: 0; }
+.label { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--app-muted); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: baseline; }
+.label span { text-transform: none; letter-spacing: 0; font-weight: 400; font-size: 12px; }
+.datebox { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--app-field-border); border-radius: 8px; padding: 9px 12px; width: 220px; font-family: var(--font-mono); font-size: 16px; }
+.datebox.unsaved { border-style: dashed; border-color: var(--app-accent); }
+.when { font-size: 13px; color: var(--app-muted); margin-top: 5px; }
+.cal { width: 18px; height: 18px; border: 1.5px solid var(--app-accent); border-radius: 3px; position: relative; }
+.cal::before { content: ""; position: absolute; left: 0; right: 0; top: 4px; border-top: 1.5px solid var(--app-accent); }
+.note { border: 1px solid var(--app-field-border); border-radius: 8px; padding: 10px 12px; font-size: 15px; line-height: 1.45; color: var(--app-body); min-height: 74px; }
+.note-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 13px; color: var(--app-muted); }
+.btn { display: inline-flex; align-items: center; justify-content: center; height: 36px; padding: 0 14px; border-radius: 8px; font-weight: 600; font-size: 14px; background: var(--app-accent); color: var(--app-on-accent); }
+.btn.out { background: var(--app-surface); color: var(--app-accent); border: 1px solid var(--app-field-border); }
+.btn.quiet { background: none; color: var(--app-accent); text-decoration: underline; text-underline-offset: 3px; padding: 0 6px; }
+.official { font-size: 15px; line-height: 1.5; color: var(--app-body); }
+.src { font-size: 12px; color: var(--app-muted); margin-top: 6px; font-family: var(--font-mono); }
+.cp { background: var(--app-inset); border-radius: 6px; padding: 10px 12px; font-size: 15px; line-height: 1.4; }
+.counts { display: flex; gap: 14px; margin-top: 8px; font-size: 13px; color: var(--app-grey); flex-wrap: wrap; }
+.counts b { color: var(--app-ink); }
+.counts a { color: var(--app-accent); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: 1px; }
+.item { display: grid; grid-template-columns: 26px 1fr auto; gap: 4px 10px; padding: 10px 0; border-top: 1px solid var(--app-line); align-items: baseline; }
+.item:first-of-type { border-top: 0; }
+.letter { font-family: var(--font-mono); font-weight: 700; font-size: 13px; color: var(--app-accent); background: var(--app-accent-tint); border: 1px solid #cdd4e1; border-radius: 3px; text-align: center; padding: 1px 0; }
+.itext { font-size: 15px; font-weight: 600; }
+.imeta { grid-column: 2; font-size: 13px; color: var(--app-muted); }
+.ticks { font-size: 13px; color: var(--app-grey); white-space: nowrap; }
+.bar { grid-column: 2 / 4; height: 4px; background: var(--app-inset); border-radius: 2px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--app-approved); }
+.chev { color: var(--app-accent); font-weight: 700; }
+.add { margin-top: 6px; }
+details summary, .summary { font-size: 15px; font-weight: 600; color: var(--app-accent); list-style: none; }
+.foot { border-top: 1px solid var(--app-line); padding: 14px 24px 18px; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; color: var(--app-grey); }
+.back { font-size: 14px; font-weight: 600; color: var(--app-accent); text-decoration: underline; text-underline-offset: 3px; margin-bottom: 6px; display: inline-block; }
+/* calendar */
+.yl { position: relative; height: 34px; margin: 6px 0 4px; }
+.yl .track { position: absolute; left: 0; right: 0; top: 16px; height: 2px; background: var(--app-line); }
+.yl .tag { position: absolute; top: 6px; transform: translateX(-50%); font-family: var(--font-mono); font-size: 11px; font-weight: 700; padding: 1px 4px; border-radius: 3px; background: var(--app-accent); color: #fff; }
+.yl .tag.item { background: var(--app-accent-tint); color: var(--app-accent); border: 1px solid #cdd4e1; }
+.yl .end { position: absolute; right: 0; top: 4px; width: 3px; height: 26px; background: var(--app-accent); border-radius: 2px; }
+.months { display: flex; justify-content: space-between; font-size: 11px; color: var(--app-muted); font-family: var(--font-mono); }
+.mhead { display: flex; justify-content: space-between; align-items: center; margin: 14px 0 8px; }
+.mhead b { font-family: var(--font-heading); font-size: 18px; }
+.arrows { display: flex; gap: 6px; }
+.arrows span { width: 34px; height: 34px; border: 1px solid var(--app-field-border); border-radius: 8px; display: grid; place-items: center; color: var(--app-accent); font-weight: 700; }
+.grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.dow { font-size: 12px; color: var(--app-muted); text-align: center; padding-bottom: 2px; }
+.day { height: 54px; border-radius: 6px; border: 1px solid var(--app-line); padding: 4px 5px; font-size: 13px; position: relative; }
+.day.blank { border-color: transparent; }
+.day.we { background: #fbfcfc; }
+.day .mk { position: absolute; left: 5px; bottom: 4px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; padding: 0 3px; border-radius: 3px; background: var(--app-accent-tint); color: var(--app-accent); border: 1px solid #cdd4e1; }
+.day .mk.st { background: var(--app-accent); color: #fff; border-color: var(--app-accent); }
+.day.pick { background: var(--app-pick); color: #fff; border-color: var(--app-pick); font-weight: 700; }
+.day.pick .mk { background: #fff; color: var(--app-pick); border-color: #fff; }
+.day.today { box-shadow: inset 0 0 0 1.5px var(--app-today-ring); background: #fff7e0; }
+.typed { display: flex; gap: 8px; align-items: center; }
+.typed .datebox { width: 160px; font-size: 14px; padding: 7px 10px; }
+/* who ticked */
+.who { background: var(--app-ground); border: 1px solid var(--app-line); border-radius: 8px; padding: 12px; margin: 4px 0 6px; }
+.field { margin-bottom: 10px; }
+.field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.input { border: 1px solid var(--app-field-border); border-radius: 8px; padding: 8px 10px; font-size: 15px; background: #fff; }
+.names { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.names span { font-size: 13px; padding: 3px 8px; border-radius: 999px; background: #fff; border: 1px solid var(--app-line); }
+.names.done span { background: var(--app-approved-tint); border-color: #cfe1d8; color: var(--app-approved); }
+.sub { font-size: 13px; font-weight: 700; color: var(--app-grey); margin-top: 10px; }
+.actions { display: flex; gap: 8px; align-items: center; }
+.dim { opacity: .45; }
+</style>
+<style>
+.sheet.short { height: auto; }
+.save-row { display: flex; gap: 8px; align-items: center; margin-top: 12px; }
+.help { font-size: 13px; color: var(--app-grey); margin-top: 8px; line-height: 1.4; }
+.ok { font-size: 13px; color: var(--app-approved); font-weight: 600; margin-top: 8px; }
+.mini { margin-top: 18px; background: #fff; border: 1px solid var(--app-field-border); border-radius: 10px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.mini .n { font-weight: 600; font-size: 15px; }
+.mini .o { font-family: var(--font-mono); font-weight: 700; color: var(--app-accent); margin-right: 14px; }
+.minicap { font-size: 13px; color: var(--app-grey); margin-top: 18px; }
+</style>
+</head>
+<body>
+<div class="row">
+<div class="frame">
+  <p class="cap"><b>A · A date picked in the sheet, not saved yet</b>Dashed, as in D-11. The sheet has its own Save for this one stage, so you never have to close it to find the page's Save dates.</p>
+  
+  <div class="sheet short">
+    <div class="head">
+      <div><p class="eyebrow">Stage 2 · 1–2 hours</p><h2 class="title">Developing a question to research</h2></div>
+      <span class="x">✕</span>
+    </div>
+    <div class="body" style="padding-bottom:20px">
+      <div class="sec" style="border-bottom:0">
+        <p class="label">Stage date</p>
+        <div class="datebox unsaved">17/10/2026 <span class="cal"></span></div>
+        <p class="when">Sat 17 Oct 2026 · <strong style='color:var(--app-ink)'>not saved</strong></p>
+        <div class="save-row"><span class="btn">Save this date</span><span class="btn quiet">Undo</span></div>
+        <p class="help">Saves Stage 2's date only. Other dates you've changed on the page stay unsaved until you press Save dates there.</p>
+      </div>
+    </div>
+  </div>
+  <p class="minicap">The row behind the sheet shows the same unsaved date, because they share one draft:</p>
+  <div class="mini"><span><span class="o">2</span><span class="n">Developing a question to research ›</span></span>
+      <span style="text-align:right"><span class="datebox unsaved" style="width:176px;font-size:15px;padding:7px 10px">17/10/2026 <span class="cal"></span></span><span class="when" style="display:block">Sat 17 Oct 2026 · <strong style='color:var(--app-ink)'>not saved</strong></span></span></div>
+</div>
+<div class="frame">
+  <p class="cap"><b>B · After Save this date</b>The box goes solid and the status says so. The row agrees. Unsaved dates on other rows are left alone, still dashed.</p>
+  
+  <div class="sheet short">
+    <div class="head">
+      <div><p class="eyebrow">Stage 2 · 1–2 hours</p><h2 class="title">Developing a question to research</h2></div>
+      <span class="x">✕</span>
+    </div>
+    <div class="body" style="padding-bottom:20px">
+      <div class="sec" style="border-bottom:0">
+        <p class="label">Stage date</p>
+        <div class="datebox ">17/10/2026 <span class="cal"></span></div>
+        <p class="when">Sat 17 Oct 2026</p>
+        <p class="ok" role="status">✓ Stage 2's date saved.</p>
+      </div>
+    </div>
+  </div>
+  <p class="minicap">The row behind the sheet:</p>
+  <div class="mini"><span><span class="o">2</span><span class="n">Developing a question to research ›</span></span>
+      <span style="text-align:right"><span class="datebox " style="width:176px;font-size:15px;padding:7px 10px">17/10/2026 <span class="cal"></span></span><span class="when" style="display:block">Sat 17 Oct 2026</span></span></div>
+</div>
+</div>
+</body></html>

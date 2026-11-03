@@ -132,6 +132,30 @@ class ProgressGridTest extends PostgresIntegrationTest {
                         .value("https://docs.google.com/d/a"));
     }
 
+    @Test
+    void eachItemListsTheApprovedStudentsWhoTickedIt() throws Exception {
+        UUID item = components.item(component, components.stageId(BIO, 2), "Bring three questions", null);
+        as(ClassFixtures.APPROVED_STUDENT).put("/api/v1/components/" + component + "/teacher-items/" + item + "/tick", "{\"done\":true}")
+                .andExpect(status().isOk());
+        // A removed student's tick stays in the table (V9 keeps history), but it isn't the grid's to show (S-16).
+        String insertTick = """
+                INSERT INTO item_tick (instance_id, student_user_id, teacher_item_id, done_at, updated_at)
+                VALUES (?, ?, ?, now(), now())
+                """;
+        jdbcTemplate.update(insertTick, component, world.removedStudent(), item);
+        // Nor is a retired item's (S-16).
+        UUID retired = components.item(component, components.stageId(BIO, 2), "Dropped", null);
+        jdbcTemplate.update(insertTick, component, world.approvedStudent(), retired);
+        jdbcTemplate.update("UPDATE teacher_item SET retired_at = now() WHERE id = ?", retired);
+
+        as(ClassFixtures.TEACHER1).get("/api/v1/components/" + component + "/progress")
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.itemTicks.length()").value(1))
+                .andExpect(jsonPath("$.itemTicks[0].itemId").value(item.toString()))
+                .andExpect(jsonPath("$.itemTicks[0].studentIds.length()").value(1))
+                .andExpect(jsonPath("$.itemTicks[0].studentIds[0]").value(world.approvedStudent().toString()));
+    }
+
     private ApiSession as(String username) throws Exception {
         return new ApiSession(mockMvc).login(username, TestAccounts.PASSWORD);
     }

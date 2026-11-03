@@ -94,8 +94,9 @@ test("the Phase 1 journey", async ({ page: teacher, browser }) => {
   expect(resetCode).toMatch(/^[A-HJKMNP-Z2-9]{8}$/);
   await expectAccessible(teacher);
 
-  // The phone signs out, resets, and signs back in.
-  await student.getByRole("button", { name: "Sign out" }).click();
+  // The phone signs out (from the header's account menu), resets, and signs back in.
+  await student.getByRole("button", { name: "Account options" }).click();
+  await student.getByRole("menuitem", { name: "Sign out" }).click();
   await expect(student).toHaveURL(/\/login/);
   await student.goto("/reset");
   await expectAccessible(student);

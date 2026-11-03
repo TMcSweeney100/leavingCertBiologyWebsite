@@ -14,7 +14,7 @@ import { ComponentOverview } from "./component-overview";
 const stage = (n: number, dueDate: string | null, extra: Partial<StudentComponent["stages"][number]> = {}) => ({
   id: `s${n}`, ordinal: n, label: `Stage ${n}`, name: `Stage name ${n}`, description: `What stage ${n} is.`,
   hoursMin: 1, hoursMax: 2, hoursGroup: null, supervised: false, dueDate,
-  checkpoint: { id: `cp${n}`, text: `Checkpoint ${n}`, state: "NOT_DUE" as const, signedOffOn: null, request: null, answers: [] }, items: [], prompts: [], ...extra,
+  checkpoint: { id: `cp${n}`, text: `Checkpoint ${n}`, state: "NOT_DUE" as const, signedOffOn: null, request: null, answers: [] }, items: [], prompts: [], note: null, ...extra,
 });
 
 const component = (overrides: Partial<StudentComponent> = {}): StudentComponent => ({

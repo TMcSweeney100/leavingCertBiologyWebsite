@@ -15,7 +15,7 @@ const student = (id: string, behindBy: number, states: ProgressStudent["cells"][
   cells: states.map((state, i) => ({ checkpointId: `c${i + 1}`, state, signedOffOn: state === "SIGNED_OFF" ? "2026-10-02" : null })),
 });
 const grid = (stages: GridStage[], students: ProgressStudent[], today = "2026-12-14"): ProgressGrid => ({
-  componentId: "k", classId: "cl", className: "6A Biology", today, stages, students, waiting: [],
+  componentId: "k", classId: "cl", className: "6A Biology", today, stages, students, waiting: [], itemTicks: [],
 });
 const BIO = [
   stage(1, "2026-10-02", "Initial ideas discussed with the teacher"),

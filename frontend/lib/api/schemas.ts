@@ -93,11 +93,19 @@ export type BriefSummary = z.infer<typeof briefSummarySchema>;
 export const teacherItemSchema = z.object({ id: z.string(), text: z.string(), dueDate: z.string().nullable() });
 export type TeacherItem = z.infer<typeof teacherItemSchema>;
 
+// Mirrors ComponentViews.PromptView; both the teacher's and the student's stages carry them.
+const promptSchema = z.object({ heading: z.string().nullable(), text: z.string() });
+
+// Mirrors ComponentViews.NoteView: the teacher's note on a stage, null when there isn't one.
+export const noteSchema = z.object({ text: z.string(), updatedOn: z.string() });
+export type StageNote = z.infer<typeof noteSchema>;
+
 export const setupStageSchema = z.object({
   id: z.string(),
   ordinal: z.number(),
   label: z.string().nullable(),
   name: z.string(),
+  description: z.string(),
   hoursMin: z.number().nullable(),
   hoursMax: z.number().nullable(),
   hoursGroup: z.string().nullable(),
@@ -105,6 +113,8 @@ export const setupStageSchema = z.object({
   checkpoint: z.string().nullable(),
   dueDate: z.string().nullable(),
   items: z.array(teacherItemSchema),
+  prompts: z.array(promptSchema),
+  note: noteSchema.nullable(),
 });
 export type SetupStage = z.infer<typeof setupStageSchema>;
 
@@ -164,7 +174,8 @@ export const studentStageSchema = z.object({
     request: openRequestSchema.nullable(), answers: z.array(answerSchema),
   }).nullable(),
   items: z.array(z.object({ id: z.string(), text: z.string(), dueDate: z.string().nullable(), done: z.boolean(), doneOn: z.string().nullable() })),
-  prompts: z.array(z.object({ heading: z.string().nullable(), text: z.string() })),
+  prompts: z.array(promptSchema),
+  note: noteSchema.nullable(),
 });
 export type StudentStage = z.infer<typeof studentStageSchema>;
 
@@ -350,6 +361,8 @@ export const progressStudentSchema = z.object({
 });
 export type ProgressStudent = z.infer<typeof progressStudentSchema>;
 
+export const itemTicksSchema = z.object({ itemId: z.string(), studentIds: z.array(z.string()) });
+
 export const progressGridSchema = z.object({
   componentId: z.string(),
   classId: z.string(),
@@ -358,6 +371,7 @@ export const progressGridSchema = z.object({
   stages: z.array(gridStageSchema),
   students: z.array(progressStudentSchema),
   waiting: z.array(waitingRequestSchema),
+  itemTicks: z.array(itemTicksSchema),
 });
 export type ProgressGrid = z.infer<typeof progressGridSchema>;
 

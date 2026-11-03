@@ -1,5 +1,5 @@
 import AxeBuilder from "@axe-core/playwright";
-import { type Browser, expect, type Page } from "@playwright/test";
+import { type Browser, expect, type Locator, type Page } from "@playwright/test";
 
 export const TEACHER = {
   username: "e2e.teacher",
@@ -54,4 +54,14 @@ export async function setDate(page: Page, label: string, iso: string) {
   await field.fill(`${day}${month}${year}`);
   await field.press("Enter");
   await expect(drawer).toHaveCount(0);
+}
+
+/** A date inside the stage sheet: the box swaps the sheet to its calendar (no second dialog); typing and Enter swap back. */
+export async function setSheetDate(sheet: Locator, label: string, iso: string) {
+  await sheet.getByLabel(label, { exact: true }).click();
+  const [year, month, day] = iso.split("-");
+  const field = sheet.getByRole("textbox", { name: "Type a date" });
+  await field.fill(`${day}${month}${year}`);
+  await field.press("Enter");
+  await expect(field).toHaveCount(0);
 }

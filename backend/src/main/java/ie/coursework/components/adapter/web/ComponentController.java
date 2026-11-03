@@ -3,6 +3,7 @@ package ie.coursework.components.adapter.web;
 import ie.coursework.components.application.ComponentService;
 import ie.coursework.components.application.ComponentViews.BriefSummary;
 import ie.coursework.components.application.ComponentViews.DocumentLinkView;
+import ie.coursework.components.application.ComponentViews.NoteView;
 import ie.coursework.components.application.ComponentViews.StudentItem;
 import ie.coursework.components.application.ComponentViews.TeacherComponent;
 import ie.coursework.components.application.ComponentViews.TeacherItemView;
@@ -79,6 +80,18 @@ public class ComponentController {
     @DeleteMapping("/components/{componentId}/teacher-items/{itemId}")
     ResponseEntity<Void> retireItem(Actor actor, @PathVariable UUID componentId, @PathVariable UUID itemId) {
         components.retireItem(actor, componentId, itemId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/components/{componentId}/stages/{stageId}/note")
+    NoteView setNote(Actor actor, @PathVariable UUID componentId, @PathVariable UUID stageId,
+            @Valid @RequestBody StageNoteRequest body) {
+        return components.setNote(actor, componentId, stageId, body.text());
+    }
+
+    @DeleteMapping("/components/{componentId}/stages/{stageId}/note")
+    ResponseEntity<Void> clearNote(Actor actor, @PathVariable UUID componentId, @PathVariable UUID stageId) {
+        components.clearNote(actor, componentId, stageId);
         return ResponseEntity.noContent().build();
     }
 

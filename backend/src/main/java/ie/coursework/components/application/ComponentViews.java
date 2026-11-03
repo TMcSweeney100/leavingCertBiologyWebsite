@@ -20,8 +20,13 @@ public final class ComponentViews {
 
     public record TeacherItemView(UUID id, String text, LocalDate dueDate) {}
 
-    public record SetupStage(UUID id, int ordinal, String label, String name, Integer hoursMin, Integer hoursMax,
-            String hoursGroup, boolean supervised, String checkpoint, LocalDate dueDate, List<TeacherItemView> items) {}
+    /** Stage sheet S-8: the teacher's note on a stage. It sits beside the official description and never replaces it. */
+    public record NoteView(String text, LocalDate updatedOn) {}
+
+    /** Stage sheet S-3: {@code description} and {@code prompts} are the student's, so the teacher sees what students are told. */
+    public record SetupStage(UUID id, int ordinal, String label, String name, String description, Integer hoursMin,
+            Integer hoursMax, String hoursGroup, boolean supervised, String checkpoint, LocalDate dueDate,
+            List<TeacherItemView> items, List<PromptView> prompts, NoteView note) {}
 
     public enum WarningCode { OUT_OF_ORDER, AFTER_COMPLETION_DATE }
 
@@ -53,7 +58,7 @@ public final class ComponentViews {
 
     public record StudentStage(UUID id, int ordinal, String label, String name, String description, Integer hoursMin,
             Integer hoursMax, String hoursGroup, boolean supervised, LocalDate dueDate, CheckpointView checkpoint,
-            List<StudentItem> items, List<PromptView> prompts) {}
+            List<StudentItem> items, List<PromptView> prompts, NoteView note) {}
 
     public record SectionView(String label, String name, Integer suggestedWords, List<String> indicativeContent, List<UUID> stageIds) {}
 

@@ -12,6 +12,7 @@ import ie.coursework.components.adapter.persistence.SignoffRepository;
 import ie.coursework.components.adapter.persistence.SignoffRequestRepository;
 import ie.coursework.components.adapter.persistence.TemplateRepository;
 import ie.coursework.components.adapter.persistence.DocumentLinkRepository;
+import ie.coursework.components.adapter.persistence.ItemTickRepository;
 import ie.coursework.components.application.ComponentService;
 import ie.coursework.components.application.ComponentViews.OpenRequestView;
 import ie.coursework.components.application.RequestViews;
@@ -31,6 +32,7 @@ import ie.coursework.progress.application.ProgressViews.CheckpointRef;
 import ie.coursework.progress.application.ProgressViews.Grid;
 import ie.coursework.progress.application.ProgressViews.GridStage;
 import ie.coursework.progress.application.ProgressViews.GridStudent;
+import ie.coursework.progress.application.ProgressViews.ItemTicks;
 import ie.coursework.progress.application.ProgressViews.PastSignoff;
 import ie.coursework.progress.application.ProgressViews.StudentCheckpoints;
 import ie.coursework.progress.application.ProgressViews.StudentStage;
@@ -70,13 +72,14 @@ public class ProgressService {
     private final SignoffRepository signoffs;
     private final SignoffRequestRepository requests;
     private final DocumentLinkRepository links;
+    private final ItemTickRepository ticks;
     private final LogRepository log;
     private final AuditLog audit;
     private final Clock clock;
 
     public ProgressService(ComponentService componentService, ComponentRepository components, BriefRepository briefs,
             TemplateRepository templates, ClassGroupRepository classGroups, EnrolmentRepository enrolments,
-            SignoffRepository signoffs, SignoffRequestRepository requests, DocumentLinkRepository links, LogRepository log, AuditLog audit, Clock clock) {
+            SignoffRepository signoffs, SignoffRequestRepository requests, DocumentLinkRepository links, ItemTickRepository ticks, LogRepository log, AuditLog audit, Clock clock) {
         this.componentService = componentService;
         this.components = components;
         this.briefs = briefs;
@@ -86,6 +89,7 @@ public class ProgressService {
         this.signoffs = signoffs;
         this.requests = requests;
         this.links = links;
+        this.ticks = ticks;
         this.log = log;
         this.audit = audit;
         this.clock = clock;
@@ -124,8 +128,13 @@ public class ProgressService {
                     DublinDate.of(r.askedAt()), r.studentNote());
         }).toList();
 
+        List<ItemTicks> itemTicks = ticks.tickedBy(component.id()).entrySet().stream()
+                .map(e -> new ItemTicks(e.getKey(), e.getValue().stream().filter(byId::containsKey).toList()))
+                .filter(t -> !t.studentIds().isEmpty())
+                .toList();
+
         return new Grid(component.id(), component.classId(), classGroups.findById(component.classId()).orElseThrow().name(),
-                today, stages, students, waiting);
+                today, stages, students, waiting, itemTicks);
     }
 
     /** One student's checkpoints with every revoked sign-off (pack D-7's student view). An unapproved student is 404. */

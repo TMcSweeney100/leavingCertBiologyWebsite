@@ -13,40 +13,40 @@ import { StageCard } from "./stage-card";
 const baseStage = {
   id: "s4", ordinal: 4, label: "Stage 4", name: "Conducting the experiment", description: "Carry out the plan.",
   hoursMin: 1, hoursMax: 2, hoursGroup: null, supervised: true, dueDate: "2026-10-16",
-  checkpoint: null, items: [], prompts: [],
+  checkpoint: null, items: [], prompts: [], note: null,
 };
 
 describe("StageCard", () => {
   it("is a button naming the stage, and reports its open state on the row", () => {
     const onToggle = vi.fn();
-    render(<StageCard componentId="k1" stage={baseStage} allStages={[baseStage]} state="current" open={false} onToggle={onToggle} link={null} requireLink={false} />);
+    render(<StageCard componentId="k1" stage={baseStage} allStages={[baseStage]} state="current" open={false} onToggle={onToggle} link={null} requireLink={false} today="2026-10-30" />);
     const row = screen.getByRole("button", { name: /Conducting the experiment/ });
     expect(row).toHaveAttribute("aria-expanded", "false");
   });
 
   it("hides the body from assistive tech when closed, kept mounted so it can animate open", () => {
-    const { rerender } = render(<StageCard componentId="k1" stage={baseStage} allStages={[baseStage]} state="current" open={false} onToggle={vi.fn()} link={null} requireLink={false} />);
+    const { rerender } = render(<StageCard componentId="k1" stage={baseStage} allStages={[baseStage]} state="current" open={false} onToggle={vi.fn()} link={null} requireLink={false} today="2026-10-30" />);
     expect(document.getElementById("stage-s4-panel")).toHaveAttribute("aria-hidden", "true");
-    rerender(<StageCard componentId="k1" stage={baseStage} allStages={[baseStage]} state="current" open={true} onToggle={vi.fn()} link={null} requireLink={false} />);
+    rerender(<StageCard componentId="k1" stage={baseStage} allStages={[baseStage]} state="current" open={true} onToggle={vi.fn()} link={null} requireLink={false} today="2026-10-30" />);
     expect(document.getElementById("stage-s4-panel")).toHaveAttribute("aria-hidden", "false");
     expect(screen.getByText("Carry out the plan.")).toBeInTheDocument();
   });
 
   it("toggling the row calls onToggle with the stage id", async () => {
     const onToggle = vi.fn();
-    render(<StageCard componentId="k1" stage={baseStage} allStages={[baseStage]} state="current" open={false} onToggle={onToggle} link={null} requireLink={false} />);
+    render(<StageCard componentId="k1" stage={baseStage} allStages={[baseStage]} state="current" open={false} onToggle={onToggle} link={null} requireLink={false} today="2026-10-30" />);
     await userEvent.click(screen.getByRole("button", { name: /Conducting the experiment/ }));
     expect(onToggle).toHaveBeenCalledWith("s4");
   });
 
   it("names each state word, never colour alone", () => {
-    render(<StageCard componentId="k1" stage={baseStage} allStages={[baseStage]} state="done" open={false} onToggle={vi.fn()} link={null} requireLink={false} />);
+    render(<StageCard componentId="k1" stage={baseStage} allStages={[baseStage]} state="done" open={false} onToggle={vi.fn()} link={null} requireLink={false} today="2026-10-30" />);
     expect(screen.getByText("Done")).toBeInTheDocument();
   });
 
   it("shows a passed checkpoint without blame, and marks it apart from a done stage", () => {
     const stage = { ...baseStage, checkpoint: { id: "cp1", text: "Plan discussed with the teacher", state: "DUE" as const, signedOffOn: null, request: null, answers: [] } };
-    render(<StageCard componentId="k1" stage={stage} allStages={[stage]} state="current" open={true} onToggle={vi.fn()} link={null} requireLink={false} />);
+    render(<StageCard componentId="k1" stage={stage} allStages={[stage]} state="current" open={true} onToggle={vi.fn()} link={null} requireLink={false} today="2026-10-30" />);
     expect(screen.getByText("Plan discussed with the teacher")).toBeInTheDocument();
     expect(screen.getByText(/Not signed off yet/)).toBeInTheDocument();
     expect(screen.queryByText(/Bring it up in your next class/)).not.toBeInTheDocument();
@@ -57,14 +57,14 @@ describe("StageCard", () => {
 
   it("a checkpoint not yet due carries no blame message", () => {
     const stage = { ...baseStage, checkpoint: { id: "cp1", text: "Plan discussed with the teacher", state: "NOT_DUE" as const, signedOffOn: null, request: null, answers: [] } };
-    render(<StageCard componentId="k1" stage={stage} allStages={[stage]} state="current" open={true} onToggle={vi.fn()} link={null} requireLink={false} />);
+    render(<StageCard componentId="k1" stage={stage} allStages={[stage]} state="current" open={true} onToggle={vi.fn()} link={null} requireLink={false} today="2026-10-30" />);
     expect(screen.getByText(/Not due yet/)).toBeInTheDocument();
     expect(screen.queryByText(/Bring it up in your next class/)).not.toBeInTheDocument();
   });
 
   it("says the teacher signed a checkpoint off, with the date, and drops the nudge", () => {
     const stage = { ...baseStage, checkpoint: { id: "cp1", text: "Plan discussed with the teacher", state: "SIGNED_OFF" as const, signedOffOn: "2027-01-21", request: null, answers: [] } };
-    render(<StageCard componentId="k1" stage={stage} allStages={[stage]} state="current" open={true} onToggle={vi.fn()} link={null} requireLink={false} />);
+    render(<StageCard componentId="k1" stage={stage} allStages={[stage]} state="current" open={true} onToggle={vi.fn()} link={null} requireLink={false} today="2026-10-30" />);
     expect(screen.getByText("Checkpoint · Signed off")).toBeInTheDocument();
     expect(screen.getByText("Your teacher signed this off on 21 Jan 2027.")).toBeInTheDocument();
     expect(screen.queryByText(/Bring it up in your next class/)).not.toBeInTheDocument();
@@ -72,15 +72,24 @@ describe("StageCard", () => {
 
   it("a waiting checkpoint says so, offers Withdraw, and takes the ready tint", () => {
     const stage = { ...baseStage, checkpoint: { id: "cp1", text: "Plan discussed with the teacher", state: "READY" as const, signedOffOn: null, request: { askedOn: "2027-11-03", note: null }, answers: [] } };
-    render(<StageCard componentId="k1" stage={stage} allStages={[stage]} state="current" open={true} onToggle={vi.fn()} link={null} requireLink={false} />);
+    render(<StageCard componentId="k1" stage={stage} allStages={[stage]} state="current" open={true} onToggle={vi.fn()} link={null} requireLink={false} today="2026-10-30" />);
     expect(screen.getByText("Checkpoint · Waiting for your teacher")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Withdraw request: Plan discussed with the teacher" })).toBeInTheDocument();
     expect(screen.getByText("Checkpoint · Waiting for your teacher").parentElement).toHaveClass("bg-app-ready-tint");
   });
 
+  it("shows the teacher's note above the official text, and a Note updated tag for a week", () => {
+    const stage = { ...baseStage, note: { text: "Slots: https://example.ie/slots", updatedOn: "2026-10-28" } };
+    render(<StageCard componentId="k1" stage={stage} allStages={[stage]} state="current" open={true} onToggle={vi.fn()} link={null} requireLink={false} today="2026-10-30" />);
+    expect(screen.getByText("Note from your teacher")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /https:\/\/example\.ie\/slots/ })).toHaveAttribute("target", "_blank");
+    expect(screen.getByText("Updated 28 Oct 2026")).toBeInTheDocument();
+    expect(screen.getByText("Note updated")).toBeInTheDocument();
+  });
+
   it("passes the class's link rule down to the form", async () => {
     const stage = { ...baseStage, checkpoint: { id: "cp1", text: "Plan discussed with the teacher", state: "DUE" as const, signedOffOn: null, request: null, answers: [] } };
-    render(<StageCard componentId="k1" stage={stage} allStages={[stage]} state="current" open={true} onToggle={vi.fn()} link={null} requireLink />);
+    render(<StageCard componentId="k1" stage={stage} allStages={[stage]} state="current" open={true} onToggle={vi.fn()} link={null} requireLink today="2026-10-30" />);
     await userEvent.click(screen.getByRole("button", { name: /^Ready for sign-off/ }));
     expect(screen.getByRole("button", { name: "Send" })).toBeDisabled();
   });
