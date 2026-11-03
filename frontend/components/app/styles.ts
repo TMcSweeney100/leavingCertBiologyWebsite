@@ -1,7 +1,4 @@
-/**
- * Class strings shared by app pages (design packs D-1, D-2). Plain strings, not `cn()`, because they
- * pair `--text-app-*` sizes with colours and tailwind-merge would drop one (UI-STANDARDS §2).
- */
+
 export const pageTitle =
   "font-heading text-app-h1 lg:text-app-h1-lg font-bold leading-[1.07] tracking-[-.03em] text-balance text-app-ink";
 export const sectionTitle = "font-heading text-app-section font-bold tracking-[-.02em] text-balance text-app-ink";
