@@ -182,7 +182,7 @@ Commands (repo root): `make db-up`, `make backend-run` (:8080), `make frontend-r
 
 `make e2e` (`scripts/e2e.sh`): starts `postgres-e2e` on :55433 with no volume, builds the jar, seeds one teacher with the operator CLI, starts Spring on :8081 and a production Next build on :3100, runs Playwright, tears everything down. It refuses to start if either port is taken, because a leftover server would answer the readiness check and the journey would test stale code.
 
-**Operator commands** (`identity/adapter/cli/OperatorCommands.java`), the only way a school or teacher comes into existence:
+**Operator commands** (`identity/adapter/cli/OperatorCommands.java`), the only way a school or teacher comes into existence. For the full steps, from a new teacher to a filled demo class, see `docs/TEACHER-AND-CLASS-SETUP.md`:
 
 ```
 scripts/operator.sh create-school --name="…" --short-name="…" --roll=76543A   # short name is optional; it fits the app header
