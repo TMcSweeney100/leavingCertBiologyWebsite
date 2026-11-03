@@ -37,7 +37,7 @@ function renderSheet(props: Partial<Parameters<typeof StageSheet>[0]> = {}) {
     <StageSheet componentId="k1" stage={stage} stages={[stage]} draft={{ s2: "2026-10-10" }} onDateChange={onDateChange}
       onSaveDate={onSaveDate} marks={[]} completionDate="2027-02-26" today="2026-10-01" returnFocus={createRef()}
       onClose={vi.fn()} fieldLabel={(field) => field} progress={{ ok: true, data: grid }} classId="c1" hideNames={false}
-      noteDrafts={{}} onNoteDraft={vi.fn()} {...props} {...more} />
+      noteDrafts={{}} onNoteDraft={vi.fn()} hasUnsaved={false} {...props} {...more} />
   );
   const view = render(sheet());
   // What the page does when `onDateChange` is called: hand the sheet the new draft.
@@ -156,6 +156,15 @@ describe("StageSheet", () => {
     for (const heading of [/^Ticked \(1\)/, /^Not ticked yet \(1\)/]) {
       expect(within(sheet).getByRole("heading", { name: heading }).querySelector("[data-private]")).toHaveTextContent(/^1$/);
     }
+  });
+
+  it("asks before the waiting link leaves unsaved work behind", async () => {
+    const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
+    renderSheet({ hasUnsaved: true });
+    const sheet = await screen.findByRole("dialog", { name: "Developing a question" });
+    await userEvent.click(within(sheet).getByRole("link", { name: "1 waiting for you" }));
+    expect(confirm).toHaveBeenCalled();
+    confirm.mockRestore();
   });
 
   it("says so in place when the class's progress didn't load", async () => {

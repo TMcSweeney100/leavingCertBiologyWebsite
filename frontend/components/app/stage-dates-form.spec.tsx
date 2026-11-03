@@ -217,7 +217,15 @@ describe("StageDatesForm", () => {
     expect(window.location.search).toBe("?stage=3");
   });
 
+  it("opens the sheet the address names, even when the page was rendered for the plain address", async () => {
+    // Back from another tab: Next's cached page has no ?stage=, because the sheet was opened with pushState.
+    window.history.replaceState(null, "", "/?stage=3");
+    render5();
+    expect(await screen.findByRole("dialog", { name: "Name 3" })).toBeInTheDocument();
+  });
+
   it("a sheet opened from the address gives focus back to the stage's name when it closes", async () => {
+    window.history.replaceState(null, "", "/?stage=3");
     render(<StageDatesForm component={component()} today={TODAY} initialStage="3" progress={progress} hideNames={false} />);
     await screen.findByRole("dialog", { name: "Name 3" });
     await userEvent.keyboard("{Escape}");
