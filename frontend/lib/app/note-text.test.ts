@@ -48,6 +48,12 @@ describe('note text', () => {
     ]);
   });
 
+  test('a bare www. left after trimming punctuation is not a link', () => {
+    for (const text of ['see www.. ok', 'see www.) ok', 'see www., ok', 'see www.? ok']) {
+      assert.deepEqual(noteParts(text), [{ kind: 'text', text }]);
+    }
+  });
+
   test('"Note updated" lasts 7 days from the day of the change', () => {
     assert.equal(recentlyUpdated('2026-10-28', '2026-10-28'), true);
     assert.equal(recentlyUpdated('2026-10-28', '2026-11-03'), true);

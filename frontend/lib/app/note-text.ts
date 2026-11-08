@@ -4,7 +4,7 @@ export const NOTE_MAX = 1000;
 export type NotePart = { kind: 'text'; text: string } | { kind: 'link'; href: string; text: string };
 
 // Only http(s) and www. addresses, so `javascript:` and friends never become links. Rendered as React elements, never
-// as HTML. `\b` keeps a www. inside a longer word ("awww.") from starting one.
+// as HTML. `\b` keeps an address inside a longer word ("awww.", "xhttps://") from starting one.
 const LINK = /\b(?:https?:\/\/|www\.)[^\s<>"]+/gi;
 // A closing bracket is not here: it ends the address only when nothing in the address opened it (see `linkEnd`).
 const TRAILING = /[.,;:!?\]'"]+$/;
@@ -27,6 +27,8 @@ export function noteParts(text: string): NotePart[] {
   let rest = 0;
   for (const match of text.matchAll(LINK)) {
     const shown = linkEnd(match[0]);
+    // Trimming can leave a bare "www" ("www.."); that is sentence text, not an address, so rest stays put and it joins the text.
+    if (/^www\./i.test(match[0]) && !/^www\..+/i.test(shown)) continue;
     const start = match.index ?? 0;
     if (start > rest) parts.push({ kind: 'text', text: text.slice(rest, start) });
     // A www. address has no scheme, so as an href it would be relative to the page (plan stage-drawer-redesign R-10).
