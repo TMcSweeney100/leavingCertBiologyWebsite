@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Item as a view in the drawer</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 440px; height: 900px; box-sizing: border-box; display: flex; flex-direction: column; background: #F1F3F6; color: #101419; font-family: 'Public Sans', sans-serif; font-size: 15px; line-height: 1.5">
+
+  <div style="background: #FFFFFF; border-bottom: 1px solid #E3E6EA; padding: 8px 16px 14px">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+      <a href="NavyCheckpoint.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; margin-left: -6px; padding: 0 6px; font-size: 14px; font-weight: 600; color: #1F3A6E; text-decoration: underline; text-underline-offset: 3px"><span aria-hidden="true">‹&nbsp;</span>Back to Stage 3</a>
+      <button type="button" aria-label="Close" style="flex: none; display: flex; width: 44px; height: 44px; align-items: center; justify-content: center; background: #FFFFFF; border: 1px solid #DDE1E6; border-radius: 8px; color: #101419; cursor: pointer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" style="stroke-width: 2; stroke-linecap: round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+      </button>
+    </div>
+    <div style="display: flex; align-items: flex-start; gap: 12px; margin-top: 6px">
+      <span aria-hidden="true" style="flex: none; display: flex; width: 44px; height: 44px; align-items: center; justify-content: center; background: #1F3A6E; border-radius: 50%; font: 700 18px 'Space Mono', monospace; color: #FFFFFF">A</span>
+      <div style="flex: 1; min-width: 0">
+        <p style="margin: 0; font-size: 13px; color: #636B75">Item A · Stage 3</p>
+        <h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 20px; line-height: 1.25; font-weight: 700; letter-spacing: -0.01em">Look at video link of passed experiment</h2>
+      </div>
+    </div>
+    <sc-if value="{{reading}}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 4px 0 -8px 56px">
+        <p style="margin: 0; font-size: 14px; color: #343A42">Due <b style="font-weight: 600; color: #101419">Wed 4 Nov 2026</b></p>
+        <button type="button" onClick="{{edit}}" aria-label="Edit this item" style="display: flex; align-items: center; gap: 6px; height: 44px; padding: 0 8px; margin-right: -8px; background: none; border: 0; font: 600 14px 'Public Sans', sans-serif; color: #1F3A6E; cursor: pointer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+          Edit
+        </button>
+      </div>
+    </sc-if>
+  </div>
+
+  <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 12px; padding: 12px; overflow-y: auto">
+
+    <sc-if value="{{editing}}" hint-placeholder-val="{{ false }}">
+      <section aria-labelledby="i-edit" style="padding: 16px 18px; background: #FFFFFF; border: 2px solid #1F3A6E; border-radius: 10px">
+        <h3 id="i-edit" style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700">Edit item</h3>
+        <label for="i-text" style="display: block; margin-top: 10px; font-size: 13px; font-weight: 600; color: #343A42">Item</label>
+        <input id="i-text" maxlength="200" defaultValue="Look at video link of passed experiment" style="display: block; width: 100%; box-sizing: border-box; height: 44px; margin-top: 4px; padding: 0 12px; background: #FFFFFF; border: 1px solid #DDE1E6; border-radius: 8px; font: 400 15px 'Public Sans', sans-serif; color: #101419">
+        <label for="i-date" style="display: block; margin-top: 12px; font-size: 13px; font-weight: 600; color: #343A42">Date (optional)</label>
+        <button id="i-date" type="button" aria-describedby="i-date-help" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 172px; height: 44px; margin-top: 4px; padding: 0 12px; background: #FFFFFF; border: 1px solid #DDE1E6; border-radius: 8px; font: 500 15px 'Public Sans', sans-serif; color: #101419; cursor: pointer">
+          04/11/2026
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F3A6E" aria-hidden="true" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg>
+        </button>
+        <p id="i-date-help" style="margin: 4px 0 0; font-size: 13px; color: #4B535C">Letters follow the date, so they change when a date does.</p>
+        <div style="display: flex; align-items: center; gap: 8px; margin-top: 14px">
+          <button type="button" onClick="{{done}}" style="height: 44px; padding: 0 14px; background: #1F3A6E; border: 0; border-radius: 8px; font: 600 14px 'Public Sans', sans-serif; color: #FFFFFF; cursor: pointer">Save item</button>
+          <button type="button" onClick="{{done}}" style="height: 44px; padding: 0 14px; background: #FFFFFF; border: 1px solid #DDE1E6; border-radius: 8px; font: 600 14px 'Public Sans', sans-serif; color: #101419; cursor: pointer">Cancel</button>
+          <button type="button" aria-label="Retire Look at video link of passed experiment" style="height: 44px; margin-left: auto; padding: 0 8px; background: none; border: 0; font: 600 14px 'Public Sans', sans-serif; color: #A32020; text-decoration: underline; cursor: pointer">Retire</button>
+        </div>
+      </section>
+    </sc-if>
+
+    <section aria-labelledby="i-ticks" style="padding: 16px 18px; background: #FFFFFF; border: 1px solid #DDE1E6; border-radius: 10px">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
+        <h3 id="i-ticks" style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700">Who has ticked it</h3>
+        <span style="font-size: 13px; color: #636B75">31 students</span>
+      </div>
+      <p style="margin: 0; font-size: 13px; color: #4B535C">Students tick these themselves.</p>
+      <div role="img" aria-label="1 of 31 students ticked" style="display: flex; gap: 2px; height: 8px; margin-top: 12px">
+        <span style="flex: 1; background: #0F5C3A; border-radius: 4px 0 0 4px"></span>
+        <span style="flex: 30; background: #DDE1E6; border-radius: 0 4px 4px 0"></span>
+      </div>
+
+      <h4 id="i-done" style="margin: 16px 0 6px; font-size: 13px; font-weight: 700; color: #0F5C3A">Ticked (1)</h4>
+      <ul aria-labelledby="i-done" style="display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0; padding: 0">
+        <li style="padding: 2px 10px; background: #E3F1EA; border-radius: 999px; font-size: 13px; font-weight: 600; color: #0F5C3A">Aoife Byrne</li>
+      </ul>
+
+      <h4 id="i-not" style="margin: 16px 0 6px; font-size: 13px; font-weight: 700; color: #101419">Not ticked yet (30)</h4>
+      <ul aria-labelledby="i-not" style="display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0; padding: 0">
+        <sc-for list="{{names}}" as="name" hint-placeholder-count="30">
+          <li style="padding: 2px 10px; background: #EFF1F3; border-radius: 999px; font-size: 13px; color: #343A42">{{name}}</li>
+        </sc-for>
+      </ul>
+    </section>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"startEditing":{"editor":"boolean","default":false},"$preview":{"width":440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { editing: !!props.startEditing };
+  }
+  renderVals() {
+    return {
+      reading: !this.state.editing,
+      editing: this.state.editing,
+      edit: () => this.setState({ editing: true }),
+      done: () => this.setState({ editing: false }),
+      names: ['Adam Walsh', 'Ben Doyle', 'Ciara Kelly', 'Conor Ryan', 'Daire Murphy', 'Eimear Nolan', 'Emma Quinn', 'Fionn Burke', 'Grace Daly', 'Hannah Lynch', 'Isabel Ward', 'Jack Power', 'Kate Dunne', 'Liam Brady', 'Maeve Hayes', 'Niamh Keane', 'Oisín Farrell', 'Orla Reilly', 'Patrick Moran', 'Rachel Foley', 'Rían Kenny', 'Sadhbh Carey', 'Seán Hogan', 'Sophie Tobin', 'Tadhg Malone', 'Tara Healy', 'Una Barry', 'Yusuf Khan', 'Zofia Nowak', 'Zoe Gallagher']
+    };
+  }
+}
+</script>
+</body>
+</html>
