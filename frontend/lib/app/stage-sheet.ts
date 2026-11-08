@@ -37,6 +37,9 @@ export function stageItems(stages: ReadonlyArray<StageLike>, stageId: string): L
   return letteredItems(stages).filter((item) => item.stageId === stageId);
 }
 
+/** Where focus goes when the item view closes after a new item is saved or an item is retired: "Add an item" (S-31). */
+export const ADD_ITEM = 'add';
+
 /** What the sheet's calendar view needs: who asked, for what, and where focus goes back to. */
 export type DateRequest = {
   title: string;

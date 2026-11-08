@@ -11,11 +11,12 @@ import type { ProgressGrid, TeacherComponent } from "@/lib/api/schemas";
 import type { Attempt } from "@/lib/app/attempt";
 import { hoursLabel, weekdayDate } from "@/lib/app/component-setup";
 import type { DateMark } from "@/lib/app/date-marks";
-import { checkpointCounts, countsLabel, type DateRequest } from "@/lib/app/stage-sheet";
+import { ADD_ITEM, checkpointCounts, countsLabel, type DateRequest, stageItems } from "@/lib/app/stage-sheet";
 
 import { DateBox } from "./date-box";
 import { DatePickerPanel, pickedDay } from "./date-picker-panel";
 import { ErrorPanel } from "./error-panel";
+import { StageItemView } from "./stage-item-view";
 import { StageItems } from "./stage-items";
 import { StageNoteForm } from "./stage-note-form";
 import { card, eyebrow } from "./styles";
@@ -97,6 +98,13 @@ function SheetBody({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const [savedAs, setSavedAs] = useState<string | null>(null);
+  // The item view (plan stage-drawer-redesign R-5): an item's id, "new", or none. Like the calendar, it takes the rest's
+  // place, and the rest is only `hidden`, so nothing in it is lost.
+  const [item, setItem] = useState<string | null>(null);
+  const itemHeading = useRef<HTMLHeadingElement>(null);
+  const rest = useRef<HTMLDivElement>(null);
+  /** Where focus goes when the item view closes: an item's id, or `ADD_ITEM`. */
+  const itemReturn = useRef<string | null>(null);
 
   const label = stage.label ?? stage.name;
   const value = draft[stage.id] ?? "";
@@ -130,6 +138,18 @@ function SheetBody({
     returnTo.current = null;
   }, [request]);
 
+  // Into the item view: focus its title. Out of it: back to the row, or to "Add an item" (S-31).
+  useEffect(() => {
+    if (item) {
+      itemHeading.current?.focus();
+      return;
+    }
+    const target = itemReturn.current;
+    itemReturn.current = null;
+    if (!target) return;
+    rest.current?.querySelector<HTMLElement>(target === ADD_ITEM ? "[data-add-item]" : `[data-item="${target}"]`)?.focus();
+  }, [item]);
+
   async function save() {
     setBusy(true);
     setError(null);
@@ -147,6 +167,11 @@ function SheetBody({
 
   const meta = [stage.label, hoursLabel(stage, stages), stage.supervised ? "Supervised in class" : ""].filter(Boolean).join(" · ");
   const counts = progress.ok ? checkpointCounts(progress.data, stage.id) : null;
+  const openItem = item && item !== "new" ? (stageItems(stages, stage.id).find((i) => i.id === item) ?? null) : null;
+  // An item retired elsewhere is gone after a refresh; the view then simply isn't shown.
+  const viewing = item === "new" || openItem !== null;
+  // The calendar's way back names where it goes (R-15).
+  const backTo = item === "new" ? "the new item" : openItem ? `item ${openItem.letter}` : label;
 
   return (
     <>
@@ -164,7 +189,7 @@ function SheetBody({
         <DrawerClose render={<Button type="button" variant="outline" />}>Close</DrawerClose>
       </div>
 
-      <div hidden={request !== null} className="min-h-0 flex-1 overflow-y-auto bg-app-tray">
+      <div ref={rest} hidden={request !== null || viewing} className="min-h-0 flex-1 overflow-y-auto bg-app-tray">
         <div className="border-b border-app-line bg-app-surface px-4 pt-1 pb-4">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
@@ -290,7 +315,7 @@ function SheetBody({
           />
 
           <div className={`${card} px-[18px] py-4`}>
-            <StageItems componentId={componentId} stage={stage} stages={stages} chooseDate={ask} progress={progress} />
+            <StageItems stage={stage} stages={stages} progress={progress} onOpen={setItem} />
           </div>
 
           {stage.prompts.length > 0 && (
@@ -313,12 +338,30 @@ function SheetBody({
         </div>
       </div>
 
+      {viewing && (
+        <div hidden={request !== null} className="flex min-h-0 flex-1 flex-col">
+          <StageItemView
+            key={item}
+            componentId={componentId}
+            stage={stage}
+            item={openItem}
+            progress={progress}
+            chooseDate={ask}
+            heading={itemHeading}
+            onBack={(focus) => {
+              itemReturn.current = focus;
+              setItem(null);
+            }}
+          />
+        </div>
+      )}
+
       {request && (
         <div role="group" aria-labelledby={`${id}-choose`} className="flex min-h-0 flex-1 flex-col">
           <div className="border-b border-app-line px-4 pt-2 pb-3 sm:px-6">
             <Button type="button" variant="link" size="header" onClick={() => setRequest(null)} className="-ml-1.5">
               <span aria-hidden="true">‹ </span>
-              Back to {label}
+              Back to {backTo}
             </Button>
             {request.eyebrow && <p className="text-app-small text-app-muted">{request.eyebrow}</p>}
             <h3 id={`${id}-choose`} ref={chooseHeading} tabIndex={-1} className="font-heading text-app-title font-bold break-words text-app-ink">

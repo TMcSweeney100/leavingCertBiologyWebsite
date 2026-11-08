@@ -1,16 +1,6 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-
-const refresh = vi.fn();
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn(), refresh }) }));
-vi.mock("@/lib/api/client", async () => {
-  const problem = await import("@/lib/api/problem");
-  return { ...problem, api: { send: vi.fn(), sendNoContent: vi.fn() } };
-});
-
-import { api } from "@/lib/api/client";
-import type { DateRequest } from "@/lib/app/stage-sheet";
 
 import { StageItems } from "./stage-items";
 
@@ -19,73 +9,26 @@ const stages = [
   { id: "s2", ordinal: 2, label: "Stage 2", name: "Two", dueDate: null, items: [{ id: "i2", text: "Bring three questions", dueDate: "2026-10-06" }] },
 ];
 
-// The sheet answers a date request by showing its calendar; here the "calendar" picks 8 Oct at once.
-const chooseDate = vi.fn((request: DateRequest) => request.onPick("2026-10-08"));
-
-// No students, so the tick counts and names add nothing to these cases.
+// No students, so every item has 0 ticked.
 const emptyGrid = { componentId: "k1", classId: "c1", className: "6A", today: "2026-10-01", stages: [], students: [], waiting: [], itemTicks: [] };
+const onOpen = vi.fn();
 
-const renderItems = () =>
-  render(<StageItems componentId="k1" stage={stages[1]} stages={stages} chooseDate={chooseDate} progress={{ ok: true, data: emptyGrid }} />);
+const renderItems = () => render(<StageItems stage={stages[1]} stages={stages} progress={{ ok: true, data: emptyGrid }} onOpen={onOpen} />);
 
-beforeEach(() => {
-  refresh.mockReset();
-  chooseDate.mockClear();
-  vi.mocked(api.send).mockReset();
-  vi.mocked(api.sendNoContent).mockReset();
-});
+beforeEach(() => onOpen.mockReset());
 
 describe("StageItems", () => {
   it("lists only this stage's items, keeping their letters from the whole component", () => {
     renderItems();
-    expect(screen.getByRole("button", { name: /^B Bring three questions/ })).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByRole("button", { name: "B Bring three questions 0 ticked 6 Oct 2026" })).toBeInTheDocument();
     expect(screen.queryByText("Read the brief")).not.toBeInTheDocument();
   });
 
-  it("adds an item to this stage, its date chosen through the sheet's calendar", async () => {
-    vi.mocked(api.send).mockResolvedValue({ id: "i3", text: "Draft question", dueDate: "2026-10-08" });
+  it("a row opens its item, and Add an item opens a new one", async () => {
     renderItems();
+    await userEvent.click(screen.getByRole("button", { name: /^B Bring three questions/ }));
+    expect(onOpen).toHaveBeenCalledWith("i2");
     await userEvent.click(screen.getByRole("button", { name: "Add an item to Stage 2" }));
-    await userEvent.type(screen.getByRole("textbox", { name: "Item" }), "Draft question");
-    await userEvent.click(screen.getByLabelText("Date (optional)"));
-    expect(chooseDate).toHaveBeenCalledWith(expect.objectContaining({ title: "Choose the date for “Draft question”", picking: { kind: "item" } }));
-    await userEvent.click(screen.getByRole("button", { name: "Save item" }));
-
-    expect(api.send).toHaveBeenCalledWith("POST", "/components/k1/teacher-items",
-      { stageId: "s2", text: "Draft question", dueDate: "2026-10-08" }, expect.anything());
-    expect(refresh).toHaveBeenCalled();
-  });
-
-  it("opens an item in place to edit it, and retires it only after confirming", async () => {
-    vi.mocked(api.sendNoContent).mockResolvedValue(undefined);
-    renderItems();
-    await userEvent.click(screen.getByRole("button", { name: /^B Bring three questions/ }));
-    expect(screen.getByRole("textbox", { name: "Item" })).toHaveValue("Bring three questions");
-
-    await userEvent.click(screen.getByRole("button", { name: "Retire Bring three questions" }));
-    const confirm = screen.getByText("Retire this item? Students won't see it any more.").parentElement!;
-    await userEvent.click(within(confirm).getByRole("button", { name: "Retire item" }));
-    expect(api.sendNoContent).toHaveBeenCalledWith("DELETE", "/components/k1/teacher-items/i2");
-    await waitFor(() => expect(screen.getByRole("button", { name: "Add an item to Stage 2" })).toHaveFocus());
-  });
-
-  it("saves an edited item through its own endpoint", async () => {
-    vi.mocked(api.send).mockResolvedValue({ id: "i2", text: "Bring four questions", dueDate: "2026-10-06" });
-    renderItems();
-    await userEvent.click(screen.getByRole("button", { name: /^B Bring three questions/ }));
-    const text = screen.getByRole("textbox", { name: "Item" });
-    await userEvent.clear(text);
-    await userEvent.type(text, "Bring four questions");
-    await userEvent.click(screen.getByRole("button", { name: "Save item" }));
-
-    expect(api.send).toHaveBeenCalledWith("PATCH", "/components/k1/teacher-items/i2",
-      { text: "Bring four questions", dueDate: "2026-10-06" }, expect.anything());
-  });
-
-  it("puts focus back on the item's row when its form is cancelled", async () => {
-    renderItems();
-    await userEvent.click(screen.getByRole("button", { name: /^B Bring three questions/ }));
-    await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
-    await waitFor(() => expect(screen.getByRole("button", { name: /^B Bring three questions/ })).toHaveFocus());
+    expect(onOpen).toHaveBeenCalledWith("new");
   });
 });

@@ -162,17 +162,46 @@ describe("StageSheet", () => {
     expect(within(sheet).getByLabelText("Stage date")).toHaveFocus();
   });
 
-  it("counts the checkpoint across the class, and lists who has and hasn't ticked an item", async () => {
+  it("counts the checkpoint across the class, linking the waiting count to Progress", async () => {
     renderSheet();
     const sheet = await screen.findByRole("dialog", { name: "Developing a question" });
     expect(within(sheet).getByRole("link", { name: "1 waiting for you" })).toHaveAttribute("href", "/teach/classes/c1/progress");
+  });
+
+  it("opens an item as a view in the sheet, naming who has ticked it, and Back puts focus on its row", async () => {
+    renderSheet();
+    const sheet = await screen.findByRole("dialog", { name: "Developing a question" });
     await userEvent.click(within(sheet).getByRole("button", { name: /Bring three questions.*1 ticked/ }));
-    expect(within(sheet).getByRole("list", { name: /^Ticked/ })).toHaveTextContent("Cian Murphy");
-    expect(within(sheet).getByRole("list", { name: /^Not ticked yet/ })).toHaveTextContent("Aoife Byrne");
+    const view = within(sheet).getByRole("group", { name: "Bring three questions" });
+    expect(within(view).getByRole("heading", { name: "Bring three questions" })).toHaveFocus();
+    expect(within(sheet).getByText("From the guidelines")).not.toBeVisible();
+    expect(within(view).getByRole("list", { name: /^Ticked/ })).toHaveTextContent("Cian Murphy");
+    expect(within(view).getByRole("list", { name: /^Not ticked yet/ })).toHaveTextContent("Aoife Byrne");
     // Hide names blurs counts too (S-20): only the number is private, so the words around it stay readable.
     for (const heading of [/^Ticked \(1\)/, /^Not ticked yet \(1\)/]) {
-      expect(within(sheet).getByRole("heading", { name: heading }).querySelector("[data-private]")).toHaveTextContent(/^1$/);
+      expect(within(view).getByRole("heading", { name: heading }).querySelector("[data-private]")).toHaveTextContent(/^1$/);
     }
+
+    await userEvent.click(within(view).getByRole("button", { name: "Back to Stage 2" }));
+    await waitFor(() => expect(within(sheet).getByRole("button", { name: /Bring three questions.*1 ticked/ })).toHaveFocus());
+  });
+
+  it("picks an item's date in the sheet's calendar and comes back to the item", async () => {
+    renderSheet();
+    const sheet = await screen.findByRole("dialog", { name: "Developing a question" });
+    await userEvent.click(within(sheet).getByRole("button", { name: /Bring three questions.*1 ticked/ }));
+    const view = within(sheet).getByRole("group", { name: "Bring three questions" });
+    await userEvent.click(within(view).getByRole("button", { name: "Edit this item" }));
+    await userEvent.click(within(view).getByLabelText("Date (optional)"));
+
+    const calendar = within(sheet).getByRole("group", { name: "Choose the date for “Bring three questions”" });
+    expect(within(calendar).getByRole("button", { name: "Back to item A" })).toBeInTheDocument();
+    await userEvent.click(within(calendar).getByRole("button", { name: /^Thursday 8 October 2026/ }));
+    await userEvent.click(within(calendar).getByRole("button", { name: "Use this date" }));
+
+    const date = within(view).getByLabelText("Date (optional)");
+    await waitFor(() => expect(date).toHaveFocus());
+    expect(date).toHaveTextContent("08/10/2026");
   });
 
   it("asks before the waiting link leaves unsaved work behind", async () => {
