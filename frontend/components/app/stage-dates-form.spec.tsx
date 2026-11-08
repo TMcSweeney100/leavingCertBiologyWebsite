@@ -259,6 +259,7 @@ describe("StageDatesForm", () => {
     render5(component({ stages: [stage(3, "2026-09-25", { note: { text: "Bring notes", updatedOn: "2026-09-20" } }), stage(4, null)] }));
     expect(screen.getByText("Your note")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Name 4" }));
+    await userEvent.click(await screen.findByRole("button", { name: "Add a note" }));
     await userEvent.type(await screen.findByRole("textbox", { name: "Your note for students" }), "Half a thought");
     await userEvent.keyboard("{Escape}");
     await userEvent.click(screen.getByRole("button", { name: "Name 4" }));

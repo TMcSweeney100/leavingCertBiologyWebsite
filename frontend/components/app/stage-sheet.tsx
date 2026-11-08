@@ -281,15 +281,13 @@ function SheetBody({
             <p className="mt-2 text-app-base leading-normal text-pretty text-app-ink">{stage.description}</p>
           </section>
 
-          <div className={`${card} px-[18px] py-4`}>
-            <StageNoteForm
-              componentId={componentId}
-              stageId={stage.id}
-              note={stage.note}
-              draft={noteDrafts[stage.id] ?? stage.note?.text ?? ""}
-              onDraft={(text) => onNoteDraft(stage.id, text)}
-            />
-          </div>
+          <StageNoteForm
+            componentId={componentId}
+            stageId={stage.id}
+            note={stage.note}
+            draft={noteDrafts[stage.id] ?? stage.note?.text ?? ""}
+            onDraft={(text) => onNoteDraft(stage.id, text)}
+          />
 
           <div className={`${card} px-[18px] py-4`}>
             <StageItems componentId={componentId} stage={stage} stages={stages} chooseDate={ask} progress={progress} />
