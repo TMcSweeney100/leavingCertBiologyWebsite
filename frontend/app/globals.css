@@ -122,6 +122,14 @@
   --color-app-pick-tint: var(--app-pick-tint);
   --color-app-today: var(--app-today);
   --color-app-today-ring: var(--app-today-ring);
+  /* Stage drawer redesign (docs/design/pilot/stage-drawer-redesign/NOTES.md). */
+  --color-app-tray: var(--app-tray);
+  --color-app-approved-on-accent: var(--app-approved-on-accent);
+  --color-app-attention-on-accent: var(--app-attention-on-accent);
+  --color-app-accent-track: var(--app-accent-track);
+  --color-app-note-ground: var(--app-note-ground);
+  --color-app-note-line: var(--app-note-line);
+  --color-app-note-muted: var(--app-note-muted);
 }
 
 @theme {
@@ -355,6 +363,16 @@
   --app-signed: var(--app-done);         /* 8.04:1 on white; 7.36:1 on --app-done-ground */
   --app-signed-recent: var(--app-done-ground); /* a cell signed off this visit (offers Undo); navy on it 10.18:1 */
   --app-hide-blur: 7px;                  /* Hide names: unreadable from the back of a room at 1140 on a projector */
+  /* Stage drawer redesign — design B (docs/design/pilot/stage-drawer-redesign/NOTES.md): white cards on a grey tray,
+     the checkpoint as a navy card, the teacher's note as a cream card. Named to be shared: B may become the whole
+     app's look (BACKLOG app-polish). Ratios by WCAG relative luminance. */
+  --app-tray: #F1F3F6;                  /* behind the sheet's cards; ink 16.6:1, muted 4.86:1 */
+  --app-approved-on-accent: #7FD1A8;    /* "signed off" on the navy card; 6.13:1 on --app-accent */
+  --app-attention-on-accent: #F2B15C;   /* "waiting" bar segment on the navy card, never text; 5.9:1 on --app-accent */
+  --app-accent-track: #4A6396;          /* the rest of a bar on the navy card; 3.29:1 / 3.19:1 against the two above */
+  --app-note-ground: #FBF4E6;           /* the cream note card; ink 16.9:1, navy link 10.2:1 */
+  --app-note-line: #EBDDC2;             /* its border, decorative */
+  --app-note-muted: #5C5340;            /* secondary text on the note card; 6.93:1 */
 
   /* shadcn semantic variables — mapped onto the BiPi tokens above so every primitive
      (Card, Badge, Progress, Collapsible, Table, Button) inherits the BiPi palette. */
