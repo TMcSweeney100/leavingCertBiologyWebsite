@@ -24,9 +24,10 @@ import { card, eyebrow } from "./styles";
 type Stage = TeacherComponent["stages"][number];
 
 /**
- * The stage sheet (plan stage-sheet, redesigned to design B by plan stage-drawer-redesign; mockups docs/design/pilot/stage-sheet/design/). A right-hand drawer opened from a
- * stage's name on the Component tab. Two views in one drawer (S-4): at rest, and the date calendar in place of the
- * rest, so there's never a second drawer on top. The date is the page's shared draft (S-6); Save this date saves this
+ * The stage sheet (plan stage-sheet, redesigned to design B by plan stage-drawer-redesign; design source
+ * docs/design/pilot/stage-drawer-redesign/). A right-hand drawer opened from a stage's name on the Component tab.
+ * Three views in one drawer (S-4, R-5): at rest, an item (`StageItemView`), and the date calendar; each of the other
+ * two takes the rest's place, so there's never a second drawer on top. The date is the page's shared draft (S-6); Save this date saves this
  * stage only (S-7). Escape closes the whole sheet, even from the calendar (S-19).
  */
 export function StageSheet(props: {
