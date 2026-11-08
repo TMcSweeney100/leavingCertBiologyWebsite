@@ -56,6 +56,23 @@ describe("StageSheet", () => {
     expect(within(sheet).getByText("Questions students get from the guidelines (1)")).toBeInTheDocument();
   });
 
+  it("puts the checkpoint first, then the guidelines, the note and the items", async () => {
+    renderSheet();
+    const sheet = await screen.findByRole("dialog", { name: "Developing a question" });
+    const order = ["Checkpoint", "From the guidelines", "Your note for students", "Your items in this stage"].map((text) =>
+      within(sheet).getByText(text),
+    );
+    for (let i = 1; i < order.length; i++) {
+      expect(order[i - 1].compareDocumentPosition(order[i]) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    }
+  });
+
+  it("draws the checkpoint's counts as a bar named in words", async () => {
+    renderSheet();
+    const sheet = await screen.findByRole("dialog", { name: "Developing a question" });
+    expect(within(sheet).getByRole("img", { name: "0 signed off, 1 waiting, 1 not yet, of 2 students" })).toBeInTheDocument();
+  });
+
   it("swaps to the calendar in the same dialog, and Use this date hands the day back and returns focus to the box", async () => {
     const { onDateChange } = renderSheet();
     const sheet = await screen.findByRole("dialog", { name: "Developing a question" });
