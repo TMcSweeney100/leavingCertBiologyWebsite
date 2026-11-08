@@ -224,7 +224,7 @@ function SheetBody({
             </>
           )}
           {/* Always rendered, so the change of text is announced (Concepts in play, "A persistent live region"). */}
-          <p role="status" className="text-app-small font-semibold text-app-approved empty:hidden">
+          <p role="status" className="text-app-small font-semibold text-app-approved">
             {justSaved ? `${label}'s date saved.` : ""}
           </p>
           {error && (
