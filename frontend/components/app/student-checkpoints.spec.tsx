@@ -42,6 +42,25 @@ describe("StudentCheckpoints", () => {
     expect(screen.getByText("Signed off on 3 Oct 2026, revoked on 4 Oct 2026 by Katelyn Hanlon.")).toBeInTheDocument();
   });
 
+  it("sums the student up on the navy card, with a link to each stage's card", () => {
+    render(<StudentCheckpoints componentId="k1" data={data} />);
+    expect(screen.getByText("checkpoint behind").closest("p")).toHaveTextContent("1 checkpoint behind · 1 of 3 signed off");
+    const nav = screen.getByRole("navigation", { name: "Jump to a stage" });
+    expect(within(nav).getAllByRole("link")).toHaveLength(3);
+    expect(within(nav).getByRole("link", { name: `Stage 3, ${READY_TEXT}: waiting for you` })).toHaveAttribute("href", "#checkpoint-cp1");
+  });
+
+  it("gives every stage its own card in an ordered list, and opens only the waiting one", () => {
+    const { container } = render(<StudentCheckpoints componentId="k1" data={data} />);
+    expect(within(screen.getByRole("list", { name: "Stages" })).getAllByRole("listitem")).toHaveLength(3);
+    const waiting = container.querySelector("#checkpoint-cp1") as HTMLElement;
+    expect(within(waiting).getByText("Waiting for you")).toBeInTheDocument();
+    expect(within(waiting).getByRole("heading", { level: 3, name: READY_TEXT })).toBeInTheDocument();
+    const due = container.querySelector("#checkpoint-c2") as HTMLElement;
+    expect(within(due).getByText("Due, not signed off")).toBeInTheDocument();
+    expect(within(due).queryByText("Waiting for you")).not.toBeInTheDocument();
+  });
+
   it("signs off a due checkpoint and revokes a signed-off one after asking", async () => {
     vi.mocked(api.send).mockResolvedValue({ checkpointId: "c2", state: "SIGNED_OFF", signedOffOn: "2026-12-14" });
     render(<StudentCheckpoints componentId="k1" data={data} />);
