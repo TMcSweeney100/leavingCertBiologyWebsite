@@ -1,4 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import { teacherStudentLogSchema, type TeacherStudentLog } from "@/lib/api/schemas";
@@ -45,13 +46,15 @@ describe("TeacherLog", () => {
     expect(screen.queryByText(/History/)).not.toBeInTheDocument();
   });
 
-  it("shows a visible entry, marks it edited, and keeps its history one tap away", () => {
+  it("opens a visible entry in place: what they wrote, that it was edited, and its history one tap away", async () => {
     render(<TeacherLog log={log} />);
-    const rows = within(screen.getByRole("list", { name: "Log entries" })).getAllByRole("listitem");
-    expect(rows[2]).toHaveTextContent("1 Mar 2027");
-    expect(rows[2]).toHaveTextContent("Edited · 2 revisions, last on 2 Mar 2027");
-    expect(rows[2]).toHaveTextContent("Pilot run went well");
-    expect(within(rows[2]).getByText("History (2 revisions)")).toBeInTheDocument();
+    const row = screen.getByRole("button", { name: /Pilot run went well/ });
+    expect(row).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByText(/^Edited/)).not.toBeInTheDocument();
+    await userEvent.click(row);
+    expect(row).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText("Edited · 2 revisions, last on 2 Mar 2027")).toBeInTheDocument();
+    expect(screen.getByText("History (2 revisions)")).toBeInTheDocument();
   });
 
   it("counts what the student has shared, framed as their choice", () => {
@@ -59,9 +62,21 @@ describe("TeacherLog", () => {
     expect(screen.getByText("3 entries. Cian has shared 1 with you.")).toBeInTheDocument();
   });
 
-  it("puts the activity line before the entry count", () => {
-    render(<TeacherLog log={log} activity="Last entry 14 days ago." />);
-    expect(screen.getByText("Last entry 14 days ago. 3 entries. Cian has shared 1 with you.")).toBeInTheDocument();
+  it("shows the latest three until Show all, then filters by kind and says what's showing", async () => {
+    const book = { visibility: "VISIBLE" as const, id: "e0", kind: "SOURCE" as const, createdAt: "2027-02-28T10:00:00Z", editedAt: null, revisionCount: 1, body: null,
+      fields: { type: "BOOK" as const, title: "Campbell Biology", author: "Urry", publication: "Pearson", datePublished: "2020", url: null,
+        dateAccessed: "2027-02-28", locator: null, keyInformation: null, relevance: null, reflections: null },
+      history: [] };
+    render(<TeacherLog log={{ ...log, entries: [...log.entries, book] }} />);
+    const list = screen.getByRole("list", { name: "Log entries" });
+    expect(within(list).getAllByRole("listitem")).toHaveLength(3);
+    expect(screen.queryByText("Campbell Biology")).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Show all 4 entries" }));
+    expect(within(list).getAllByRole("listitem")).toHaveLength(4);
+    await userEvent.click(screen.getByRole("button", { name: "Sources 1" }));
+    expect(within(list).getAllByRole("listitem")).toHaveLength(1);
+    expect(screen.getByRole("button", { name: "Sources 1" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByText("Showing 1 source.")).toBeInTheDocument();
   });
 
   it("says when the student hasn't written anything", () => {
