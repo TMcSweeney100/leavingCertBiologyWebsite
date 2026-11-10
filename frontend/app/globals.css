@@ -130,6 +130,9 @@
   --color-app-note-ground: var(--app-note-ground);
   --color-app-note-line: var(--app-note-line);
   --color-app-note-muted: var(--app-note-muted);
+  /* Student page redesign (docs/design/pilot/student-page-redesign/NOTES.md). */
+  --color-app-attention-line: var(--app-attention-line);
+  --color-app-signed-line: var(--app-signed-line);
 }
 
 @theme {
@@ -373,6 +376,11 @@
   --app-note-ground: #FBF4E6;           /* the cream note card; ink 16.9:1, navy link 10.2:1 */
   --app-note-line: #EBDDC2;             /* its border, decorative */
   --app-note-muted: #5C5340;            /* secondary text on the note card; 6.93:1 */
+
+  /* Student page redesign — direction D (docs/design/pilot/student-page-redesign/NOTES.md). Both are decorative lines:
+     the words beside them carry the meaning, so they need no text contrast. */
+  --app-attention-line: #E4C9B3;        /* the border of a card waiting for the teacher, under its amber strip */
+  --app-signed-line: #9CC9B2;           /* the timeline's rail between two signed-off stages */
 
   /* shadcn semantic variables — mapped onto the BiPi tokens above so every primitive
      (Card, Badge, Progress, Collapsible, Table, Button) inherits the BiPi palette. */
