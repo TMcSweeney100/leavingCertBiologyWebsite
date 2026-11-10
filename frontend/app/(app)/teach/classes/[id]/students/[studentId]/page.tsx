@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { AppMain } from "@/components/app/app-main";
 import { ErrorPanel } from "@/components/app/error-panel";
 import { StudentCheckpoints } from "@/components/app/student-checkpoints";
-import { WorkLink } from "@/components/app/work-link";
+import { StudentHeader } from "@/components/app/student-header";
 import { TeacherLog } from "@/components/app/teacher-log";
 import { BackLink } from "@/components/app/back-link";
 import { card, pageTitle, sectionTitle } from "@/components/app/styles";
@@ -55,15 +55,13 @@ export default async function StudentLogPage({ params }: { params: Promise<{ id:
       {back}
       {log.ok ? (
         <>
-          <h1 className={`mt-2.5 ${pageTitle}`}>{`${log.data.firstName} ${log.data.lastName}`}</h1>
-          <p className="mt-1.5 text-app-base text-app-grey">{"You read the entries they share. Any they keep private show only the kind, the dates and how many times they were edited."}</p>
-          {checkpoints.ok && checkpoints.data.documentLink && (
-            <WorkLink url={checkpoints.data.documentLink.url} name={`${log.data.firstName} ${log.data.lastName}`} className="mt-1" />
-          )}
+          <StudentHeader student={log.data} className={cls.name}
+            activity={checkpoints.ok ? lastEntryWords(checkpoints.data.daysSinceLastLogActivity) : null}
+            link={checkpoints.ok ? checkpoints.data.documentLink : null} />
           {checkpoints.ok
             ? <StudentCheckpoints componentId={componentId} data={checkpoints.data} />
             : <div className="mt-6"><ErrorPanel error={checkpoints.error} /></div>}
-          <TeacherLog log={log.data} activity={checkpoints.ok ? `${lastEntryWords(checkpoints.data.daysSinceLastLogActivity)}.` : undefined} />
+          <TeacherLog log={log.data} />
         </>
       ) : (
         <div className="mt-6"><ErrorPanel error={log.error} /></div>
