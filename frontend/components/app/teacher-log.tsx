@@ -22,6 +22,8 @@ const day = (iso: string) => formatCalendarDate(dublinDate(iso));
 // R-14: date and kind are their own columns on a laptop; on a phone they share a line above the title (`lg:contents`).
 const ROW = "grid grid-cols-[minmax(0,1fr)_20px] items-center gap-x-4 gap-y-1.5 px-4 py-3 lg:grid-cols-[104px_84px_minmax(0,1fr)_20px] lg:px-[18px]";
 const DATE = "font-mono text-app-help text-app-grey";
+// The chip size goes through `cn()` inside `ToggleGroupItem` next to a text colour, so it is written as `length:` (UI-STANDARDS §2).
+const CHIP = "text-[length:var(--text-app-small)]";
 
 /**
  * Direction D: the log as the evidence under the checkpoints. The latest three (R-5), then Show all with filter chips
@@ -58,9 +60,9 @@ export function TeacherLog({ log }: { log: TeacherStudentLog }) {
         </div>
         {expanded && (
           <ToggleGroup aria-label="Show entries" value={[filter]} onValueChange={(v) => { if (v[0]) setFilter(v[0] as Filter); }}>
-            <ToggleGroupItem value="ALL" className="text-app-small">All <b className="font-mono text-app-label">{total}</b></ToggleGroupItem>
+            <ToggleGroupItem value="ALL" className={CHIP}>All <b className="font-mono text-app-label">{total}</b></ToggleGroupItem>
             {KINDS.filter((k) => counts[k] > 0).map((k) => (
-              <ToggleGroupItem key={k} value={k} className="text-app-small">{KIND_PLURAL[k]} <b className="font-mono text-app-label">{counts[k]}</b></ToggleGroupItem>
+              <ToggleGroupItem key={k} value={k} className={CHIP}>{KIND_PLURAL[k]} <b className="font-mono text-app-label">{counts[k]}</b></ToggleGroupItem>
             ))}
           </ToggleGroup>
         )}
@@ -114,7 +116,7 @@ function EntryRow({ entry: e, firstName }: { entry: Entry; firstName: string }) 
             <span className="truncate text-app-base font-semibold text-app-ink">{title}</span>
             {detail && <span className="truncate text-app-help text-app-muted">{detail}</span>}
           </span>
-          <ChevronDown aria-hidden className="col-start-2 row-span-2 row-start-1 size-5 text-app-muted transition-transform group-data-[panel-open]:rotate-180 lg:col-start-4 lg:row-span-1" />
+          <ChevronDown aria-hidden className="col-start-2 row-span-2 row-start-1 size-5 text-app-muted transition-transform motion-reduce:transition-none group-data-[panel-open]:rotate-180 lg:col-start-4 lg:row-span-1" />
         </CollapsibleTrigger>
         <CollapsibleContent className="flex flex-col gap-3 px-4 pb-4 lg:pr-[18px] lg:pl-[238px]">
           <RevisionContent body={e.body} fields={e.fields} />
