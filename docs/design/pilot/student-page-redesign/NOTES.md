@@ -32,4 +32,14 @@ Tim, 10 Nov 2026: the checkpoints and their actions matter much more than the lo
 
 ## Only new value
 
-`#E4C9B3`, the waiting card's border, is not a token yet. `#9CC9B2`, the rail's green between signed-off stages, is not either. Every other colour is an existing `--app-*` token.
+`#E4C9B3`, the waiting card's border, and `#9CC9B2`, the rail's green between signed-off stages, were not tokens in the mockup. They are now `--app-attention-line` and `--app-signed-line` (plan Task 1). Every other colour is an existing `--app-*` token.
+
+## Where the build differs from the mockup
+
+- The page ground stays `--app-ground`, not `--app-tray` (plan R-8).
+- A due stage, which the mockup doesn't show, has an amber-outlined circle, a "Due, not signed off" pill and Sign off (R-9).
+- The history button keeps its name, "Full history (1 answer)", and sits on the last-answer line (R-11).
+- The waiting card's strip says only "Waiting for you" (R-13).
+- Log rows keep a date each, with no day headings (R-14).
+- Signed-off cards keep the normal border (R-17).
+- The two new values are tokens: `--app-attention-line` and `--app-signed-line`.
