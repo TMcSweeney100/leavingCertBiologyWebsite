@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import type { ProgressCell } from "@/lib/api/schemas";
 import Link from "next/link";
 
@@ -10,7 +11,7 @@ const BUSY: Record<SignoffAction, string> = { sign: "Signing off…", undo: "Und
 const GRID_BUTTON = "flex min-h-12 w-full flex-col items-start justify-center gap-0.5 rounded-app-control px-2.5 py-1.5 text-left touch-manipulation disabled:cursor-not-allowed";
 
 type CellProps = {
-  layout: "grid" | "one";
+  layout: "grid" | "one" | "card";
   cell: ProgressCell;
   names: { sign: string; undo: string; revoke: string; review?: string };
   reviewHref?: string;
@@ -24,8 +25,9 @@ type CellProps = {
 
 /**
  * One checkpoint for one student (pack D-7). In the grid a cell is one button carrying its state word; in a
- * one-stage view or on the student page the state is words beside a separate button. Every button's name says
- * the checkpoint and the student, because thirty buttons called "Sign off" would be useless to a screen reader.
+ * one-stage view the state is words beside a separate button; on the student page's stage cards (`card`) it's a
+ * pill beside one button. Every button's name says the checkpoint and the student, because thirty buttons called
+ * "Sign off" would be useless to a screen reader.
  */
 export function CheckpointCell({ layout, cell, names, busy, recent, confirming, reviewHref, onSign, onUndo, onAsk }: CellProps) {
   const date = cell.signedOffOn ? <span data-private>{formatCalendarDate(cell.signedOffOn)}</span> : null;
@@ -54,6 +56,30 @@ export function CheckpointCell({ layout, cell, names, busy, recent, confirming, 
       </Link>
     ) : (
       <span className="text-app-small font-semibold text-app-ready">Ready for sign-off</span>
+    );
+  }
+
+  // Direction D (plan student-page-redesign, R-10): a pill for the state and one button. `one` stays as it was for Progress.
+  if (layout === "card") {
+    const settled = cell.state === "SIGNED_OFF";
+    const due = cell.state === "DUE";
+    const pill = settled ? "bg-app-approved-tint text-app-signed" : due ? "bg-app-due-tint text-app-due" : "bg-app-inset text-app-grey";
+    return (
+      <div className="flex flex-wrap items-center gap-2">
+        <span className={`inline-flex min-h-7 items-center gap-1.5 rounded-full px-2.5 text-app-small font-semibold ${pill}`}>
+          {settled ? <><Check aria-hidden className="size-4" strokeWidth={3} />Signed off {date}</> : due ? "Due, not signed off" : "Not due yet"}
+        </span>
+        {settled ? (
+          <Button type="button" variant="ghost" aria-label={names.revoke} disabled={busy !== null} onClick={onAsk} className="text-app-grey">
+            {busy === "revoke" ? BUSY.revoke : "Revoke"}
+          </Button>
+        ) : (
+          <Button type="button" variant="outline" aria-label={names.sign} disabled={busy !== null} onClick={onSign}
+            className="border-app-accent text-app-accent hover:bg-app-accent-tint">
+            {busy === "sign" ? BUSY.sign : "Sign off"}
+          </Button>
+        )}
+      </div>
     );
   }
 

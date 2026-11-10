@@ -44,6 +44,21 @@ describe("CheckpointCell", () => {
     expect(screen.getByText("Due, not signed off")).toBeInTheDocument();
   });
 
+  it("on a stage card the state is a pill beside one button: Revoke when signed off, Sign off otherwise", async () => {
+    const onAsk = vi.fn();
+    const onSign = vi.fn();
+    const { rerender } = render(<CheckpointCell {...base} layout="card" cell={cell("SIGNED_OFF")} onAsk={onAsk} onSign={onSign} />);
+    expect(screen.getByText(/^Signed off/)).toHaveTextContent("Signed off 2 Oct 2026");
+    await userEvent.click(screen.getByRole("button", { name: names.revoke }));
+    expect(onAsk).toHaveBeenCalled();
+    rerender(<CheckpointCell {...base} layout="card" cell={cell("DUE")} onAsk={onAsk} onSign={onSign} />);
+    expect(screen.getByText("Due, not signed off")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: names.sign }));
+    expect(onSign).toHaveBeenCalled();
+    rerender(<CheckpointCell {...base} layout="card" cell={cell("NOT_DUE")} onAsk={onAsk} onSign={onSign} />);
+    expect(screen.getByText("Not due yet")).toBeInTheDocument();
+  });
+
   it("while its revoke question is open the cell isn't a second Revoke button", () => {
     render(<CheckpointCell {...base} layout="grid" cell={cell("SIGNED_OFF")} confirming />);
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
