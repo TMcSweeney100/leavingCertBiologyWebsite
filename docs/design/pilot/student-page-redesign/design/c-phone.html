@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap"><link rel="stylesheet" href="mock.css"><script src="blocks.js"></script><title>Student page, phone</title>
+<style>
+  .answer { grid-template-columns: 1fr; }
+  .who-card h1 { font-size: 22px; }
+  .appbar { padding: 0 16px; }
+  .log-row { grid-template-columns: 70px minmax(0,1fr) 24px; gap: 4px 10px; padding: 12px 14px; }
+</style></head>
+<body>
+<div id="root"></div>
+<script>
+document.getElementById('root').innerHTML = B.appbar(true) + `
+<main style="padding:16px 16px 40px" class="stack">
+  ${B.back()}
+  ${B.who(true)}
+  ${B.hero()}
+  ${B.waiting()}
+  ${B.checkpoints({ openStage: 0, narrow: true })}
+  ${B.log({ narrow: true })}
+</main>`;
+</script>
+</body></html>
