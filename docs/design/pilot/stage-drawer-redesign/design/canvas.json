@@ -1,0 +1,22 @@
+{
+  "v": 3,
+  "createdOnFiles": {"v": 1, "at": "2026-11-03T12:00:00Z"},
+  "title": "Stage Drawer Redesign",
+  "launch": {"view": "canvas"},
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {"x": 0, "y": 0, "w": 440, "h": 1240, "title": "A. Closest to ours (reference)", "is_interactive": true},
+    "NavyCheckpoint.dc.html": {"x": 520, "y": 0, "w": 440, "h": 1400, "title": "B. Navy checkpoint, cards (chosen)", "is_interactive": true},
+    "TwoZones.dc.html": {"x": 1040, "y": 0, "w": 440, "h": 1320, "title": "C. SEC zone, your zone (reference)", "is_interactive": true},
+    "States.dc.html": {"x": 0, "y": 1640, "w": 1760, "h": 520, "title": "States, in the style of B"},
+    "ItemInDrawer.dc.html": {"x": 0, "y": 2400, "w": 440, "h": 900, "title": "Item view: who has ticked it", "is_interactive": true},
+    "ItemEditing.dc.html": {"x": 520, "y": 2400, "w": 440, "h": 900, "title": "Item view: after pressing Edit", "is_interactive": true}
+  },
+  "order": ["Main.dc.html", "NavyCheckpoint.dc.html", "TwoZones.dc.html", "States.dc.html", "ItemInDrawer.dc.html", "ItemEditing.dc.html"],
+  "notes": {
+    "row1": {"x": 0, "y": -260, "text": "Three takes on the drawer", "kind": "title1", "maxW": 1480},
+    "row2": {"x": 0, "y": 1380, "text": "The merged note, and the other states", "kind": "title1", "maxW": 1760},
+    "row3": {"x": 0, "y": 2140, "text": "Opening an item, inside the drawer", "kind": "title1", "maxW": 1480}
+  },
+  "designSystems": []
+}

@@ -2,7 +2,7 @@ import type { ProgressGrid } from '@/lib/api/schemas';
 
 import { letteredItems, type LetteredItem, type StageLike } from './component-setup.ts';
 import type { Picking } from './date-marks.ts';
-import { fullName } from './progress.ts';
+import { fullName, studentCount } from './progress.ts';
 
 /**
  * The stage sheet's pure parts (plan stage-sheet). The page keeps only the teacher's edits over what's saved, dates and
@@ -37,6 +37,9 @@ export function stageItems(stages: ReadonlyArray<StageLike>, stageId: string): L
   return letteredItems(stages).filter((item) => item.stageId === stageId);
 }
 
+/** Where focus goes when the item view closes after a new item is saved or an item is retired: "Add an item" (S-31). */
+export const ADD_ITEM = 'add';
+
 /** What the sheet's calendar view needs: who asked, for what, and where focus goes back to. */
 export type DateRequest = {
   title: string;
@@ -62,6 +65,12 @@ export function checkpointCounts(grid: Pick<ProgressGrid, 'stages' | 'students'>
     else counts.notYet += 1;
   }
   return counts;
+}
+
+/** The checkpoint bar's accessible name (plan stage-drawer-redesign R-17): the counts it draws, in words. */
+export function countsLabel(counts: CheckpointCounts): string {
+  const total = counts.signedOff + counts.waiting + counts.notYet;
+  return `${counts.signedOff} signed off, ${counts.waiting} waiting, ${counts.notYet} not yet, of ${studentCount(total)}`;
 }
 
 export type TickLists = { ticked: string[]; notYet: string[] };

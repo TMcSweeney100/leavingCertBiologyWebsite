@@ -1,7 +1,7 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { checkpointCounts, dropSaved, oneStageDates, stageFromParam, stageItems, tickLists } from './stage-sheet.ts';
+import { checkpointCounts, countsLabel, dropSaved, oneStageDates, stageFromParam, stageItems, tickLists } from './stage-sheet.ts';
 
 const stages = [
   { id: 's1', ordinal: 1, label: 'Stage 1', name: 'One', dueDate: '2026-09-20', items: [{ id: 'i2', text: 'Later', dueDate: '2026-10-08' }] },
@@ -55,6 +55,11 @@ describe('stage sheet progress helpers', () => {
   test('checkpointCounts: signed off, waiting (Ready), and the rest as not yet', () => {
     assert.deepEqual(checkpointCounts(grid, 's2'), { signedOff: 1, waiting: 1, notYet: 2 });
     assert.equal(checkpointCounts(grid, 's6'), null);
+  });
+
+  test('countsLabel says what the checkpoint bar draws, in words', () => {
+    assert.equal(countsLabel({ signedOff: 4, waiting: 3, notYet: 24 }), '4 signed off, 3 waiting, 24 not yet, of 31 students');
+    assert.equal(countsLabel({ signedOff: 1, waiting: 0, notYet: 0 }), '1 signed off, 0 waiting, 0 not yet, of 1 student');
   });
 
   test('tickLists: full names, by surname, ticked and not', () => {

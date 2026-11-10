@@ -90,11 +90,13 @@ test("teacher sets up a Biology component", async ({ page: teacher }) => {
   await expect(sheet.getByRole("button", { name: /Full draft in for feedback/ })).toBeVisible();
   await expectAccessible(teacher);
 
-  // Stage sheet Part 3: a note for students, with a link the preview already shows clickable.
-  await sheet.getByRole("textbox", { name: "Your note for students" }).fill("Feedback slots on Thursday. Sign up: https://example.ie/slots");
-  await expect(sheet.getByRole("link", { name: /https:\/\/example\.ie\/slots/ })).toBeVisible();
+  // The teacher's note (plan stage-drawer-redesign): Add a note opens the card's box; once saved, the card shows the
+  // note as students will see it, its www. address a link.
+  await sheet.getByRole("button", { name: "Add a note" }).click();
+  await sheet.getByRole("textbox", { name: "Your note for students" }).fill("Feedback slots on Thursday. Sign up: www.example.ie/slots");
   await sheet.getByRole("button", { name: "Save note" }).click();
-  await expect(sheet.getByText(/^Saved/)).toBeVisible();
+  await expect(sheet.getByRole("link", { name: "www.example.ie/slots (opens in a new tab)" })).toHaveAttribute("href", "https://www.example.ie/slots");
+  await expect(sheet.getByText(/Saved/)).toBeVisible();
   await expectAccessible(teacher);
   await sheet.getByRole("button", { name: "Close" }).click();
   await expect(sheet).toHaveCount(0);
@@ -132,7 +134,7 @@ test("a student sees the component and ticks a teacher item", async ({ page: tea
   await student.getByTestId("stage-list").getByText("Finalising the Biology in Practice Investigation Report").click();
   // Stage sheet Part 3: the teacher's note sits above the official text in the same card.
   await expect(student.getByText("Note from your teacher")).toBeVisible();
-  await expect(student.getByRole("link", { name: /https:\/\/example\.ie\/slots/ })).toHaveAttribute("target", "_blank");
+  await expect(student.getByRole("link", { name: "www.example.ie/slots (opens in a new tab)" })).toHaveAttribute("target", "_blank");
   await expect(student.getByText("Note updated")).toBeVisible();
   await student.getByRole("checkbox", { name: /Full draft in for feedback/ }).check();
   await expect(student.getByText("You ticked this")).toBeVisible();

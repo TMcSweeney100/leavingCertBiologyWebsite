@@ -15,8 +15,9 @@ import type { StageNote } from "@/lib/api/schemas";
 
 import { StageNoteForm } from "./stage-note-form";
 
-function Harness({ note }: { note: StageNote | null }) {
-  const [draft, setDraft] = useState(note?.text ?? "");
+/** The page keeps the draft (S-21); `initial` stands in for one left unsaved earlier. */
+function Harness({ note, initial }: { note: StageNote | null; initial?: string }) {
+  const [draft, setDraft] = useState(initial ?? note?.text ?? "");
   return <StageNoteForm componentId="k1" stageId="s2" note={note} draft={draft} onDraft={setDraft} />;
 }
 
@@ -27,6 +28,8 @@ function deferred<T>() {
   return { promise, resolve };
 }
 
+const box = () => screen.getByRole("textbox", { name: "Your note for students" });
+
 beforeEach(() => {
   refresh.mockReset();
   vi.mocked(api.send).mockReset();
@@ -34,82 +37,75 @@ beforeEach(() => {
 });
 
 describe("StageNoteForm", () => {
-  it("previews the note as students will see it, links included, and saves it", async () => {
-    vi.mocked(api.send).mockResolvedValue({ text: "Slots: https://example.ie/slots", updatedOn: "2026-10-31" });
-    render(<Harness note={null} />);
-    await userEvent.type(screen.getByRole("textbox", { name: "Your note for students" }), "Slots: https://example.ie/slots");
-    expect(screen.getByRole("link", { name: /https:\/\/example\.ie\/slots/ })).toBeInTheDocument();
-    expect(screen.getByText("Not saved yet")).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: "Save note" }));
+  it("shows a saved note as students see it, links included, and Edit turns it into the box", async () => {
+    render(<Harness note={{ text: "Slots: www.example.ie/slots", updatedOn: "2026-10-28" }} />);
+    expect(screen.getByRole("link", { name: "www.example.ie/slots (opens in a new tab)" })).toHaveAttribute("href", "https://www.example.ie/slots");
+    expect(screen.getByText("Saved 28 Oct 2026")).toBeInTheDocument();
+    expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
 
-    expect(api.send).toHaveBeenCalledWith("PUT", "/components/k1/stages/s2/note", { text: "Slots: https://example.ie/slots" }, expect.anything());
-    expect(refresh).toHaveBeenCalled();
+    await userEvent.click(screen.getByRole("button", { name: "Edit your note" }));
+    expect(box()).toHaveValue("Slots: www.example.ie/slots");
+    expect(box()).toHaveFocus();
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
 
-  it("an emptied box removes the note, and says so", async () => {
+  it("Cancel puts the saved note back and focus on Edit", async () => {
+    render(<Harness note={{ text: "Old", updatedOn: "2026-10-28" }} />);
+    await userEvent.click(screen.getByRole("button", { name: "Edit your note" }));
+    await userEvent.type(box(), " and new");
+    expect(screen.getByText("Not saved yet")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+
+    expect(screen.getByText("Old")).toBeInTheDocument();
+    expect(screen.queryByText("Not saved yet")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Edit your note" })).toHaveFocus();
+  });
+
+  it("with no note, Add a note opens the box; Save note sends it trimmed and shows it as students will", async () => {
+    vi.mocked(api.send).mockResolvedValue({ text: "Bring a lab coat", updatedOn: "2026-10-31" });
+    render(<Harness note={null} />);
+    await userEvent.click(screen.getByRole("button", { name: "Add a note" }));
+    await userEvent.type(box(), "Bring a lab coat ");
+    await userEvent.click(screen.getByRole("button", { name: "Save note" }));
+
+    expect(api.send).toHaveBeenCalledWith("PUT", "/components/k1/stages/s2/note", { text: "Bring a lab coat" }, expect.anything());
+    expect(refresh).toHaveBeenCalled();
+    expect(await screen.findByText("Saved just now")).toBeInTheDocument();
+    expect(screen.getByText("Bring a lab coat")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Edit your note" })).toHaveFocus();
+  });
+
+  it("an unsaved note from earlier opens on the box (S-21)", () => {
+    render(<Harness note={null} initial="Half a thought" />);
+    expect(box()).toHaveValue("Half a thought");
+    expect(screen.getByText("Not saved yet")).toBeInTheDocument();
+  });
+
+  it("an emptied box removes the note, locked while it goes, and the card goes back to Add a note", async () => {
     const request = deferred<void>();
     vi.mocked(api.sendNoContent).mockReturnValue(request.promise);
     const { rerender } = render(<Harness note={{ text: "Old", updatedOn: "2026-10-28" }} />);
-    expect(screen.getByText("Saved 28 Oct 2026")).toBeInTheDocument();
-    await userEvent.clear(screen.getByRole("textbox", { name: "Your note for students" }));
+    await userEvent.click(screen.getByRole("button", { name: "Edit your note" }));
+    await userEvent.clear(box());
     await userEvent.click(screen.getByRole("button", { name: "Remove note" }));
+
     expect(api.sendNoContent).toHaveBeenCalledWith("DELETE", "/components/k1/stages/s2/note");
+    expect(box()).toHaveAttribute("readonly");
     expect(screen.getByRole("button", { name: "Removing…" })).toBeDisabled();
 
     request.resolve();
     expect(await screen.findByText("Note removed")).toBeInTheDocument();
-    expect(screen.queryByText("Saved just now")).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Remove note" })).toBeDisabled();
+    await waitFor(() => expect(screen.getByRole("button", { name: "Add a note" })).toHaveFocus());
 
     // The page's refresh lands: the stage has no note now, and the line still says what happened.
     rerender(<Harness note={null} />);
     expect(screen.getByText("Note removed")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Save note" })).toBeDisabled();
-  });
-
-  it("sends the note trimmed, so what is stored is what the form compares", async () => {
-    vi.mocked(api.send).mockResolvedValue({ text: "Hello", updatedOn: "2026-10-31" });
-    render(<Harness note={null} />);
-    await userEvent.type(screen.getByRole("textbox", { name: "Your note for students" }), "Hello ");
-    await userEvent.click(screen.getByRole("button", { name: "Save note" }));
-
-    expect(api.send).toHaveBeenCalledWith("PUT", "/components/k1/stages/s2/note", { text: "Hello" }, expect.anything());
-  });
-
-  it("says it is saved at once, while the page has not yet caught up with the note", async () => {
-    vi.mocked(api.send).mockResolvedValue({ text: "Bring a lab coat", updatedOn: "2026-10-31" });
-    render(<Harness note={null} />);
-    await userEvent.type(screen.getByRole("textbox", { name: "Your note for students" }), "Bring a lab coat");
-    await userEvent.click(screen.getByRole("button", { name: "Save note" }));
-
-    expect(await screen.findByText("Saved just now")).toBeInTheDocument();
-    expect(screen.queryByText("Not saved yet")).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Save note" })).toBeDisabled();
-
-    await userEvent.type(screen.getByRole("textbox", { name: "Your note for students" }), "!");
-    expect(screen.getByText("Not saved yet")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Save note" })).toBeEnabled();
-  });
-
-  it("locks the box while saving, so nothing typed meanwhile is overwritten, then puts focus back in it", async () => {
-    const request = deferred<StageNote>();
-    vi.mocked(api.send).mockReturnValue(request.promise);
-    render(<Harness note={null} />);
-    const box = screen.getByRole("textbox", { name: "Your note for students" });
-    await userEvent.type(box, "Bring a lab coat");
-    await userEvent.click(screen.getByRole("button", { name: "Save note" }));
-
-    expect(box).toHaveAttribute("readonly");
-    expect(screen.getByRole("button", { name: "Saving…" })).toBeDisabled();
-
-    request.resolve({ text: "Bring a lab coat", updatedOn: "2026-10-31" });
-    await waitFor(() => expect(box).not.toHaveAttribute("readonly"));
-    expect(box).toHaveFocus();
   });
 
   it("spaces alone are nothing to save", async () => {
     render(<Harness note={null} />);
-    await userEvent.type(screen.getByRole("textbox", { name: "Your note for students" }), "   ");
+    await userEvent.click(screen.getByRole("button", { name: "Add a note" }));
+    await userEvent.type(box(), "   ");
     expect(screen.getByRole("button", { name: "Save note" })).toBeDisabled();
     expect(screen.queryByText("Not saved yet")).not.toBeInTheDocument();
   });

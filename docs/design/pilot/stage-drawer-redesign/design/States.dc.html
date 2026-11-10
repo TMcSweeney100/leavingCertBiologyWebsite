@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Note and checkpoint states</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1760px; height: 520px; box-sizing: border-box; padding: 24px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; align-items: start; background: #F1F3F6; color: #101419; font-family: 'Public Sans', sans-serif; font-size: 15px; line-height: 1.5">
+
+  <div style="display: flex; flex-direction: column; gap: 10px">
+    <p style="margin: 0; font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700; color: #4B535C">1. No note yet</p>
+    <section aria-labelledby="s-empty" style="padding: 8px 18px 16px; background: #FBF4E6; border: 1px solid #EBDDC2; border-radius: 10px">
+      <h3 id="s-empty" style="margin: 0; height: 44px; display: flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700">Your note for students</h3>
+      <p style="margin: 0 0 12px; font-size: 14px; color: #5C5340">Students only see the guidelines for this stage.</p>
+      <button type="button" style="display: flex; align-items: center; gap: 6px; height: 44px; padding: 0 14px; background: #FFFFFF; border: 1px solid #1F3A6E; border-radius: 8px; font: 600 14px 'Public Sans', sans-serif; color: #1F3A6E; cursor: pointer">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" style="stroke-width: 2.5; stroke-linecap: round"><path d="M12 5v14M5 12h14"></path></svg>
+        Add a note
+      </button>
+    </section>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px">
+    <p style="margin: 0; font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700; color: #4B535C">2. Reading: what students see</p>
+    <section aria-labelledby="s-read" style="padding: 8px 18px 16px; background: #FBF4E6; border: 1px solid #EBDDC2; border-radius: 10px">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+        <h3 id="s-read" style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700">Your note for students</h3>
+        <button type="button" aria-label="Edit your note" style="display: flex; align-items: center; gap: 6px; height: 44px; padding: 0 8px; margin-right: -8px; background: none; border: 0; font: 600 14px 'Public Sans', sans-serif; color: #1F3A6E; cursor: pointer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" style="stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+          Edit
+        </button>
+      </div>
+      <p style="margin: 0; font-size: 15px; white-space: pre-line">Look at some examples that I have from last year at www.google.com
+
+Look at examples from out book also on page 88</p>
+      <p style="margin: 10px 0 0; font-size: 13px; color: #5C5340">How students see it · Saved 3 Nov 2026</p>
+    </section>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px">
+    <p style="margin: 0; font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700; color: #4B535C">3. Editing: the same card, unsaved</p>
+    <section aria-labelledby="s-edit" style="padding: 8px 18px 16px; background: #FBF4E6; border: 1px solid #EBDDC2; border-radius: 10px">
+      <label id="s-edit" for="s-edit-box" style="display: flex; align-items: center; height: 44px; font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700">Your note for students</label>
+      <p style="margin: 0 0 8px; font-size: 13px; color: #5C5340">Links starting http:// or https:// become clickable.</p>
+      <textarea id="s-edit-box" rows="5" readonly style="display: block; width: 100%; box-sizing: border-box; padding: 12px 14px; background: #FFFFFF; border: 2px solid #1F3A6E; border-radius: 8px; font: 400 15px/1.5 'Public Sans', sans-serif; color: #101419; resize: vertical">Look at some examples that I have from last year at www.google.com
+
+Look at examples from our book also on page 88</textarea>
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px">
+        <span style="font-size: 13px; color: #5C5340"><b style="font-weight: 600; color: #101419">Not saved</b> · 114 / 1,000</span>
+        <span style="display: flex; gap: 8px">
+          <button type="button" style="height: 44px; padding: 0 14px; background: #FFFFFF; border: 1px solid #DDE1E6; border-radius: 8px; font: 600 14px 'Public Sans', sans-serif; color: #101419; cursor: pointer">Cancel</button>
+          <button type="button" style="height: 44px; padding: 0 14px; background: #1F3A6E; border: 0; border-radius: 8px; font: 600 14px 'Public Sans', sans-serif; color: #FFFFFF; cursor: pointer">Save note</button>
+        </span>
+      </div>
+    </section>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px">
+    <p style="margin: 0; font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700; color: #4B535C">4. Checkpoint with students waiting (sample count)</p>
+    <section aria-labelledby="s-check" style="padding: 18px; background: #1F3A6E; border-radius: 10px; color: #FFFFFF">
+      <h3 id="s-check" style="margin: 0; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #C9D5EA">Checkpoint</h3>
+      <p style="margin: 6px 0 0; font-family: 'Space Grotesk', sans-serif; font-size: 20px; line-height: 1.28; font-weight: 700; letter-spacing: -0.01em">Experiment carried out under supervision, in line with the research and planning already shared</p>
+      <div role="img" aria-label="4 signed off, 3 waiting, 24 not yet, of 31 students" style="display: flex; gap: 2px; height: 8px; margin-top: 16px">
+        <span style="flex: 4; background: #7FD1A8; border-radius: 4px 0 0 4px"></span>
+        <span style="flex: 3; background: #F2B15C"></span>
+        <span style="flex: 24; background: #4A6396; border-radius: 0 4px 4px 0"></span>
+      </div>
+      <p style="display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 8px 0 0; font-size: 13px; color: #DCE4F2">
+        <span><b style="font-weight: 700; color: #7FD1A8">4</b> signed off</span>
+        <span><b style="font-weight: 700; color: #FFFFFF">24</b> not yet</span>
+      </p>
+      <a href="#" style="display: flex; align-items: center; justify-content: space-between; min-height: 44px; margin-top: 12px; padding: 0 12px; background: #F6EDE6; border-radius: 8px; font-size: 14px; font-weight: 700; color: #A04806; text-decoration: none">3 waiting for you <span aria-hidden="true">›</span></a>
+    </section>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1760,"height":520}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

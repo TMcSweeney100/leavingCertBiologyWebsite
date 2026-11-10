@@ -63,6 +63,7 @@ The live BiPi schedule (`app/[class]/`, `components/bipi/`) has its own notes in
 - BiPi blue and green appear only inside reused BiPi components, where they mean "now" and "done". App code never uses `--bipi-*`.
 - No state carried by colour alone: pair it with a word, and where useful an icon.
 - `--app-pick` (azure) means "your pick" and `--app-today` (gold) means "today", in the date drawer and the year view only; neither is a state (pack D-11).
+- The stage sheet's look (design B, plan stage-drawer-redesign): white cards on `--app-tray`, the stage's checkpoint as the one navy card (`bg-app-accent`, with `--app-approved-on-accent`, `--app-attention-on-accent` and `--app-accent-track` for its bar), and the teacher's note as a cream card (`--app-note-*`). Only the stage sheet uses them so far; whether they go app-wide is the `app-polish` idea in `docs/BACKLOG.md`.
 - Disabled: `disabled` attribute plus reduced opacity and no pointer events. Read-only looks different from disabled.
 
 ## 6. Interactive elements
