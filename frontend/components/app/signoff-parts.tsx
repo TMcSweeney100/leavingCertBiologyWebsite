@@ -5,13 +5,13 @@ import Link from "next/link";
 import { formatCalendarDate } from "@/lib/app/component-setup";
 import { keepName, revokeName, type SignoffAction } from "@/lib/app/progress";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 const BUSY: Record<SignoffAction, string> = { sign: "Signing off…", undo: "Undoing…", revoke: "Revoking…" };
 const GRID_BUTTON = "flex min-h-12 w-full flex-col items-start justify-center gap-0.5 rounded-app-control px-2.5 py-1.5 text-left touch-manipulation disabled:cursor-not-allowed";
 
 type CellProps = {
-  layout: "grid" | "one" | "card";
+  layout: "grid" | "one" | "card" | "row";
   cell: ProgressCell;
   names: { sign: string; undo: string; revoke: string; review?: string };
   reviewHref?: string;
@@ -24,10 +24,10 @@ type CellProps = {
 };
 
 /**
- * One checkpoint for one student (pack D-7). In the grid a cell is one button carrying its state word; in a
- * one-stage view the state is words beside a separate button; on the student page's stage cards (`card`) it's a
- * pill beside one button. Every button's name says the checkpoint and the student, because thirty buttons called
- * "Sign off" would be useless to a screen reader.
+ * One checkpoint for one student (pack D-7). In the grid a cell is one quiet mark (a tick, an amber Sign off, a
+ * dash, Review); on the student page's stage cards (`card`) the state is a pill beside one button; in the Progress
+ * tab's lists (`row`) it's the button alone. Every button's name says the checkpoint and the student, because
+ * thirty buttons called "Sign off" would be useless to a screen reader.
  */
 export function CheckpointCell({ layout, cell, names, busy, recent, confirming, reviewHref, onSign, onUndo, onAsk }: CellProps) {
   const date = cell.signedOffOn ? <span data-private>{formatCalendarDate(cell.signedOffOn)}</span> : null;
@@ -49,14 +49,17 @@ export function CheckpointCell({ layout, cell, names, busy, recent, confirming, 
   }
 
   if (cell.state === "READY") {
-    return layout === "grid" && reviewHref ? (
-      <Link href={reviewHref} aria-label={names.review} className={`${GRID_BUTTON} bg-app-ready-tint hover:bg-app-accent-tint`}>
-        <span className="text-app-small font-semibold text-app-ready">Ready</span>
-        <span className="text-app-small font-semibold text-app-accent underline underline-offset-3">Review</span>
-      </Link>
-    ) : (
-      <span className="text-app-small font-semibold text-app-ready">Ready for sign-off</span>
-    );
+    if (reviewHref && layout === "grid") {
+      return (
+        <Link href={reviewHref} aria-label={names.review} className={`${GRID_BUTTON} hover:bg-app-inset`}>
+          <span className="inline-flex h-9 items-center rounded-app-control bg-app-accent px-3 text-app-small font-bold text-app-on-accent">Review</span>
+        </Link>
+      );
+    }
+    if (reviewHref && layout === "row") {
+      return <Link href={reviewHref} aria-label={names.review} className={buttonVariants()}>Review</Link>;
+    }
+    return <span className="text-app-small font-semibold text-app-ready">Ready for sign-off</span>;
   }
 
   // Direction D (plan student-page-redesign, R-10): a pill for the state and one button. `one` stays as it was for Progress.
@@ -83,22 +86,52 @@ export function CheckpointCell({ layout, cell, names, busy, recent, confirming, 
     );
   }
 
+  // Plan progress-redesign P-10: quiet marks. Every button keeps its full name, so only the visible words got shorter.
   if (layout === "grid") {
     if (cell.state === "SIGNED_OFF") {
       return (
-        <button type="button" aria-label={names.revoke} disabled={busy !== null} onClick={onAsk} className={`${GRID_BUTTON} hover:bg-app-inset`}>
-          <span className="text-app-small font-semibold text-app-signed">{busy === "revoke" ? BUSY.revoke : "Signed off"}</span>
-          <span className="font-mono text-app-label text-app-grey">{date}</span>
+        <button type="button" aria-label={names.revoke} title={cell.signedOffOn ? `Signed off ${formatCalendarDate(cell.signedOffOn)}` : undefined}
+          disabled={busy !== null} onClick={onAsk} className={`${GRID_BUTTON} hover:bg-app-inset`}>
+          {busy === "revoke" ? <span className="text-app-small text-app-grey">{BUSY.revoke}</span> : (
+            <span aria-hidden className="ml-1.5 inline-flex size-[26px] items-center justify-center rounded-full bg-app-signed text-app-on-accent">
+              <Check className="size-4" strokeWidth={3} />
+            </span>
+          )}
         </button>
       );
     }
-    const due = cell.state === "DUE";
+    if (cell.state === "DUE") {
+      return (
+        <button type="button" aria-label={names.sign} disabled={busy !== null} onClick={onSign} className={GRID_BUTTON}>
+          <span className="inline-flex h-9 items-center rounded-app-control border border-app-attention-line bg-app-due-tint px-3 text-app-small font-bold text-app-due">
+            {busy === "sign" ? BUSY.sign : "Sign off"}
+          </span>
+        </button>
+      );
+    }
     return (
-      <button type="button" aria-label={names.sign} disabled={busy !== null} onClick={onSign}
-        className={`${GRID_BUTTON} ${due ? "bg-app-due-tint hover:bg-app-attention-tint" : "hover:bg-app-inset"}`}>
-        <span className={`text-app-small font-semibold ${due ? "text-app-due" : "text-app-muted"}`}>{due ? "Due" : "Not due yet"}</span>
-        <span className="text-app-small font-semibold text-app-accent">{busy === "sign" ? BUSY.sign : "Sign off"}</span>
+      <button type="button" aria-label={names.sign} disabled={busy !== null} onClick={onSign} className={`group ${GRID_BUTTON} hover:bg-app-inset`}>
+        {busy === "sign" ? <span className="text-app-small text-app-grey">{BUSY.sign}</span> : (
+          <>
+            <span aria-hidden className="ml-1.5 block h-0.5 w-3.5 rounded-full bg-app-field-border group-hover:hidden group-focus-visible:hidden" />
+            <span className="hidden text-app-small font-semibold text-app-accent group-hover:inline group-focus-visible:inline">Sign off</span>
+          </>
+        )}
       </button>
+    );
+  }
+
+  // Plan progress-redesign P-9: the Progress tab's lists. One button; the list's heading says the state.
+  if (layout === "row") {
+    return cell.state === "SIGNED_OFF" ? (
+      <Button type="button" variant="ghost" aria-label={names.revoke} disabled={busy !== null} onClick={onAsk} className="text-app-grey">
+        {busy === "revoke" ? BUSY.revoke : "Revoke"}
+      </Button>
+    ) : (
+      <Button type="button" variant="outline" aria-label={names.sign} disabled={busy !== null} onClick={onSign}
+        className="border-app-accent text-app-accent hover:bg-app-accent-tint">
+        {busy === "sign" ? BUSY.sign : "Sign off"}
+      </Button>
     );
   }
 
