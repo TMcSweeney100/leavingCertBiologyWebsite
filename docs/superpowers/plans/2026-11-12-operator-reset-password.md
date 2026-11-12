@@ -316,6 +316,11 @@ git add docs/TEACHER-AND-CLASS-SETUP.md docs/BACKLOG.md docs/HANDOFF.md
 git commit -m "Record the operator reset-password command in the setup guide, the backlog and the handoff"
 ```
 
+## Built differently from the plan (12 Nov 2026)
+
+- **Task 1 Step 8 is a test, not a hand check.** `OperatorProcessTest.aPasswordResetEndsSessionsWithoutAWebServer` starts a real operator process (no web server, no session repository), with a `spring_session` row for the user already in place, and checks the row is gone and `must_change` is set. It fails when `users.endSessions(userId)` is taken out. So there are four new tests, not three. The browser walk-through in Step 8 was not done.
+- **Built in a worktree**, `.worktrees/pilot-operator-reset-password`, because another session had uncommitted Progress work in the main checkout.
+
 ## Not in this plan
 
 - **Email or self-service reset for teachers** (O-1).

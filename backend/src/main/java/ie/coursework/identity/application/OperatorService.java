@@ -11,6 +11,7 @@ import ie.coursework.identity.domain.TemporaryPasswordGenerator;
 import ie.coursework.identity.domain.Username;
 import ie.coursework.shared.error.DomainException;
 import ie.coursework.shared.error.ErrorCode;
+import java.time.Clock;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.dao.DuplicateKeyException;
@@ -28,15 +29,18 @@ public class OperatorService {
     private final PasswordEncoder passwordEncoder;
     private final TemporaryPasswordGenerator temporaryPasswords;
     private final AuditLog auditLog;
+    private final Clock clock;
 
     public OperatorService(SchoolRepository schools, UserAccountRepository users, RoleRepository roles,
-            PasswordEncoder passwordEncoder, TemporaryPasswordGenerator temporaryPasswords, AuditLog auditLog) {
+            PasswordEncoder passwordEncoder, TemporaryPasswordGenerator temporaryPasswords, AuditLog auditLog,
+            Clock clock) {
         this.schools = schools;
         this.users = users;
         this.roles = roles;
         this.passwordEncoder = passwordEncoder;
         this.temporaryPasswords = temporaryPasswords;
         this.auditLog = auditLog;
+        this.clock = clock;
     }
 
     @Transactional
@@ -69,6 +73,20 @@ public class OperatorService {
             throw new DomainException(ErrorCode.USERNAME_TAKEN, "That username is taken.");
         }
         auditLog.record(null, AuditEventType.USER_CREATED, "user", userId, Map.of());
+        return new CreatedAccount(userId, username.value(), temporaryPassword);
+    }
+
+    /** For someone who can't sign in. Works for any account; the new password must be changed at first sign-in. */
+    @Transactional
+    public CreatedAccount resetPassword(String rawUsername) {
+        Username username = Username.parse(rawUsername);
+        UUID userId = users.findCredential(username)
+                .orElseThrow(() -> new DomainException(ErrorCode.NOT_FOUND, "No user with that username."))
+                .userId();
+        String temporaryPassword = temporaryPasswords.next();
+        users.updatePassword(userId, passwordEncoder.encode(temporaryPassword), true, clock.instant());
+        users.endSessions(userId);
+        auditLog.record(null, AuditEventType.PASSWORD_RESET_BY_OPERATOR, "user", userId, Map.of());
         return new CreatedAccount(userId, username.value(), temporaryPassword);
     }
 

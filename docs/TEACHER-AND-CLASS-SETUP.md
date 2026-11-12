@@ -136,7 +136,7 @@ Ask the teacher to tell you when they're in. If they report `Wrong username or p
 
 ## A teacher forgot their password
 
-> **Not built yet.** The `reset-password` command below is planned in `docs/superpowers/plans/2026-11-12-operator-reset-password.md`. Until that is merged and deployed, there is no way to reset a teacher's password, and a new account would not own their classes. If it happens before then, ask Claude to do the reset by hand on the database.
+This works on the live site once `pilot/operator-reset-password` is merged into `pilotMain` and Render has deployed it. Before that, the command prints `usage:`.
 
 1. [Open Render Shell](#open-render-shell).
 2. Run:

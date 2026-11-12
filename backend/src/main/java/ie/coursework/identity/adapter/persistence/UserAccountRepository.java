@@ -71,6 +71,16 @@ public class UserAccountRepository {
                 .update();
     }
 
+    /**
+     * Signs the user out everywhere by deleting their Spring Session rows (attributes cascade).
+     * For the operator process, which has no session repository; web code uses OtherSessions.
+     */
+    public void endSessions(UUID userId) {
+        jdbc.sql("DELETE FROM spring_session WHERE principal_name = :userId")
+                .param("userId", userId.toString())
+                .update();
+    }
+
     public Optional<UserProfile> findProfile(UUID userId) {
         return jdbc.sql("""
                 SELECT u.id AS user_id, c.username, u.first_name, u.last_name, c.must_change,

@@ -22,6 +22,7 @@ public class OperatorCommands {
               operator create-school --name=<name> --roll=<roll number> [--short-name=<name for the app header>]
               operator set-school-short-name --roll=<roll number> --short-name=<name for the app header>
               operator create-user   --first-name=<name> --last-name=<name> --username=<username>
+              operator reset-password --username=<username>
               operator grant-role    --username=<username> --roll=<roll number> --role=STUDENT|TEACHER|SCHOOL_LEADER
             """;
 
@@ -39,6 +40,7 @@ public class OperatorCommands {
                 case "create-school" -> createSchool(args, out);
                 case "set-school-short-name" -> setSchoolShortName(args, out);
                 case "create-user" -> createUser(args, out);
+                case "reset-password" -> resetPassword(args, out);
                 case "grant-role" -> grantRole(args, out);
                 default -> usage(out);
             };
@@ -71,6 +73,13 @@ public class OperatorCommands {
         CreatedAccount account = operator.createUser(
                 required(args, "first-name"), required(args, "last-name"), required(args, "username"));
         out.println("Created " + account.username() + ".");
+        out.println("Temporary password (shown once): " + account.temporaryPassword());
+        return OK;
+    }
+
+    private int resetPassword(ApplicationArguments args, PrintStream out) {
+        CreatedAccount account = operator.resetPassword(required(args, "username"));
+        out.println("Reset the password of " + account.username() + ". They are signed out everywhere.");
         out.println("Temporary password (shown once): " + account.temporaryPassword());
         return OK;
     }

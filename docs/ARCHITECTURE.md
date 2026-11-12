@@ -66,7 +66,7 @@ Environment variables the proxy and server client need: `APP_ENABLED`, `BACKEND_
 - `Username`: `^[a-z0-9._-]{3,32}$`, lower-cased on the way in.
 - Changing a password (`PasswordService`) checks the current one, clears `must_change`, and ends the user's other sessions (`security/OtherSessions.java`, which finds sessions by principal name, the user id).
 - Reset codes (`PasswordResetService`, `ResetCode`): 8 characters from an alphabet without look-alikes, hashed at rest, 24-hour life, one use. A teacher issues one for a pending or approved student of a class they own. Redeeming counts against the login throttle so it can't be guessed faster than a password, ends all the user's sessions, and does **not** sign them in.
-- Temporary passwords (`TemporaryPasswordGenerator`): 16 characters, printed once by the operator command.
+- Temporary passwords (`TemporaryPasswordGenerator`): 16 characters, printed once by the operator command. `operator reset-password` issues a new one for an existing account (any role), sets `must_change` again and deletes the user's `spring_session` rows directly (`UserAccountRepository.endSessions`), because the operator process has no session repository for `OtherSessions` to use. It records `PASSWORD_RESET_BY_OPERATOR` and does not clear the login throttle, which lives in the web process.
 
 **Sign-out** invalidates the session server-side. Removing a session row is the only way to end one; there is no token to revoke.
 
@@ -188,6 +188,7 @@ Commands (repo root): `make db-up`, `make backend-run` (:8080), `make frontend-r
 scripts/operator.sh create-school --name="…" --short-name="…" --roll=76543A   # short name is optional; it fits the app header
 scripts/operator.sh set-school-short-name --roll=76543A --short-name="…"
 scripts/operator.sh create-user   --first-name=… --last-name=… --username=…     # prints the temporary password once
+scripts/operator.sh reset-password --username=…                               # new temporary password; signs them out everywhere
 scripts/operator.sh grant-role    --username=… --roll=76543A --role=TEACHER
 ```
 

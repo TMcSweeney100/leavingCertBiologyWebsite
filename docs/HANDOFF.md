@@ -4,6 +4,17 @@ Rewritten at the end of every session: where things stand, what's half-done, wha
 
 **Standing rule (16 Sep 2026):** `docs/ARCHITECTURE.md` describes the code as built. When a session changes anything it describes (a filter, a pattern, an env var, a file's job), it fixes that section in the same commit, and at the end of the session checks it for anything else the session made false. A wrong map is worse than none.
 
+## Operator reset-password (12 Nov 2026, branch `pilot/operator-reset-password`)
+
+**Built, not merged.** Plan `docs/superpowers/plans/2026-11-12-operator-reset-password.md`. `operator reset-password --username=…` gives any account a new temporary password, sets `must_change` and deletes the user's `spring_session` rows. Backend only, no migration. The setup guide `docs/TEACHER-AND-CLASS-SETUP.md` was rewritten in the same branch (every command with an example and its output, where to click in Render, a "Before the first real user" list), and root `CLAUDE.md` points to it.
+
+- **Results at the branch tip:** backend 553 tests, 0 failures. Frontend lint, types, tests (352 Vitest tests in 57 files) and the production build clean. No frontend file changed.
+- **Proved by test, not by hand:** `OperatorProcessTest.aPasswordResetEndsSessionsWithoutAWebServer` runs the command in a real operator process and checks the session row is gone; it fails with `endSessions` removed. Nobody has walked it in a browser, and it has not run on Render.
+- **Waiting on Tim:** confirm O-3 (it resets any account, not only teachers) and O-5 (sessions end by a direct delete on `spring_session`).
+- **Still to do:** `/self-review` in a fresh session, `docs/changes/operator-reset-password.md`, Tim's PR into `pilotMain`. After Render deploys it, run it once on the live site and check the guide's sample output and Render menu names against the real thing (the menu names came from Render's docs, not the dashboard).
+- **Render:** Tim is moving the web service to a paid instance (for Shell) and the database off Free (a free database is deleted 30 days after creation). Until that is done, the guide's "Before the first real user" list is open.
+- **Built in a worktree**, `.worktrees/pilot-operator-reset-password`, because another session had uncommitted Progress work in the main checkout.
+
 ## Stage drawer redesign (8 Nov 2026, branch `pilot/stage-drawer-redesign`)
 
 **Built, all six tasks, not merged.** Plan `docs/superpowers/plans/2026-11-08-stage-drawer-redesign.md`, intent `docs/intent/stage-drawer-redesign.md`. The teacher's stage sheet is now design B: the stage's date, then the checkpoint as a navy card (counts as a bar named in words, "N waiting for you" as an amber link), the guidelines, the teacher's note as one cream card (read as students see it, Edit in place) and the items, white cards on a grey tray; an item opens as a view inside the sheet. `www.` addresses in notes are links, for students too. Frontend only.
