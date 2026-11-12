@@ -37,7 +37,7 @@ The live BiPi schedule (`app/[class]/`, `components/bipi/`) has its own notes in
 
 ## 3. Layout and responsive
 
-- Design and build at 390px first, then 1024px+ (`lg:`). Those are the two Playwright projects (`phone` = Pixel 7, `laptop` = Desktop Chrome) and the two frames every pack draws.
+- Design and build laptop first (1024px+, `lg:`), then 390px. Teachers work at a laptop, at school or at home; every page must still work on a phone. Those are the two Playwright projects (`laptop` = Desktop Chrome, `phone` = Pixel 7) and the two frames every pack draws.
 - 16–20px side gutters on phones, 40px on laptops. Content max width `max-w-6xl` on laptop pages; reading columns `max-w-prose` (about 65 characters).
 - No horizontal scroll, ever. Tables that can't fit wrap into cards on phones or scroll inside their own `overflow-x-auto` container, never the page.
 - Flex children that hold text get `min-w-0`; long tokens (usernames, codes, links) get `break-words` or `overflow-wrap: anywhere`. Never `break-all` on prose.

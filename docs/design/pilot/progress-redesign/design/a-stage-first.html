@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap"><link rel="stylesheet" href="mock.css"><script src="blocks.js"></script><title>Progress, A: one stage at a time</title></head>
+<body>
+<div id="root"></div>
+<script>
+document.getElementById('root').innerHTML = B.appbar() + `
+<main style="max-width:880px;margin:0 auto;padding:28px 0 48px" class="stack">
+  ${B.classHead()}
+  <div style="height:4px"></div>
+  ${B.waiting()}
+  ${B.stageTabs(3)}
+  ${B.stageHero(3)}
+  <div class="toolbar"><span class="muted">Opens on the latest stage that's due. "All" is the whole-class overview.</span>${B.hideNames()}</div>
+  ${B.todo(3)}
+  ${B.done(3)}
+</main>`;
+</script>
+</body></html>
