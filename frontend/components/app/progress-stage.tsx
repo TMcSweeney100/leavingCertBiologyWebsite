@@ -4,6 +4,7 @@ import Link from "next/link";
 import { type ReactNode, useState } from "react";
 
 import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import type { ProgressGrid as Grid, ProgressStudent } from "@/lib/api/schemas";
 import { formatCalendarDate } from "@/lib/app/component-setup";
@@ -55,7 +56,7 @@ export function StageView({ grid, index, students, signedAtLoad, cell, aside }: 
           <h3 id="left-heading" className="font-heading text-app-base font-bold text-app-ink">
             Still to sign off · <span data-private className="tabular-nums">{students.length - signedNow}</span>
           </h3>
-          <p className="text-app-small text-app-grey">Furthest behind first</p>
+          {left.length > 1 && <p className="text-app-small text-app-grey">Furthest behind first</p>}
         </div>
         {left.length === 0
           ? <p className="px-[18px] py-4 text-app-base text-app-grey">Everyone is signed off for this stage.</p>
@@ -75,7 +76,7 @@ export function StageView({ grid, index, students, signedAtLoad, cell, aside }: 
                 </p>
               )}
             </div>
-            <CollapsibleTrigger aria-label={`${open ? "Hide" : "Show"} signed-off students`} className={buttonVariants({ variant: "outline" })}>
+            <CollapsibleTrigger aria-label={`${open ? "Hide" : "Show"} signed-off students`} className={cn(buttonVariants({ variant: "outline" }))}>
               {open ? "Hide" : "Show"}
             </CollapsibleTrigger>
           </div>

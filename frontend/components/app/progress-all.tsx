@@ -88,18 +88,22 @@ export function AllView({ grid, students, bandOf, basePath, cell, aside }: {
   const [showAll, setShowAll] = useState(false);
   const stages = checkpointStages(grid);
   const groups = bands(students, bandOf);
-  const shown = (g: Band) => (g.behindBy > 0 || showAll ? g.students : g.students.filter((st) => st.cells.some((c) => c.state === "READY")));
+  // P-21: "Up to date" folds away only while someone is behind; with nobody behind, the class is the whole point.
+  const folds = (g: Band) => g.behindBy === 0 && groups.some((other) => other.behindBy > 0);
+  const waiting = (st: ProgressStudent) => st.cells.some((c) => c.state === "READY");
+  const shown = (g: Band) => (!folds(g) || showAll ? g.students : g.students.filter(waiting));
   const fold = (g: Band) => {
-    const folded = g.students.filter((st) => !st.cells.some((c) => c.state === "READY")).length;
-    if (g.behindBy > 0 || folded === 0) return null;
+    const folded = g.students.filter((st) => !waiting(st)).length;
+    if (!folds(g) || folded === 0) return null;
+    const some = folded < g.students.length;
     return (
       <div className="flex flex-wrap items-center justify-between gap-3 bg-app-ground px-4 py-2">
         <span className="text-app-small text-app-grey">
-          {showAll ? "Everyone up to date is showing." : <><span data-private>{folded}</span> more, all signed off so far</>}
+          {showAll ? "Everyone up to date is showing." : <><span data-private>{some ? `${folded} more` : studentCount(folded)}</span>, all signed off so far</>}
         </span>
-        <button type="button" aria-expanded={showAll} onClick={() => setShowAll(!showAll)}
-          className="min-h-11 rounded-app-control border border-app-field-border bg-app-surface px-3 text-app-small font-semibold text-app-ink hover:bg-app-inset touch-manipulation">
-          {showAll ? "Hide them" : `Show ${folded} more`}
+        <button type="button" aria-expanded={showAll} aria-label={`${showAll ? "Hide" : "Show"} up-to-date students`} onClick={() => setShowAll(!showAll)}
+          className="min-h-11 rounded-app-control border border-app-field-border bg-app-surface px-3.5 text-app-small font-semibold text-app-ink hover:bg-app-inset touch-manipulation">
+          {showAll ? "Hide" : "Show"}
         </button>
       </div>
     );
@@ -122,13 +126,13 @@ export function AllView({ grid, students, bandOf, basePath, cell, aside }: {
               <caption className="sr-only">{`Checkpoint sign-offs for ${grid.className}, grouped by how many due checkpoints each student is behind`}</caption>
               <thead>
                 <tr className="border-b border-app-line">
-                  <th scope="col" className="w-[236px] px-4 py-3 align-bottom text-app-small font-semibold text-app-grey">Student</th>
+                  <th scope="col" className="w-[228px] px-4 py-3 align-middle text-app-small font-semibold text-app-grey">Student</th>
                   {stages.map((stage) => {
                     const state = stageStateWord(stage, grid.today);
                     return (
-                      <th scope="col" key={stage.stageId} className="px-2.5 py-3 align-bottom">
+                      <th scope="col" key={stage.stageId} className="px-2.5 py-3 align-top">
                         <span className={`block ${eyebrow} text-app-muted`}>{stageLabel(stage)}</span>
-                        <Link href={`${basePath}?stage=${stageKey(stage)}`} className="block text-app-small leading-tight font-semibold text-app-accent underline underline-offset-3">
+                        <Link href={`${basePath}?stage=${stageKey(stage)}`} className="block min-h-[2.5em] text-app-small leading-tight font-semibold text-app-accent underline underline-offset-3">
                           {shortCheckpoint(stage.checkpoint.text)}
                         </Link>
                         <span className={`block text-app-label font-semibold ${state === "Due" ? "text-app-due" : "text-app-muted"}`}>
@@ -137,7 +141,7 @@ export function AllView({ grid, students, bandOf, basePath, cell, aside }: {
                       </th>
                     );
                   })}
-                  <th scope="col" className="w-[132px] px-4 py-3 align-bottom text-app-small font-semibold text-app-grey">Log</th>
+                  <th scope="col" className="w-[176px] px-4 py-3 align-middle text-app-small font-semibold text-app-grey">Log</th>
                 </tr>
               </thead>
               {groups.map((g) => {
@@ -155,7 +159,7 @@ export function AllView({ grid, students, bandOf, basePath, cell, aside }: {
                             <th scope="row" className="px-4 py-1 text-left align-middle font-normal">{nameCell(st)}</th>
                             {stages.map((stage, i) => <td key={stage.stageId} className="p-1 align-middle">{cell(st, i, "grid")}</td>)}
                             <td className="px-4 py-1 align-middle">
-                              <span data-private className={`text-app-small ${isQuiet(st.daysSinceLastLogActivity) ? "font-semibold text-app-ink" : "text-app-grey"}`}>
+                              <span data-private className={`text-app-small whitespace-nowrap ${isQuiet(st.daysSinceLastLogActivity) ? "font-semibold text-app-ink" : "text-app-grey"}`}>
                                 {lastEntryWords(st.daysSinceLastLogActivity)}
                               </span>
                             </td>

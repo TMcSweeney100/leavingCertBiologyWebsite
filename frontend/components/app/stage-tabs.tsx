@@ -32,7 +32,7 @@ export function StageTabs({ grid, current, basePath }:
   const allOn = current === "all";
 
   return (
-    <nav ref={nav} aria-label="Stages" className={`${card} relative mt-3 flex gap-1 overflow-x-auto p-1.5 [scrollbar-width:none]`}>
+    <nav ref={nav} aria-label="Stages" className={`${card} relative mt-3 flex gap-2 overflow-x-auto p-1.5 [scrollbar-width:none]`}>
       <Link href={`${basePath}?stage=all`} aria-current={allOn ? "page" : undefined} className={`${TAB} ${tone(allOn)} ${LINK}`}>
         <span className={`${eyebrow} ${quiet(allOn)}`}>All</span>
         <span className="min-h-[2.5em] text-app-small leading-tight font-semibold">Every stage</span>

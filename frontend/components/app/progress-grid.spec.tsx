@@ -127,8 +127,15 @@ describe("ProgressGrid", () => {
     expect(table.getByRole("button", { name: `Sign off ${INITIAL} for Aoife Byrne` })).toHaveTextContent("Sign off");
     expect(table.getByRole("button", { name: `Revoke sign-off of ${INITIAL} for Cian Murphy` })).toHaveAttribute("title", "Signed off 2 Oct 2026");
     expect(table.queryByRole("link", { name: "Dara Walsh" })).not.toBeInTheDocument();
-    await userEvent.click(table.getByRole("button", { name: "Show 1 more" }));
+    await userEvent.click(table.getByRole("button", { name: "Show up-to-date students" }));
     expect(table.getByRole("link", { name: "Dara Walsh" })).toBeInTheDocument();
+  });
+
+  it("All folds nobody away when nobody is behind", () => {
+    render(<ProgressGrid grid={grid([row("d", "Dara", "Walsh", 0, ["SIGNED_OFF", "SIGNED_OFF"], 2)])} {...props} stage="all" />);
+    const table = within(screen.getByRole("table", { name: /Checkpoint sign-offs for 6A Biology/ }));
+    expect(table.getByRole("link", { name: "Dara Walsh" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /up-to-date students/ })).not.toBeInTheDocument();
   });
 
   it("All on a phone is read-only: each student's stage dots in words, and no sign-off buttons", () => {
