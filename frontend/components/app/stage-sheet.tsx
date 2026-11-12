@@ -11,8 +11,9 @@ import type { ProgressGrid, TeacherComponent } from "@/lib/api/schemas";
 import type { Attempt } from "@/lib/app/attempt";
 import { hoursLabel, weekdayDate } from "@/lib/app/component-setup";
 import type { DateMark } from "@/lib/app/date-marks";
-import { ADD_ITEM, checkpointCounts, countsLabel, type DateRequest, stageItems } from "@/lib/app/stage-sheet";
+import { ADD_ITEM, checkpointCounts, type DateRequest, stageItems } from "@/lib/app/stage-sheet";
 
+import { CountsBar } from "./counts-bar";
 import { DateBox } from "./date-box";
 import { DatePickerPanel, pickedDay } from "./date-picker-panel";
 import { ErrorPanel } from "./error-panel";
@@ -271,16 +272,7 @@ function SheetBody({
                 <p className="mt-3 text-app-small text-app-on-accent-muted">No students in the class yet.</p>
               ) : counts && (
                 <>
-                  <div role="img" aria-label={countsLabel(counts)} data-private className="mt-4 flex h-2 gap-0.5 overflow-hidden rounded-full">
-                    {counts.signedOff > 0 && <span className="bg-app-approved-on-accent" style={{ flexGrow: counts.signedOff }} />}
-                    {counts.waiting > 0 && <span className="bg-app-attention-on-accent" style={{ flexGrow: counts.waiting }} />}
-                    {counts.notYet > 0 && <span className="bg-app-accent-track" style={{ flexGrow: counts.notYet }} />}
-                  </div>
-                  <p className="mt-2 flex flex-wrap gap-x-3.5 gap-y-1 text-app-help text-app-on-accent-muted">
-                    <span data-private><b className="font-bold text-app-approved-on-accent">{counts.signedOff}</b> signed off</span>
-                    {counts.waiting === 0 && <span data-private><b className="font-bold text-app-on-accent">0</b> waiting</span>}
-                    <span data-private><b className="font-bold text-app-on-accent">{counts.notYet}</b> not yet</span>
-                  </p>
+                  <CountsBar counts={counts} showWaiting={counts.waiting === 0} />
                   {counts.waiting > 0 && (
                     <Link
                       href={`/teach/classes/${classId}/progress`}
