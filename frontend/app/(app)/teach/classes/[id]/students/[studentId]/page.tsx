@@ -3,16 +3,18 @@ import { notFound } from "next/navigation";
 
 import { AppMain } from "@/components/app/app-main";
 import { ErrorPanel } from "@/components/app/error-panel";
+import { NextRequest } from "@/components/app/next-request";
 import { StudentCheckpoints } from "@/components/app/student-checkpoints";
 import { StudentHeader } from "@/components/app/student-header";
 import { TeacherLog } from "@/components/app/teacher-log";
 import { BackLink } from "@/components/app/back-link";
 import { card, pageTitle, sectionTitle } from "@/components/app/styles";
-import { classDetailSchema, studentCheckpointsSchema, teacherStudentLogSchema } from "@/lib/api/schemas";
+import { classDetailSchema, progressGridSchema, studentCheckpointsSchema, teacherStudentLogSchema } from "@/lib/api/schemas";
 import { serverApi } from "@/lib/api/server";
 import { buttonVariants } from "@/components/ui/button";
 import { attempt } from "@/lib/app/attempt";
 import { lastEntryWords } from "@/lib/app/progress";
+import { nextRequest } from "@/lib/app/ready";
 
 export const dynamic = "force-dynamic";
 
@@ -44,11 +46,15 @@ export default async function StudentLogPage({ params }: { params: Promise<{ id:
   }
 
   const componentId = cls.componentId;
-  const [log, checkpoints] = await Promise.all([
+  const [log, checkpoints, progress] = await Promise.all([
     attempt(() => serverApi.get(`/components/${componentId}/students/${encodeURIComponent(studentId)}/log`, teacherStudentLogSchema)),
     attempt(() => serverApi.get(`/components/${componentId}/students/${encodeURIComponent(studentId)}/checkpoints`, studentCheckpointsSchema)),
+    attempt(() => serverApi.get(`/components/${componentId}/progress`, progressGridSchema)),
   ]);
   if ((!log.ok && log.error.code === "NOT_FOUND") || (!checkpoints.ok && checkpoints.error.code === "NOT_FOUND")) notFound();
+
+  // Plan progress-redesign P-12: the class's queue, for Next request. If it didn't load, the page works without the bar.
+  const next = progress.ok ? nextRequest(progress.data.waiting, studentId) : null;
 
   return (
     <AppMain width="class">
@@ -62,6 +68,7 @@ export default async function StudentLogPage({ params }: { params: Promise<{ id:
             ? <StudentCheckpoints componentId={componentId} data={checkpoints.data} />
             : <div className="mt-6"><ErrorPanel error={checkpoints.error} /></div>}
           <TeacherLog log={log.data} />
+          {next && <NextRequest classId={cls.id} next={next.next} others={next.others} />}
         </>
       ) : (
         <div className="mt-6"><ErrorPanel error={log.error} /></div>

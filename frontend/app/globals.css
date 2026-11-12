@@ -469,6 +469,14 @@
   }
 }
 
+/* Plan progress-redesign P-12: the student page's Next request bar is pinned to the bottom of the window. Scroll
+   padding keeps a control focused by keyboard clear of it (WCAG 2.4.11, focus not obscured). */
+@layer base {
+  html:has([data-next-request]) {
+    scroll-padding-bottom: 5.5rem;
+  }
+}
+
 .app-appear {
   animation: app-appear var(--app-duration) var(--app-ease);
 }
