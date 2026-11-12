@@ -66,7 +66,7 @@ One slug across `docs/intent/`, the plan and `docs/changes/`: the plan's file na
 - HTTP tests use `ApiSession` (real filter chain, cookie jar, CSRF header), never MockMvc's `csrf()` / `user()` shortcuts. Create data with `TestAccounts`.
 - `@WebMvcTest` slices must exclude `WebConfig` and `CurrentActorArgumentResolver`, which need the identity services (see `ProblemDetailsAdviceTest`).
 - Beans a controller needs must not live in the web-only `SecurityConfig`: an operator process (`operator …` as first argument, no web server) still scans the controllers. `AuthenticationConfig` exists for that reason.
-- Operator commands: `scripts/operator.sh create-school|create-user|grant-role …` locally; on the host, run the same image with `operator …` as its arguments.
+- Operator commands: `scripts/operator.sh create-school|create-user|grant-role …` locally; on the host, run the same image with `operator …` as its arguments. `docs/TEACHER-AND-CLASS-SETUP.md` is Tim's step-by-step guide for setting up schools, teachers and classes: point him to it, and keep it true when a command changes.
 - Class-scoped endpoints go through `ClassService.owned(actor, classId)` first; an enrolment id is looked up with `EnrolmentRepository.findInClass`, never by id alone.
 - Component-scoped endpoints go through `ComponentService.owned(actor, componentId)` first; a teacher item id is looked up with `TeacherItemRepository.findActive(itemId, componentId)`, never by id alone.
 - A student's component access goes through `ComponentRepository.findForApprovedStudent(componentId, studentId)`.
