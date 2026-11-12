@@ -53,6 +53,17 @@ Tim, 10 Nov 2026: the live page feels intimidating. A's first screen is one stag
   - Waiting: a navy "Review" with the stage number.
 - **Up to date** is collapsed except for students who are waiting.
 
+## Where the build differs from the mockups
+
+- **The page ground is `--app-ground`**, not the tray (plan P-8), as on the student page.
+- **Every waiting request is listed**, with the checkpoint in full, when it was asked and the student's note. The frames drew one compact row.
+- **Stage rows say "Behind by 3 · No entries yet"** in words beside the amber number square.
+- **All's log column keeps its words** ("No entries yet", "Last entry 7 days ago") in grey, not a dash. Bold only means quiet for 14 days or more.
+- **All has no key above the grid.** A tick, "Sign off" and "Review" say what they are; the dash shows "Sign off" on hover and on keyboard focus.
+- **The Signed off list's rows** use the student page's `card` layout: a "Signed off 3 Nov 2026" pill and Revoke.
+- **"Up to date" folds only while someone is behind.** With nobody behind, All shows the whole class.
+- **Next request** is a bar pinned to the bottom of the student page (plan P-12). The frames don't draw it.
+
 ## Only new values
 
 None. Every colour is an existing `--app-*` token.

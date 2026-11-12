@@ -3,9 +3,10 @@ import { expect, type Page, test } from "@playwright/test";
 import { TEACHER, expectAccessible, phone, setDate, signInTeacher } from "./helpers";
 
 /**
- * Gate P4 (roadmap §8.4): the teacher signs off a checkpoint and, after Re-sort, that student moves down the grid
- * (less behind; furthest behind is first); revoking puts them back; the student's page shows the sign-off; Hide
- * names survives a reload. Runs on laptop (table) and phone (list): the role queries find whichever is visible.
+ * Gate P4 (roadmap §8.4), on direction A (plan progress-redesign): the teacher signs off a checkpoint and the row
+ * stays put; after Re-sort that student moves to the folded Signed off list; revoking puts them back; the student's
+ * page shows the sign-off; Hide names survives a reload. The stage view is one layout at every width; All is a
+ * table on a laptop and a list on a phone, and the role queries find whichever is visible.
  */
 const P4 = { className: "", progress: "", aoife: "", cian: "", password: "e2e-student-password" };
 const INITIAL = "Initial ideas discussed with the teacher";
@@ -62,30 +63,37 @@ test("a class with Stage 1 due and two approved students", async ({ page: teache
   P4.progress = new URL(teacher.url()).pathname;
 });
 
-test("signing off moves a student down the grid after Re-sort, and revoking puts them back", async ({ page: teacher }) => {
+test("signing off keeps the row in place, Re-sort moves it to Signed off, and revoking puts it back", async ({ page: teacher }) => {
   test.skip(!TEACHER.temporary, "E2E_TEACHER_PASSWORD not set");
   await signInTeacher(teacher);
-  await teacher.goto(`${P4.progress}?stage=1`);
-  await expect(teacher.getByRole("heading", { level: 2 })).toHaveText("2 of 2 students are behind");
+  await teacher.goto(P4.progress); // no ?stage=: the page opens on the latest due stage, Stage 1
+  await expect(teacher).toHaveTitle("Progress · Leaving Cert Practical");
+  await expect(teacher.getByRole("heading", { level: 2, name: INITIAL })).toBeVisible();
+  await expect(teacher.getByRole("heading", { name: "Still to sign off · 2" })).toBeVisible();
   await expectAccessible(teacher);
   await noSidewaysScroll(teacher);
   expect(await students(teacher)).toEqual(["Aoife Byrne", "Cian Murphy"]); // both behind by 1, no entries: surname
 
   await teacher.getByRole("button", { name: `Sign off ${INITIAL} for Aoife Byrne` }).click();
   await expect(teacher.getByRole("button", { name: `Undo sign-off of ${INITIAL} for Aoife Byrne` })).toBeVisible();
+  await expect(teacher.getByRole("heading", { name: "Still to sign off · 1" })).toBeVisible();
   expect(await students(teacher)).toEqual(["Aoife Byrne", "Cian Murphy"]); // nothing moves under the pointer
   await teacher.getByRole("button", { name: "Re-sort (1 change)" }).click();
+  expect(await students(teacher)).toEqual(["Cian Murphy"]); // Aoife is in the folded Signed off list
+  await teacher.getByRole("button", { name: "Show signed-off students" }).click();
   expect(await students(teacher)).toEqual(["Cian Murphy", "Aoife Byrne"]);
 
   await teacher.getByRole("button", { name: `Revoke sign-off of ${INITIAL} for Aoife Byrne` }).click();
-  await expect(teacher.getByText(/It stays in the record as revoked by you/).filter({ visible: true })).toBeVisible(); // both layouts are in the DOM; one is display:none
+  await expect(teacher.getByText(/It stays in the record as revoked by you/)).toBeVisible();
   await expectAccessible(teacher);
   await teacher.getByRole("button", { name: `Revoke sign-off of ${INITIAL} for Aoife Byrne` }).click();
   await expect(teacher.getByRole("button", { name: `Sign off ${INITIAL} for Aoife Byrne` })).toBeVisible();
   await teacher.reload();
   expect(await students(teacher)).toEqual(["Aoife Byrne", "Cian Murphy"]);
 
-  await teacher.goto(P4.progress);
+  await teacher.goto(`${P4.progress}?stage=all`);
+  await expect(teacher.getByRole("heading", { level: 2, name: "2 of 2 students are behind" })).toBeVisible();
+  expect(await students(teacher)).toEqual(["Aoife Byrne", "Cian Murphy"]); // the table on a laptop, the dots list on a phone
   await expectAccessible(teacher);
   await noSidewaysScroll(teacher);
 });
@@ -120,6 +128,6 @@ test("Hide names blurs the page and survives a reload", async ({ page: teacher }
   await teacher.getByRole("switch", { name: "Hide names" }).click();
   await teacher.reload();
   await expect(teacher.getByRole("switch", { name: "Hide names" })).toHaveAttribute("aria-checked", "true");
-  await expect(teacher.getByRole("link", { name: "Aoife Byrne" })).toHaveCSS("filter", /blur/);
+  await expect(teacher.getByRole("link", { name: "Cian Murphy" })).toHaveCSS("filter", /blur/); // Aoife is signed off by now, so folded away
   await teacher.getByRole("switch", { name: "Hide names" }).click(); // leave the shared e2e browser state as found
 });

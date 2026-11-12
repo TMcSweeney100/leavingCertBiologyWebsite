@@ -4,9 +4,36 @@ Rewritten at the end of every session: where things stand, what's half-done, wha
 
 **Standing rule (16 Sep 2026):** `docs/ARCHITECTURE.md` describes the code as built. When a session changes anything it describes (a filter, a pattern, an env var, a file's job), it fixes that section in the same commit, and at the end of the session checks it for anything else the session made false. A wrong map is worse than none.
 
+## Progress redesign (12 Nov 2026, branch `pilot/student-page-redesign`)
+
+**Built, all of Tasks 0 to 11, not merged.** Plan `docs/superpowers/plans/2026-11-10-progress-redesign.md`, intent `docs/intent/progress-redesign.md`, design `docs/design/pilot/progress-redesign/`, learning doc `docs/changes/progress-redesign.md`. It sits on the same branch as the student page redesign below (Tim, 12 Nov 2026: one branch, one self-review of both, one PR into `pilotMain`). Frontend only.
+
+The Progress tab is now direction A:
+- the waiting requests first, every one listed with Review
+- stage tabs, opening on the latest due stage
+- that stage's navy card
+- "Still to sign off · N" with one Sign off per student, and a folded "Signed off · N"
+- All as a quiet grid (a read-only list of stage dots on a phone)
+
+The student page has a Next request bar pinned to the bottom while another student is waiting. App pages are titled "Leaving Cert Practical".
+
+- **Results at the branch tip (12 Nov 2026):** `make verify` green: 549 backend tests, 243 `node --test` cases, 361 Vitest tests in 61 files, lint, types and the production build clean. `make e2e` green: 34 Playwright tests (17 laptop, 17 phone), with `phase4.e2e.ts` changed to follow the new page. The axe runs found nothing on the stage view, the revoke question or All.
+- **Still to do:** Tim's hand test (below), `/self-review` in a fresh session over both redesigns, `code-simplification` if it flags anything, and Tim opening the PR into `pilotMain`.
+- **P-8 to P-21 confirmed by Tim (12 Nov 2026)** as written in the plan.
+- **Built differently from the plan** (the full list is in `docs/changes/progress-redesign.md`):
+  - The list headings count the current truth, not the frozen lists, so they always match the navy card.
+  - "Up to date" in All folds only while someone is behind. The first build folded it always, and a class with nobody behind opened on an empty table.
+  - The tabs set their own `scrollLeft`; `scrollIntoView` could have scrolled the whole page on load.
+  - Next request reads "3 more requests are waiting for you", and the page gets scroll padding while the bar is showing, so keyboard focus is never under it.
+- **Seen, from screenshots:** the real components with a 32-student class (the mockups' data, on a temporary preview route inside `make e2e`, deleted), at laptop 1280 and a Pixel 7: the stage view, the Signed off list open, All, a dash under keyboard focus, the Next request bar pinned, and Hide names. Chrome's accessible names for the tabs read "Stage 3 Plan discussed 20 to sign off".
+- **Not checked:** the Next request bar on the real student page with real requests (only on the preview route and in its spec); a Business class (seven stages and the report make the tab row scroll sideways on a laptop); a real phone, a screen reader, 200% zoom, very long names.
+- **Hand test for Tim:** with a class like 6th Year Biology, sign off three students down "Still to sign off" (nothing should move; the count goes down; Re-sort folds them away); revoke one from Signed off; open All and Tab to a dash; and with several students waiting, Review, answer, then Next request three times without going back to Progress.
+- **`make verify` after `make e2e`:** if a route is deleted between the two, `.next/types` keeps its generated types and the type check fails on a file that no longer exists. Delete the stale folder under `frontend/.next/types/`.
+- **Other sessions use this checkout.** `docs/design/pilot/timeline-redesign/` and `draft-list.md` are untracked and aren't this work's.
+
 ## Student page redesign (10 Nov 2026, branch `pilot/student-page-redesign`)
 
-**Built, all of Tasks 0 to 7, not merged.** Plan `docs/superpowers/plans/2026-11-10-student-page-redesign.md`, intent `docs/intent/student-page-redesign.md`, design `docs/design/pilot/student-page-redesign/`. The teacher's student page is now direction D: a header card (initials, name, class, last entry, Open their work), the navy summary card with a jump link per stage, one card per stage on a timeline (the waiting stage open in place), and the log as a footer (latest three, Show all, filter chips, entries that open in place). Frontend only. Progress is untouched: `CheckpointCell`'s `grid` and `one` layouts are as they were, and Progress can build on the new tokens and the `card` layout.
+**Built, all of Tasks 0 to 7, not merged.** Plan `docs/superpowers/plans/2026-11-10-student-page-redesign.md`, intent `docs/intent/student-page-redesign.md`, design `docs/design/pilot/student-page-redesign/`. The teacher's student page is now direction D: a header card (initials, name, class, last entry, Open their work), the navy summary card with a jump link per stage, one card per stage on a timeline (the waiting stage open in place), and the log as a footer (latest three, Show all, filter chips, entries that open in place). Frontend only. (Progress has since been rebuilt on this branch, above: the `one` layout is gone and `grid` is quiet marks.)
 
 - **Results at the branch tip (10 Nov 2026):** `make verify` green: 549 backend tests, 240 `node --test` cases, 357 Vitest tests in 58 files, lint, types and the production build clean. `make e2e` green: 34 Playwright tests (17 laptop, 17 phone), with one journey line changed (`phase3.e2e.ts` opens the source row before reading its history). The axe runs found nothing on the new page.
 - **Still to do:** Tim's hand test (below), `/self-review` in a fresh session, `code-simplification` if it flags anything, `docs/changes/student-page-redesign.md`, and Tim opening the PR into `pilotMain`.
@@ -18,7 +45,6 @@ Rewritten at the end of every session: where things stand, what's half-done, wha
   - `npx shadcn@latest add toggle-group` imported `cn` from an npm package called `cn`, as the plan warned; the file was replaced with the plan's restyle and `toggle.tsx` deleted. `package.json` was not touched.
 - **UI checklist, from screenshots of the real journeys** (laptop 1280 and a Pixel 7, 412px wide; temporary copies of two journeys, deleted): looked right at both widths with the waiting card open, after Not yet, after Accept (the rail goes green), and with a log entry open; nothing clipped on the phone, and the Accept and Not yet buttons stack full width. The jump links work out at about 44.5px wide at 375 (computed, not measured in a browser). Not checked: a real phone, a screen reader, 200% zoom, very long names, keyboard focus drawn on the new controls (the unfixed `Button` focus-outline problem in the stage drawer section below applies to Revoke, Sign off and Show all), the screenshots against the design canvas, a student with more than three entries (Show all and the chips are covered by a Vitest spec, not seen).
 - **Environment:** the backend tests need Docker running (Testcontainers). `make verify` fails with 73 errors from `PostgresIntegrationTest` if it isn't; nothing is wrong in the code.
-- **Another session is editing this checkout.** `docs/design/UI-BRIEF.md` and `docs/design/UI-STANDARDS.md` have uncommitted changes (a laptop-first layout rule) that aren't this branch's, and `docs/design/pilot/progress-redesign/`, `docs/intent/progress-redesign.md` and a progress-redesign plan are untracked. None of them is in this branch's commits. The branch's own UI-STANDARDS change (the two tokens, §5) is committed; the other session's edit sits on top of it in the working tree.
 - **Seen, not this branch's:** `next build` sometimes prints "Found 1 warning while optimizing generated CSS". It printed on the commit before this branch's changes as well.
 
 ## Stage drawer redesign (8 Nov 2026, branch `pilot/stage-drawer-redesign`)
