@@ -61,7 +61,7 @@ From the mockups and the interview (`docs/intent/student-page-redesign.md`), set
 | R-6 | Filter chips? | Yes: All, Sources, Notes, AI use, with counts. They appear once the log is expanded. |
 | R-7 | Clicking an entry? | It opens in place, showing the whole entry. This applies to every row. |
 
-Made while writing this plan. **Tim: confirm or change R-8 to R-21.**
+Made while writing this plan. **Tim confirmed R-8 to R-21 as built, 12 Nov 2026.**
 
 | # | What happens | Why it matters to you |
 |---|---|---|
