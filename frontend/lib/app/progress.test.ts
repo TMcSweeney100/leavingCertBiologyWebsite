@@ -5,6 +5,7 @@ import type { GridStage, ProgressGrid, ProgressStudent } from "../api/schemas.ts
 import {
   bandHeading, bands, behindWords, CHECKPOINT_SHORT, doneSentence, failSentence, inOrder, isQuiet, lastEntryWords, latestDueKey,
   listStages, missingText, parseStage, pickName, revokeQuestion, shortCheckpoint, stageKey, stageLabel, studentCount, summary,
+  dotsLabel, splitByStage, tabLine,
 } from "./progress.ts";
 
 const stage = (ordinal: number, dueDate: string | null, text: string | null, label: string | null = `Stage ${ordinal}`): GridStage => ({
@@ -62,20 +63,39 @@ test("bands group consecutive rows by how far behind, and read in words (pack D-
   assert.equal(behindWords(0), "Up to date");
 });
 
-test("log activity reads in words and is quiet at 14 days or with none", () => {
+test("log activity reads in words, and is quiet at 14 days or more (plan progress-redesign P-17)", () => {
   assert.equal(lastEntryWords(null), "No entries yet");
   assert.equal(lastEntryWords(0), "Last entry today");
   assert.equal(lastEntryWords(1), "Last entry yesterday");
   assert.equal(lastEntryWords(12), "Last entry 12 days ago");
   assert.equal(isQuiet(13), false);
   assert.equal(isQuiet(14), true);
-  assert.equal(isQuiet(null), true);
+  assert.equal(isQuiet(null), false);
 });
 
 test("a student's missing checkpoints, for the phone's All view", () => {
   const g = grid(BIO, []);
   assert.equal(missingText(student("a", 2, ["SIGNED_OFF", "DUE", "DUE", "NOT_DUE"]), g), "Not signed off: Stages 2 and 3");
   assert.equal(missingText(student("a", 0, ["SIGNED_OFF", "SIGNED_OFF", "SIGNED_OFF", "NOT_DUE"]), g), null);
+});
+
+test("the phone's All view says a student's stage dots in words (plan progress-redesign P-20)", () => {
+  const g = grid(BIO, []);
+  assert.equal(dotsLabel(student("a", 1, ["SIGNED_OFF", "SIGNED_OFF", "DUE", "NOT_DUE"]), g), "Signed off: Stages 1 and 2. Due: Stage 3.");
+  assert.equal(dotsLabel(student("a", 0, ["SIGNED_OFF", "READY", "NOT_DUE", "NOT_DUE"]), g), "Signed off: Stage 1. Waiting for you: Stage 2.");
+  assert.equal(dotsLabel(student("a", 0, ["NOT_DUE", "NOT_DUE", "NOT_DUE", "NOT_DUE"]), g), "Nothing signed off or due yet.");
+});
+
+test("a stage tab says what's left, or when it's due (plan progress-redesign)", () => {
+  assert.equal(tabLine(BIO[2], 20, "2026-12-14"), "20 to sign off");
+  assert.equal(tabLine(BIO[2], 0, "2026-12-14"), "All signed off");
+  assert.equal(tabLine(BIO[3], 31, "2026-12-14"), "Due 12 Feb 2027");
+  assert.equal(tabLine({ ...BIO[3], dueDate: null }, 31, "2026-12-14"), "No date set");
+});
+
+test("a stage view splits students by who was signed off when the page loaded, keeping their order (P-11)", () => {
+  const rows = [{ studentId: "a" }, { studentId: "b" }, { studentId: "c" }];
+  assert.deepEqual(splitByStage(rows, new Set(["b"])), { left: [{ studentId: "a" }, { studentId: "c" }], signed: [{ studentId: "b" }] });
 });
 
 test("stable order keeps the first-rendered order and puts newcomers last (plan P4-11)", () => {

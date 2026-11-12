@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import {
-  BACKUP_ADVICE, acceptName, askedWhen, checkpointAnchor, linkHost, notYetName, openWorkName, readyName, reviewName,
+  BACKUP_ADVICE, acceptName, askedWhen, checkpointAnchor, linkHost, nextRequest, notYetName, openWorkName, readyName, reviewName,
   waitingBadge, waitingHeading, withdrawName,
 } from "./ready.ts";
 
@@ -39,4 +39,10 @@ test("every control names its checkpoint, and the teacher's the student", () => 
 
 test("the backup advice is the briefs' words", () => {
   assert.match(BACKUP_ADVICE, /^It is strongly recommended that you make and regularly update a backup copy/);
+});
+
+test("Next request is the oldest request that isn't this student's (plan progress-redesign P-12)", () => {
+  const waiting = [{ studentId: "a" }, { studentId: "b" }, { studentId: "a" }, { studentId: "c" }];
+  assert.deepEqual(nextRequest(waiting, "a"), { next: { studentId: "b" }, others: 2 });
+  assert.equal(nextRequest([{ studentId: "a" }], "a"), null);
 });

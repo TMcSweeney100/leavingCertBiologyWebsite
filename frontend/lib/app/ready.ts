@@ -40,6 +40,12 @@ export const askAgainName = (text: string) => `Ask again: ${text}`;
 export const acceptName = (text: string, name: string) => `Accept ${text} for ${name}`;
 export const notYetName = (text: string, name: string) => `Not yet: ${text} for ${name}`;
 export const reviewName = (text: string, name: string) => `Review ${text} for ${name}`;
+
+/** The student page's Next request (plan progress-redesign P-12). `waiting` is oldest first, as the server sends it. */
+export function nextRequest<T extends { studentId: string }>(waiting: readonly T[], studentId: string): { next: T; others: number } | null {
+  const others = waiting.filter((w) => w.studentId !== studentId);
+  return others.length === 0 ? null : { next: others[0], others: others.length };
+}
 export const openWorkName = (name?: string) => `Open ${name ? `${name}'s` : "your"} work (opens in a new tab)`;
 
 /** Pack D-10: the teacher's review panel. The accessible names above stay the specs' contract; these are the visible words. */
