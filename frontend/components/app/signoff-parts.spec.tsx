@@ -36,21 +36,16 @@ describe("CheckpointCell", () => {
   });
 
   it("a sign-off from this visit offers Undo instead", () => {
-    render(<CheckpointCell {...base} layout="one" cell={cell("SIGNED_OFF")} recent />);
+    render(<CheckpointCell {...base} layout="row" cell={cell("SIGNED_OFF")} recent />);
     expect(screen.getByText("Signed off today")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: names.undo })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: names.revoke })).not.toBeInTheDocument();
   });
 
   it("while busy the control is disabled and says what it's doing", () => {
-    render(<CheckpointCell {...base} layout="one" cell={cell("NOT_DUE")} busy="sign" />);
+    render(<CheckpointCell {...base} layout="row" cell={cell("NOT_DUE")} busy="sign" />);
     expect(screen.getByRole("button", { name: names.sign })).toBeDisabled();
     expect(screen.getByText("Signing off…")).toBeInTheDocument();
-  });
-
-  it("in a one-stage view a due cell says so in full", () => {
-    render(<CheckpointCell {...base} layout="one" cell={cell("DUE")} />);
-    expect(screen.getByText("Due, not signed off")).toBeInTheDocument();
   });
 
   it("in a Progress list the cell is one button: Sign off, or Revoke once signed off", async () => {
@@ -123,7 +118,7 @@ describe("CheckpointCell, Ready", () => {
   });
 
   it("outside the grid a Ready cell says so in words, with no button", () => {
-    render(<CheckpointCell {...base} names={readyNames} layout="one" cell={readyCell} />);
+    render(<CheckpointCell {...base} names={readyNames} layout="card" cell={readyCell} />);
     expect(screen.getByText("Ready for sign-off")).toBeInTheDocument();
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });

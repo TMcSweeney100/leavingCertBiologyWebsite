@@ -1,8 +1,12 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { BrandLockup } from "@/components/app/brand-lockup";
 import { isAppEnabled } from "@/lib/app/routes";
+
+// Plan progress-redesign P-14: app pages aren't the BiPi site, whose title the root layout sets.
+export const metadata: Metadata = { title: { default: "Leaving Cert Practical", template: "%s · Leaving Cert Practical" } };
 
 // Sign-in, joining and reset pages. No app header: the user isn't signed in yet, and a forced
 // password change has nowhere else to go. Pack D-1: one 440px column on the page ground.

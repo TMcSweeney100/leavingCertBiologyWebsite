@@ -1,9 +1,13 @@
+import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { AppHeader } from "@/components/app/app-header";
 import { isAppEnabled } from "@/lib/app/routes";
 import { getSession } from "@/lib/app/session";
+
+// Plan progress-redesign P-14: app pages aren't the BiPi site, whose title the root layout sets.
+export const metadata: Metadata = { title: { default: "Leaving Cert Practical", template: "%s · Leaving Cert Practical" } };
 
 // Every signed-in page. Roadmap §6.1: forced password change first, then the page.
 export default async function AppLayout({ children }: { children: ReactNode }) {

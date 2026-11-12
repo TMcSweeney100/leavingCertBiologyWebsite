@@ -4,7 +4,7 @@ import { test } from "node:test";
 import type { GridStage, ProgressGrid, ProgressStudent } from "../api/schemas.ts";
 import {
   bandHeading, bands, behindWords, CHECKPOINT_SHORT, doneSentence, failSentence, inOrder, isQuiet, lastEntryWords, latestDueKey,
-  listStages, missingText, parseStage, pickName, revokeQuestion, shortCheckpoint, stageKey, stageLabel, studentCount, summary,
+  listStages, parseStage, revokeQuestion, shortCheckpoint, stageKey, stageLabel, studentCount, summary,
   dotsLabel, splitByStage, tabLine,
 } from "./progress.ts";
 
@@ -73,12 +73,6 @@ test("log activity reads in words, and is quiet at 14 days or more (plan progres
   assert.equal(isQuiet(null), false);
 });
 
-test("a student's missing checkpoints, for the phone's All view", () => {
-  const g = grid(BIO, []);
-  assert.equal(missingText(student("a", 2, ["SIGNED_OFF", "DUE", "DUE", "NOT_DUE"]), g), "Not signed off: Stages 2 and 3");
-  assert.equal(missingText(student("a", 0, ["SIGNED_OFF", "SIGNED_OFF", "SIGNED_OFF", "NOT_DUE"]), g), null);
-});
-
 test("the phone's All view says a student's stage dots in words (plan progress-redesign P-20)", () => {
   const g = grid(BIO, []);
   assert.equal(dotsLabel(student("a", 1, ["SIGNED_OFF", "SIGNED_OFF", "DUE", "NOT_DUE"]), g), "Signed off: Stages 1 and 2. Due: Stage 3.");
@@ -103,7 +97,7 @@ test("stable order keeps the first-rendered order and puts newcomers last (plan 
   assert.deepEqual(inOrder(rows, ["a", "b"]).map((s) => s.studentId), ["a", "b", "new"]);
 });
 
-test("the stage in the URL: valid keys only; the phone defaults to the latest due stage", () => {
+test("the stage in the URL: valid keys only; the page defaults to the latest due stage", () => {
   const g = grid(BIO, []);
   assert.equal(parseStage("3", g), "3");
   assert.equal(parseStage("all", g), "all");
@@ -111,8 +105,6 @@ test("the stage in the URL: valid keys only; the phone defaults to the latest du
   assert.equal(parseStage(undefined, g), null);
   assert.equal(latestDueKey(g), "3");
   assert.equal(latestDueKey(grid(BIO, [], "2026-09-01")), "1");
-  assert.equal(pickName(BIO[2], "2026-12-14"), "Stage 3, Plan discussed, 11 Dec 2026, due");
-  assert.equal(pickName(BIO[3], "2026-12-14"), "Stage 4, Experiment carried out, 12 Feb 2027, not due");
 });
 
 test("the sentences a teacher hears and reads (pack D-7, plan P4-29)", () => {

@@ -115,11 +115,6 @@ export function lastEntryWords(days: number | null): string {
 /** Plan progress-redesign P-17: ink and 600 weight only for a student quiet for 14 days or more. "No entries yet" stays plain. Never amber. */
 export const isQuiet = (days: number | null) => days !== null && days >= 14;
 
-export function missingText(student: ProgressStudent, grid: Pick<ProgressGrid, "stages">): string | null {
-  const missing = checkpointStages(grid).filter((_, i) => student.cells[i]?.state === "DUE");
-  return missing.length === 0 ? null : `Not signed off: ${listStages(missing)}`;
-}
-
 /** Plan P4-11: lay rows out in the order first rendered; anyone new goes last, in server order. */
 export function inOrder<T extends { studentId: string }>(students: T[], order: string[]): T[] {
   const at = new Map(order.map((id, i) => [id, i]));
@@ -131,7 +126,7 @@ export function parseStage(param: string | undefined, grid: Pick<ProgressGrid, "
   return checkpointStages(grid).some((s) => stageKey(s) === param) ? (param as string) : null;
 }
 
-/** Pack D-7: the phone opens on the latest due stage, else the first stage with a checkpoint. */
+/** The page opens on the latest due stage, else the first stage with a checkpoint (pack D-7 on the phone; plan progress-redesign P-6 everywhere). */
 export function latestDueKey(grid: Pick<ProgressGrid, "stages" | "today">): string {
   const due = dueStages(grid);
   const stage = due[due.length - 1] ?? checkpointStages(grid)[0];
@@ -164,11 +159,6 @@ export function dotsLabel(student: ProgressStudent, grid: Pick<ProgressGrid, "st
 export function stageStateWord(stage: GridStage, today: string): "Due" | "Not due" | "No date" {
   if (stage.dueDate === null) return "No date";
   return isDue(stage, today) ? "Due" : "Not due";
-}
-
-export function pickName(stage: GridStage, today: string): string {
-  const date = stage.dueDate ? formatCalendarDate(stage.dueDate) : "no date set";
-  return `${stageLabel(stage)}, ${shortCheckpoint(stage.checkpoint?.text ?? stage.name)}, ${date}, ${stageStateWord(stage, today).toLowerCase()}`;
 }
 
 export type SignoffAction = "sign" | "undo" | "revoke";

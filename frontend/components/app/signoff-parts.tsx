@@ -11,7 +11,7 @@ const BUSY: Record<SignoffAction, string> = { sign: "Signing off…", undo: "Und
 const GRID_BUTTON = "flex min-h-12 w-full flex-col items-start justify-center gap-0.5 rounded-app-control px-2.5 py-1.5 text-left touch-manipulation disabled:cursor-not-allowed";
 
 type CellProps = {
-  layout: "grid" | "one" | "card" | "row";
+  layout: "grid" | "card" | "row";
   cell: ProgressCell;
   names: { sign: string; undo: string; revoke: string; review?: string };
   reviewHref?: string;
@@ -62,7 +62,7 @@ export function CheckpointCell({ layout, cell, names, busy, recent, confirming, 
     return <span className="text-app-small font-semibold text-app-ready">Ready for sign-off</span>;
   }
 
-  // Direction D (plan student-page-redesign, R-10): a pill for the state and one button. `one` stays as it was for Progress.
+  // Direction D (plan student-page-redesign, R-10): a pill for the state and one button.
   if (layout === "card") {
     const settled = cell.state === "SIGNED_OFF";
     const due = cell.state === "DUE";
@@ -122,30 +122,15 @@ export function CheckpointCell({ layout, cell, names, busy, recent, confirming, 
   }
 
   // Plan progress-redesign P-9: the Progress tab's lists. One button; the list's heading says the state.
-  if (layout === "row") {
-    return cell.state === "SIGNED_OFF" ? (
-      <Button type="button" variant="ghost" aria-label={names.revoke} disabled={busy !== null} onClick={onAsk} className="text-app-grey">
-        {busy === "revoke" ? BUSY.revoke : "Revoke"}
-      </Button>
-    ) : (
-      <Button type="button" variant="outline" aria-label={names.sign} disabled={busy !== null} onClick={onSign}
-        className="border-app-accent text-app-accent hover:bg-app-accent-tint">
-        {busy === "sign" ? BUSY.sign : "Sign off"}
-      </Button>
-    );
-  }
-
-  const settled = cell.state === "SIGNED_OFF";
-  return (
-    <div className="flex flex-wrap items-center justify-between gap-2">
-      <span className={`text-app-small ${cell.state === "DUE" ? "font-semibold text-app-due" : settled ? "text-app-signed" : "text-app-muted"}`}>
-        {settled ? <><strong>Signed off</strong> {date}</> : cell.state === "DUE" ? "Due, not signed off" : "Not due yet"}
-      </span>
-      <Button type="button" variant="outline" aria-label={settled ? names.revoke : names.sign} disabled={busy !== null}
-        onClick={settled ? onAsk : onSign} className="min-h-11 text-app-accent">
-        {busy ? BUSY[busy] : settled ? "Revoke" : "Sign off"}
-      </Button>
-    </div>
+  return cell.state === "SIGNED_OFF" ? (
+    <Button type="button" variant="ghost" aria-label={names.revoke} disabled={busy !== null} onClick={onAsk} className="text-app-grey">
+      {busy === "revoke" ? BUSY.revoke : "Revoke"}
+    </Button>
+  ) : (
+    <Button type="button" variant="outline" aria-label={names.sign} disabled={busy !== null} onClick={onSign}
+      className="border-app-accent text-app-accent hover:bg-app-accent-tint">
+      {busy === "sign" ? BUSY.sign : "Sign off"}
+    </Button>
   );
 }
 
