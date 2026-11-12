@@ -23,3 +23,13 @@ export function WorkLinkBlock({ url, name, firstName, className = "" }: { url: s
     </a>
   );
 }
+
+/** Plan progress-redesign: the Progress tab's work link, an icon beside the name, so a shared link doesn't add a line to every row. */
+export function WorkIcon({ url, name }: { url: string; name: string }) {
+  return (
+    <a href={url} target="_blank" rel="noopener noreferrer" aria-label={openWorkName(name)} title={linkHost(url)}
+      className="inline-flex size-11 flex-none items-center justify-center rounded-app-control text-app-accent hover:bg-app-inset focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-accent touch-manipulation">
+      <ExternalLink aria-hidden className="size-4" />
+    </a>
+  );
+}
