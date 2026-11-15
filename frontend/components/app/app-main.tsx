@@ -1,10 +1,12 @@
 import type { ReactNode } from "react";
 
-// Content column widths from pack D-2, plus the side gutters (16px phone, 28px laptop).
+// Content column widths from pack D-2, plus the side gutters (16px phone, 28px laptop). `planner` is /home's:
+// seven day columns need the room (plan timeline-redesign T-22).
 const WIDTHS = {
   form: "max-w-[616px]",
   list: "max-w-[916px]",
   class: "max-w-[936px]",
+  planner: "max-w-[1096px]",
 } as const;
 
 /** The `<main>` of every signed-in page; the layout's skip link targets it. */

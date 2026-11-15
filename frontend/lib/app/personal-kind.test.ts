@@ -27,13 +27,13 @@ describe('the client/server module boundary (plan 2F P2-49)', () => {
   // catch this; only real Next SSR (i.e. the e2e journey) shows it. Guard it here structurally instead:
   // the label map must live outside any "use client" file, and the server component must import it
   // from there.
-  test('personal-kind.ts (the module timeline-view.tsx needs KIND_LABEL from) is not a client module', () => {
+  test('personal-kind.ts (the module timeline-parts.tsx needs KIND_LABEL from) is not a client module', () => {
     const source = read('personal-kind.ts');
     assert.ok(!/^\s*["']use client["'];?/m.test(source), 'personal-kind.ts must not start with "use client"');
   });
 
-  test('timeline-view.tsx (a server component) imports KIND_LABEL from the non-client module', () => {
-    const source = read('../../components/app/timeline-view.tsx');
+  test('timeline-parts.tsx (kindWord, used by server components) imports KIND_LABEL from the non-client module', () => {
+    const source = read('../../components/app/timeline-parts.tsx');
     assert.match(source, /import\s*\{[^}]*\bKIND_LABEL\b[^}]*\}\s*from\s*["']@\/lib\/app\/personal-kind["']/);
     assert.doesNotMatch(source, /import\s*\{[^}]*\bKIND_LABEL\b[^}]*\}\s*from\s*["']\.\/personal-item-form["']/);
   });
