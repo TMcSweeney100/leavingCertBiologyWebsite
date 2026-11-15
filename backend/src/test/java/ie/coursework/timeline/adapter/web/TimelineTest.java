@@ -51,7 +51,7 @@ class TimelineTest extends PostgresIntegrationTest {
 
         student.get("/api/v1/me/timeline?from=2026-12-01&to=2026-11-30")
                 .andExpect(status().isBadRequest()).andExpect(jsonPath("$.fieldErrors[0].field").value("to"));
-        student.get("/api/v1/me/timeline?from=2026-09-01&to=2027-06-30")
+        student.get("/api/v1/me/timeline?from=2026-09-01&to=2027-09-02")
                 .andExpect(status().isBadRequest()).andExpect(jsonPath("$.code").value("VALIDATION_FAILED"));
         student.get("/api/v1/me/timeline?from=soon&to=2026-11-30")
                 .andExpect(status().isBadRequest());
