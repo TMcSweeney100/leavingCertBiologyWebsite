@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap"><link rel="stylesheet" href="mock.css"><script src="shell.js"></script><title>Log entry: a source</title></head>
+<body>
+<div id="root"></div>
+<script>
+// Tim Mc Sweeney's real entry "Marketing for dummies" from 15 Nov 2026.
+S.page(`
+  <a class="back">${I.left} Biology log</a>
+  <header class="ehead source">
+    <span class="chip source" style="background:#fff">Source</span>
+    <h1>Marketing for dummies</h1>
+    <p class="when"><span><b>Logged</b> 3 Nov 2026</span><span><b>Last revised</b> 3 Nov 2026</span><span>Dates are set by the app and can't be changed.</span></p>
+  </header>
+
+  <div class="ecols">
+    <div>
+      <section class="egroup">
+        <h2 class="eyebrow">The source</h2>
+        <dl class="card facts">
+          <div><dt>Type of source</dt><dd>Book</dd></div>
+          <div><dt>Author</dt><dd>Sharon Quinn</dd></div>
+          <div><dt>Newspaper, magazine or publisher</dt><dd>Penguin</dd></div>
+          <div><dt>Date or year published</dt><dd>2024</dd></div>
+          <div class="last"><dt>Date accessed</dt><dd>3 Nov 2026</dd></div>
+          <div><dt>Page, chapter, section or timestamp</dt><dd>Chapter 16 is where most infor i need is</dd></div>
+        </dl>
+      </section>
+
+      <section class="egroup">
+        <h2 class="eyebrow">Your notes on it</h2>
+        <dl class="card prose">
+          <div><dt>Key information</dt><dd>Markketing info</dd></div>
+          <div><dt>How and why this is relevant to my question</dt><dd>Give information on stage 4</dd></div>
+          <div><dt>My reflections</dt><dd>Very useful, helped me undersatnd whats needed</dd></div>
+          <div><dt>Notes</dt><dd>We need this for section 4, refer back to it and show teacher</dd></div>
+        </dl>
+      </section>
+
+      <section class="egroup">
+        <h2 class="eyebrow">History</h2>
+        <p class="card hist"><b>Revision 1</b><span class="mono">3 Nov 2026</span><span>The only version. Revising adds a new one and keeps this.</span></p>
+      </section>
+    </div>
+
+    <aside class="aside">
+      <div class="card">
+        <p class="vis">${I.eye}<span><b>Your teacher can read this</b>, including its 1 revision.</span></p>
+        <button class="btn btn-quiet btn-sm" style="margin-top:12px">Hide from teacher</button>
+      </div>
+      <div class="card report">
+        <h2 class="eyebrow">In your report</h2>
+        <p><b>In the text:</b> (Chapter 16 is where most infor i need is, Sharon Quinn, 2024)</p>
+        <p><b>Reference list:</b> Sharon Quinn (2024) Marketing for dummies, Penguin</p>
+        <button class="btn btn-quiet btn-sm" style="margin-top:12px">${I.copy} Copy citation</button>
+      </div>
+      <a class="btn btn-primary">Revise entry</a>
+      <p class="small">Revising adds a new version. Earlier ones stay in the history. Nothing is deleted.</p>
+    </aside>
+  </div>
+`);
+</script>
+</body></html>

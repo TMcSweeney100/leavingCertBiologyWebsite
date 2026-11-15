@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap"><link rel="stylesheet" href="mock.css"><script src="shell.js"></script><title>Log: the student's log</title></head>
+<body>
+<div id="root"></div>
+<script>
+// Tim Mc Sweeney's real log from 15 Nov 2026. The two October entries are invented, to show a second
+// month, an edited entry and an entry hidden from the teacher.
+const DAYS = [
+  { month: 'November 2026', d: '3', wd: 'Tue', entries: [
+    { k: 'source', t: 'Marketing for dummies', m: 'Book · Chapter 16 is where most infor i need is' },
+    { k: 'note', t: 'Updated my work after teacher gave mne feeback, looked at thsi website ....' },
+    { k: 'ai', t: 'Claude', m: 'Got claude to complie a list of experiments that would be related to this writeup' },
+    { k: 'source', t: 'Information on how membranes react to oxygen', m: 'Newspaper or magazine · Page 38' },
+    { k: 'source', t: 'Membranes Experiment Video', m: 'Online video · youtube.com' },
+  ] },
+  { month: 'October 2026', d: '28', wd: 'Wed', entries: [
+    { k: 'note', t: 'Not sure my question is narrow enough. Ask about it on Friday before I change anything.', hidden: true },
+  ] },
+  { d: '21', wd: 'Wed', entries: [
+    { k: 'note', t: 'Picked my question: how does temperature change how fast beetroot membranes leak?', edited: 3 },
+  ] },
+];
+const WORD = { note: 'Note', source: 'Source', ai: 'AI use' };
+
+const entry = (e) => `
+  <li class="entry ${e.k} ${e.hidden ? 'private' : ''}">
+    <div>
+      <p class="top"><span class="chip ${e.k}">${WORD[e.k]}</span>${e.edited ? `<span class="edited">${I.pencil} Edited · ${e.edited} revisions</span>` : ''}</p>
+      <p class="t"><a>${e.t}</a></p>
+      ${e.m ? `<p class="m">${e.m}</p>` : ''}
+    </div>
+    <div class="who">
+      <span class="reader">${e.hidden ? I.eyeOff + ' Only you' : I.eye + ' Teacher can read'}</span>
+      <button class="toggle">${e.hidden ? 'Show' : 'Hide'}</button>
+    </div>
+  </li>`;
+
+const day = (d) => `
+  ${d.month ? `<h3 class="eyebrow month">${d.month}</h3>` : ''}
+  <div class="day">
+    <p class="date"><b>${d.d}</b><small>${d.wd}</small></p>
+    <ul class="entries">${d.entries.map(entry).join('')}</ul>
+  </div>`;
+
+S.page(S.chead('Log') + `
+  <div class="toolbar">
+    <nav class="filters" aria-label="Show">
+      <a class="on">All <span>7</span></a><a>Notes <span>3</span></a><a>Sources <span>3</span></a><a>AI uses <span>1</span></a>
+    </nav>
+    <a class="btn btn-primary">${I.plus} New entry</a>
+  </div>
+  <p class="rule">Each entry is dated when you save it. Editing keeps the earlier version. Nothing is deleted.</p>
+  ${DAYS.map(day).join('')}
+`);
+</script>
+</body></html>
