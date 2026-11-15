@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap"><link rel="stylesheet" href="mock.css"><script src="blocks.js"></script><title>Progress, A: the All tab on a phone</title>
+<style>
+  /* The stage tabs become a row that scrolls sideways; the bar stays as each stage's progress. */
+  .stage-tabs { display: flex; overflow-x: auto; scrollbar-width: none; }
+  .stage-tab { flex: none; width: 112px; }
+  .tabs { gap: 20px; }
+  .hero .big { font-size: 19px; }
+  .st-list > li { flex-wrap: wrap; padding: 12px 14px; }
+  .st-list .grow { flex: 1 1 160px; }
+  .list-head { padding: 12px 14px; flex-wrap: wrap; }
+  .req { padding: 12px 14px; }
+  .req .btn { width: 100%; }
+  .waiting .flag { padding: 9px 14px; }
+  .done-row { padding: 12px 14px; }
+</style></head>
+<body>
+<div id="root"></div>
+<script>
+document.getElementById('root').innerHTML = B.appbar(true) + `
+<main style="padding:16px 16px 40px" class="stack">
+  ${B.classHead(true)}
+  ${B.waiting()}
+  ${B.stageTabs("all")}
+  ${B.allHero()}
+  <div class="toolbar" style="justify-content:flex-end">${B.hideNames()}</div>
+  ${B.allList()}
+</main>`;
+// The build scrolls the current stage into view, so the teacher sees which stage they're on.
+const tabs = document.querySelector('.stage-tabs');
+tabs.scrollLeft = 0;
+</script>
+</body></html>

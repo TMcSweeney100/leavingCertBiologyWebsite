@@ -15,6 +15,8 @@ describe("WaitingQueue", () => {
     expect(links[0]).toHaveAttribute("href", "/teach/classes/k1/students/Aoife#checkpoint-cp1");
     expect(screen.getByText(/asked 2 days ago/)).toBeInTheDocument();
     expect(screen.getByText("page 2")).toBeInTheDocument();
+    expect(links[0]).toHaveTextContent("Review"); // a button per request (plan progress-redesign)
+    expect(screen.getAllByText("Initial ideas discussed with the teacher")).toHaveLength(2); // the checkpoint in full, not cut
   });
 
   it("counts a student once however many checkpoints they are waiting on", () => {

@@ -5,12 +5,14 @@ import { formatCalendarDate } from "@/lib/app/component-setup";
 
 const OUTCOME = { ACCEPTED: "Accepted", NOT_YET: "Not yet" } as const;
 
-/** Pack D-10: one line under the row: the newest answer, with the Full history button beside it. */
+/** Pack D-10, restyled for direction D: the newest answer, with the Full history button beside it. */
 export function LastAnswerLine({ firstName, answers, action }: { firstName: string; answers: ReadonlyArray<Answer>; action?: ReactNode }) {
   const last = answers[0];
+  // Direction D (R-12): the card's gap replaces the old top rule; a note from the teacher sits on the cream note colour.
+  const chip = last?.teacherNote ? "rounded-app-inner border border-app-note-line bg-app-note-ground px-3 py-1.5 text-app-ink" : "flex-1 text-app-copy";
   return (
-    <div className="mt-3 flex flex-wrap items-center justify-between gap-x-5 gap-y-2 border-t border-app-line pt-2.5">
-      <p className="min-w-0 flex-1 text-app-small leading-[1.45] text-app-copy">
+    <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+      <p className={`min-w-0 text-app-small leading-[1.45] ${chip}`}>
         {last
           ? <>{`${OUTCOME[last.outcome]} on ${formatCalendarDate(last.answeredOn)}. `}{last.teacherNote ? <span data-private>{`Your note: “${last.teacherNote}”`}</span> : "No note."}</>
           : <>No earlier answers. This is <span data-private>{firstName}</span>&rsquo;s first request for this checkpoint.</>}

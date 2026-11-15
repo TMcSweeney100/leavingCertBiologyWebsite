@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap"><link rel="stylesheet" href="mock.css"><script src="blocks.js"></script><title>Student page, D: phone</title>
+<style>
+  .appbar { padding: 0 16px; }
+  .who-card h1 { font-size: 22px; }
+  .tl-item { grid-template-columns: 30px minmax(0,1fr); column-gap: 8px; }
+  .tl-rail .dot-num { width: 30px; height: 30px; font-size: 12px; }
+  .tl-rail::after { top: 44px; }
+  .tl-card { padding: 12px 14px; }
+  .tl-row .grow { flex-basis: 100%; }
+  .waiting .flag, .waiting .body { padding-left: 14px; padding-right: 14px; }
+  .waiting .flag { flex-wrap: wrap; row-gap: 2px; }
+  .waiting .flag > span { white-space: nowrap; }
+  .answer { grid-template-columns: minmax(0, 1fr) !important; }
+  .answer .ask, .answer .reply { padding: 14px; }
+  .answer .row .btn { width: 100%; white-space: normal; }
+  .work small { overflow-wrap: anywhere; }
+  .tl-acts { display: grid; grid-template-columns: auto auto 1fr; width: 100%; gap: 4px 8px; }
+  .tl-acts .pill { grid-column: 1 / -1; justify-self: start; }
+  .tl-acts .btn-text { padding: 0 8px 0 0; justify-content: flex-start; }
+  .tl-acts .btn-outline { justify-self: start; }
+  .log-row { grid-template-columns: 70px minmax(0,1fr) 24px; gap: 4px 10px; padding: 12px 14px; }
+</style></head>
+<body>
+<div id="root"></div>
+<script>
+document.getElementById('root').innerHTML = B.appbar(true) + `
+<main style="padding:16px 16px 40px" class="stack">
+  ${B.back()}
+  ${B.who(true)}
+  ${B.hero()}
+  ${B.timeline({ phone: true })}
+  <div style="height:8px"></div>
+  ${B.logCompact()}
+</main>`;
+</script>
+</body></html>

@@ -41,7 +41,7 @@ Four qualities, in priority order, each made concrete:
 - **Structure is information.** Borders, numbering, badges and dividers appear only where they encode something (a sequence, a state, a grouping). Six stages are a sequence, so they can be numbered. A list of classes is not.
 - **Progressive disclosure.** Show the current stage open and the others summarised; show the one field the user needs now and reveal the rest when relevant. Collapsed content must still be reachable by keyboard and readable by screen readers.
 - **Motion answers the user.** A panel opening, a row confirming, a code appearing. One deliberate moment per page at most, never decoration on every card, and everything works with motion off.
-- **Mobile first, laptop with equal care.** Design each screen at 390px first, then at 1140px as its own layout rather than a stretched phone. Teacher pages are used mostly on laptops and may use the width (tables, two columns); student pages are used mostly on phones.
+- **Laptop first, then phone.** Design each screen at 1140px first, then at 390px as its own layout rather than a squeezed laptop page. Teacher pages are used mostly on laptops and may use the width (tables, two columns); student pages are used mostly on phones.
 
 ## 5. Visual system: the app's own, "Navy"
 

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap"><link rel="stylesheet" href="mock.css"><script src="blocks.js"></script><title>Progress, B: the quiet grid</title></head>
+<body>
+<div id="root"></div>
+<script>
+document.getElementById('root').innerHTML = B.appbar() + `
+<main style="max-width:1084px;margin:0 auto;padding:28px 0 48px" class="stack">
+  <div style="max-width:880px;margin:0 auto;width:100%" class="stack">
+    ${B.classHead()}
+    <div style="height:4px"></div>
+    ${B.waiting()}
+  </div>
+  ${B.classHero()}
+  <div class="toolbar">${B.legend()}${B.hideNames()}</div>
+  ${B.grid({ collapseUpToDate: true })}
+</main>`;
+</script>
+</body></html>

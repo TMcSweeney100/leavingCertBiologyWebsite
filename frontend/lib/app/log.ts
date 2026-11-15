@@ -1,4 +1,4 @@
-import type { EntryKind, LogEntry, SourceType } from "@/lib/api/schemas";
+import type { AiUseFields, EntryKind, LogEntry, SourceFields, SourceType } from "@/lib/api/schemas";
 
 /** The kind is always a word, never colour alone. */
 export const KIND_WORD: Record<EntryKind, string> = { NOTE: "Note", SOURCE: "Source", AI_USE: "AI use" };
@@ -102,4 +102,43 @@ export function linkMessage(value: string): string {
 /** "3,850 of 4,000" once a field is within 10% of its limit; nothing before that. */
 export function counterText(value: string, limit: number): string | null {
   return value.length >= limit * 0.9 ? `${value.length.toLocaleString("en-IE")} of ${limit.toLocaleString("en-IE")}` : null;
+}
+
+/** The teacher's log shows this many entries until Show all (R-5). */
+export const LOG_PREVIEW = 3;
+
+/** The filter chips' words (R-6). */
+export const KIND_PLURAL: Record<EntryKind, string> = { SOURCE: "Sources", NOTE: "Notes", AI_USE: "AI use" };
+
+/** How many entries there are of each kind, private ones included (R-16). */
+export function kindCounts(entries: ReadonlyArray<{ kind: EntryKind }>): Record<EntryKind, number> {
+  const out: Record<EntryKind, number> = { SOURCE: 0, NOTE: 0, AI_USE: 0 };
+  for (const e of entries) out[e.kind] += 1;
+  return out;
+}
+
+const NOUNS: Record<EntryKind, [string, string]> = { SOURCE: ["source", "sources"], NOTE: ["note", "notes"], AI_USE: ["AI use entry", "AI use entries"] };
+
+/** What the live region says once a filter has changed the list. */
+export function showingWords(n: number, kind: EntryKind | "ALL"): string {
+  if (kind === "ALL") return `Showing all ${n} ${n === 1 ? "entry" : "entries"}.`;
+  return `Showing ${n} ${NOUNS[kind][n === 1 ? 0 : 1]}.`;
+}
+
+const firstLine = (s: string) => s.split("\n")[0].trim();
+
+/** A closed row on the teacher's log: a title and one line of detail, both the student's own words. */
+export function teacherEntryLines(e: { kind: EntryKind; body: string | null; fields: SourceFields | AiUseFields | null }):
+  { title: string; detail: string | null } {
+  if (e.kind === "SOURCE" && e.fields && "title" in e.fields) {
+    const f = e.fields;
+    const type = SOURCE_TYPES.find((t) => t.value === f.type)?.label ?? f.type;
+    const where = isOnline(f.type) && f.url ? linkHost(f.url) : f.publication;
+    return { title: f.title, detail: [type, f.author, where].filter(Boolean).join(" · ") };
+  }
+  if (e.kind === "AI_USE" && e.fields && "toolNameAndVersion" in e.fields) {
+    return { title: `${e.fields.toolNameAndVersion} · ${e.fields.developer}`, detail: firstLine(e.fields.howUsed) };
+  }
+  const lines = (e.body ?? "").split("\n").map((l) => l.trim()).filter(Boolean);
+  return { title: lines[0] ?? "", detail: lines[1] ?? null };
 }

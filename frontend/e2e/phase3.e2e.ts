@@ -140,6 +140,7 @@ test("the teacher sees the hidden note exists but not its text, and the edited s
   await expect(teacher.getByText(/Made private by Aoife on /)).toBeVisible();
   await expect(teacher.getByText(NOTE)).toHaveCount(0);
   const source = rows.filter({ hasText: "Titration technique demo (RTÉ)" });
+  await source.getByRole("button", { name: /Titration technique demo/ }).click(); // rows open in place (direction D)
   await expect(source).toContainText("Edited");
   await source.getByText("History (2 revisions)").click();
   await expect(source.getByRole("list", { name: "Revisions" }).getByRole("listitem")).toHaveCount(2);

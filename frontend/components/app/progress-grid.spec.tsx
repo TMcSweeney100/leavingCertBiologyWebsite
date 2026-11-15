@@ -10,31 +10,15 @@ vi.mock("@/lib/api/client", async () => {
 });
 
 import { api } from "@/lib/api/client";
-import type { ProgressGrid as Grid } from "@/lib/api/schemas";
 
+import { grid, INITIAL, LOG, row, waitingFor } from "./progress-fixtures";
 import { ProgressGrid } from "./progress-grid";
 
-const INITIAL = "Initial ideas discussed with the teacher";
-const LOG = "Investigative log shared with the teacher";
-const row = (id: string, first: string, last: string, behindBy: number, s1: "DUE" | "SIGNED_OFF", days: number | null) => ({
-  studentId: id, firstName: first, lastName: last, behindBy, lastLogActivityOn: null, daysSinceLastLogActivity: days,
-  documentLink: null,
-  cells: [
-    { checkpointId: "c1", state: s1, signedOffOn: s1 === "SIGNED_OFF" ? "2026-10-02" : null },
-    { checkpointId: "c2", state: "DUE" as const, signedOffOn: null },
-  ],
-});
-const grid = (students: Grid["students"]): Grid => ({
-  componentId: "k1", classId: "cl1", className: "6A Biology", today: "2026-12-14",
-  stages: [
-    { stageId: "s1", ordinal: 1, label: "Stage 1", name: "Initial", dueDate: "2026-10-02", checkpoint: { id: "c1", text: INITIAL } },
-    { stageId: "s2", ordinal: 2, label: "Stage 2", name: "Research", dueDate: "2026-11-06", checkpoint: { id: "c2", text: LOG } },
-  ],
-  students, waiting: [], itemTicks: [],
-});
-const START = grid([row("a", "Aoife", "Byrne", 2, "DUE", 20), row("c", "Cian", "Murphy", 1, "SIGNED_OFF", 3)]);
-const props = { basePath: "/teach/classes/cl1/progress", laptopStage: "all", phoneStage: "2", hideNames: false };
-const table = () => within(screen.getByRole("table", { name: /Checkpoint sign-offs for 6A Biology/ }));
+const AOIFE = row("a", "Aoife", "Byrne", 2, ["DUE", "DUE"], 20, "https://docs.example.com/aoife");
+const CIAN = row("c", "Cian", "Murphy", 1, ["SIGNED_OFF", "DUE"], null);
+const START = grid([AOIFE, CIAN]);
+const props = { basePath: "/teach/classes/cl1/progress", hideNames: false };
+const left = () => within(screen.getByRole("region", { name: /Still to sign off/ }));
 
 beforeEach(() => {
   refresh.mockReset();
@@ -43,94 +27,67 @@ beforeEach(() => {
 });
 
 describe("ProgressGrid", () => {
-  it("shows each student's work link beside their name, and a Ready cell opens the review", () => {
-    const withLink = grid([
-      { ...row("a", "Aoife", "Byrne", 1, "DUE", 3), documentLink: { url: "https://docs.example.com/aoife", setOn: "2026-12-01" },
-        cells: [{ checkpointId: "c1", state: "READY" as const, signedOffOn: null }, { checkpointId: "c2", state: "DUE" as const, signedOffOn: null }] },
-    ]);
-    render(<ProgressGrid grid={withLink} {...props} />);
-    expect(table().getByRole("link", { name: "Open Aoife Byrne's work (opens in a new tab)" })).toHaveAttribute("href", "https://docs.example.com/aoife");
-    expect(table().getByRole("link", { name: `Review ${INITIAL} for Aoife Byrne` })).toHaveAttribute("href", "/teach/classes/cl1/students/a#checkpoint-c1");
+  it("puts the requests first, then the stage's card and who's still to sign off, one button each", () => {
+    const ready = { ...CIAN, cells: [CIAN.cells[0], { ...CIAN.cells[1], state: "READY" as const }] };
+    render(<ProgressGrid grid={grid([AOIFE, ready], [waitingFor(ready, 2)])} {...props} stage="2" />);
+    expect(screen.getByRole("heading", { name: "1 student waiting for you" })).toBeInTheDocument();
+    expect(screen.getByRole("navigation", { name: "Stages" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: LOG })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Still to sign off · 2" })).toBeInTheDocument();
+    expect(left().getAllByRole("link", { name: /^(Aoife Byrne|Cian Murphy)$/ }).map((l) => l.textContent)).toEqual(["Aoife Byrne", "Cian Murphy"]);
+    expect(left().getByRole("link", { name: "Open Aoife Byrne's work (opens in a new tab)" })).toHaveAttribute("href", "https://docs.example.com/aoife");
+    expect(left().getByRole("button", { name: `Sign off ${LOG} for Aoife Byrne` })).toHaveTextContent("Sign off");
+    expect(left().getByRole("link", { name: `Review ${LOG} for Cian Murphy` })).toHaveAttribute("href", "/teach/classes/cl1/students/c#checkpoint-c2");
+    expect(left().getByText("No entries yet")).not.toHaveClass("font-semibold");
+    expect(left().getByText("Last entry 20 days ago")).toHaveClass("font-semibold");
   });
 
-  it("answers first, then groups students into bands, furthest behind first", () => {
-    render(<ProgressGrid grid={START} {...props} />);
-    expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent("2 of 2 students are behind");
-    expect(screen.getByText("Stages 1 and 2 are due. Furthest behind first.")).toBeInTheDocument();
-    expect(table().getAllByRole("link", { name: /^(Aoife Byrne|Cian Murphy)$/ }).map((l) => l.textContent)).toEqual(["Aoife Byrne", "Cian Murphy"]);
-    expect(table().getByText("checkpoints behind")).toBeInTheDocument();
-    expect(table().getByRole("link", { name: "Aoife Byrne" })).toHaveAttribute("href", "/teach/classes/cl1/students/a");
-    expect(table().getByText("Last entry 20 days ago")).toBeInTheDocument();
-    expect(table().getByRole("button", { name: `Sign off ${INITIAL} for Aoife Byrne` })).toBeInTheDocument();
-  });
-
-  it("signs off in one click, announces it, offers Undo, and keeps the row where it was until Re-sort", async () => {
+  it("signs off in place: the row stays with Undo, the count goes down, and Re-sort moves it to Signed off", async () => {
     vi.mocked(api.send).mockResolvedValue({ checkpointId: "c1", state: "SIGNED_OFF", signedOffOn: "2026-12-14" });
-    const { rerender } = render(<ProgressGrid grid={START} {...props} />);
-    await userEvent.click(table().getByRole("button", { name: `Sign off ${INITIAL} for Aoife Byrne` }));
+    const { rerender } = render(<ProgressGrid grid={START} {...props} stage="1" />);
+    expect(screen.getByRole("heading", { name: "Still to sign off · 1" })).toBeInTheDocument();
+    await userEvent.click(left().getByRole("button", { name: `Sign off ${INITIAL} for Aoife Byrne` }));
     expect(api.send).toHaveBeenCalledWith("PUT", "/components/k1/students/a/checkpoints/c1/signoff", { signedOff: true }, expect.anything());
     expect(refresh).toHaveBeenCalled();
     expect(screen.getByText(`Signed off: ${INITIAL}, for Aoife Byrne.`)).toBeInTheDocument();
 
-    // The server now has Aoife behind by 1 and Cian by 1; the page keeps Aoife first until Re-sort.
-    const after = grid([row("c", "Cian", "Murphy", 1, "SIGNED_OFF", 3), { ...row("a", "Aoife", "Byrne", 1, "SIGNED_OFF", 20) }]);
-    rerender(<ProgressGrid grid={after} {...props} />);
-    expect(table().getAllByRole("link", { name: /Aoife Byrne|Cian Murphy/ }).map((l) => l.textContent)).toEqual(["Aoife Byrne", "Cian Murphy"]);
-    expect(table().getByRole("button", { name: `Undo sign-off of ${INITIAL} for Aoife Byrne` })).toBeInTheDocument();
+    const after = grid([{ ...AOIFE, behindBy: 1, cells: [{ ...AOIFE.cells[0], state: "SIGNED_OFF", signedOffOn: "2026-12-14" }, AOIFE.cells[1]] }, CIAN]);
+    rerender(<ProgressGrid grid={after} {...props} stage="1" />);
+    expect(left().getByRole("button", { name: `Undo sign-off of ${INITIAL} for Aoife Byrne` })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Still to sign off · 0" })).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: "Re-sort (1 change)" }));
-    expect(table().queryByRole("button", { name: /Undo sign-off/ })).not.toBeInTheDocument();
+    expect(screen.getByText("Everyone is signed off for this stage.")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Signed off · 2" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Re-sort/ })).not.toBeInTheDocument();
   });
 
-  it("revokes only after the in-place question, and the question names both answers", async () => {
+  it("revokes from the folded Signed off list, only after the in-place question", async () => {
     vi.mocked(api.send).mockResolvedValue({ checkpointId: "c1", state: "DUE", signedOffOn: null });
-    render(<ProgressGrid grid={START} {...props} />);
-    await userEvent.click(table().getByRole("button", { name: `Revoke sign-off of ${INITIAL} for Cian Murphy` }));
+    render(<ProgressGrid grid={START} {...props} stage="1" />);
+    await userEvent.click(screen.getByRole("button", { name: "Show signed-off students" }));
+    await userEvent.click(screen.getByRole("button", { name: `Revoke sign-off of ${INITIAL} for Cian Murphy` }));
     expect(api.send).not.toHaveBeenCalled();
-    expect(table().getByText(/^Revoke the sign-off of/)).toHaveTextContent(`Revoke the sign-off of “${INITIAL}” for Cian Murphy? It stays in the record as revoked by you.`);
-    await userEvent.click(table().getByRole("button", { name: `Revoke sign-off of ${INITIAL} for Cian Murphy` }));
+    expect(screen.getByText(/^Revoke the sign-off of/)).toHaveTextContent(`Revoke the sign-off of “${INITIAL}” for Cian Murphy? It stays in the record as revoked by you.`);
+    await userEvent.click(screen.getByRole("button", { name: `Revoke sign-off of ${INITIAL} for Cian Murphy` }));
     expect(api.send).toHaveBeenCalledWith("PUT", "/components/k1/students/c/checkpoints/c1/signoff", { signedOff: false }, expect.anything());
   });
 
-  it("a failed sign-off leaves the cell and offers Try again", async () => {
+  it("a failed sign-off leaves the row and offers Try again", async () => {
     vi.mocked(api.send).mockRejectedValueOnce(new Error("offline")).mockResolvedValueOnce({ checkpointId: "c2", state: "SIGNED_OFF", signedOffOn: "2026-12-14" });
-    render(<ProgressGrid grid={START} {...props} />);
-    await userEvent.click(table().getByRole("button", { name: `Sign off ${LOG} for Cian Murphy` }));
-    expect(table().getByRole("alert")).toHaveTextContent(`Couldn’t sign off “${LOG}” for Cian Murphy. Nothing changed.`);
-    await userEvent.click(table().getByRole("button", { name: "Try again" }));
+    render(<ProgressGrid grid={START} {...props} stage="2" />);
+    await userEvent.click(left().getByRole("button", { name: `Sign off ${LOG} for Cian Murphy` }));
+    expect(left().getByRole("alert")).toHaveTextContent(`Couldn’t sign off “${LOG}” for Cian Murphy. Nothing changed.`);
+    await userEvent.click(left().getByRole("button", { name: "Try again" }));
     expect(api.send).toHaveBeenCalledTimes(2);
-  });
-
-  it("Hide names blurs names and counts and is remembered in a cookie", async () => {
-    const { container } = render(<ProgressGrid grid={START} {...props} />);
-    const hide = screen.getByRole("switch", { name: "Hide names" });
-    expect(hide).toHaveAttribute("aria-checked", "false");
-    await userEvent.click(hide);
-    expect(hide).toHaveAttribute("aria-checked", "true");
-    expect(container.firstElementChild).toHaveClass("app-hide-names");
-    expect(document.cookie).toContain("app_hide_names=1");
-    expect(table().getByRole("link", { name: "Aoife Byrne" })).toHaveAttribute("data-private");
-  });
-
-  it("Hide names also blurs the student's name in the revoke question and the failure alert (plan P4-16)", async () => {
-    vi.mocked(api.send).mockRejectedValueOnce(new Error("offline"));
-    render(<ProgressGrid grid={START} {...props} hideNames />);
-    await userEvent.click(table().getByRole("button", { name: `Revoke sign-off of ${INITIAL} for Cian Murphy` }));
-    const question = table().getByText(/^Revoke the sign-off of/);
-    expect(within(question).getByText("Cian Murphy")).toHaveAttribute("data-private");
-
-    await userEvent.click(table().getByRole("button", { name: `Keep sign-off of ${INITIAL} for Cian Murphy` }));
-    await userEvent.click(table().getByRole("button", { name: `Sign off ${LOG} for Aoife Byrne` }));
-    expect(within(table().getByRole("alert")).getByText("Aoife Byrne")).toHaveAttribute("data-private");
   });
 
   it("two quick sign-offs each stay busy until their own answer, and a failure survives the next click", async () => {
     const answers: Array<{ resolve: (v: unknown) => void; reject: (e: unknown) => void }> = [];
     vi.mocked(api.send).mockImplementation(() => new Promise((resolve, reject) => { answers.push({ resolve, reject }); }));
-    render(<ProgressGrid grid={START} {...props} />);
-    const aoife = () => table().getByRole("button", { name: `Sign off ${LOG} for Aoife Byrne` });
-    const cian = () => table().getByRole("button", { name: `Sign off ${LOG} for Cian Murphy` });
+    render(<ProgressGrid grid={START} {...props} stage="2" />);
+    const aoife = () => left().getByRole("button", { name: `Sign off ${LOG} for Aoife Byrne` });
+    const cian = () => left().getByRole("button", { name: `Sign off ${LOG} for Cian Murphy` });
 
     await userEvent.click(aoife());
     await userEvent.click(cian());
@@ -140,24 +97,52 @@ describe("ProgressGrid", () => {
 
     await act(async () => answers[0].reject(new Error("offline")));
     expect(cian()).toBeDisabled(); // its request is still out
-    expect(table().getByRole("alert")).toHaveTextContent("for Aoife Byrne");
+    expect(left().getByRole("alert")).toHaveTextContent("for Aoife Byrne");
 
     await act(async () => answers[1].resolve({ checkpointId: "c2", state: "SIGNED_OFF", signedOffOn: "2026-12-14" }));
-    expect(table().getByRole("alert")).toHaveTextContent("for Aoife Byrne"); // Cian's success doesn't clear Aoife's failure
+    expect(left().getByRole("alert")).toHaveTextContent("for Aoife Byrne"); // Cian's success doesn't clear Aoife's failure
     expect(screen.getByRole("button", { name: "Re-sort (1 change)" })).toBeInTheDocument();
   });
 
-  it("a one-stage view shows the full checkpoint and a Sign off per student", () => {
-    render(<ProgressGrid grid={START} {...props} laptopStage="2" />);
-    expect(table().getByRole("columnheader", { name: new RegExp(LOG) })).toBeInTheDocument();
-    expect(table().getAllByText("Due, not signed off")).toHaveLength(2);
+  it("Hide names blurs names and counts, in the revoke question and the failure alert too, and is remembered in a cookie", async () => {
+    vi.mocked(api.send).mockRejectedValueOnce(new Error("offline"));
+    const { container } = render(<ProgressGrid grid={START} {...props} stage="2" />);
+    const hide = screen.getByRole("switch", { name: "Hide names" });
+    expect(hide).toHaveAttribute("aria-checked", "false");
+    await userEvent.click(hide);
+    expect(hide).toHaveAttribute("aria-checked", "true");
+    expect(container.firstElementChild).toHaveClass("app-hide-names");
+    expect(document.cookie).toContain("app_hide_names=1");
+    expect(left().getByRole("link", { name: "Aoife Byrne" })).toHaveAttribute("data-private");
+    await userEvent.click(left().getByRole("button", { name: `Sign off ${LOG} for Aoife Byrne` }));
+    expect(within(left().getByRole("alert")).getByText("Aoife Byrne")).toHaveAttribute("data-private"); // plan P4-16
   });
 
-  it("the phone list opens on its stage and, in All, says what's missing", () => {
-    const { unmount } = render(<ProgressGrid grid={START} {...props} phoneStage="all" />);
-    expect(within(screen.getByRole("region", { name: "Students" })).getByText("Not signed off: Stages 1 and 2")).toBeInTheDocument();
-    unmount();
-    render(<ProgressGrid grid={START} {...props} />);
-    expect(within(screen.getByRole("region", { name: "Students" })).getByRole("button", { name: `Sign off ${LOG} for Aoife Byrne` })).toBeInTheDocument();
+  it("All answers in its card, then bands the quiet grid furthest behind first, with Up to date folded", async () => {
+    const DARA = row("d", "Dara", "Walsh", 0, ["SIGNED_OFF", "SIGNED_OFF"], 2);
+    render(<ProgressGrid grid={grid([AOIFE, CIAN, DARA])} {...props} stage="all" />);
+    expect(screen.getByRole("heading", { level: 2, name: "2 of 3 students are behind" })).toBeInTheDocument();
+    const table = within(screen.getByRole("table", { name: /Checkpoint sign-offs for 6A Biology/ }));
+    expect(table.getAllByRole("link", { name: /^(Aoife Byrne|Cian Murphy)$/ }).map((l) => l.textContent)).toEqual(["Aoife Byrne", "Cian Murphy"]);
+    expect(table.getByRole("button", { name: `Sign off ${INITIAL} for Aoife Byrne` })).toHaveTextContent("Sign off");
+    expect(table.getByRole("button", { name: `Revoke sign-off of ${INITIAL} for Cian Murphy` })).toHaveAttribute("title", "Signed off 2 Oct 2026");
+    expect(table.queryByRole("link", { name: "Dara Walsh" })).not.toBeInTheDocument();
+    await userEvent.click(table.getByRole("button", { name: "Show up-to-date students" }));
+    expect(table.getByRole("link", { name: "Dara Walsh" })).toBeInTheDocument();
+  });
+
+  it("All folds nobody away when nobody is behind", () => {
+    render(<ProgressGrid grid={grid([row("d", "Dara", "Walsh", 0, ["SIGNED_OFF", "SIGNED_OFF"], 2)])} {...props} stage="all" />);
+    const table = within(screen.getByRole("table", { name: /Checkpoint sign-offs for 6A Biology/ }));
+    expect(table.getByRole("link", { name: "Dara Walsh" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /up-to-date students/ })).not.toBeInTheDocument();
+  });
+
+  it("All on a phone is read-only: each student's stage dots in words, and no sign-off buttons", () => {
+    render(<ProgressGrid grid={START} {...props} stage="all" />);
+    const list = within(screen.getByRole("region", { name: "Students" }));
+    expect(list.getByText("Signed off: Stage 1. Due: Stage 2.")).toBeInTheDocument();
+    expect(list.getByRole("link", { name: "Cian Murphy" })).toHaveAttribute("href", "/teach/classes/cl1/students/c");
+    expect(list.queryByRole("button", { name: /^Sign off/ })).not.toBeInTheDocument();
   });
 });

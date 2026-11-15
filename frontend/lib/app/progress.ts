@@ -112,13 +112,8 @@ export function lastEntryWords(days: number | null): string {
   return `Last entry ${days} days ago`;
 }
 
-/** Pack D-7: at 14 days or more, or with no entries, the log line goes ink and 600 weight. Never amber. */
-export const isQuiet = (days: number | null) => days === null || days >= 14;
-
-export function missingText(student: ProgressStudent, grid: Pick<ProgressGrid, "stages">): string | null {
-  const missing = checkpointStages(grid).filter((_, i) => student.cells[i]?.state === "DUE");
-  return missing.length === 0 ? null : `Not signed off: ${listStages(missing)}`;
-}
+/** Plan progress-redesign P-17: ink and 600 weight only for a student quiet for 14 days or more. "No entries yet" stays plain. Never amber. */
+export const isQuiet = (days: number | null) => days !== null && days >= 14;
 
 /** Plan P4-11: lay rows out in the order first rendered; anyone new goes last, in server order. */
 export function inOrder<T extends { studentId: string }>(students: T[], order: string[]): T[] {
@@ -131,21 +126,39 @@ export function parseStage(param: string | undefined, grid: Pick<ProgressGrid, "
   return checkpointStages(grid).some((s) => stageKey(s) === param) ? (param as string) : null;
 }
 
-/** Pack D-7: the phone opens on the latest due stage, else the first stage with a checkpoint. */
+/** The page opens on the latest due stage, else the first stage with a checkpoint (pack D-7 on the phone; plan progress-redesign P-6 everywhere). */
 export function latestDueKey(grid: Pick<ProgressGrid, "stages" | "today">): string {
   const due = dueStages(grid);
   const stage = due[due.length - 1] ?? checkpointStages(grid)[0];
   return stage ? stageKey(stage) : "all";
 }
 
+/** A stage tab's last line (plan progress-redesign): what's left once it's due, its date before then. */
+export function tabLine(stage: GridStage, left: number, today: string): string {
+  if (stage.dueDate === null) return "No date set";
+  if (!isDue(stage, today)) return `Due ${formatCalendarDate(stage.dueDate)}`;
+  return left === 0 ? "All signed off" : `${left} to sign off`;
+}
+
+/** A stage view's two lists (P-11): membership is frozen at load with the order, so a sign-off never moves a row between lists. */
+export function splitByStage<T extends { studentId: string }>(students: T[], signedAtLoad: ReadonlySet<string>): { left: T[]; signed: T[] } {
+  return { left: students.filter((s) => !signedAtLoad.has(s.studentId)), signed: students.filter((s) => signedAtLoad.has(s.studentId)) };
+}
+
+const DOT_WORDS = [["SIGNED_OFF", "Signed off"], ["READY", "Waiting for you"], ["DUE", "Due"]] as const;
+
+/** The phone's All view (P-20): a student's stage dots in words. Stages not due yet are left out. */
+export function dotsLabel(student: ProgressStudent, grid: Pick<ProgressGrid, "stages">): string {
+  const stages = checkpointStages(grid);
+  const parts = DOT_WORDS.map(([state, word]) => [word, stages.filter((_, i) => student.cells[i]?.state === state)] as const)
+    .filter(([, list]) => list.length > 0)
+    .map(([word, list]) => `${word}: ${listStages(list)}.`);
+  return parts.length > 0 ? parts.join(" ") : "Nothing signed off or due yet.";
+}
+
 export function stageStateWord(stage: GridStage, today: string): "Due" | "Not due" | "No date" {
   if (stage.dueDate === null) return "No date";
   return isDue(stage, today) ? "Due" : "Not due";
-}
-
-export function pickName(stage: GridStage, today: string): string {
-  const date = stage.dueDate ? formatCalendarDate(stage.dueDate) : "no date set";
-  return `${stageLabel(stage)}, ${shortCheckpoint(stage.checkpoint?.text ?? stage.name)}, ${date}, ${stageStateWord(stage, today).toLowerCase()}`;
 }
 
 export type SignoffAction = "sign" | "undo" | "revoke";

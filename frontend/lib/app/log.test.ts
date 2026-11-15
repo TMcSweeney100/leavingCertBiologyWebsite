@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { counterText, dayMonth, dublinDate, entryDetail, entryHeading, entryTitle, isOnline, linkHost, linkMessage, visibilityLine } from "./log.ts";
+import {
+  counterText, dayMonth, dublinDate, entryDetail, entryHeading, entryTitle, isOnline, kindCounts, linkHost, linkMessage, showingWords,
+  teacherEntryLines, visibilityLine,
+} from "./log.ts";
 
 test("an instant late on an Irish summer evening is the next Irish day", () => {
   assert.equal(dublinDate("2026-10-01T23:30:00Z"), "2026-10-02");
@@ -62,4 +65,27 @@ test("a counter appears at 90% of the limit", () => {
   assert.equal(counterText("x".repeat(3599), 4000), null);
   assert.equal(counterText("x".repeat(3850), 4000), "3,850 of 4,000");
   assert.equal(counterText("x".repeat(450), 500), "450 of 500");
+});
+
+test("a closed row on the teacher's log: a source's type, author and where; an AI use's tool; a note's first two lines", () => {
+  const video = {
+    type: "ONLINE_VIDEO", title: "Membranes Experiment Video", author: "KSI", publication: null, datePublished: null,
+    url: "https://www.youtube.com/watch?v=1", dateAccessed: "2026-11-03", locator: null, keyInformation: null, relevance: null, reflections: null,
+  } as const;
+  assert.deepEqual(teacherEntryLines({ kind: "SOURCE", body: null, fields: video }),
+    { title: "Membranes Experiment Video", detail: "Video online · KSI · youtube.com" });
+  assert.deepEqual(teacherEntryLines({ kind: "SOURCE", body: null, fields: { ...video, type: "BOOK", url: null, author: null, publication: "Penguin" } }),
+    { title: "Membranes Experiment Video", detail: "Book · Penguin" });
+  assert.deepEqual(teacherEntryLines({ kind: "AI_USE", body: null, fields: {
+    toolNameAndVersion: "Claude", developer: "Anthropic", dateGenerated: "2026-11-03", howUsed: "Listed experiments\nthen more", prompts: null, shareUrl: null,
+  } }), { title: "Claude · Anthropic", detail: "Listed experiments" });
+  assert.deepEqual(teacherEntryLines({ kind: "NOTE", body: "Looked at planning\n\nNeed equipment?", fields: null }),
+    { title: "Looked at planning", detail: "Need equipment?" });
+});
+
+test("chip counts include private entries; the live region says what a filter left showing", () => {
+  assert.deepEqual(kindCounts([{ kind: "NOTE" }, { kind: "SOURCE" }, { kind: "SOURCE" }]), { SOURCE: 2, NOTE: 1, AI_USE: 0 });
+  assert.equal(showingWords(3, "SOURCE"), "Showing 3 sources.");
+  assert.equal(showingWords(1, "AI_USE"), "Showing 1 AI use entry.");
+  assert.equal(showingWords(6, "ALL"), "Showing all 6 entries.");
 });

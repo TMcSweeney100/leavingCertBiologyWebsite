@@ -10,38 +10,67 @@ const cell = (state: "DUE" | "NOT_DUE" | "SIGNED_OFF") => ({ checkpointId: "c3",
 const base = { names, busy: null, recent: false, confirming: false, onSign: vi.fn(), onUndo: vi.fn(), onAsk: vi.fn() };
 
 describe("CheckpointCell", () => {
-  it("in the grid, a due cell says Due and signs off in one click", async () => {
+  it("in the grid, a due cell is an amber Sign off that signs off in one click", async () => {
     const onSign = vi.fn();
     render(<CheckpointCell {...base} layout="grid" cell={cell("DUE")} onSign={onSign} />);
-    await userEvent.click(screen.getByRole("button", { name: names.sign }));
+    const button = screen.getByRole("button", { name: names.sign });
+    expect(button).toHaveTextContent("Sign off");
+    await userEvent.click(button);
     expect(onSign).toHaveBeenCalled();
-    expect(screen.getByText("Due")).toBeInTheDocument();
   });
 
-  it("a signed-off cell shows its date and opens the revoke question", async () => {
+  it("in the grid, a signed-off cell is a tick with its date on hover, and opens the revoke question", async () => {
     const onAsk = vi.fn();
     render(<CheckpointCell {...base} layout="grid" cell={cell("SIGNED_OFF")} onAsk={onAsk} />);
-    expect(screen.getByText("2 Oct 2026")).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: names.revoke }));
+    const button = screen.getByRole("button", { name: names.revoke });
+    expect(button).toHaveAttribute("title", "Signed off 2 Oct 2026");
+    await userEvent.click(button);
     expect(onAsk).toHaveBeenCalled();
   });
 
+  it("in the grid, a cell not due yet is a quiet dash that still signs off early", () => {
+    render(<CheckpointCell {...base} layout="grid" cell={cell("NOT_DUE")} />);
+    const button = screen.getByRole("button", { name: names.sign });
+    expect(button).toHaveTextContent("Sign off"); // shown on hover and focus
+    expect(button).not.toHaveTextContent("Not due yet");
+  });
+
   it("a sign-off from this visit offers Undo instead", () => {
-    render(<CheckpointCell {...base} layout="one" cell={cell("SIGNED_OFF")} recent />);
+    render(<CheckpointCell {...base} layout="row" cell={cell("SIGNED_OFF")} recent />);
     expect(screen.getByText("Signed off today")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: names.undo })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: names.revoke })).not.toBeInTheDocument();
   });
 
   it("while busy the control is disabled and says what it's doing", () => {
-    render(<CheckpointCell {...base} layout="one" cell={cell("NOT_DUE")} busy="sign" />);
+    render(<CheckpointCell {...base} layout="row" cell={cell("NOT_DUE")} busy="sign" />);
     expect(screen.getByRole("button", { name: names.sign })).toBeDisabled();
     expect(screen.getByText("Signing off…")).toBeInTheDocument();
   });
 
-  it("in a one-stage view a due cell says so in full", () => {
-    render(<CheckpointCell {...base} layout="one" cell={cell("DUE")} />);
+  it("in a Progress list the cell is one button: Sign off, or Revoke once signed off", async () => {
+    const onAsk = vi.fn();
+    const { rerender } = render(<CheckpointCell {...base} layout="row" cell={cell("DUE")} />);
+    expect(screen.getByRole("button", { name: names.sign })).toHaveTextContent("Sign off");
+    expect(screen.queryByText(/Due/)).not.toBeInTheDocument();
+    rerender(<CheckpointCell {...base} layout="row" cell={cell("SIGNED_OFF")} onAsk={onAsk} />);
+    await userEvent.click(screen.getByRole("button", { name: names.revoke }));
+    expect(onAsk).toHaveBeenCalled();
+  });
+
+  it("on a stage card the state is a pill beside one button: Revoke when signed off, Sign off otherwise", async () => {
+    const onAsk = vi.fn();
+    const onSign = vi.fn();
+    const { rerender } = render(<CheckpointCell {...base} layout="card" cell={cell("SIGNED_OFF")} onAsk={onAsk} onSign={onSign} />);
+    expect(screen.getByText(/^Signed off/)).toHaveTextContent("Signed off 2 Oct 2026");
+    await userEvent.click(screen.getByRole("button", { name: names.revoke }));
+    expect(onAsk).toHaveBeenCalled();
+    rerender(<CheckpointCell {...base} layout="card" cell={cell("DUE")} onAsk={onAsk} onSign={onSign} />);
     expect(screen.getByText("Due, not signed off")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: names.sign }));
+    expect(onSign).toHaveBeenCalled();
+    rerender(<CheckpointCell {...base} layout="card" cell={cell("NOT_DUE")} onAsk={onAsk} onSign={onSign} />);
+    expect(screen.getByText("Not due yet")).toBeInTheDocument();
   });
 
   it("while its revoke question is open the cell isn't a second Revoke button", () => {
@@ -76,13 +105,20 @@ describe("CheckpointCell, Ready", () => {
 
   it("a Ready cell in the grid is a link to review, not a sign-off button", () => {
     render(<CheckpointCell {...base} names={readyNames} layout="grid" cell={readyCell} reviewHref={href} />);
-    expect(screen.getByRole("link", { name: "Review X for A" })).toHaveAttribute("href", href);
+    const link = screen.getByRole("link", { name: "Review X for A" });
+    expect(link).toHaveAttribute("href", href);
+    expect(link).toHaveTextContent("Review");
+    expect(link).not.toHaveTextContent("Ready");
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
-    expect(screen.getByText("Ready")).toBeInTheDocument();
+  });
+
+  it("in a Progress list a Ready cell is a Review link", () => {
+    render(<CheckpointCell {...base} names={readyNames} layout="row" cell={readyCell} reviewHref={href} />);
+    expect(screen.getByRole("link", { name: "Review X for A" })).toHaveTextContent("Review");
   });
 
   it("outside the grid a Ready cell says so in words, with no button", () => {
-    render(<CheckpointCell {...base} names={readyNames} layout="one" cell={readyCell} />);
+    render(<CheckpointCell {...base} names={readyNames} layout="card" cell={readyCell} />);
     expect(screen.getByText("Ready for sign-off")).toBeInTheDocument();
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });

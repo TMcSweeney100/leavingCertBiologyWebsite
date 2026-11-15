@@ -37,7 +37,7 @@ The live BiPi schedule (`app/[class]/`, `components/bipi/`) has its own notes in
 
 ## 3. Layout and responsive
 
-- Design and build at 390px first, then 1024px+ (`lg:`). Those are the two Playwright projects (`phone` = Pixel 7, `laptop` = Desktop Chrome) and the two frames every pack draws.
+- Design and build laptop first (1024px+, `lg:`), then 390px. Teachers work at a laptop, at school or at home; every page must still work on a phone. Those are the two Playwright projects (`laptop` = Desktop Chrome, `phone` = Pixel 7) and the two frames every pack draws.
 - 16–20px side gutters on phones, 40px on laptops. Content max width `max-w-6xl` on laptop pages; reading columns `max-w-prose` (about 65 characters).
 - No horizontal scroll, ever. Tables that can't fit wrap into cards on phones or scroll inside their own `overflow-x-auto` container, never the page.
 - Flex children that hold text get `min-w-0`; long tokens (usernames, codes, links) get `break-words` or `overflow-wrap: anywhere`. Never `break-all` on prose.
@@ -62,15 +62,15 @@ The live BiPi schedule (`app/[class]/`, `components/bipi/`) has its own notes in
 - Text 4.5:1 against its background (large text 3:1); controls, borders that carry meaning, focus rings and icons 3:1. Measure; don't eyeball. Record ratios in `NOTES.md` when a token is added.
 - BiPi blue and green appear only inside reused BiPi components, where they mean "now" and "done". App code never uses `--bipi-*`.
 - No state carried by colour alone: pair it with a word, and where useful an icon.
+- Exception (plan progress-redesign, P-10): the Progress tab's All grid shows a signed-off checkpoint as a tick and one not due yet as a dash, with no word. Shape tells them apart, not colour; each is a button whose accessible name says the action, the checkpoint and the student; the tick's date is its `title`; and the dash shows "Sign off" on hover and keyboard focus. 192 cells of words was the problem the redesign fixed.
 - `--app-pick` (azure) means "your pick" and `--app-today` (gold) means "today", in the date drawer and the year view only; neither is a state (pack D-11).
-- The stage sheet's look (design B, plan stage-drawer-redesign): white cards on `--app-tray`, the stage's checkpoint as the one navy card (`bg-app-accent`, with `--app-approved-on-accent`, `--app-attention-on-accent` and `--app-accent-track` for its bar), and the teacher's note as a cream card (`--app-note-*`). Only the stage sheet uses them so far; whether they go app-wide is the `app-polish` idea in `docs/BACKLOG.md`.
+- The stage sheet's look (design B, plan stage-drawer-redesign): white cards on `--app-tray`, the stage's checkpoint as the one navy card (`bg-app-accent`, with `--app-approved-on-accent`, `--app-attention-on-accent` and `--app-accent-track` for its bar), and the teacher's note as a cream card (`--app-note-*`). The stage sheet, the teacher's student page (direction D, plan student-page-redesign) and the Progress tab (direction A, plan progress-redesign) use them; whether they go app-wide is the `app-polish` idea in `docs/BACKLOG.md`. The student page adds two decorative lines: `--app-attention-line` (the border of a card waiting for the teacher) and `--app-signed-line` (the timeline's rail between signed-off stages).
 - Disabled: `disabled` attribute plus reduced opacity and no pointer events. Read-only looks different from disabled.
 
 ## 6. Interactive elements
 
 - `<button>` for actions, `<Link>` / `<a>` for navigation. Never a `div` with `onClick`. Links keep middle-click and Cmd-click working.
 - Every control at least 44×44px on touch (the visual can be smaller if the hit area is padded), 8px between neighbours. On laptop pointer targets at least 24×24px. `Button`'s sizes already meet this; the D-2 exports draw 40px row buttons, which the build rounds up to 44.
-- Exception (pack D-7): the Progress tab's phone stage picker has 6px gaps between its 44 × 48 buttons; eight across 358px leave no room for 8px.
 - Hover states on everything clickable, but nothing that only works on hover. `cursor-pointer` on custom controls.
 - `touch-action: manipulation` on buttons and links.
 - Icons come from `lucide-react` only, one stroke width, sized by a token. Decorative icons beside text get `aria-hidden="true"`; an icon-only control gets `aria-label` and, where it applies, `aria-pressed` or `aria-expanded`.

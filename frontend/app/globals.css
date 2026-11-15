@@ -110,7 +110,6 @@
   /* Pack D-7 (docs/design/pilot/D-7-progress-grid/tokens.css) — progress grid cell states. */
   --color-app-due: var(--app-due);
   --color-app-due-tint: var(--app-due-tint);
-  --color-app-due-row: var(--app-due-row);
   --color-app-ready: var(--app-ready);
   --color-app-ready-tint: var(--app-ready-tint);
   --color-app-request-tint: var(--app-request-tint);
@@ -130,6 +129,9 @@
   --color-app-note-ground: var(--app-note-ground);
   --color-app-note-line: var(--app-note-line);
   --color-app-note-muted: var(--app-note-muted);
+  /* Student page redesign (docs/design/pilot/student-page-redesign/NOTES.md). */
+  --color-app-attention-line: var(--app-attention-line);
+  --color-app-signed-line: var(--app-signed-line);
 }
 
 @theme {
@@ -341,7 +343,6 @@
      so the grid can change them without touching the pending badge). A signed-off checkpoint is a settled fact: done green. */
   --app-due: var(--app-attention);       /* 6.13:1 on white; 5.31:1 on --app-due-tint; 5.77:1 on --app-ground */
   --app-due-tint: var(--app-attention-tint); /* navy "Sign off" on it 9.62:1 */
-  --app-due-row: #FCF8F5;                /* due row on the student view; ink 17.50:1, amber 5.81:1, muted 5.11:1 */
   --app-ready: var(--app-accent);         /* Ready: navy, the teacher's turn; 11.12:1 on white */
   --app-request-tint: #EAEFF7;      /* D-10 — the student's request block; navy 9.64:1, body 9.92:1 */
   --app-request-rule: #CFD8E8;      /* hairline above "No link" inside the block */
@@ -373,6 +374,11 @@
   --app-note-ground: #FBF4E6;           /* the cream note card; ink 16.9:1, navy link 10.2:1 */
   --app-note-line: #EBDDC2;             /* its border, decorative */
   --app-note-muted: #5C5340;            /* secondary text on the note card; 6.93:1 */
+
+  /* Student page redesign — direction D (docs/design/pilot/student-page-redesign/NOTES.md). Both are decorative lines:
+     the words beside them carry the meaning, so they need no text contrast. */
+  --app-attention-line: #E4C9B3;        /* the border of a card waiting for the teacher, under its amber strip */
+  --app-signed-line: #9CC9B2;           /* the timeline's rail between two signed-off stages */
 
   /* shadcn semantic variables — mapped onto the BiPi tokens above so every primitive
      (Card, Badge, Progress, Collapsible, Table, Button) inherits the BiPi palette. */
@@ -460,6 +466,14 @@
   .app-theme :where(a, button, select, input, textarea, [tabindex]):focus-visible {
     outline: 2px solid var(--app-accent);
     outline-offset: 2px;
+  }
+}
+
+/* Plan progress-redesign P-12: the student page's Next request bar is pinned to the bottom of the window. Scroll
+   padding keeps a control focused by keyboard clear of it (WCAG 2.4.11, focus not obscured). */
+@layer base {
+  html:has([data-next-request]) {
+    scroll-padding-bottom: 5.5rem;
   }
 }
 

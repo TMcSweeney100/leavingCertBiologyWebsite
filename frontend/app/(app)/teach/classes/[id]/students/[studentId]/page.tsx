@@ -3,16 +3,18 @@ import { notFound } from "next/navigation";
 
 import { AppMain } from "@/components/app/app-main";
 import { ErrorPanel } from "@/components/app/error-panel";
+import { NextRequest } from "@/components/app/next-request";
 import { StudentCheckpoints } from "@/components/app/student-checkpoints";
-import { WorkLink } from "@/components/app/work-link";
+import { StudentHeader } from "@/components/app/student-header";
 import { TeacherLog } from "@/components/app/teacher-log";
 import { BackLink } from "@/components/app/back-link";
 import { card, pageTitle, sectionTitle } from "@/components/app/styles";
-import { classDetailSchema, studentCheckpointsSchema, teacherStudentLogSchema } from "@/lib/api/schemas";
+import { classDetailSchema, progressGridSchema, studentCheckpointsSchema, teacherStudentLogSchema } from "@/lib/api/schemas";
 import { serverApi } from "@/lib/api/server";
 import { buttonVariants } from "@/components/ui/button";
 import { attempt } from "@/lib/app/attempt";
 import { lastEntryWords } from "@/lib/app/progress";
+import { nextRequest } from "@/lib/app/ready";
 
 export const dynamic = "force-dynamic";
 
@@ -44,26 +46,29 @@ export default async function StudentLogPage({ params }: { params: Promise<{ id:
   }
 
   const componentId = cls.componentId;
-  const [log, checkpoints] = await Promise.all([
+  const [log, checkpoints, progress] = await Promise.all([
     attempt(() => serverApi.get(`/components/${componentId}/students/${encodeURIComponent(studentId)}/log`, teacherStudentLogSchema)),
     attempt(() => serverApi.get(`/components/${componentId}/students/${encodeURIComponent(studentId)}/checkpoints`, studentCheckpointsSchema)),
+    attempt(() => serverApi.get(`/components/${componentId}/progress`, progressGridSchema)),
   ]);
   if ((!log.ok && log.error.code === "NOT_FOUND") || (!checkpoints.ok && checkpoints.error.code === "NOT_FOUND")) notFound();
+
+  // Plan progress-redesign P-12: the class's queue, for Next request. If it didn't load, the page works without the bar.
+  const next = progress.ok ? nextRequest(progress.data.waiting, studentId) : null;
 
   return (
     <AppMain width="class">
       {back}
       {log.ok ? (
         <>
-          <h1 className={`mt-2.5 ${pageTitle}`}>{`${log.data.firstName} ${log.data.lastName}`}</h1>
-          <p className="mt-1.5 text-app-base text-app-grey">{"You read the entries they share. Any they keep private show only the kind, the dates and how many times they were edited."}</p>
-          {checkpoints.ok && checkpoints.data.documentLink && (
-            <WorkLink url={checkpoints.data.documentLink.url} name={`${log.data.firstName} ${log.data.lastName}`} className="mt-1" />
-          )}
+          <StudentHeader student={log.data} className={cls.name}
+            activity={checkpoints.ok ? lastEntryWords(checkpoints.data.daysSinceLastLogActivity) : null}
+            link={checkpoints.ok ? checkpoints.data.documentLink : null} />
           {checkpoints.ok
             ? <StudentCheckpoints componentId={componentId} data={checkpoints.data} />
             : <div className="mt-6"><ErrorPanel error={checkpoints.error} /></div>}
-          <TeacherLog log={log.data} activity={checkpoints.ok ? `${lastEntryWords(checkpoints.data.daysSinceLastLogActivity)}.` : undefined} />
+          <TeacherLog log={log.data} />
+          {next && <NextRequest classId={cls.id} next={next.next} others={next.others} />}
         </>
       ) : (
         <div className="mt-6"><ErrorPanel error={log.error} /></div>

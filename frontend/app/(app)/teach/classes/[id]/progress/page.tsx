@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
@@ -14,6 +15,7 @@ import { attempt } from "@/lib/app/attempt";
 import { HIDE_NAMES_COOKIE, latestDueKey, parseStage } from "@/lib/app/progress";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = { title: "Progress" };
 
 function Empty({ head, body, href, action }: { head: string; body: string; href: string; action: string }) {
   return (
@@ -61,7 +63,7 @@ export default async function ClassProgressPage({ params, searchParams }:
           body="Students appear here once you approve them. Share the join code from the Students tab, then approve their requests." />
       ) : (
         <ProgressGrid grid={grid.data} basePath={`/teach/classes/${cls.id}/progress`} hideNames={hideNames}
-          laptopStage={parseStage(stage, grid.data) ?? "all"} phoneStage={parseStage(stage, grid.data) ?? latestDueKey(grid.data)} />
+          stage={parseStage(stage, grid.data) ?? latestDueKey(grid.data)} />
       )}
     </AppMain>
   );
