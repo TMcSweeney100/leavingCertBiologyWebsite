@@ -103,4 +103,27 @@ class PersonalItemsTest extends PostgresIntegrationTest {
         return "{\"title\":\"%s\",\"dueDate\":\"%s\",\"kind\":\"%s\",\"classId\":%s}".formatted(
                 title, date, kind, classId == null ? "null" : "\"" + classId + "\"");
     }
+
+    @Test
+    void ticksAnItemDoneAndBackAgain() throws Exception {
+        String body = student.post("/api/v1/me/personal-items", item("French vocab test", "2026-11-13", "TEST", null))
+                .andExpect(jsonPath("$.done").value(false))
+                .andReturn().getResponse().getContentAsString();
+        String id = JsonPath.read(body, "$.id");
+
+        student.put("/api/v1/me/personal-items/" + id + "/done", "{\"done\":true}")
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.done").value(true));
+        student.put("/api/v1/me/personal-items/" + id + "/done", "{\"done\":true}")
+                .andExpect(jsonPath("$.done").value(true));
+        student.get("/api/v1/me/timeline?from=2026-11-01&to=2026-11-30")
+                .andExpect(jsonPath("$.items[0].done").value(true));
+
+        student.put("/api/v1/me/personal-items/" + id + "/done", "{\"done\":false}")
+                .andExpect(jsonPath("$.done").value(false));
+        student.put("/api/v1/me/personal-items/" + id + "/done", "{}")
+                .andExpect(jsonPath("$.code").value("VALIDATION_FAILED"));
+        student.put("/api/v1/me/personal-items/" + UUID.randomUUID() + "/done", "{\"done\":true}")
+                .andExpect(status().isNotFound());
+    }
 }

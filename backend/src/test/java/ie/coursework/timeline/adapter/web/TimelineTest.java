@@ -37,10 +37,12 @@ class TimelineTest extends PostgresIntegrationTest {
                 .andExpect(jsonPath("$.items.length()").value(3))
                 .andExpect(jsonPath("$.items[0].kind").value("PERSONAL"))
                 .andExpect(jsonPath("$.items[0].personalKind").value("TEST"))
+                .andExpect(jsonPath("$.items[0].done").value(false))
                 .andExpect(jsonPath("$.items[1].kind").value("TEACHER_ITEM"))
                 .andExpect(jsonPath("$.items[1].componentId").value(component.toString()))
                 .andExpect(jsonPath("$.items[2].kind").value("STAGE"))
                 .andExpect(jsonPath("$.items[2].stageLabel").value("Stage 5"))
+                .andExpect(jsonPath("$.items[2].done").value(false))
                 .andExpect(jsonPath("$.items[2].subjectName").value("Biology"));
     }
 

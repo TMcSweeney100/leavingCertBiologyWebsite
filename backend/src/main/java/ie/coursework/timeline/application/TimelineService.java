@@ -44,7 +44,7 @@ public class TimelineService {
         });
         return new Timeline(from, to, timeline.between(actor.userId(), from, to).stream()
                 .map(e -> new TimelineItem(e.kind(), e.date(), e.title(), e.stageLabel(), e.subjectCode(), e.subjectName(),
-                        e.classId(), e.className(), e.componentId(), e.personalItemId(), e.personalKind()))
+                        e.classId(), e.className(), e.componentId(), e.personalItemId(), e.personalKind(), e.done()))
                 .toList());
     }
 
@@ -76,6 +76,14 @@ public class TimelineService {
     }
 
     @Transactional
+    public PersonalItemView setDone(Actor actor, UUID itemId, boolean done) {
+        if (!personal.setDone(itemId, actor.userId(), done, clock.instant())) {
+            throw notFound();
+        }
+        return view(personal.find(itemId, actor.userId()).orElseThrow());
+    }
+
+    @Transactional
     public void delete(Actor actor, UUID itemId) {
         if (!personal.delete(itemId, actor.userId())) {
             throw notFound();
@@ -96,7 +104,7 @@ public class TimelineService {
     }
 
     private static PersonalItemView view(PersonalItem item) {
-        return new PersonalItemView(item.id(), item.title(), item.dueDate(), item.kind(), item.classId(), item.subjectName());
+        return new PersonalItemView(item.id(), item.title(), item.dueDate(), item.kind(), item.classId(), item.subjectName(), item.done());
     }
 
     private static DomainException notFound() {

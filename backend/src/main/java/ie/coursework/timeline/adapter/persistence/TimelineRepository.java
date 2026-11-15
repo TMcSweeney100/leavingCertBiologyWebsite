@@ -18,11 +18,11 @@ public class TimelineRepository {
 
     private static final String SQL = """
             SELECT kind, due_date, stage_label, title, subject_code, subject_name, class_id, class_name,
-                   component_id, personal_item_id, personal_kind
+                   component_id, personal_item_id, personal_kind, done
             FROM (
                 SELECT 'COMPLETION' AS kind, b.completion_date AS due_date, NULL::text AS stage_label, b.title,
                        subj.code AS subject_code, subj.name AS subject_name, g.id AS class_id, g.name AS class_name,
-                       i.id AS component_id, NULL::uuid AS personal_item_id, NULL::text AS personal_kind,
+                       i.id AS component_id, NULL::uuid AS personal_item_id, NULL::text AS personal_kind, false AS done,
                        1 AS kind_order, 0 AS within
                 FROM enrolment e
                 JOIN class_group g ON g.id = e.class_group_id
@@ -33,7 +33,7 @@ public class TimelineRepository {
                   AND b.completion_date BETWEEN :from AND :to
                 UNION ALL
                 SELECT 'STAGE', d.due_date, st.label, st.name, subj.code, subj.name, g.id, g.name, i.id,
-                       NULL::uuid, NULL::text, 2, st.ordinal
+                       NULL::uuid, NULL::text, false, 2, st.ordinal
                 FROM enrolment e
                 JOIN class_group g ON g.id = e.class_group_id
                 JOIN subject subj ON subj.id = g.subject_id
@@ -44,7 +44,7 @@ public class TimelineRepository {
                   AND d.due_date BETWEEN :from AND :to
                 UNION ALL
                 SELECT 'TEACHER_ITEM', t.due_date, st.label, t.text, subj.code, subj.name, g.id, g.name, i.id,
-                       NULL::uuid, NULL::text, 3, st.ordinal * 1000 + t.ordinal
+                       NULL::uuid, NULL::text, false, 3, st.ordinal * 1000 + t.ordinal
                 FROM enrolment e
                 JOIN class_group g ON g.id = e.class_group_id
                 JOIN subject subj ON subj.id = g.subject_id
@@ -55,7 +55,7 @@ public class TimelineRepository {
                   AND t.due_date BETWEEN :from AND :to
                 UNION ALL
                 SELECT 'PERSONAL', p.due_date, NULL, p.title, subj.code, subj.name, g.id, g.name, NULL,
-                       p.id, p.kind, 4, 0
+                       p.id, p.kind, p.done_at IS NOT NULL, 4, 0
                 FROM personal_item p
                 LEFT JOIN class_group g ON g.id = p.class_group_id
                 LEFT JOIN subject subj ON subj.id = g.subject_id
@@ -84,7 +84,8 @@ public class TimelineRepository {
                         rs.getString("class_name"),
                         rs.getObject("component_id", UUID.class),
                         rs.getObject("personal_item_id", UUID.class),
-                        rs.getString("personal_kind")))
+                        rs.getString("personal_kind"),
+                        rs.getBoolean("done")))
                 .list();
     }
 }
