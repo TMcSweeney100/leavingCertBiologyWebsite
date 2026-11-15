@@ -24,3 +24,15 @@ const ACCENT: Record<string, string> = {
 export function subjectAccent(subject: string): string {
   return ACCENT[subject.toUpperCase()] ?? "bg-app-field-border";
 }
+
+/** Same identity as a ring: the timeline's hollow "from your teacher" marker (plan timeline-redesign). */
+const RING: Record<string, string> = {
+  BIOLOGY: "border-app-subject-biology",
+  BUSINESS: "border-app-subject-business",
+  CHEMISTRY: "border-app-subject-chemistry",
+  PHYSICS: "border-app-subject-physics",
+};
+
+export function subjectRing(subject: string | null): string {
+  return (subject && RING[subject.toUpperCase()]) || "border-app-grey";
+}
