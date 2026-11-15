@@ -66,7 +66,7 @@ test("the student logs a note, a source and an AI use, hides the note and edits 
   test.skip(!TEACHER.temporary, "E2E_TEACHER_PASSWORD not set");
   const student = await phone(browser);
   await signInStudent(student);
-  await student.getByRole("link", { name: /Biology/ }).click();
+  await student.getByRole("link", { name: "Biology", exact: true }).click();
   await student.getByRole("navigation", { name: "Component sections" }).getByRole("link", { name: "Log" }).click();
   await expect(student.getByText("Nothing in your log yet")).toBeVisible();
   await expectAccessible(student);
@@ -114,7 +114,7 @@ test("the student's Sources tab turns the source and the AI use into references 
   test.skip(!TEACHER.temporary, "E2E_TEACHER_PASSWORD not set");
   const student = await phone(browser);
   await signInStudent(student);
-  await student.getByRole("link", { name: /Biology/ }).click();
+  await student.getByRole("link", { name: "Biology", exact: true }).click();
   await student.getByRole("navigation", { name: "Component sections" }).getByRole("link", { name: "Sources" }).click();
   const list = student.getByRole("list", { name: "References" });
   await expect(list).toContainText("Titration technique demo (RTÉ), date not available, https://youtu.be/yCv4iyPqZKQ, Date accessed: 01/10/2026");

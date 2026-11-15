@@ -4,6 +4,17 @@ Rewritten at the end of every session: where things stand, what's half-done, wha
 
 **Standing rule (16 Sep 2026):** `docs/ARCHITECTURE.md` describes the code as built. When a session changes anything it describes (a filter, a pattern, an env var, a file's job), it fixes that section in the same commit, and at the end of the session checks it for anything else the session made false. A wrong map is worse than none.
 
+## Timeline redesign (15 Nov 2026, branch `pilot/timeline-redesign`)
+
+**Built, all of Tasks 0 to 12. Not merged.** Plan `docs/superpowers/plans/2026-11-12-timeline-redesign.md`, intent `docs/intent/timeline-redesign.md`, design `docs/design/pilot/timeline-redesign/` (its `NOTES.md` lists where the build differs from the mockup). `/home` is now a planner: a navy Next up card, three views (Timeline, Week, Month) as links with the view and date in the URL, Add my own item in a drawer from the heading, and a done tick on the student's own items. Backend: the timeline range cap is 366 days, and `personal_item.done_at` (`V15`) with `PUT /me/personal-items/{id}/done`.
+
+- **Results at the branch tip (15 Nov 2026):** `make verify` green: 554 backend tests, 250 `node --test` cases, 370 Vitest tests in 65 files, lint, types and the production build clean. `make e2e` green: 34 Playwright tests (17 laptop, 17 phone), with axe clean on the drawer, Timeline, Week and Month.
+- **Fixed late, in `components/ui/drawer.tsx`:** the drawer looked up `.app-theme` when it rendered. Arriving at `/home` from `/login` by client-side navigation, that found the login layout's `.app-theme`, which is gone once the page swaps, so the drawer opened (`aria-expanded` true) and drew nothing. It now looks the element up when the portal mounts. The review drawers had the same latent bug on any login-to-page path.
+- **E2E specs changed:** the tick is clicked through its label, because the drawn circle covers the hidden checkbox and `.check()` waits forever; and `getByRole("link", { name: /Biology/ })` became an exact "Biology" in four journeys, because the new page also links the item titles ("Biology in Practice Investigation").
+- **Waiting on Tim:** the hand test at 1440, 820 and 390 wide (the list is in plan Task 12, Step 6), and T-7 to T-21 in the plan's Decisions, which he has not confirmed.
+- **Still to do:** `/self-review` in a fresh session, `docs/changes/timeline-redesign.md`, Tim's PR into `pilotMain`. Idea logged: `_timeline-teacher-ticks_` in `docs/BACKLOG.md`.
+- **Checked by eye:** only that the drawer opens and draws after a login (found in the browser pane). The three views and the drawer have not been looked at in screenshots at 390, 820 or 1440; the UI checklist was run from the code and the axe scans, not by eye. That is part of Tim's hand test.
+
 ## Operator reset-password (12 Nov 2026, branch `pilot/operator-reset-password`)
 
 **Built, not merged.** Plan `docs/superpowers/plans/2026-11-12-operator-reset-password.md`. `operator reset-password --username=…` gives any account a new temporary password, sets `must_change` and deletes the user's `spring_session` rows. Backend only, no migration. The setup guide `docs/TEACHER-AND-CLASS-SETUP.md` was rewritten in the same branch (every command with an example and its output, where to click in Render, a "Before the first real user" list), and root `CLAUDE.md` points to it.

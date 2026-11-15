@@ -25,4 +25,18 @@ Page: `/home` (the student's timeline). Drawn 12 Nov 2026 after a review of the 
 
 ## Where the build differs from the mockup
 
-See the table of the same name at the end of the plan. This section is filled in from it when the build is done (plan Task 12).
+| Mockup | Build | Decision |
+|---|---|---|
+| The drawer comes up from the bottom on a phone | It slides from the right at every width, full width on a phone | T-12 |
+| A "Your coursework" side card with a "3 of 6 stages signed off" bar | "Completion dates" (as today) and the key to the marks | T-13 |
+| The picked day's list shows on a phone only | It shows at every width | T-14 |
+| Faded chips on the days outside the month | Those days show a greyed number only | T-15 |
+| Three summary chips above the week, one reading "Stage 4 is in 21 days" | One sentence | T-16 |
+| Every own item has an Edit button | On a week card the title is the Edit button | T-17 |
+| The first field is labelled "What is it?" | "Title" | T-18 |
+| Past items at 62% opacity | Grey text | T-21 |
+| "Nothing for four weeks, over Christmas." between two months | Not built: the month headings already show the gap | — |
+| A teacher item's chip in the month has a pale teal ground (`#EEF6F7`) | White with the subject's edge and a grey border | No new colour |
+| Five values in `mock.css` that are not tokens: `#EEF6F7`, `#C9DFEF`, `#FFFBEF`, `#06456E`, `#6B4A00` | Tokens with an opacity modifier or an existing token: `border-app-pick/25`, `bg-app-today/10`, `text-app-ink` | No new colour |
+| "Stage 4 of 6" on a stage date | "Stage 4": the timeline API doesn't say how many stages there are | — |
+| A stage date in the month reads "Stage 4 date" on a navy chip | The same | — |
