@@ -4,10 +4,10 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
-/** Plan 2F P2-47: the largest view is a month; 100 days leaves room and caps the union query. */
+/** The Timeline view runs from this week to the end of the school year (plan timeline-redesign T-10); a year caps the union query. */
 public final class TimelineRange {
 
-    public static final int MAX_DAYS = 100;
+    public static final int MAX_DAYS = 366;
 
     private TimelineRange() {}
 

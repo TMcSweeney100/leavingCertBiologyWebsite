@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -43,6 +44,11 @@ public class PersonalItemController {
     @PatchMapping("/{itemId}")
     PersonalItemView edit(Actor actor, @PathVariable UUID itemId, @Valid @RequestBody PersonalItemRequest body) {
         return timeline.edit(actor, itemId, body.title(), body.dueDate(), body.kind(), body.classId());
+    }
+
+    @PutMapping("/{itemId}/done")
+    PersonalItemView done(Actor actor, @PathVariable UUID itemId, @Valid @RequestBody DoneRequest body) {
+        return timeline.setDone(actor, itemId, body.done());
     }
 
     @DeleteMapping("/{itemId}")

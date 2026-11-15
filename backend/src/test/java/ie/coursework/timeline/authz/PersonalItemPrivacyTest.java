@@ -73,6 +73,7 @@ class PersonalItemPrivacyTest extends PostgresIntegrationTest {
         session.get("/api/v1/me/personal-items").andExpect(status().isOk()).andExpect(jsonPath("$").isEmpty());
         session.get("/api/v1/me/timeline?from=2026-11-01&to=2026-11-30").andExpect(status().isOk()).andExpect(jsonPath("$.items").isEmpty());
         session.patch(itemPath, "{\"title\":\"Mine\",\"dueDate\":\"2026-11-20\",\"kind\":\"OTHER\",\"classId\":null}").andExpect(status().isNotFound());
+        session.put(itemPath + "/done", "{\"done\":true}").andExpect(status().isNotFound());
         session.delete(itemPath).andExpect(status().isNotFound());
     }
 

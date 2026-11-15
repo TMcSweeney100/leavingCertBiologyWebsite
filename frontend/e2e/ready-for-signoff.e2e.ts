@@ -22,7 +22,7 @@ async function signInStudent(browser: import("@playwright/test").Browser) {
   await s.getByRole("textbox", { name: "Username" }).fill(R.aoife);
   await s.getByLabel("Password").fill(R.password);
   await s.getByRole("button", { name: "Sign in" }).click();
-  await s.getByRole("link", { name: /Biology/ }).click();
+  await s.getByRole("link", { name: "Biology", exact: true }).click();
   return s;
 }
 

@@ -11,9 +11,11 @@ public final class TimelineViews {
     private TimelineViews() {}
 
     public record TimelineItem(String kind, LocalDate date, String title, String stageLabel, String subjectCode,
-            String subjectName, UUID classId, String className, UUID componentId, UUID personalItemId, String personalKind) {}
+            String subjectName, UUID classId, String className, UUID componentId, UUID personalItemId, String personalKind,
+            boolean done) {}
 
     public record Timeline(LocalDate from, LocalDate to, List<TimelineItem> items) {}
 
-    public record PersonalItemView(UUID id, String title, LocalDate dueDate, PersonalItemKind kind, UUID classId, String subjectName) {}
+    public record PersonalItemView(UUID id, String title, LocalDate dueDate, PersonalItemKind kind, UUID classId, String subjectName,
+            boolean done) {}
 }

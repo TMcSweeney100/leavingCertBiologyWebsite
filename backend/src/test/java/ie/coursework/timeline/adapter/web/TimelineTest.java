@@ -37,10 +37,12 @@ class TimelineTest extends PostgresIntegrationTest {
                 .andExpect(jsonPath("$.items.length()").value(3))
                 .andExpect(jsonPath("$.items[0].kind").value("PERSONAL"))
                 .andExpect(jsonPath("$.items[0].personalKind").value("TEST"))
+                .andExpect(jsonPath("$.items[0].done").value(false))
                 .andExpect(jsonPath("$.items[1].kind").value("TEACHER_ITEM"))
                 .andExpect(jsonPath("$.items[1].componentId").value(component.toString()))
                 .andExpect(jsonPath("$.items[2].kind").value("STAGE"))
                 .andExpect(jsonPath("$.items[2].stageLabel").value("Stage 5"))
+                .andExpect(jsonPath("$.items[2].done").value(false))
                 .andExpect(jsonPath("$.items[2].subjectName").value("Biology"));
     }
 
@@ -51,7 +53,7 @@ class TimelineTest extends PostgresIntegrationTest {
 
         student.get("/api/v1/me/timeline?from=2026-12-01&to=2026-11-30")
                 .andExpect(status().isBadRequest()).andExpect(jsonPath("$.fieldErrors[0].field").value("to"));
-        student.get("/api/v1/me/timeline?from=2026-09-01&to=2027-06-30")
+        student.get("/api/v1/me/timeline?from=2026-09-01&to=2027-09-02")
                 .andExpect(status().isBadRequest()).andExpect(jsonPath("$.code").value("VALIDATION_FAILED"));
         student.get("/api/v1/me/timeline?from=soon&to=2026-11-30")
                 .andExpect(status().isBadRequest());

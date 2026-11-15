@@ -108,14 +108,16 @@ function DrawerContent({
   const { hasSnapPoints, modal, showSwipeHandle, swipeDirection } = useDrawer()
   const swipeAxis =
     swipeDirection === "down" || swipeDirection === "up" ? "y" : "x"
-  // Portalled to <body> the drawer would sit outside `.app-theme` and lose the app tokens and focus ring.
+  // Portalled to <body> the drawer would sit outside `.app-theme` and lose the app tokens and focus ring. The element
+  // is looked up when the portal mounts, not when this component renders: arriving from /login by a client-side
+  // navigation, the render still sees the login layout's `.app-theme`, which is gone by the time the drawer opens.
   const appTheme = React.useMemo(
-    () => ({ current: typeof document === "undefined" ? null : document.querySelector<HTMLElement>(".app-theme") }),
+    () => ({ get current() { return typeof document === "undefined" ? null : document.querySelector<HTMLElement>(".app-theme") } }),
     []
   )
 
   return (
-    <DrawerPortal data-slot="drawer-portal" container={appTheme.current ? appTheme : undefined}>
+    <DrawerPortal data-slot="drawer-portal" container={appTheme}>
       {modal === true && (
         <DrawerOverlay data-snap-points={hasSnapPoints ? "" : undefined} />
       )}

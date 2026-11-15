@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap"><link rel="stylesheet" href="mock.css"><script src="shell.js"></script><title>Sources: the reference list and the AI appendix</title></head>
+<body>
+<div id="root"></div>
+<script>
+// Tim Mc Sweeney's real Sources page from 15 Nov 2026: the wording of every reference is the app's own.
+const REFS = [
+  { ai: true, text: 'Anthropic (2026) Claude, accessed 03/11/2026.', cite: '(Anthropic (2026) Claude, 03/11/2026)',
+    flag: 'Add the share link or the prompt you used so a reader can check this source.' },
+  { text: 'KSI, Membranes Experiment Video, date not available, https://www.youtube.com, Date accessed: 03/11/2026', cite: '(youtube.com)',
+    flag: 'Add the page, chapter or timestamp you used so a reader can check this source.' },
+  { text: 'Sharon Quinn (2024) ‘Information on how membranes react to oxygen’, World Science', cite: '(Page 38, Sharon Quinn, 2024)' },
+  { text: 'Sharon Quinn (2024) Marketing for dummies, Penguin', cite: '(Chapter 16 is where most infor i need is, Sharon Quinn, 2024)' },
+];
+
+const ref = (r, i) => `
+  <li class="card ref ${r.flag ? 'flagged' : ''}">
+    <span class="n">${i + 1}</span>
+    <div>
+      ${r.ai ? '<p style="margin-bottom:6px"><span class="chip ai">AI use</span></p>' : ''}
+      <p class="text">${r.text}</p>
+      <p class="intext"><span class="eyebrow">In the text</span><span class="cite">${r.cite}</span></p>
+      ${r.flag ? `<p class="flag">${I.alert}<span>${r.flag} <a class="link">Add it</a></span></p>` : ''}
+    </div>
+    <div class="acts"><button class="btn btn-quiet btn-sm">${I.copy} Copy citation</button><a class="open">Open in log</a></div>
+  </li>`;
+
+S.page(S.chead('Sources') + `
+  <section class="block">
+    <div class="sec">
+      <h2>Reference list <span class="count">4</span></h2>
+      <button class="btn btn-primary">${I.copy} Copy reference list</button>
+    </div>
+    <p class="help">Built from the sources and AI uses in your log, in alphabetical order, including the ones only you can read. The NCCA: “No particular, formal style of referencing is required.”</p>
+    <p class="notice">${I.alert}<span><b>2 of your sources are missing a detail.</b> You can still copy the list.</span></p>
+    <ol class="refs" aria-label="References">${REFS.map(ref).join('')}</ol>
+  </section>
+
+  <section class="block">
+    <div class="sec">
+      <h2>AI use appendix <span class="count">1</span></h2>
+      <button class="btn btn-quiet">${I.copy} Copy appendix</button>
+    </div>
+    <p class="help">The SEC: “The use of all AI tools must be documented in a dedicated section of the coursework, such as an appendix section.”</p>
+    <div class="card appx">
+      <table>
+        <thead><tr><th>AI tool</th><th>Developer</th><th>Date of use</th><th>Purpose</th></tr></thead>
+        <tbody><tr><td>Claude</td><td>Anthropic</td><td>03/11/2026</td><td>Got claude to complie a list of experiments that would be related to this writeup</td></tr></tbody>
+      </table>
+      <dl><dt>AI tool</dt><dd>Claude</dd><dt>Developer</dt><dd>Anthropic</dd><dt>Date of use</dt><dd>03/11/2026</dd><dt>Purpose</dt><dd>Got claude to complie a list of experiments that would be related to this writeup</dd></dl>
+    </div>
+    <p class="after"><span>Used an AI tool again?</span><a class="link">Log an AI use</a></p>
+  </section>
+`);
+</script>
+</body></html>

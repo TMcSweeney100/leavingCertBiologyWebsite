@@ -21,7 +21,8 @@ import org.springframework.stereotype.Repository;
 public class PersonalItemRepository {
 
     private static final String SELECT = """
-            SELECT p.id, p.title, p.due_date, p.kind, p.class_group_id, s.name AS subject_name
+            SELECT p.id, p.title, p.due_date, p.kind, p.class_group_id, s.name AS subject_name,
+                   p.done_at IS NOT NULL AS done
             FROM personal_item p
             LEFT JOIN class_group g ON g.id = p.class_group_id
             LEFT JOIN subject s ON s.id = g.subject_id
@@ -63,6 +64,16 @@ public class PersonalItemRepository {
                 .update() == 1;
     }
 
+    /** False when no item with that id belongs to {@code owner}. Ticking an already ticked item keeps its first time. */
+    public boolean setDone(UUID id, UUID owner, boolean done, Instant now) {
+        return jdbc.sql("""
+                UPDATE personal_item
+                SET done_at = CASE WHEN :done THEN COALESCE(done_at, :now) ELSE NULL END, updated_at = :now
+                WHERE id = :id AND student_user_id = :owner
+                """).param("done", done).param("now", Timestamps.utc(now)).param("id", id).param("owner", owner)
+                .update() == 1;
+    }
+
     public boolean delete(UUID id, UUID owner) {
         return jdbc.sql("DELETE FROM personal_item WHERE id = :id AND student_user_id = :owner")
                 .param("id", id).param("owner", owner).update() == 1;
@@ -75,6 +86,7 @@ public class PersonalItemRepository {
                 rs.getObject("due_date", LocalDate.class),
                 PersonalItemKind.valueOf(rs.getString("kind")),
                 rs.getObject("class_group_id", UUID.class),
-                rs.getString("subject_name"));
+                rs.getString("subject_name"),
+                rs.getBoolean("done"));
     }
 }

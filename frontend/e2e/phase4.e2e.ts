@@ -115,7 +115,7 @@ test("the student sees the sign-off, and the teacher's student page shows its hi
   await student.getByRole("textbox", { name: "Username" }).fill(P4.aoife);
   await student.getByLabel("Password").fill(P4.password);
   await student.getByRole("button", { name: "Sign in" }).click();
-  await student.getByRole("link", { name: /Biology/ }).click();
+  await student.getByRole("link", { name: "Biology", exact: true }).click();
   const stage1 = student.getByTestId("stage-list").getByRole("button", { name: /Initial Response/ }); // the stage strip has a same-named button
   if ((await stage1.getAttribute("aria-expanded")) !== "true") await stage1.click(); // StagesSection opens the current stage itself
   await expect(student.getByText(/^Your teacher signed this off on /)).toBeVisible();

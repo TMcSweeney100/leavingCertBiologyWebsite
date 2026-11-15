@@ -247,6 +247,7 @@ export const timelineItemSchema = z.object({
   componentId: z.string().nullable(),
   personalItemId: z.string().nullable(),
   personalKind: personalKindSchema.nullable(),
+  done: z.boolean(),
 });
 export type TimelineItem = z.infer<typeof timelineItemSchema>;
 
@@ -260,6 +261,7 @@ export const personalItemSchema = z.object({
   kind: personalKindSchema,
   classId: z.string().nullable(),
   subjectName: z.string().nullable(),
+  done: z.boolean(),
 });
 export type PersonalItem = z.infer<typeof personalItemSchema>;
 

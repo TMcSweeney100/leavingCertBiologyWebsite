@@ -125,7 +125,7 @@ test("a student sees the component and ticks a teacher item", async ({ page: tea
   await expect(teacher.getByRole("region", { name: "Students" })).toContainText("Cian Murphy");
 
   await student.reload();
-  await student.getByRole("link", { name: /Biology/ }).click();
+  await student.getByRole("link", { name: "Biology", exact: true }).click();
   await expect(student.getByRole("heading", { level: 1, name: "Biology" })).toBeVisible();
   componentUrl = student.url();
   await expect(student.getByRole("region", { name: "Stages" })).toContainText("Conducting the Experiment");
@@ -167,39 +167,47 @@ test("the timeline shows the stage date, the teacher's item and the student's ow
   await expectAccessible(student);
 
   await student.getByRole("button", { name: "Add my own item" }).click();
-  await expect(student.getByText("Only you can see this. Your teachers can't.")).toBeVisible();
-  await student.getByRole("textbox", { name: "Title" }).fill("Biology class test");
-  await student.getByLabel("Date").fill("2026-12-02");
-  await student.getByRole("combobox", { name: "Kind" }).selectOption("TEST");
-  await student.getByRole("combobox", { name: "Class (optional)" }).selectOption({ label: `Biology · ${P2.className}` });
+  const drawer = student.getByRole("dialog", { name: "Add my own item" });
+  await expect(drawer.getByText("Only you can see this. Your teachers can't.")).toBeVisible();
+  await expectAccessible(student);
+  await drawer.getByRole("textbox", { name: "Title" }).fill("Biology class test");
+  await drawer.getByLabel("Date").fill("2026-12-02");
+  await drawer.getByRole("button", { name: "Test" }).click();
+  await drawer.getByRole("combobox", { name: "Class (optional)" }).selectOption({ label: `Biology · ${P2.className}` });
   // Wait for the POST itself to settle before navigating away: a goto while it's still in flight can
-  // race the read on /home and land on a page rendered before the item was committed (flaky: the
-  // laptop project sometimes reached the next line before the request finished).
+  // race the read on /home and land on a page rendered before the item was committed.
   await Promise.all([
     student.waitForResponse((r) => r.url().includes("/me/personal-items") && r.request().method() === "POST"),
-    student.getByRole("button", { name: "Save item" }).click(),
+    drawer.getByRole("button", { name: "Save item" }).click(),
   ]);
 
-  await student.goto("/home?view=list&from=2026-12-01");
-  const rows = student.getByRole("list", { name: "Timeline items" }).getByRole("listitem");
-  await expect(rows).toHaveCount(3);
-  await expect(rows.nth(0)).toContainText("Biology class test");
-  await expect(rows.nth(0)).toContainText("Test");
-  await expect(rows.nth(1)).toContainText("Full draft in for feedback");
-  await expect(rows.nth(1)).toContainText("From your teacher");
-  await expect(rows.nth(2)).toContainText("Data Analysis and Conclusions");
-  await expect(rows.nth(2)).toContainText("Stage date");
-  for (const i of [0, 1, 2]) await expect(rows.nth(i)).toContainText("Biology");
+  // The group headings depend on today's date (This week, Next week, or a month), so find rows by their text.
+  await student.goto("/home?view=timeline&from=2026-12-01");
+  const row = (text: string) => student.getByRole("listitem").filter({ hasText: text }).last();
+  await expect(row("Biology class test")).toContainText("Test · Biology · only you");
+  await expect(row("Full draft in for feedback")).toContainText("From your teacher · Biology");
+  await expect(row("Data Analysis and Conclusions")).toContainText("Stage date · Biology");
+  await expect(row("SEC completion date")).toContainText("SEC completion date · Biology");
   await expectAccessible(student);
 
-  await student.getByRole("link", { name: "Month" }).click();
+  // The student's own tick: it saves, and survives a reload.
+  await Promise.all([
+    student.waitForResponse((r) => r.url().includes("/done") && r.request().method() === "PUT"),
+    // The checkbox is visually hidden under its drawn circle, so click its label (the 44px hit area), as a finger would.
+    student.getByRole("listitem").filter({ hasText: "Biology class test" }).last().locator("label").first().click(),
+  ]);
+  await student.reload();
+  await expect(student.getByRole("checkbox", { name: "Done: Biology class test" })).toBeChecked();
+  await expect(row("Biology class test")).toContainText("Done");
+
+  await student.goto("/home?view=week&from=2026-12-02");
+  await expect(student.getByRole("list", { name: "Wed 2 Dec" })).toContainText("Biology class test");
+  await expectAccessible(student);
+
+  await student.goto("/home?view=month&from=2026-12-01&day=2026-12-02");
   await expect(student.getByRole("table", { name: "December 2026" })).toBeVisible();
+  await expect(student.getByRole("region", { name: /^Wed 2 Dec/ })).toContainText("Biology class test");
   await expectAccessible(student);
 
   expect(componentUrl).toMatch(/\/components\//);
-
-  await student.goto("/home?view=list&from=2027-02-26");
-  const completion = student.getByRole("list", { name: "Timeline items" }).getByRole("listitem").first();
-  await expect(completion).toContainText("SEC completion date · Biology");
-  await expectAccessible(student);
 });

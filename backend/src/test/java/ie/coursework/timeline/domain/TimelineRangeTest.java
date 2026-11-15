@@ -10,9 +10,9 @@ class TimelineRangeTest {
     private static final LocalDate FROM = LocalDate.of(2026, 10, 1);
 
     @Test
-    void aSingleDayAndAHundredDaysAreFine() {
+    void aSingleDayAndAWholeYearAreFine() {
         assertThat(TimelineRange.problem(FROM, FROM)).isEmpty();
-        assertThat(TimelineRange.problem(FROM, FROM.plusDays(99))).isEmpty();
+        assertThat(TimelineRange.problem(FROM, FROM.plusDays(365))).isEmpty();
     }
 
     @Test
@@ -21,7 +21,7 @@ class TimelineRangeTest {
     }
 
     @Test
-    void moreThanAHundredDaysIsRefused() {
-        assertThat(TimelineRange.problem(FROM, FROM.plusDays(100))).contains("can be at most 100 days");
+    void moreThanAYearIsRefused() {
+        assertThat(TimelineRange.problem(FROM, FROM.plusDays(366))).contains("can be at most 366 days");
     }
 }
