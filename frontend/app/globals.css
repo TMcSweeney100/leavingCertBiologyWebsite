@@ -146,6 +146,7 @@
   --text-app-lead:      17px;   /* student name in a row, header app name */
   --text-app-title:     19px;   /* class name in the /teach list */
   --text-app-section:   21px;   /* section h2 */
+  --text-app-leaf:      28px;   /* plan timeline-redesign — the day number on the Next up card's calendar leaf */
   --text-app-h1:        28px;   /* page h1, phone */
   --text-app-h1-lg:     32px;   /* page h1, laptop */
   --text-app-code-sm:   30px;   /* issued reset code */
