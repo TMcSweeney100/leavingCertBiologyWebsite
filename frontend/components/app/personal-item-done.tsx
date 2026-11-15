@@ -13,6 +13,14 @@ function useDone(id: string, initial: boolean) {
   const router = useRouter();
   const [done, setDone] = useState(initial);
   const [failed, setFailed] = useState(false);
+  // After router.refresh() the server's props win: a tick made elsewhere on the page, or Next up moving on to
+  // another item, resets the local copy (React's "adjust state when a prop changes" pattern).
+  const [shown, setShown] = useState({ id, initial });
+  if (shown.id !== id || shown.initial !== initial) {
+    setShown({ id, initial });
+    setDone(initial);
+    setFailed(false);
+  }
 
   async function set(next: boolean) {
     setDone(next);

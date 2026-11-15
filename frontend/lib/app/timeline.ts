@@ -14,7 +14,7 @@ export const toIsoDate = (ms: number) => new Date(ms).toISOString().slice(0, 10)
 export const addDays = (iso: string, days: number) => toIsoDate(epoch(iso) + days * MS_PER_DAY);
 const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value);
 
-function isIsoDate(value: string | undefined): value is string {
+export function isIsoDate(value: string | undefined): value is string {
   return !!value && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(epoch(value)) && toIsoDate(epoch(value)) === value;
 }
 
@@ -54,9 +54,21 @@ export function rangeFor(params: { view?: string | string[]; from?: string | str
   }
   // T-10: from this week's Monday (so the week's past days show), or exactly from a given date ("Show earlier"),
   // to the end of that school year, and never less than 12 weeks ahead.
-  const yearEnd = schoolYear(anchor).end;
+  // In the first days of September this week's Monday is still in August: start at 1 September instead, or the
+  // range would run past the API's 366 days.
+  const { start, end: yearEnd } = schoolYear(anchor);
+  const thisMonday = monday(anchor);
   const ahead = addDays(anchor, AHEAD_DAYS);
-  return { view, from: isIsoDate(fromParam) ? anchor : monday(anchor), to: ahead > yearEnd ? ahead : yearEnd };
+  const from = isIsoDate(fromParam) ? anchor : thisMonday < start ? start : thisMonday;
+  return { view, from, to: ahead > yearEnd ? ahead : yearEnd };
+}
+
+/** T-14: the Month view's picked day: the asked one if it's a real date in the range, else today if on screen, else the first day. */
+export function pickedDay(asked: string | string[] | undefined, range: Range, today: string): string {
+  const inRange = (iso: string) => iso >= range.from && iso <= range.to;
+  const day = first(asked);
+  if (isIsoDate(day) && inRange(day)) return day;
+  return inRange(today) ? today : range.from;
 }
 
 /** The `from` of the previous (-1) or next (1) week or month. The timeline doesn't page. */

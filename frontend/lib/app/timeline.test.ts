@@ -1,6 +1,6 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
-import { dateShortcuts, groupTimeline, monthWeeks, nextUp, rangeFor, rangeLabel, relativeDay, schoolYear, stageNumber, stepFrom, toIsoDate, weekday, weekDays, weekSummary } from './timeline.ts';
+import { dateShortcuts, groupTimeline, monthWeeks, nextUp, pickedDay, rangeFor, rangeLabel, relativeDay, schoolYear, stageNumber, stepFrom, toIsoDate, weekday, weekDays, weekSummary } from './timeline.ts';
 
 const TODAY = '2026-10-14'; // a Wednesday
 
@@ -17,6 +17,11 @@ describe('rangeFor', () => {
     assert.equal(rangeFor({}, '2027-08-10').to, '2027-11-02');
   });
 
+  test('in the first days of September the timeline starts on 1 September, so it stays inside the API\'s 366 days', () => {
+    // 1 Sep 2027 is a Wednesday; its Monday is in the old school year, and 2028 is a leap year.
+    assert.deepEqual(rangeFor({}, '2027-09-01'), { view: 'timeline', from: '2027-09-01', to: '2028-08-31' });
+  });
+
   test('a week runs Monday to Sunday around from, and a month is the calendar month', () => {
     assert.deepEqual(rangeFor({ view: 'week', from: '2026-10-14' }, TODAY), { view: 'week', from: '2026-10-12', to: '2026-10-18' });
     assert.deepEqual(rangeFor({ view: 'month', from: '2026-02-17' }, TODAY), { view: 'month', from: '2026-02-01', to: '2026-02-28' });
@@ -25,6 +30,21 @@ describe('rangeFor', () => {
   test('an old list link, or anything malformed, is the timeline', () => {
     assert.equal(rangeFor({ view: 'list' }, TODAY).view, 'timeline');
     assert.deepEqual(rangeFor({ view: 'year', from: '2026-02-30' }, TODAY), { view: 'timeline', from: '2026-10-12', to: '2027-08-31' });
+  });
+});
+
+describe('pickedDay', () => {
+  const NOV = { view: 'month', from: '2026-11-01', to: '2026-11-30' } as const;
+
+  test('the asked day when it is a real date in the month, else today, else the month\'s first day', () => {
+    assert.equal(pickedDay('2026-11-20', NOV, '2026-11-15'), '2026-11-20');
+    assert.equal(pickedDay(undefined, NOV, '2026-11-15'), '2026-11-15');
+    assert.equal(pickedDay('2026-12-02', NOV, '2026-10-14'), '2026-11-01');
+  });
+
+  test('a malformed day is ignored, even one that sorts inside the month', () => {
+    assert.equal(pickedDay('2026-11-1', NOV, '2026-11-15'), '2026-11-15');
+    assert.equal(pickedDay(['2026-11-31', '2026-11-20'], NOV, '2026-11-15'), '2026-11-15');
   });
 });
 

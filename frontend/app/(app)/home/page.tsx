@@ -13,7 +13,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { enrolmentViewSchema, myComponentSchema, timelineSchema } from "@/lib/api/schemas";
 import { serverApi } from "@/lib/api/server";
 import { attempt } from "@/lib/app/attempt";
-import { addDays, type Range, rangeFor, toIsoDate } from "@/lib/app/timeline";
+import { addDays, pickedDay, type Range, rangeFor, toIsoDate } from "@/lib/app/timeline";
 import { dublinToday } from "@/lib/schedule";
 
 export const dynamic = "force-dynamic";
@@ -26,16 +26,12 @@ function fetchRange(range: Range): { from: string; to: string } {
   return range.view === "week" ? { from: range.from, to: addDays(range.to, AFTER_WEEK_DAYS) } : range;
 }
 
-const one = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value);
-
 export default async function HomePage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const params = await searchParams;
   const today = toIsoDate(dublinToday());
   const range = rangeFor(params, today);
   const load = fetchRange(range);
-  // T-14: the Month view's picked day. Today when it's in the month on screen, otherwise the month's first day.
-  const asked = one(params.day);
-  const day = asked && asked >= range.from && asked <= range.to ? asked : today >= range.from && today <= range.to ? today : range.from;
+  const day = pickedDay(params.day, range, today);
 
   // T-11: Next up is loaded on its own, from today, so it stays right while another week or month is on screen.
   const [timeline, upcoming, classes, components] = await Promise.all([
